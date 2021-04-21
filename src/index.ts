@@ -1,6 +1,6 @@
-import Widget from "./ui/components/Widget"
-import loadClient from './ui/hooks/loadClient'
+import Widget from "./ui/components/Widget";
+import loadClient from "./ui/hooks/loadClient";
 
-import { Configuration } from 'gpdb-api-client'
+import { Configuration } from "gpdb-api-client";
 
-export { Widget, loadClient, Configuration }
+export { Widget, loadClient, Configuration };

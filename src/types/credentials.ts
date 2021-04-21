@@ -1,14 +1,14 @@
-import { Configuration } from 'gpdb-api-client'
+import { Configuration } from "gpdb-api-client";
 
 export interface TokenPair {
-  accessKeyId: string,
-  secretAccessKey: string
+  accessKeyId: string;
+  secretAccessKey: string;
 }
 
 export interface BearerToken {
-  jwt: string
+  jwt: string;
 }
 
-type Credentials = TokenPair | Configuration
+type Credentials = TokenPair | Configuration;
 
-export default Credentials
+export default Credentials;

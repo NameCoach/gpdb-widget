@@ -1,3 +1,3 @@
 export enum AnalyticsEventType {
-  Available = "available"
+  Available = "available",
 }

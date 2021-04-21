@@ -1,7 +1,7 @@
 export enum UserResponseTypes {
-  Save = 'save',
-  Reject = 'reject',
-  NoOpinion = 'noOpinion'
+  Save = "save",
+  Reject = "reject",
+  NoOpinion = "noOpinion",
 }
 
 export default interface UserResponse {

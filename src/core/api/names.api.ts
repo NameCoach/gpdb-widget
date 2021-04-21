@@ -1,5 +1,5 @@
 import { orderBy } from "lodash";
-import { NAMES_API_URL } from '../../constants'
+import { NAMES_API_URL } from "../../constants";
 
 const MAX_NAMES_COUNT = 10_000;
 const MIN_NAME_LENGTH = 2;
@@ -8,14 +8,15 @@ export default class NamesApi {
   private url: any;
   private headers: HeadersInit;
 
-  constructor (url = process.env.NAMES_API_URL || NAMES_API_URL) {
+  constructor(url = process.env.NAMES_API_URL || NAMES_API_URL) {
     this.url = url;
-    this.headers = { "Content-Type": "application/json;charset=utf-8", };
+    this.headers = { "Content-Type": "application/json;charset=utf-8" };
   }
 
-  searchNames (content: string, applicationSignature: string) {
+  searchNames(content: string, applicationSignature: string) {
     return fetch(
-      `${this.url}/recordings_new/_search?filter_path=aggregations`, {
+      `${this.url}/recordings_new/_search?filter_path=aggregations`,
+      {
         method: "POST",
         headers: this.headers,
         body: JSON.stringify({
@@ -25,18 +26,26 @@ export default class NamesApi {
               utf_8_transcription: {
                 query: content,
                 operator: "or",
-              }
-            }
+              },
+            },
           },
           aggs: {
             allNames: {
               filter: {
                 bool: {
                   must: [
-                    { terms: { target_type_sig: ["person_first_name", "person_last_name", "NULL"] } },
-                    { terms: { org_sig: [applicationSignature, "NULL"] } }
-                  ]
-                }
+                    {
+                      terms: {
+                        target_type_sig: [
+                          "person_first_name",
+                          "person_last_name",
+                          "NULL",
+                        ],
+                      },
+                    },
+                    { terms: { org_sig: [applicationSignature, "NULL"] } },
+                  ],
+                },
               },
               aggs: {
                 names: {
@@ -52,9 +61,9 @@ export default class NamesApi {
                 bool: {
                   must: [
                     { term: { target_type_sig: "person_full_name" } },
-                    { terms: { org_sig: [applicationSignature, "NULL"] } }
-                  ]
-                }
+                    { terms: { org_sig: [applicationSignature, "NULL"] } },
+                  ],
+                },
               },
               aggs: {
                 names: {
@@ -66,9 +75,10 @@ export default class NamesApi {
             },
           },
         }),
-      })
-      .then(response => response.json())
-      .then(data => {
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
         // TODO: move to controller
         const { aggregations } = data;
         const allNames = NamesApi.prepareResult(aggregations.allNames, content);
@@ -78,10 +88,14 @@ export default class NamesApi {
       });
   }
 
-  static prepareResult (aggregations, content) {
-    const { names: { buckets = [] } } = aggregations;
-    const validBuckets = buckets.filter(b => b.key.length >= MIN_NAME_LENGTH);
+  static prepareResult(aggregations, content) {
+    const {
+      names: { buckets = [] },
+    } = aggregations;
+    const validBuckets = buckets.filter((b) => b.key.length >= MIN_NAME_LENGTH);
 
-    return orderBy(validBuckets, [({ key }) => content.search(new RegExp(key, "i"))]).map(n => n.key);
+    return orderBy(validBuckets, [
+      ({ key }) => content.search(new RegExp(key, "i")),
+    ]).map((n) => n.key);
   }
 }

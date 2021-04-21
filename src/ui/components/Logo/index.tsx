@@ -1,6 +1,6 @@
-import React from "react"
-import styles from './styles.module.css'
+import React from "react";
+import styles from "./styles.module.css";
 
-const Logo = () =><div className={styles.logo} />
+const Logo = () => <div className={styles.logo} />;
 
-export default Logo
+export default Logo;

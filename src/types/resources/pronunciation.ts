@@ -1,9 +1,9 @@
-import UserResponse from './user-response'
+import UserResponse from "./user-response";
 
 export enum AudioSource {
   Gpdb = "gpdb",
   NameOwner = "name_owner",
-  NameUser = "name_user"
+  NameUser = "name_user",
 }
 
 export default interface Pronunciation {
