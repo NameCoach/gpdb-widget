@@ -1,0 +1,6 @@
+@value background: white;
+@value secondary: rgba(138, 73, 212, 0.2);
+
+/* LOADER */
+@value mainSpin: #946cc1;
+@value secondarySpin: #946cc100;
