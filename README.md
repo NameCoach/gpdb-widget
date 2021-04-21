@@ -38,13 +38,17 @@ const Example = () => {
 
 ## Develop
 
+1. Install dependencies:
+   ```bash
+      yarn install
+   ```
 1. Run library in watch mode:
 ```bash
   yarn watch
 ```
 2. Run [example](/example/src/App.tsx) app to use it in time:
 ```bash
-  cd example && yarn start
+  cd example && yarn install && yarn start
 ```
 ## License
 
