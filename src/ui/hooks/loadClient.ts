@@ -1,12 +1,15 @@
+import {
+  Client,
+  Configuration,
+  Application,
+  NameOwner,
+  User,
+} from "gpdb-api-client";
 import { useMemo } from "react";
-import { Client, Configuration } from "gpdb-api-client";
 import Credentials from "../../types/credentials";
-import Application from "gpdb-api-client/build/main/types/input/application";
 import { ANALYTICS_API_URL, GPDB_API_URL } from "../../constants";
 import IFrontController from "../../types/front-controller";
 import FrontController from "../../core/front.controller";
-import NameOwner from "gpdb-api-client/build/main/types/input/name-owner";
-import User from "gpdb-api-client/build/main/types/input/user";
 
 export default function loadClient(
   credentials: Credentials,

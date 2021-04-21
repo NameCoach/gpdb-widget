@@ -1418,10 +1418,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.0.6.tgz#971f2037e326ecf0b68bda1901e68b328d971c67"
-  integrity sha512-2upYVJWhR5akYlj6ePI/93ZtHWA7Z5A2aXaTur8TbU1NVRiATTPVBSaDohNSYhtvydCxyysK1BLFQU9rwTi2XA==
+gpdb-api-client@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.0.8.tgz#c737e49a61e0409b41085cab847d01651d28fd87"
+  integrity sha512-2naCGeJNR5Oosz3ADVkCq3w3L2UwtNLq3Ibe3SlTZa/Fr8mZGxCaKLmzPNx0EfM1xd/akgsTZzRdLEZCVPd78w==
   dependencies:
     "@types/jsonwebtoken" "^8.5.0"
     cross-fetch "^3.0.6"

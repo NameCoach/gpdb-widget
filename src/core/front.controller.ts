@@ -2,23 +2,18 @@ import IFrontController, { Meta } from "../types/front-controller";
 import Name, { NameTypes } from "../types/resources/name";
 import { UserResponseTypes } from "../types/resources/user-response";
 import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
-import { Client as GpdbClient } from "gpdb-api-client";
-
-/*
-TODO:
-  1 - configure better types export in gpdb-api-client
-  2 - provide error handling and nullable responses
-*/
-
-import NameOwner from "gpdb-api-client/build/main/types/input/name-owner";
-import User from "gpdb-api-client/build/main/types/input/user";
-import Target from "gpdb-api-client/build/main/types/input/tasrget";
-import { TargetTypeSig } from "gpdb-api-client/build/main/types/input/enum-types";
-
 import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
+import {
+  Client as GpdbClient,
+  NameOwner,
+  User,
+  Target,
+  TargetTypeSig,
+} from "gpdb-api-client";
 
+// TODO: provide error handling and nullable responses
 const NameTypesFactory = {
   [NameTypes.FirstName]: TargetTypeSig.FirstName,
   [NameTypes.LastName]: TargetTypeSig.LastName,
