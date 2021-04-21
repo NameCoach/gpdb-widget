@@ -18,7 +18,7 @@
   },
   "peerDependencies": {
     "classnames": "~2.3.1",
-    "gpdb-api-client": "^1.0.6",
+    "gpdb-api-client": "^1.0.8",
     "react": "^16.0.0"
   },
   "devDependencies": {
@@ -42,7 +42,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.1.0",
     "gh-pages": "^2.2.0",
-    "gpdb-api-client": "^1.0.6",
+    "gpdb-api-client": "^1.0.8",
     "lodash": "^4.17.21",
     "postcss": "^8.2.10",
     "postcss-modules-values": "^4.0.0",
