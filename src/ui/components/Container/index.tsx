@@ -6,6 +6,7 @@ import { useName } from "../../hooks/names";
 import Loader from "../Loader";
 import FullName from "../FullName";
 import Logo from "../Logo";
+import Player from "../Player";
 
 type NameProp = Omit<Name, "type">;
 
@@ -48,6 +49,9 @@ const Container = (props: Props) => {
 
       <hr className={styles.divider} />
       {props.loading && <Loader />}
+
+      <Player audioSrc="https://nc-library-recordings.s3.us-west-1.amazonaws.com/uploads/recording/s3_location/ffffb72a-14f5-4007-b66d-83cbb665aea2/4401d29689fbc3102242cc9076f3df21.mp3" />
+      <Player audioSrc="https://nc-library-recordings.s3.us-west-1.amazonaws.com/uploads/recording/s3_location/ffff2349-0977-42b1-a247-fd7a07b6af74/bce2ed5a48a83450dd0e003b1932d070.mp3" />
     </React.Fragment>
   );
 };

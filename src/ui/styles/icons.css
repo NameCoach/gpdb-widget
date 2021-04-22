@@ -19,6 +19,7 @@
 .icon-btn i {
   width: 30px;
   height: 30px;
+  display: block;
   background-repeat: no-repeat;
   background-size: 70%;
   background-position: center;
