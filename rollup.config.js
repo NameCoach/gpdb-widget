@@ -4,9 +4,10 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import postcss from "rollup-plugin-postcss";
 import postcssUrl from "postcss-url";
+import autoprefixer from "autoprefixer";
 import image from "@rollup/plugin-image";
 
-const packageJson = require("./package.json");
+import packageJson from "./package.json";
 
 export default {
   input: "src/index.ts",
@@ -14,13 +15,13 @@ export default {
     {
       file: packageJson.main,
       format: "cjs",
-      sourcemap: true
+      sourcemap: true,
     },
     {
       file: packageJson.module,
       format: "esm",
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
   plugins: [
     peerDepsExternal(),
@@ -28,6 +29,9 @@ export default {
     commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
-    postcss({ modules: true, plugins: [ postcssUrl({url: 'inline'}) ] }),
-  ]
+    postcss({
+      modules: true,
+      plugins: [postcssUrl({ url: "inline" }), autoprefixer()],
+    }),
+  ],
 };

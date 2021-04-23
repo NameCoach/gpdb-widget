@@ -29,7 +29,11 @@ export default class FrontController implements IFrontController {
   ) {}
 
   async complexSearch(names: Array<Name>, meta?: Meta) {
-    let result: { [t in NameTypes]: Pronunciation[] };
+    const result: { [t in NameTypes]: Pronunciation[] } = {
+      [NameTypes.FirstName]: [],
+      [NameTypes.LastName]: [],
+      [NameTypes.FullName]: [],
+    };
 
     const targets: Target[] = names.map((name) => ({
       target: name.key,
@@ -37,15 +41,13 @@ export default class FrontController implements IFrontController {
       targetOwnerContext: this.nameOwnerContext,
     }));
 
-    const {
-      target_results,
-    }: any = await this.apiClient.pronunciations.complexSearch({
+    const response: any = await this.apiClient.pronunciations.complexSearch({
       targets,
       userContext: this.userContext,
     });
 
     names.forEach((name) => {
-      const target = target_results.find(
+      const target = response.target_results.find(
         (res) => res.target_origin === name.key
       );
       const pronunciations: Pronunciation[] = target.pronunciations
@@ -68,11 +70,11 @@ export default class FrontController implements IFrontController {
         })
         .filter(Boolean);
 
-      return (result[name.type] = pronunciations);
+      result[name.type] = pronunciations;
     });
 
     try {
-      await this.sendAnalytics(AnalyticsEventType.Available, names, meta.uri);
+      await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
     } catch (e) {
       console.error(e);
     }
@@ -125,18 +127,22 @@ export default class FrontController implements IFrontController {
   }
 
   async verifyNames(name: string) {
-    // TODO: should get application signature from GPDB client
-    const foundNames = await this.namesApi.searchNames(name, name);
+    const foundNames = await this.namesApi.searchNames(
+      name,
+      this.apiClient.application.instanceSig
+    );
     const { allNames, fullName } = foundNames;
     const parsedName = name.split(" ");
 
     const isNamePartExist = (n) =>
-      !!allNames.find((n) => new RegExp(`\\b${n}\\b`, "i").test(n));
+      !!allNames.find((foundName) =>
+        new RegExp(`\\b${foundName}\\b`, "i").test(n)
+      );
 
     const firstName = parsedName.slice(0, -1).join(" ").trim();
     const lastName = parsedName[parsedName.length - 1];
 
-    return {
+    const result = {
       [NameTypes.FirstName]: {
         key: firstName,
         type: NameTypes.FirstName,
@@ -153,5 +159,7 @@ export default class FrontController implements IFrontController {
         exist: parsedName.every((n) => fullName.includes(n.toLowerCase())),
       },
     };
+
+    return result
   }
 }

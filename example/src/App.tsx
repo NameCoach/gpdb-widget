@@ -3,9 +3,9 @@ import React from 'react'
 import { Widget, loadClient } from 'gpdb-components'
 
 const App = () => {
-  const applicationContext = { instanceSig: 'namecoach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'pavel.shushpan@jeturby.com' }
-  const userContext = { signature: 'pavel.shushpan@jeturby.com' }
+  const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
+  const nameOwnerContext = { signature: 'jon.snow@name-coach.com' }
+  const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
 
   const client = loadClient(
     {
@@ -17,7 +17,7 @@ const App = () => {
     userContext
   )
 
-  return <Widget client={client} name="Pavel Shushpan" width={300} />
+  return <Widget client={client} name="Jon Snow" width={300} />
 }
 
 export default App
