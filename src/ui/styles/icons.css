@@ -1,0 +1,35 @@
+@value secondary from "colors.css";
+
+.icon-btn {
+  cursor: pointer;
+  opacity: 0.6;
+  border-radius: 2px;
+  transition: 0.3s ease opacity, background-color, background-image;
+}
+
+.icon-btn.disabled {
+  pointer-events:none;
+  opacity: 0.4;
+}
+
+.icon-btn.disabled:hover {
+  opacity: 0.4;
+}
+
+.icon-btn i {
+  width: 30px;
+  height: 30px;
+  display: block;
+  background-repeat: no-repeat;
+  background-size: 70%;
+  background-position: center;
+}
+
+.icon-btn:hover {
+  opacity: 1;
+}
+
+.icon-btn.active, .icon-btn:active {
+  background-color: secondary;
+  opacity: 1;
+}
