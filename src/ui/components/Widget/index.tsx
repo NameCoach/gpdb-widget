@@ -1,10 +1,6 @@
-import React, {
-  createContext,
-  MouseEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import IFrontController from "../../../types/front-controller";
+import ControllerContext from "../../contexts/controller";
 import Container from "../Container";
 import Name, { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
@@ -31,11 +27,11 @@ type Props = MainProperties & ElemStyleProps;
 const cx = classNames.bind(styles);
 
 const Widget = (props: Props) => {
-  const ControllerContext = createContext<IFrontController>(null);
+  const controllerContextValue = useMemo(() => props.client, [props.client]);
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  if (!props.name.trim()) throw new Error("Name shouldn't be blank");
+  if (!props.name.trim()) throw new Error("NameLine shouldn't be blank");
 
   useEffect(() => {
     const verifyNames = async () => {
@@ -48,24 +44,24 @@ const Widget = (props: Props) => {
   }, [props.name]);
 
   return (
-    <ControllerContext.Provider value={props.client}>
-      <div
-        className={cx(styles.widget, props.className)}
-        style={{ ...props.style, maxWidth: props.width, height: props.height }}
-      >
-        {props.closable && <Close onClick={props.onClose} />}
+    <div
+      className={cx(styles.widget, props.className)}
+      style={{ ...props.style, maxWidth: props.width, height: props.height }}
+    >
+      {props.closable && <Close onClick={props.onClose} />}
 
-        {loading ? (
-          <Loader inline />
-        ) : (
+      {loading ? (
+        <Loader inline />
+      ) : (
+        <ControllerContext.Provider value={controllerContextValue}>
           <Container
             firstName={names.firstName}
             lastName={names.lastName}
             fullName={names.fullName}
           />
-        )}
-      </div>
-    </ControllerContext.Provider>
+        </ControllerContext.Provider>
+      )}
+    </div>
   );
 };
 
