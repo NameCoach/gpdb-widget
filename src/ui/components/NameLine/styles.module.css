@@ -1,7 +1,6 @@
 .pronunciation {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
 }
 
@@ -151,29 +150,4 @@
   display: flex;
   align-items: center;
   flex: 0;
-}
-
-.pronunciation__action .speaker {
-  background-image: var(--speakerIcon);
-}
-
-.mic {
-  flex: 0 0 30px;
-  background-image: var(--micIcon);
-}
-
-.request {
-  background-image: var(--requestIcon);
-}
-
-.bookmark {
-  background-image: var(--bookmarkIcon);
-}
-
-.pronunciation__action.active .bookmark {
-  background-image: var(--bookmarkActiveIcon);
-}
-
-.pronunciation__action.bookmark-btn.active {
-  background-color: transparent;
 }

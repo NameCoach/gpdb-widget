@@ -1,8 +1,4 @@
-export enum UserResponseTypes {
-  Save = "save",
-  Reject = "reject",
-  NoOpinion = "noOpinion",
-}
+import { UserResponse as UserResponseTypes } from "gpdb-api-client";
 
 export default interface UserResponse {
   id: string;
