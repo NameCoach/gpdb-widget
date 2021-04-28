@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { MouseEventHandler, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 
@@ -7,6 +7,7 @@ interface Props {
   autoplay?: boolean;
   audioSrc: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const cx = classNames.bind(styles);
@@ -17,24 +18,33 @@ const Player = (props: Props) => {
   const [isPlaying, setPlaying] = useState<boolean>(false);
 
   const stop = () => setPlaying(false);
-  const play = () => {
-    audioRef.current.onended = stop;
-    audioRef.current.addEventListener("pause", stop);
+  const play = async () => {
+    try {
+      if (props.onClick) props.onClick();
 
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
+      audioRef.current.onended = stop;
+
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+
+      setPlaying(true);
+      currentAudio = audioRef.current;
+
+      await audioRef.current.play();
+    } catch (e) {
+      currentAudio = null;
+      setPlaying(false);
     }
-
-    setPlaying(true);
-    currentAudio = audioRef.current;
-
-    return audioRef.current.play();
   };
 
   useEffect(() => {
+    audioRef.current = new Audio(props.audioSrc);
     if (props.autoplay) play();
+  }, [props.audioSrc]);
 
+  useEffect(() => {
     return () => {
       audioRef.current.removeEventListener("pause", stop);
       if (currentAudio) currentAudio.removeEventListener("pause", stop);
