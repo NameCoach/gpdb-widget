@@ -1,6 +1,6 @@
 import Name, { NameTypes } from "./resources/name";
 import Pronunciation from "./resources/pronunciation";
-import { UserResponseTypes } from "./resources/user-response";
+import { UserResponse } from "gpdb-api-client";
 
 export interface Meta {
   uri?: string;
@@ -12,10 +12,7 @@ export interface GpdbRequests {
     meta?: Meta
   ) => PromiseLike<{ [t in NameTypes]: Pronunciation[] }>;
   simpleSearch: (name: Name, meta?: Meta) => PromiseLike<Pronunciation[]>;
-  createUserResponse: (
-    id: string,
-    type: UserResponseTypes
-  ) => PromiseLike<void>;
+  createUserResponse: (id: string, type: UserResponse) => PromiseLike<void>;
   createRecording: (
     name: string,
     type: NameTypes,
@@ -32,8 +29,8 @@ export interface AnalyticsRequests {
   sendAnalytics: (
     eventType: string,
     message: string | object | boolean,
-    rootUrl?: string,
-    recordingId?: string
+    recordingId?: string,
+    rootUrl?: string
   ) => PromiseLike<void>;
 }
 

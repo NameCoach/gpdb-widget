@@ -1,24 +1,20 @@
 import IFrontController, { Meta } from "../types/front-controller";
 import Name, { NameTypes } from "../types/resources/name";
-import { UserResponseTypes } from "../types/resources/user-response";
-import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
-import pronunciationMap from "./mappers/pronunciation.map";
-import { AnalyticsEventType } from "../types/resources/analytics-event-type";
-import NamesApi from "./api/names.api";
 import {
+  UserResponse,
   Client as GpdbClient,
   NameOwner,
   User,
   Target,
   TargetTypeSig,
 } from "gpdb-api-client";
+import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
+import pronunciationMap from "./mappers/pronunciation.map";
+import { AnalyticsEventType } from "../types/resources/analytics-event-type";
+import NamesApi from "./api/names.api";
+import NameTypesFactory from "../types/name-types-factory";
 
 // TODO: provide error handling and nullable responses
-const NameTypesFactory = {
-  [NameTypes.FirstName]: TargetTypeSig.FirstName,
-  [NameTypes.LastName]: TargetTypeSig.LastName,
-  [NameTypes.FullName]: TargetTypeSig.FirstName,
-};
 
 export default class FrontController implements IFrontController {
   constructor(
@@ -84,7 +80,7 @@ export default class FrontController implements IFrontController {
 
   async simpleSearch(name: Name, meta?: Meta) {
     const {
-      target_results: { pronunciations },
+      target_result: { pronunciations },
     }: any = await this.apiClient.pronunciations.simpleSearch({
       target: name.key,
       targetOwnerSig: this.nameOwnerContext.signature,
@@ -98,8 +94,13 @@ export default class FrontController implements IFrontController {
     return Promise.resolve(undefined);
   }
 
-  createUserResponse(id: string, type: UserResponseTypes): PromiseLike<void> {
-    return Promise.resolve(undefined);
+  createUserResponse(id: string, type: UserResponse): PromiseLike<void> {
+    return this.apiClient.pronunciations.userResponse({
+      recordingId: id,
+      userResponse: type,
+      targetOwnerSig: this.nameOwnerContext.signature,
+      userContext: this.userContext,
+    });
   }
 
   requestRecording(name: string, type: NameTypes): PromiseLike<void> {
@@ -109,8 +110,8 @@ export default class FrontController implements IFrontController {
   async sendAnalytics(
     eventType: string,
     message: string | object | boolean,
-    rootUrl?: string,
-    recordingId?: string
+    recordingId?: string,
+    rootUrl?: string
   ) {
     await this.apiClient.analyticsEvents.create({
       entityId: this.nameOwnerContext.signature,
@@ -160,6 +161,6 @@ export default class FrontController implements IFrontController {
       },
     };
 
-    return result
+    return result;
   }
 }

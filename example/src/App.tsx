@@ -17,7 +17,7 @@ const App = () => {
     userContext
   )
 
-  return <Widget client={client} name="Jon Snow" width={300} />
+  return <Widget client={client} name="Jack Snow" width={600} />
 }
 
 export default App
