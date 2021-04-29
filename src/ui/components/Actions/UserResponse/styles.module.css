@@ -3,9 +3,12 @@
 }
 
 .active {
+  background-color: transparent !important;
   composes: active from "../../../styles/icons.css";
+}
+
+.bookmark_active_icon {
   composes: bookmark--active from "../../../styles/icons.css";
-  background-color: transparent;
 }
 
 .bookmark_icon {

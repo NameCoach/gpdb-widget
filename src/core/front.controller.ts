@@ -110,7 +110,12 @@ export default class FrontController implements IFrontController {
   }
 
   requestRecording(name: string, type: NameTypes): PromiseLike<void> {
-    return Promise.resolve(undefined);
+    return this.apiClient.pronunciations.createRecordingRequest({
+      target: name,
+      targetTypeSig: NameTypesFactory[type],
+      targetOwnerContext: this.nameOwnerContext,
+      userContext: this.userContext,
+    });
   }
 
   async sendAnalytics(
