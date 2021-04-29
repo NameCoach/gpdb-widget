@@ -7,7 +7,9 @@ import Loader from "../Loader";
 import FullName from "../FullName";
 import Logo from "../Logo";
 import NameLine from "../NameLine";
+import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
+import useRecorderState from "../../hooks/useRecorderState";
 import AbsentName from "../AbsentName";
 
 interface Props {
@@ -22,6 +24,13 @@ const cx = classNames.bind(styles);
 const Container = (props: Props) => {
   const controller = useContext(ControllerContext);
   const [loading, setLoading] = useState(false);
+  const [
+    recorderState,
+    setRecorderClosed,
+    setRecorderOpen,
+  ] = useRecorderState();
+
+  const { isOpen: isRecorderOpen } = recorderState;
   const { firstName, lastName, fullName } = props;
   const {
     pronunciations,
@@ -41,6 +50,8 @@ const Container = (props: Props) => {
       return await simpleSearch(type);
     else return await props.verifyNames();
   };
+
+  const openRecorder = (name, type) => setRecorderOpen(true, name, type);
 
   useEffect(() => {
     const complexSearch = async () => {
@@ -78,26 +89,37 @@ const Container = (props: Props) => {
 
       {loading && <Loader />}
 
-      {!loading && !pronunciations.fullName?.[0]?.nameOwnerCreated && (
-        <>
-          {[firstName, lastName].map((name, index) => (
-            <React.Fragment key={`${name.key}-${index}`}>
-              {name.exist ? (
-                <NameLine
-                  pronunciations={pronunciations[name.type]}
-                  name={name.key}
-                  type={name.type}
-                  reload={reloadName}
-                />
-              ) : (
-                <AbsentName name={name.key} type={name.type} />
-              )}
-
-              {index === 0 && <hr className={styles.divider} />}
-            </React.Fragment>
-          ))}
-        </>
+      {isRecorderOpen && !loading && (
+        <Recorder
+          name={recorderState.name}
+          type={recorderState.type}
+          onRecorderClose={setRecorderClosed}
+        />
       )}
+
+      {!loading &&
+        !isRecorderOpen &&
+        !pronunciations.fullName?.[0]?.nameOwnerCreated && (
+          <>
+            {[firstName, lastName].map((name, index) => (
+              <React.Fragment key={`${name.key}-${index}`}>
+                {name.exist ? (
+                  <NameLine
+                    pronunciations={pronunciations[name.type]}
+                    name={name.key}
+                    type={name.type}
+                    reload={reloadName}
+                    onRecorderClick={openRecorder}
+                  />
+                ) : (
+                  <AbsentName name={name.key} type={name.type} />
+                )}
+
+                {index === 0 && <hr className={styles.divider} />}
+              </React.Fragment>
+            ))}
+          </>
+        )}
     </>
   );
 };
