@@ -2,7 +2,7 @@
   "name": "gpdb-widget",
   "homepage": "https://NameCoachDevTeam.github.io/gpdb-widget",
   "version": "1.0.1",
-  "description": "",
+  "description": "GPDB widget react component",
   "author": "NameCoach",
   "license": "MIT",
   "repository": "NameCoach/gpdb-widget",
