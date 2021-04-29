@@ -15,7 +15,11 @@ const UserResponseAction = (props: Props) => (
     className={cx(props.className, styles.wrapper, { active: props.active })}
     onClick={props.onClick}
   >
-    <i className={styles.bookmark_icon} />
+    <i
+      className={
+        props.active ? styles.bookmark_active_icon : styles.bookmark_icon
+      }
+    />
   </div>
 );
 
