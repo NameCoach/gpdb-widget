@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
@@ -9,6 +9,7 @@ import UserResponseAction from "../Actions/UserResponse";
 import { UserResponse } from "gpdb-api-client";
 import ControllerContext from "../../contexts/controller";
 import NameTypesFactory from "../../../types/name-types-factory";
+import Select from "../Select";
 
 interface Props {
   pronunciations: Pronunciation[];
@@ -23,6 +24,17 @@ const NameLine = (props: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
 
+  const options = useMemo(
+    () =>
+      props.pronunciations.map((p, i) => ({
+        label: `${i + 1} - ${
+          p.language && p.language !== "null" ? p.language : "My Recording"
+        }`,
+        value: i,
+      })),
+    [props.pronunciations]
+  );
+
   const sendAnalytics = (event, index = currentIndex) =>
     controller.sendAnalytics(
       `${NameTypesFactory[props.type]}_${event}_${index}`,
@@ -30,13 +42,11 @@ const NameLine = (props: Props) => {
       currentPronunciation.id
     );
 
-  const onSelect = (event) => {
-    const index = event.target.value;
-
-    setCurrentIndex(index);
+  const onSelect = ({ value }) => {
+    setCurrentIndex(value);
     setAutoplay(true);
-    setPronunciation(props.pronunciations[index]);
-    sendAnalytics("recording_select_list_change_to", index);
+    setPronunciation(props.pronunciations[value]);
+    sendAnalytics("recording_select_list_change_to", value);
   };
 
   const onPlayClick = () => sendAnalytics("play_button_click");
@@ -50,7 +60,7 @@ const NameLine = (props: Props) => {
     await controller.createUserResponse(currentPronunciation.id, response);
     sendAnalytics("save_button_click");
     setPronunciation(null);
-    setTimeout(() => props.reload(props.type), 1000);
+    setTimeout(() => props.reload(props.type), 1500);
   };
 
   useEffect(() => {
@@ -64,18 +74,13 @@ const NameLine = (props: Props) => {
       {!currentPronunciation ? (
         <Loader />
       ) : (
-        <React.Fragment>
+        <>
           <div className={styles.pronunciation__mid}>
-            <select
+            <Select
+              options={options}
               className={styles.pronunciation__control}
               onChange={onSelect}
-            >
-              {props.pronunciations.map((_, index) => (
-                <option key={`select${index}`} value={index}>
-                  {index + 1}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className={styles.pronunciation__actions}>
@@ -96,7 +101,13 @@ const NameLine = (props: Props) => {
               onClick={onUserResponse}
             />
           </div>
-        </React.Fragment>
+
+          {currentPronunciation.phoneticSpelling && (
+            <span className={styles.pronunciation__phonetic}>
+              {currentPronunciation.phoneticSpelling}
+            </span>
+          )}
+        </>
       )}
     </div>
   );

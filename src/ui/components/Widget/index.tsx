@@ -33,13 +33,13 @@ const Widget = (props: Props) => {
 
   if (!props.name.trim()) throw new Error("NameLine shouldn't be blank");
 
-  useEffect(() => {
-    const verifyNames = async () => {
-      setLoading(true);
-      setNames(await props.client.verifyNames(props.name));
-      setLoading(false);
-    };
+  const verifyNames = async () => {
+    setLoading(true);
+    setNames(await props.client.verifyNames(props.name));
+    setLoading(false);
+  };
 
+  useEffect(() => {
     verifyNames();
   }, [props.name]);
 
@@ -58,6 +58,7 @@ const Widget = (props: Props) => {
             firstName={names.firstName}
             lastName={names.lastName}
             fullName={names.fullName}
+            verifyNames={verifyNames}
           />
         </ControllerContext.Provider>
       )}
