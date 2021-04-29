@@ -16,6 +16,7 @@ interface Props {
   name: string;
   type: NameTypes;
   reload: (type: NameTypes) => void;
+  onRecorderClick: (name, type) => void;
 }
 
 const NameLine = (props: Props) => {
@@ -91,7 +92,10 @@ const NameLine = (props: Props) => {
               onClick={onPlayClick}
             />
 
-            <RecordAction className={styles.pronunciation__action} />
+            <RecordAction
+              className={styles.pronunciation__action}
+              onClick={() => props.onRecorderClick(props.name, props.type)}
+            />
             <UserResponseAction
               className={styles.pronunciation__action}
               active={
