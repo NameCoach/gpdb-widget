@@ -18,8 +18,9 @@
   },
   "peerDependencies": {
     "classnames": "~2.3.1",
-    "gpdb-api-client": "^1.0.8",
-    "react": "^16.0.0"
+    "gpdb-api-client": "^1.0.10",
+    "react": "^16.0.0",
+    "react-select": "^4.3.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
@@ -43,7 +44,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.1.0",
     "gh-pages": "^2.2.0",
-    "gpdb-api-client": "^1.0.8",
+    "gpdb-api-client": "^1.0.10",
     "lodash": "^4.17.21",
     "postcss": "^8.2.10",
     "postcss-modules-values": "^4.0.0",
@@ -51,6 +52,7 @@
     "prettier": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-select": "^4.3.0",
     "rollup": "^2.45.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.0",
