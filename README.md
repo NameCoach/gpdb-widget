@@ -16,7 +16,7 @@ Read more about application, name owner and user contexts [here](https://namecoa
 ```tsx
 import React from 'react'
 
-import { Widget, loadClient } from 'gpdb-components'
+import { Widget, loadClient } from 'gpdb-widget'
 
 const Example = () => {
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
