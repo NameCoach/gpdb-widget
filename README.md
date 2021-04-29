@@ -1,16 +1,16 @@
-# gpdb-components
+# gpdb-widget
 
->
 
 [![NPM](https://img.shields.io/npm/v/gpdb-components.svg)](https://www.npmjs.com/package/gpdb-components) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
 ```bash
-npm install --save gpdb-components
+npm install --save gpdb-widget
 ```
 
 ## Usage
+Read more about application, name owner and user contexts [here](https://namecoachgpdb.docs.apiary.io/#introduction/context-info)
 
 ```tsx
 import React from 'react'
@@ -36,7 +36,7 @@ const Example = () => {
 }
 ```
 
-## Develop
+## Development
 
 1. Install dependencies:
    ```bash
