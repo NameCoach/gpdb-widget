@@ -91,7 +91,13 @@ export default class FrontController implements IFrontController {
   }
 
   createRecording(name: string, type: NameTypes, audio: string) {
-    return Promise.resolve(undefined);
+    return this.apiClient.pronunciations.createRecording({
+      target: name,
+      targetTypeSig: NameTypesFactory[type],
+      audioBase64: audio,
+      userContext: this.userContext,
+      nameOwnerContext: this.nameOwnerContext,
+    });
   }
 
   createUserResponse(id: string, type: UserResponse): PromiseLike<void> {

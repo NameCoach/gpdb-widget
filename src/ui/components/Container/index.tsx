@@ -7,7 +7,9 @@ import Loader from "../Loader";
 import FullName from "../FullName";
 import Logo from "../Logo";
 import NameLine from "../NameLine";
+import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
+import useRecorderState from "../../hooks/useRecorderState";
 
 interface Props {
   firstName: Name;
@@ -20,6 +22,13 @@ const cx = classNames.bind(styles);
 
 const Container = (props: Props) => {
   const controller = useContext(ControllerContext);
+  const [
+    recorderState,
+    setRecorderClosed,
+    setRecorderOpen,
+  ] = useRecorderState();
+  console.log(recorderState.name, recorderState.type);
+  const { isOpen: isRecorderOpen } = recorderState;
   const { firstName, lastName, fullName } = props;
   const {
     pronunciations,
@@ -38,6 +47,8 @@ const Container = (props: Props) => {
     if (type === NameTypes.LastName || type === NameTypes.FirstName)
       return await simpleSearch(type);
   };
+
+  const openRecorder = (name, type) => setRecorderOpen(true, name, type);
 
   useEffect(() => {
     const complexSearch = async () => {
@@ -68,7 +79,13 @@ const Container = (props: Props) => {
       </div>
 
       <hr className={styles.divider} />
-      {props.loading ? (
+      {isRecorderOpen ? (
+        <Recorder
+          name={recorderState.name}
+          type={recorderState.type}
+          onRecorderClose={setRecorderClosed}
+        />
+      ) : props.loading ? (
         <Loader />
       ) : (
         <React.Fragment>
@@ -77,6 +94,7 @@ const Container = (props: Props) => {
             name={firstName.key}
             type={firstName.type}
             reload={reloadName}
+            onRecorderClick={openRecorder}
           />
 
           <NameLine
@@ -84,6 +102,7 @@ const Container = (props: Props) => {
             name={lastName.key}
             type={lastName.type}
             reload={reloadName}
+            onRecorderClick={openRecorder}
           />
         </React.Fragment>
       )}
