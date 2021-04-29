@@ -1,5 +1,6 @@
 # gpdb-widget
 
+Try it on [demo page](https://namecoach.github.io/gpdb-widget/)
 
 [![NPM](https://img.shields.io/npm/v/gpdb-components.svg)](https://www.npmjs.com/package/gpdb-components) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
