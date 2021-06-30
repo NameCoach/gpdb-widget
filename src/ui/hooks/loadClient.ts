@@ -17,10 +17,6 @@ export default function loadClient(
   nameOwnerContext: NameOwner,
   userContext: User
 ): IFrontController {
-  const headers = {
-    "X-Internal-Authorization": "true",
-  };
-    
   const initialization = () => {
     let configuration: Configuration;
 
@@ -31,7 +27,6 @@ export default function loadClient(
         secretAccessKey: credentials.secretAccessKey,
         apiUrl: GPDB_API_URL,
         analyticsApiUrl: ANALYTICS_API_URL,
-        headers: headers,
       });
 
     const client = new Client(application, configuration);
