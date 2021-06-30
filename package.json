@@ -20,6 +20,14 @@
     "deploy": "gh-pages -d example/build",
     "version": "standard-version"
   },
+  "dependencies": {
+    "blob-util": "^2.0.2",
+    "classnames": "~2.3.1",
+    "gpdb-api-client": "^1.0.10",
+    "react-range": "^1.8.7",
+    "react-select": "^4.3.0",
+    "recordrtc": "^5.6.2"
+  },
   "peerDependencies": {
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
@@ -41,7 +49,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "autoprefixer": "^10.2.5",
     "babel-eslint": "^10.0.3",
-    "classnames": "~2.3.1",
+    "classnames": "^2.3.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-standard": "^14.1.1",
