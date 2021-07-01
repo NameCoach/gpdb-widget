@@ -14,69 +14,66 @@ export default class NamesApi {
   }
 
   searchNames(content: string, applicationSignature: string) {
-    return fetch(
-      `${this.url}/_search?filter_path=aggregations`,
-      {
-        method: "POST",
-        headers: this.headers,
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            match: {
-              utf_8_transcription: {
-                query: content,
-                operator: "or",
-              },
+    return fetch(`${this.url}/_search?filter_path=aggregations`, {
+      method: "POST",
+      headers: this.headers,
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          match: {
+            utf_8_transcription: {
+              query: content,
+              operator: "or",
             },
           },
-          aggs: {
-            allNames: {
-              filter: {
-                bool: {
-                  must: [
-                    {
-                      terms: {
-                        target_type_sig: [
-                          "person_first_name",
-                          "person_last_name",
-                          "NULL",
-                        ],
-                      },
+        },
+        aggs: {
+          allNames: {
+            filter: {
+              bool: {
+                must: [
+                  {
+                    terms: {
+                      target_type_sig: [
+                        "person_first_name",
+                        "person_last_name",
+                        "NULL",
+                      ],
                     },
-                    { terms: { org_sig: [applicationSignature, "NULL"] } },
-                  ],
-                },
-              },
-              aggs: {
-                names: {
-                  terms: {
-                    field: "utf_8_transcription",
-                    size: MAX_NAMES_COUNT,
                   },
-                },
+                  { terms: { org_sig: [applicationSignature, "NULL"] } },
+                ],
               },
             },
-            fullName: {
-              filter: {
-                bool: {
-                  must: [
-                    { term: { target_type_sig: "person_full_name" } },
-                    { terms: { org_sig: [applicationSignature, "NULL"] } },
-                  ],
-                },
-              },
-              aggs: {
-                names: {
-                  terms: {
-                    field: "utf_8_transcription",
-                  },
+            aggs: {
+              names: {
+                terms: {
+                  field: "utf_8_transcription",
+                  size: MAX_NAMES_COUNT,
                 },
               },
             },
           },
-        }),
-      }
-    )
+          fullName: {
+            filter: {
+              bool: {
+                must: [
+                  { term: { target_type_sig: "person_full_name" } },
+                  { terms: { org_sig: [applicationSignature, "NULL"] } },
+                ],
+              },
+            },
+            aggs: {
+              names: {
+                terms: {
+                  field: "utf_8_transcription",
+                },
+              },
+            },
+          },
+        },
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         // TODO: move to controller
