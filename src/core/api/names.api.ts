@@ -15,7 +15,7 @@ export default class NamesApi {
 
   searchNames(content: string, applicationSignature: string) {
     return fetch(
-      `${this.url}/recordings_new/_search?filter_path=aggregations`,
+      `${this.url}/_search?filter_path=aggregations`,
       {
         method: "POST",
         headers: this.headers,
