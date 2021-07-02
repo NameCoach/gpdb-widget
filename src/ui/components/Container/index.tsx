@@ -17,6 +17,7 @@ interface Props {
   lastName: Name;
   fullName: Name;
   verifyNames: () => PromiseLike<void>;
+  hideLogo?: boolean;
 }
 
 const cx = classNames.bind(styles);
@@ -71,7 +72,7 @@ const Container = (props: Props) => {
   return (
     <>
       <div className={cx("head-line")}>
-        <Logo />
+        {!props.hideLogo && <Logo />}
 
         <FullName pronunciations={pronunciations.fullName} reload={reloadName}>
           <span className={cx({ "name-word--secondary": !firstName.exist })}>
