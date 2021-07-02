@@ -10,6 +10,9 @@ import { UserResponse } from "gpdb-api-client";
 import ControllerContext from "../../contexts/controller";
 import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
+import classNames from "classnames/bind";
+
+const cx = classNames.bind(styles);
 
 interface Props {
   pronunciations: Pronunciation[];
@@ -69,14 +72,16 @@ const NameLine = (props: Props) => {
   }, [props.pronunciations]);
 
   return (
-    <div className={styles.pronunciation}>
-      <span className={styles.pronunciation__name}>{props.name}</span>
+    <div className={cx(styles.pronunciation, "pronunciation_container")}>
+      <span className={cx(styles.pronunciation__name, "pronunciation_name")}>
+        {props.name}
+      </span>
 
       {!currentPronunciation ? (
         <Loader />
       ) : (
         <>
-          <div className={styles.pronunciation__mid}>
+          <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
             <Select
               options={options}
               className={styles.pronunciation__control}
@@ -84,7 +89,7 @@ const NameLine = (props: Props) => {
             />
           </div>
 
-          <div className={styles.pronunciation__actions}>
+          <div className={cx(styles.pronunciation__actions, "pronunciation_actions")}>
             <Player
               className={styles.pronunciation__action}
               audioSrc={currentPronunciation.audioSrc}
