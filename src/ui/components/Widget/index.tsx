@@ -8,6 +8,10 @@ import classNames from "classnames/bind";
 import Close from "../Close";
 import Loader from "../Loader";
 
+export interface UIProps {
+  hideLogo?: boolean;
+}
+
 export interface ElemStyleProps {
   width?: number | string;
   height?: number | string;
@@ -22,7 +26,7 @@ interface MainProperties {
   onClose?: MouseEventHandler;
 }
 
-type Props = MainProperties & ElemStyleProps;
+type Props = MainProperties & ElemStyleProps & UIProps;
 
 const cx = classNames.bind(styles);
 
@@ -59,6 +63,7 @@ const Widget = (props: Props) => {
             lastName={names.lastName}
             fullName={names.fullName}
             verifyNames={verifyNames}
+            hideLogo={props.hideLogo}
           />
         </ControllerContext.Provider>
       )}
