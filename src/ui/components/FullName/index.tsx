@@ -11,14 +11,17 @@ import { NameTypes } from "../../../types/resources/name";
 
 interface Props {
   children: ReactNode;
+  name: string;
   pronunciations: Pronunciation[];
   reload: (type: NameTypes) => void;
+  onRecorderClick: (name: string, type: NameTypes) => void;
 }
 
 const FullName = (props: Props) => {
   const controller = useContext(ControllerContext);
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
 
+  const onRecord = () => props.onRecorderClick(props.name, NameTypes.FullName);
   const onUserResponse = async () => {
     const response =
       pronunciation?.userResponse?.response === UserResponse.Save
@@ -43,7 +46,10 @@ const FullName = (props: Props) => {
             audioSrc={pronunciation.audioSrc}
             className={nameLineStyles.pronunciation__action}
           />
-          <RecordAction className={nameLineStyles.pronunciation__action} />
+          <RecordAction
+            className={nameLineStyles.pronunciation__action}
+            onClick={onRecord}
+          />
           <UserResponseAction
             className={nameLineStyles.pronunciation__action}
             onClick={onUserResponse}
