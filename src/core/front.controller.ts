@@ -49,7 +49,7 @@ export default class FrontController implements IFrontController {
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
           if (
-            !result[NameTypes.FullName] &&
+            result[NameTypes.FullName].length === 0 &&
             pronunciation.target_type_sig === TargetTypeSig.FullName
           ) {
             const nameOwnerCreated =
@@ -68,6 +68,8 @@ export default class FrontController implements IFrontController {
 
       result[name.type] = pronunciations;
     });
+
+    console.log({result})
 
     try {
       await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);

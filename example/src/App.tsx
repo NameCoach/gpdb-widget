@@ -11,13 +11,13 @@ const App = () => {
   const [name, setName] = useState('Jon Snow');
 
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jon.snow@name-coach.com' }
+  const nameOwnerContext = { signature: 'jack@name-coach.com', email: 'jack@name-coach.com' }
   const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
 
   const client = loadClient(
     {
-      accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
+      accessKeyId: "WDtHDuULcObwYdva0E5ZfPfsNpRSQWxq",
+      secretAccessKey: "Jcdu4q4I4MGw2Jt8cctJ_E-aQAb1zKUHeKH6aWyRsJU"
     },
     applicationContext,
     nameOwnerContext,
