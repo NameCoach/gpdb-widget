@@ -74,7 +74,12 @@ const Container = (props: Props) => {
       <div className={cx("head-line")}>
         {!props.hideLogo && <Logo />}
 
-        <FullName pronunciations={pronunciations.fullName} reload={reloadName}>
+        <FullName
+          name={fullName.key}
+          pronunciations={pronunciations.fullName}
+          reload={reloadName}
+          onRecorderClick={openRecorder}
+        >
           <span className={cx({ "name-word--secondary": !firstName.exist })}>
             {`${firstName.key}, `}
           </span>
