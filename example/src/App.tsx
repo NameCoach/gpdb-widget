@@ -8,11 +8,11 @@ const style = {
 }
 
 const App = () => {
-  const [name, setName] = useState('Jon Snow');
+  const [name, setName] = useState('Sindura Ravichandran');
 
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jack@name-coach.com', email: 'jack@name-coach.com' }
-  const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+  const nameOwnerContext = { signature: 'sindura-ravichandran@nc-demo.com', email: 'sindura-ravichandran@nc-demo.com' }
+  const userContext = { email: 'jack@nc-demo.com', signature: 'jack@nc-demo.com' }
 
   const client = loadClient(
     {
@@ -44,7 +44,7 @@ const App = () => {
       />
     </div>
 
-    <Widget client={client} name={name} width={600} style={style} />
+    <Widget client={client} name={name} width={320} style={style} />
   </>
 }
 
