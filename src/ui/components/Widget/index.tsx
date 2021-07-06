@@ -7,6 +7,7 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Close from "../Close";
 import Loader from "../Loader";
+import { TermsAndConditions } from "../../hooks/useRecorderState";
 
 export interface UIProps {
   hideLogo?: boolean;
@@ -24,6 +25,7 @@ interface MainProperties {
   client: IFrontController;
   closable?: boolean;
   onClose?: MouseEventHandler;
+  termsAndConditions?: TermsAndConditions;
 }
 
 type Props = MainProperties & ElemStyleProps & UIProps;
@@ -64,6 +66,7 @@ const Widget = (props: Props) => {
             fullName={names.fullName}
             verifyNames={verifyNames}
             hideLogo={props.hideLogo}
+            termsAndConditions={props.termsAndConditions}
           />
         </ControllerContext.Provider>
       )}
