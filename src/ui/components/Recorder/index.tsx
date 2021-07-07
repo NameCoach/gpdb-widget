@@ -1,4 +1,10 @@
-import React, { useRef, useContext, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import RecordRTC from "recordrtc";
 import { blobToBase64String } from "blob-util";
 import RangeInput from "./RangeInput";
@@ -11,6 +17,7 @@ import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
+import { TermsAndConditions } from "../../hooks/useRecorderState";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -25,11 +32,17 @@ interface Props {
   name: string;
   type: NameTypes;
   onRecorderClose: () => void;
+  termsAndConditions?: TermsAndConditions;
 }
 
 const machineSpec = {
   initialState: STATES.INIT,
   transitions: [
+    {
+      name: "accept",
+      from: STATES.TERMS_AND_CONDITIONS,
+      to: STATES.INIT,
+    },
     {
       name: "start",
       from: [STATES.INIT, STATES.RECORDED],
@@ -43,6 +56,7 @@ const machineSpec = {
 };
 
 export const EVENTS = {
+  accept: "accept",
   start: "start",
   ready: "ready",
   stop: "stop",
@@ -50,7 +64,12 @@ export const EVENTS = {
   fail: "fail",
 };
 
-const Recorder = ({ onRecorderClose, name, type }: Props) => {
+const Recorder = ({
+  onRecorderClose,
+  name,
+  type,
+  termsAndConditions,
+}: Props) => {
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
   const [countdown, setCountdown] = useState<number>(COUNTDOWN);
@@ -67,6 +86,13 @@ const Recorder = ({ onRecorderClose, name, type }: Props) => {
   });
 
   currentStep.current = step;
+
+  if (termsAndConditions)
+    useEffect(() => {
+      termsAndConditions.isAccepted().then((isAccepted) => {
+        isAccepted || setStep(STATES.TERMS_AND_CONDITIONS);
+      });
+    }, [termsAndConditions.isAccepted]);
 
   const sendEvent = useCallback(
     (event) => {
@@ -126,6 +152,11 @@ const Recorder = ({ onRecorderClose, name, type }: Props) => {
     delayTimer();
   };
 
+  const onAccept = async (): Promise<void> => {
+    sendEvent(EVENTS.accept);
+    termsAndConditions.onAccept();
+  };
+
   const onStart = async () => {
     setCountdown(COUNTDOWN);
     setTimer(TIMER);
@@ -174,6 +205,8 @@ const Recorder = ({ onRecorderClose, name, type }: Props) => {
       )}
       {step === STATES.SAVED && <Loader inline />}
       <div className={styles.recorder__body}>
+        {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
+
         {step === STATES.INIT &&
           "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."}
 
@@ -203,6 +236,13 @@ const Recorder = ({ onRecorderClose, name, type }: Props) => {
         )}
       </div>
       <div className={styles.recorder__actions}>
+        {step === STATES.TERMS_AND_CONDITIONS && (
+          <>
+            <button onClick={onRecorderClose}>BACK</button>
+            <button onClick={onAccept}>ACCEPT</button>
+          </>
+        )}
+
         {step === STATES.INIT && (
           <>
             <button onClick={onRecorderClose}>BACK</button>
