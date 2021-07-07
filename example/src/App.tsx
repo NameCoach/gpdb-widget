@@ -5,7 +5,16 @@ import { useDebouncedCallback } from 'use-debounce'
 
 const style = {
   margin: '50px auto 0 auto',
-}
+};
+
+let termsAndConditionsKey = "AddInTermsAndConditionsAcceptance";
+const termsAndConditions = {
+  component: <div>
+    By continuing to record I accept the <a href={'#'}>terms of use</a>, and am opting in to recording my name. Click here for <a href={'#'}>more info</a>.
+  </div>,
+  isAccepted: async () => localStorage.getItem(termsAndConditionsKey) === 'yes',
+  onAccept: async () => localStorage.setItem(termsAndConditionsKey, 'yes')
+};
 
 const App = () => {
   const [name, setName] = useState('Jon Snow');
@@ -21,7 +30,7 @@ const App = () => {
     applicationContext,
     nameOwnerContext,
     userContext
-  )
+  );
 
   const debounced = useDebouncedCallback(
     (value) => {
@@ -43,7 +52,7 @@ const App = () => {
       />
     </div>
 
-    <Widget client={client} name={name} width={500} style={style} />
+    <Widget client={client} name={name} width={500} style={style} termsAndConditions={termsAndConditions} />
   </>
 }
 
