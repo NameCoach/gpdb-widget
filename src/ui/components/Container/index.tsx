@@ -9,7 +9,7 @@ import Logo from "../Logo";
 import NameLine from "../NameLine";
 import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
-import useRecorderState from "../../hooks/useRecorderState";
+import useRecorderState, { TermsAndConditions } from "../../hooks/useRecorderState";
 import AbsentName from "../AbsentName";
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
   fullName: Name;
   verifyNames: () => PromiseLike<void>;
   hideLogo?: boolean;
+  termsAndConditions?: TermsAndConditions;
 }
 
 const cx = classNames.bind(styles);
@@ -52,7 +53,8 @@ const Container = (props: Props) => {
     else return await props.verifyNames();
   };
 
-  const openRecorder = (name, type) => setRecorderOpen(true, name, type);
+  const openRecorder = (name, type) =>
+    setRecorderOpen(true, name, type, props.termsAndConditions);
 
   useEffect(() => {
     const complexSearch = async () => {
@@ -100,6 +102,7 @@ const Container = (props: Props) => {
           name={recorderState.name}
           type={recorderState.type}
           onRecorderClose={setRecorderClosed}
+          termsAndConditions={recorderState.termsAndConditions}
         />
       )}
 
