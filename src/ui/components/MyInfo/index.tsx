@@ -65,7 +65,9 @@ const MyInfo = (props: Props) => {
   return (
     <ControllerContext.Provider value={client}>
       <div className={cx(styles.container)}>
-        <FullNamesList names={props.names} onSelect={props.onSelect} />
+        {props.names.length !== 0 && (
+          <FullNamesList names={props.names} onSelect={props.onSelect} />
+        )}
 
         <div className={cx(styles.row)}>
           <span className={cx(styles.title)}>My info</span>
