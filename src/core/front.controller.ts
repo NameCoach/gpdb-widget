@@ -19,8 +19,8 @@ import NameTypesFactory from "../types/name-types-factory";
 export default class FrontController implements IFrontController {
   constructor(
     private readonly apiClient: GpdbClient,
-    private readonly nameOwnerContext: NameOwner,
-    private readonly userContext: User,
+    public nameOwnerContext: NameOwner,
+    public userContext: User,
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
@@ -69,8 +69,6 @@ export default class FrontController implements IFrontController {
       result[name.type] = pronunciations;
     });
 
-    console.log({result})
-
     try {
       await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
     } catch (e) {
@@ -80,13 +78,19 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  async simpleSearch(name: Name, meta?: Meta) {
+  async simpleSearch(
+    name: Omit<Name, "exist">,
+    nameOwner?: NameOwner,
+    meta?: Meta
+  ) {
+    const owner = nameOwner || this.nameOwnerContext;
     const {
       target_result: { pronunciations },
     }: any = await this.apiClient.pronunciations.simpleSearch({
       target: name.key,
-      targetOwnerSig: this.nameOwnerContext.signature,
+      targetOwnerSig: owner.signature,
       targetTypeSig: NameTypesFactory[name.type],
+      target_owner_email: owner?.email,
     });
 
     return pronunciations.map(pronunciationMap);
