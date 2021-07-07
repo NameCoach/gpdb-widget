@@ -10,6 +10,7 @@ interface Props {
   onChange: (Option) => void;
   options: Option[];
   className?: string;
+  styles?: object;
 }
 
 const theme = (theme) => ({
@@ -22,12 +23,13 @@ const theme = (theme) => ({
   },
 });
 
-const customStyles = {
+const customStyles = (controlStyles = {}) => ({
   control: (provided, state) => ({
     ...provided,
     minHeight: "30px",
     height: "30px",
-    boxShadow: state.isFocused ? null : null,
+    boxShadow: null,
+    ...controlStyles,
   }),
   valueContainer: (provided, state) => ({
     ...provided,
@@ -50,7 +52,7 @@ const customStyles = {
     ...provided,
     color: "black",
   }),
-};
+});
 
 const SelectComponent = (props: Props) => {
   const initValue = useMemo(() => props.options[0], props.options);
@@ -64,7 +66,7 @@ const SelectComponent = (props: Props) => {
       isClearable={false}
       isSearchable={false}
       theme={theme}
-      styles={customStyles}
+      styles={customStyles(props.styles)}
     />
   );
 };
