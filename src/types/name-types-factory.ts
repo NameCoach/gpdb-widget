@@ -4,5 +4,5 @@ import { TargetTypeSig } from "gpdb-api-client";
 export default {
   [NameTypes.FirstName]: TargetTypeSig.FirstName,
   [NameTypes.LastName]: TargetTypeSig.LastName,
-  [NameTypes.FullName]: TargetTypeSig.FirstName,
+  [NameTypes.FullName]: TargetTypeSig.FullName,
 };
