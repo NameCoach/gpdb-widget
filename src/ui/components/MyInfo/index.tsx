@@ -12,12 +12,15 @@ import { NameTypes } from "../../../types/resources/name";
 import Loader from "../Loader";
 import Player from "../Player";
 import RecordAction from "../Actions/Record";
-import useRecorderState from "../../hooks/useRecorderState";
+import useRecorderState, {
+  TermsAndConditions,
+} from "../../hooks/useRecorderState";
 import Recorder from "../Recorder";
 
 interface Props extends ListProps {
   client: IFrontController;
   name: Omit<NameOption, "key">;
+  termsAndConditions?: TermsAndConditions;
 }
 
 const cx = classNames.bind(styles);
@@ -34,7 +37,12 @@ const MyInfo = (props: Props) => {
   ] = useRecorderState();
 
   const onRecorderOpen = () =>
-    setRecorderOpen(true, props.name.value, NameTypes.FullName);
+    setRecorderOpen(
+      true,
+      props.name.value,
+      NameTypes.FullName,
+      props.termsAndConditions
+    );
 
   useEffect(() => {
     const load = async () => {
@@ -81,6 +89,7 @@ const MyInfo = (props: Props) => {
             name={props.name.value}
             type={NameTypes.FullName}
             onRecorderClose={setRecorderClosed}
+            termsAndConditions={props.termsAndConditions}
           />
         )}
       </div>
