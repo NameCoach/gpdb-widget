@@ -1,17 +1,26 @@
 import Name, { NameTypes } from "./resources/name";
 import Pronunciation from "./resources/pronunciation";
-import { UserResponse } from "gpdb-api-client";
+import { NameOwner, User, UserResponse } from "gpdb-api-client";
 
 export interface Meta {
   uri?: string;
 }
 
+export interface PublicAttributes {
+  nameOwnerContext: NameOwner;
+  userContext: User;
+}
+
 export interface GpdbRequests {
   complexSearch: (
-    names: Array<Name>,
+    names: Array<Omit<Name, "exist">>,
     meta?: Meta
   ) => PromiseLike<{ [t in NameTypes]: Pronunciation[] }>;
-  simpleSearch: (name: Name, meta?: Meta) => PromiseLike<Pronunciation[]>;
+  simpleSearch: (
+    name: Omit<Name, "exist">,
+    nameOwner?: NameOwner,
+    meta?: Meta
+  ) => PromiseLike<Pronunciation[]>;
   createUserResponse: (id: string, type: UserResponse) => PromiseLike<void>;
   createRecording: (
     name: string,
@@ -39,7 +48,8 @@ export interface SettingsRequests {
   loadAudioSampleRate: () => PromiseLike<number>;
 }
 
-type IFrontController = GpdbRequests &
+type IFrontController = PublicAttributes &
+  GpdbRequests &
   NamesServiceRequests &
   AnalyticsRequests &
   Partial<SettingsRequests>;
