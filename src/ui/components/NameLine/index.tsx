@@ -89,7 +89,12 @@ const NameLine = (props: Props) => {
             />
           </div>
 
-          <div className={cx(styles.pronunciation__actions, "pronunciation_actions")}>
+          <div
+            className={cx(
+              styles.pronunciation__actions,
+              "pronunciation_actions"
+            )}
+          >
             <Player
               className={styles.pronunciation__action}
               audioSrc={currentPronunciation.audioSrc}
