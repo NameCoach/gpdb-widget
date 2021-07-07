@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NameTypes } from "../../types/resources/name";
 
 export type TermsAndConditions = {
-  component: JSX.Element,
+  component: JSX.Element;
   isAccepted(): Promise<boolean>;
   onAccept(): Promise<void>;
 };
