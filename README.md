@@ -32,8 +32,19 @@ const Example = () => {
     nameOwnerContext,
     userContext
   )
+  let isAccepted: boolean = false;
+  const termsAndConditions = {
+    url: "http://localhost:3000",
+    linkText: "terms and conditions",
+    description: "I accept the terms and conditions / opt-in to recording my name",
+    isAccepted: async () => isAccepted,
+    onAccept: async () => {
+      isAccepted = true;
+      console.log('Terms and conditions were accepted')
+    }
+  };
 
-  return <Widget client={client} name="Jon Snow" width={300} />
+  return <Widget client={client} name="Jon Snow" width={300} termsAndConditions={termsAndConditions} />
 }
 ```
 
@@ -47,7 +58,7 @@ const Example = () => {
 ```bash
   yarn watch
 ```
-2. Run [example](/example/src/App.tsx) app to use it in time:
+1. Run [example](/example/src/App.tsx) app to use it in time:
 ```bash
   cd example && yarn install && yarn start
 ```
