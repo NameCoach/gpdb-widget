@@ -8,16 +8,15 @@ const style = {
 }
 
 const App = () => {
-  const [name, setName] = useState('Sindura Ravichandran');
+  const [name, setName] = useState('Jon Snow');
 
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'sindura-ravichandran@nc-demo.com', email: 'sindura-ravichandran@nc-demo.com' }
-  const userContext = { email: 'jack@nc-demo.com', signature: 'jack@nc-demo.com' }
-
+  const nameOwnerContext = { signature: 'jack@name-coach.com', email: 'jack@name-coach.com' }
+  const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
   const client = loadClient(
     {
-      accessKeyId: "WDtHDuULcObwYdva0E5ZfPfsNpRSQWxq",
-      secretAccessKey: "Jcdu4q4I4MGw2Jt8cctJ_E-aQAb1zKUHeKH6aWyRsJU"
+      accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
+      secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
     },
     applicationContext,
     nameOwnerContext,
@@ -44,7 +43,7 @@ const App = () => {
       />
     </div>
 
-    <Widget client={client} name={name} width={320} style={style} />
+    <Widget client={client} name={name} width={500} style={style} />
   </>
 }
 
