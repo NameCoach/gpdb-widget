@@ -31,11 +31,11 @@ type Props = MainProperties & ElemStyleProps & UIProps;
 const cx = classNames.bind(styles);
 
 const Widget = (props: Props) => {
+  if (!props.name.trim()) throw new Error("Name shouldn't be blank");
+
   const controllerContextValue = useMemo(() => props.client, [props.client]);
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>();
   const [loading, setLoading] = useState<boolean>(true);
-
-  if (!props.name.trim()) throw new Error("NameLine shouldn't be blank");
 
   const verifyNames = async () => {
     setLoading(true);
