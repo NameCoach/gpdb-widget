@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  flex: 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.control {
+  flex: 0 0 80%;
+  margin-right: 2%;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 15px;
+}
