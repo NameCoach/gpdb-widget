@@ -32,19 +32,8 @@ const Example = () => {
     nameOwnerContext,
     userContext
   )
-  let isAccepted: boolean = false;
-  const termsAndConditions = {
-    url: "http://localhost:3000",
-    linkText: "terms and conditions",
-    description: "I accept the terms and conditions / opt-in to recording my name",
-    isAccepted: async () => isAccepted,
-    onAccept: async () => {
-      isAccepted = true;
-      console.log('Terms and conditions were accepted')
-    }
-  };
 
-  return <Widget client={client} name="Jon Snow" width={300} termsAndConditions={termsAndConditions} />
+  return <Widget client={client} name="Jon Snow" width={300} />
 }
 ```
 
