@@ -25,7 +25,8 @@ export interface GpdbRequests {
   createRecording: (
     name: string,
     type: NameTypes,
-    audio: string
+    audio: string,
+    owner?: NameOwner
   ) => PromiseLike<void>;
   requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
 }
