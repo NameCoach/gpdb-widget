@@ -18,6 +18,7 @@ import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
+import { NameOwner } from "gpdb-api-client";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -31,6 +32,7 @@ const MIN_SAMPLE_RATE = 22050;
 interface Props {
   name: string;
   type: NameTypes;
+  owner?: NameOwner;
   onRecorderClose: () => void;
   termsAndConditions?: TermsAndConditions;
 }
@@ -67,6 +69,7 @@ export const EVENTS = {
 const Recorder = ({
   onRecorderClose,
   name,
+  owner,
   type,
   termsAndConditions,
 }: Props) => {
@@ -186,7 +189,7 @@ const Recorder = ({
     sendEvent(EVENTS.save);
     const str = await blobToBase64String(blob);
 
-    await controller.createRecording(name, type, str);
+    await controller.createRecording(name, type, str, owner);
 
     setTimeout(onRecorderClose, ONE_SECOND * 2);
   };
