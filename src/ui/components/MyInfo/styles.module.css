@@ -7,13 +7,17 @@
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.m_20 {
   margin: 20px 0;
 }
 
 .title {
   font-weight: bold;
-  line-height: 10px;
+  line-height: 16px;
   font-size: 18px;
 }
 
