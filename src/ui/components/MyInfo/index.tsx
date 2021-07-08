@@ -93,6 +93,7 @@ const MyInfo = (props: Props) => {
           <Recorder
             name={props.name.value}
             type={NameTypes.FullName}
+            owner={props.name.owner}
             onRecorderClose={setRecorderClosed}
             termsAndConditions={props.termsAndConditions}
           />
