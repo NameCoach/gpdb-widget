@@ -6,6 +6,9 @@ import MyInfo from "./ui/components/MyInfo";
 import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
 
+// TYPES
+import type IFrontController from "./types/front-controller";
+
 // CONTEXTS
 import ControllerContext from "./ui/contexts/controller";
 
@@ -22,4 +25,5 @@ export {
   Loader,
   FullNamesList,
   ControllerContext,
+  IFrontController,
 };
