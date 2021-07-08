@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { Widget, loadClient } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
+import MyInfoSection from './examples/MyInfoSection'
 
 const style = {
   margin: '50px auto 0 auto',
@@ -31,8 +32,7 @@ const App = () => {
     600
   );
 
-  return <>
-    <div style={{ margin: "50px auto 0 auto", width: "400px" }}>
+  return <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
       Name:
       <input
         defaultValue={name}
@@ -41,10 +41,13 @@ const App = () => {
         required
         style={{ width: "80%", marginLeft: "20px" }}
       />
-    </div>
 
-    <Widget client={client} name={name} width={500} style={style} />
-  </>
+      <Widget client={client} name={name} style={style} />
+
+      <hr className='divider'/>
+
+      <MyInfoSection client={client} />
+    </div>
 }
 
 export default App
