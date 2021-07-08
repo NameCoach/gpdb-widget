@@ -96,13 +96,20 @@ export default class FrontController implements IFrontController {
     return pronunciations.map(pronunciationMap);
   }
 
-  createRecording(name: string, type: NameTypes, audio: string) {
+  createRecording(
+    name: string,
+    type: NameTypes,
+    audio: string,
+    nameOwner?: NameOwner
+  ) {
+    const owner = nameOwner || this.nameOwnerContext;
+
     return this.apiClient.pronunciations.createRecording({
       target: name,
       targetTypeSig: NameTypesFactory[type],
       audioBase64: audio,
       userContext: this.userContext,
-      nameOwnerContext: this.nameOwnerContext,
+      nameOwnerContext: owner,
     });
   }
 

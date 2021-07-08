@@ -6,7 +6,7 @@ interface Props {
 }
 
 const MyInfoSection = (props: Props) => {
-  const me = { value: 'Jack Green', owner: { signature: 'jack@name-coach.com', email: 'jack@name-coach.com' } }
+  const me = { value: 'Jack Green', owner: { signature: 'jack@nc-demo.com', email: 'jack@nc-demo.com' } }
   const names = [{ key: 'jack', ...me }]
 
   return (<MyInfo client={props.client} name={me} names={names} />)
