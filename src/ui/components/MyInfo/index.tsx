@@ -4,7 +4,7 @@ import FullNamesList, {
   NameOption,
   Props as ListProps,
 } from "../FullNamesList";
-import { ControllerContext } from "../../../index";
+import ControllerContext from "../../contexts/controller";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Pronunciation from "../../../types/resources/pronunciation";
