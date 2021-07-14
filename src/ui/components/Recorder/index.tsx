@@ -34,6 +34,7 @@ interface Props {
   type: NameTypes;
   owner?: NameOwner;
   onRecorderClose: () => void;
+  onSaved: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
 }
 
@@ -72,6 +73,7 @@ const Recorder = ({
   owner,
   type,
   termsAndConditions,
+  onSaved,
 }: Props) => {
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
@@ -191,6 +193,7 @@ const Recorder = ({
 
     await controller.createRecording(name, type, str, owner);
 
+    if (onSaved) onSaved(blob);
     setTimeout(onRecorderClose, ONE_SECOND * 2);
   };
 
