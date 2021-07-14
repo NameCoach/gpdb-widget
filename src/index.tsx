@@ -5,6 +5,8 @@ import Widget from "./ui/components/Widget";
 import MyInfo from "./ui/components/MyInfo";
 import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
+import Recorder from "./ui/components/Recorder";
+import Player from "./ui/components/Player";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -20,6 +22,8 @@ import { Configuration } from "gpdb-api-client";
 export {
   Widget,
   MyInfo,
+  Recorder,
+  Player,
   loadClient,
   Configuration,
   Loader,
