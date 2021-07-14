@@ -34,7 +34,7 @@ interface Props {
   type: NameTypes;
   owner?: NameOwner;
   onRecorderClose: () => void;
-  onSaved: (blob?: Blob) => void;
+  onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
 }
 
