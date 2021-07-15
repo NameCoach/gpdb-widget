@@ -91,6 +91,7 @@ export default class FrontController implements IFrontController {
       targetOwnerSig: owner.signature,
       targetTypeSig: NameTypesFactory[name.type],
       target_owner_email: owner?.email,
+      user_sig: this.userContext.signature
     });
 
     return pronunciations.map(pronunciationMap);
