@@ -20,7 +20,7 @@ import { Widget, loadClient } from 'gpdb-widget'
 
 const Example = () => {
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jon.snow@name-coach.com' }
+  const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com'  }
   const userContext = { signature: 'jon.snow@name-coach.com' }
 
   const client = loadClient(
