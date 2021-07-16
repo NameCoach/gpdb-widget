@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { Widget, loadClient } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
-import MyInfoSection from './examples/MyInfoSection'
+// import MyInfoSection from './examples/MyInfoSection'
 
 const style = {
   margin: '50px auto 0 auto',
@@ -12,7 +12,7 @@ const App = () => {
   const [name, setName] = useState('Jon Snow');
 
   const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jack@name-coach.com', email: 'jack@name-coach.com' }
+  const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
   const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
   const client = loadClient(
     {
@@ -44,9 +44,9 @@ const App = () => {
 
       <Widget client={client} name={name} style={style} />
 
-      <hr className='divider'/>
+      {/*<hr className='divider'/>*/}
 
-      <MyInfoSection client={client} />
+      {/*<MyInfoSection client={client} />*/}
     </div>
 }
 
