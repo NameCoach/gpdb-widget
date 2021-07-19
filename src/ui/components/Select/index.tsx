@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import Select from "react-select";
 import { BRAND_COLOR, SECONDARY_COLOR } from "../../../constants";
 
-interface Option {
+export interface Option {
   value: string | number;
   label: string;
 }
@@ -11,6 +11,7 @@ interface Props {
   options: Option[];
   className?: string;
   styles?: object;
+  value?: Option;
 }
 
 const theme = (theme) => ({
@@ -60,6 +61,7 @@ const SelectComponent = (props: Props) => {
   return (
     <Select
       defaultValue={initValue}
+      value={props.value}
       options={props.options}
       className={props.className}
       onChange={props.onChange}
