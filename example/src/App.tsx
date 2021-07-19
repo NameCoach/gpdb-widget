@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { Widget, loadClient } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
-// import MyInfoSection from './examples/MyInfoSection'
+import MyInfoSection from './examples/MyInfoSection'
 
 const style = {
   margin: '50px auto 0 auto',
@@ -44,9 +44,9 @@ const App = () => {
 
       <Widget client={client} name={name} style={style} />
 
-      {/*<hr className='divider'/>*/}
+      <hr className='divider'/>
 
-      {/*<MyInfoSection client={client} />*/}
+      <MyInfoSection client={client} />
     </div>
 }
 
