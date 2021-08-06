@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import IFrontController from "../../../types/front-controller";
-import FullNamesList, { NameOption, Props as ListProps, } from "../FullNamesList";
+import { NameOption, Props as ListProps } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
@@ -9,15 +9,17 @@ import { NameTypes } from "../../../types/resources/name";
 import Loader from "../Loader";
 import Player from "../Player";
 import RecordAction from "../Actions/Record";
-import useRecorderState, { TermsAndConditions, } from "../../hooks/useRecorderState";
+import useRecorderState, {
+  TermsAndConditions,
+} from "../../hooks/useRecorderState";
 import Recorder from "../Recorder";
-import { PermissionsManager } from "gpdb-api-client";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
+import FullNamesContainer from "../FullNamesContainer";
 
-interface Props extends ListProps {
+interface Props {
   client: IFrontController;
-  manager: PermissionsManager;
   name: Omit<NameOption, "key">;
+  names: NameOption[];
   termsAndConditions?: TermsAndConditions;
 }
 
@@ -31,7 +33,6 @@ const cx = classNames.bind(styles);
 const MyInfo = (props: Props) => {
   if (!props.name.value.trim()) throw new Error("Name shouldn't be blank");
 
-  const manager = useMemo(() => props.manager, [props.manager]);
   const client = useMemo(() => props.client, [props.client]);
   const [pronunciation, setPronunciation] = useState<Pronunciation>();
   const [loading, setLoading] = useState(true);
@@ -41,22 +42,22 @@ const MyInfo = (props: Props) => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const can = (permission) =>
-    manager && manager.can(Resources.Pronunciation, permission);
-
-  const canUserResponse = () =>
-    manager && manager.can(Resources.UserResponse, "create");
-
-  const canUserRequest = () =>
-    manager && manager.can(Resources.RecordingRequest, "create");
+  const canPronunciation = (permission) =>
+    client.permissions.can(Resources.Pronunciation, permission);
 
   const blockPermissions = useMemo(
     () => ({
-      [Blocks.Pronunciations]: can("search"),
-      [Blocks.MyInfo]: can("search") && can("create"),
-      [Blocks.Invalid]: !(can("search") || can("create")),
+      [Blocks.Pronunciations]:
+        canPronunciation("index") ||
+        (canPronunciation("index") && canPronunciation("search")),
+      [Blocks.MyInfo]: canPronunciation("index") && canPronunciation("create"),
+      [Blocks.Invalid]: !(
+        canPronunciation("index") ||
+        canPronunciation("search") ||
+        canPronunciation("create")
+      ),
     }),
-    [manager]
+    [client.permissions]
   );
 
   const onRecorderOpen = () =>
@@ -69,7 +70,7 @@ const MyInfo = (props: Props) => {
 
   useEffect(() => {
     const load = async () => {
-      if (!can("search")) return;
+      if (!canPronunciation("index")) return;
 
       setLoading(true);
       const { fullName } = await client.complexSearch(
@@ -87,51 +88,49 @@ const MyInfo = (props: Props) => {
     };
 
     load();
-  }, [props.name, manager]);
+  }, [props.name, client]);
 
   const renderContainer = () => (
     <div className={cx(styles.container)}>
       {props.names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
         <>
           <div className={cx(styles.title, styles.m_20)}>Pronunciations</div>
-          <FullNamesList
+          <FullNamesContainer
             names={props.names}
-            onSelect={props.onSelect}
-            showLib={can("search")}
-            canCreate={can("create")}
-            canUserResponse={canUserResponse()}
-            canUserRequest={canUserRequest()}
+            termsAndConditions={props.termsAndConditions}
           />
         </>
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
-        <div className={cx(styles.row)}>
-          <span className={cx(styles.title)}>My info</span>
+        <>
+          <div className={cx(styles.row)}>
+            <span className={cx(styles.title)}>My info</span>
 
-          <div className={cx(styles.actions)}>
-            {loading && <Loader />}
-            {!loading && pronunciation && (
-              <Player audioSrc={pronunciation.audioSrc} />
-            )}
-            {!loading && (
-              <RecordAction
-                active={recorderState.isOpen}
-                onClick={onRecorderOpen}
-              />
-            )}
+            <div className={cx(styles.actions)}>
+              {loading && <Loader />}
+              {!loading && pronunciation && (
+                <Player audioSrc={pronunciation.audioSrc} />
+              )}
+              {!loading && (
+                <RecordAction
+                  active={recorderState.isOpen}
+                  onClick={onRecorderOpen}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
 
-      {recorderState.isOpen && (
-        <Recorder
-          name={props.name.value}
-          type={NameTypes.FullName}
-          owner={props.name.owner}
-          onRecorderClose={setRecorderClosed}
-          termsAndConditions={props.termsAndConditions}
-        />
+          {recorderState.isOpen && (
+            <Recorder
+              name={props.name.value}
+              type={NameTypes.FullName}
+              owner={props.name.owner}
+              onRecorderClose={setRecorderClosed}
+              termsAndConditions={props.termsAndConditions}
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -145,9 +144,7 @@ const MyInfo = (props: Props) => {
 
   return (
     <ControllerContext.Provider value={client}>
-      {manager && blockPermissions[Blocks.Invalid]
-        ? renderError()
-        : renderContainer()}
+      {blockPermissions[Blocks.Invalid] ? renderError() : renderContainer()}
     </ControllerContext.Provider>
   );
 };
