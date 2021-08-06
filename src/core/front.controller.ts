@@ -7,24 +7,31 @@ import {
   User,
   Target,
   TargetTypeSig,
+  PermissionsManager,
 } from "gpdb-api-client";
 import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
+import NameParser from "./name-parser";
 
 // TODO: provide error handling and nullable responses
 
 export default class FrontController implements IFrontController {
+  public permissions: PermissionsManager;
+
   constructor(
     private readonly apiClient: GpdbClient,
     public nameOwnerContext: NameOwner,
     public userContext: User,
-    private readonly namesApi: NamesApi = new NamesApi()
+    private readonly namesApi: NamesApi = new NamesApi(),
+    private readonly nameParser: NameParser = new NameParser()
   ) {}
 
-  async complexSearch(names: Array<Name>, meta?: Meta) {
+  async complexSearch(names: Array<Name>, nameOwner?: NameOwner, meta?: Meta) {
+    const owner = nameOwner || this.nameOwnerContext;
+
     const result: { [t in NameTypes]: Pronunciation[] } = {
       [NameTypes.FirstName]: [],
       [NameTypes.LastName]: [],
@@ -34,7 +41,7 @@ export default class FrontController implements IFrontController {
     const targets: Target[] = names.map((name) => ({
       target: name.key,
       targetTypeSig: NameTypesFactory[name.type],
-      targetOwnerContext: this.nameOwnerContext,
+      targetOwnerContext: owner,
     }));
 
     const response: any = await this.apiClient.pronunciations.complexSearch({
@@ -48,14 +55,14 @@ export default class FrontController implements IFrontController {
       );
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
+          if (result[NameTypes.FullName].length > 0) return;
           if (
             result[NameTypes.FullName].length === 0 &&
             pronunciation.target_type_sig === TargetTypeSig.FullName
           ) {
             const nameOwnerCreated =
               pronunciation.audio_source === AudioSource.NameOwner &&
-              pronunciation.name_owner_signature ===
-                this.nameOwnerContext.signature;
+              pronunciation.name_owner_signature === owner.signature;
 
             result[NameTypes.FullName] = [
               pronunciationMap({ ...pronunciation, nameOwnerCreated }),
@@ -65,6 +72,7 @@ export default class FrontController implements IFrontController {
           return pronunciationMap(pronunciation);
         })
         .filter(Boolean);
+      if (result[NameTypes.FullName].length > 0) return;
 
       result[name.type] = pronunciations;
     });
@@ -91,7 +99,7 @@ export default class FrontController implements IFrontController {
       targetOwnerSig: owner.signature,
       targetTypeSig: NameTypesFactory[name.type],
       target_owner_email: owner?.email,
-      user_sig: this.userContext.signature
+      user_sig: this.userContext.signature,
     });
 
     return pronunciations.map(pronunciationMap);
@@ -158,15 +166,13 @@ export default class FrontController implements IFrontController {
       this.apiClient.application.instanceSig
     );
     const { allNames, fullName } = foundNames;
+    const { firstName, lastName } = this.nameParser.parse(name);
     const parsedName = name.split(" ");
 
     const isNamePartExist = (n) =>
       !!allNames.find((foundName) =>
         new RegExp(`\\b${foundName}\\b`, "i").test(n)
       );
-
-    const firstName = parsedName.slice(0, -1).join(" ").trim();
-    const lastName = parsedName[parsedName.length - 1];
 
     const result = {
       [NameTypes.FirstName]: {
@@ -187,5 +193,11 @@ export default class FrontController implements IFrontController {
     };
 
     return result;
+  }
+
+  async loadPermissions() {
+    this.permissions = await this.apiClient.permissions.load();
+
+    return Promise.resolve();
   }
 }
