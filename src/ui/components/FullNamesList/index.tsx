@@ -4,10 +4,12 @@ import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
 import Loader from "../Loader";
 import ControllerContext from "../../contexts/controller";
-import { NameTypes } from "../../../types/resources/name";
+import Name, { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
+import NameLine from "../NameLine";
+import AbsentName from "../AbsentName";
 
 export interface NameOption {
   key: string;
@@ -18,9 +20,13 @@ export interface NameOption {
 export interface Props {
   names: NameOption[];
   onSelect?: (NameOption) => void;
+  showLib?: boolean;
+  canUserResponse?: boolean;
+  canUserRequest?: boolean;
+  canCreate?: boolean;
 }
 
-type PronunciationsMap = Record<string, Pronunciation[]>;
+type PronunciationsMap = Record<NameTypes, Pronunciation[] | Pronunciation>;
 
 const cx = classNames.bind(styles);
 const selectStyles = { fontWeight: "bold" };
@@ -34,30 +40,44 @@ const FullNamesList = (props: Props) => {
   const controller = useContext(ControllerContext);
   const [autoplay, setAutoplay] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [cache, setCache] = useState<PronunciationsMap>({});
+  const [cache, setCache] = useState<PronunciationsMap>();
   const [current, setCurrent] = useState<Pronunciation | null>();
   const [selectValue, setValue] = useState<Option>();
+  const [nameParts, setNameParts] = useState<Record<string, Name[]>>();
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
   const load = async (name: NameOption) => {
+    if (!props.showLib) return;
+
     setLoading(true);
 
-    const owner = props.names.find((n) => n.key === name.key).owner;
-    const pronunciations =
-      cache[name.key] ||
-      (await controller.simpleSearch(
-        {
-          key: name.value,
-          type: NameTypes.FullName,
-        },
-        owner
-      ));
+    if (cache && cache[name.key]) {
+      setCurrent(cache[name.key].fullName);
+    } else {
+      const names = await controller.verifyNames(name.value);
 
-    if (pronunciations.length === 0) setCurrent(null);
-    else {
-      setCurrent(pronunciations[0]);
-      setCache((m) => ({ ...m, [name.key]: Array(pronunciations[0]) }));
+      setNameParts((m) => ({ ...m, [name.key]: Object.values(names) }));
+
+      const owner = props.names.find((n) => n.key === name.key).owner;
+
+      const { fullName, lastName, firstName } = await controller.complexSearch(
+        Object.values(names),
+        owner
+      );
+
+      const fullNamePronunciation = fullName[0] ? fullName[0] : null;
+
+      setCurrent(fullNamePronunciation);
+
+      setCache((m) => ({
+        ...m,
+        [name.key]: {
+          fullName: fullNamePronunciation,
+          lastName: lastName,
+          firstName: firstName,
+        },
+      }));
     }
 
     setLoading(false);
@@ -78,29 +98,64 @@ const FullNamesList = (props: Props) => {
     setAutoplay(false);
     setValue(nameToOption(props.names[0]));
     load(props.names[0]);
-  }, [props.names]);
+  }, [props.names, props.showLib]);
 
   return (
-    <div className={cx(styles.wrapper)}>
-      <Select
-        className={cx(styles.control)}
-        onChange={onChange}
-        options={options}
-        value={selectValue}
-        styles={selectStyles}
-      />
-      {loading && (
-        <div>
-          <Loader />
-        </div>
-      )}
-      {!loading && current === null && (
-        <span className={cx(styles.hint)}>not available</span>
-      )}
-      {!loading && current !== null && (
-        <Player audioSrc={current.audioSrc} autoplay={autoplay} />
-      )}
-    </div>
+    <>
+      <div className={cx(styles.wrapper)}>
+        {selectValue && (
+          <Select
+            className={cx(styles.control)}
+            onChange={onChange}
+            options={options}
+            value={selectValue}
+            styles={selectStyles}
+          />
+        )}
+        {loading && (
+          <div>
+            <Loader />
+          </div>
+        )}
+        {!loading && current === null && (
+          <span className={cx(styles.hint)}>not available</span>
+        )}
+        {!loading && current !== null && (
+          <Player audioSrc={current.audioSrc} autoplay={autoplay} />
+        )}
+      </div>
+      {props.showLib &&
+        selectValue &&
+        cache &&
+        cache[selectValue.value] &&
+        !cache[selectValue.value].fullName && (
+          <>
+            <div className={cx(styles.title, styles.m_20)}>
+              Pronunciations from Library
+            </div>
+            {nameParts[selectValue.value]
+              .filter((n) => n.type !== NameTypes.FullName)
+              .map((n, index) => (
+                <React.Fragment key={`${n}-${index}`}>
+                  <hr className={styles.divider} />
+                  {cache[selectValue.value][n.type].length > 0 ? (
+                    <NameLine
+                      pronunciations={cache[selectValue.value][n.type]}
+                      name={n.key}
+                      type={n.type}
+                      reload={null}
+                      onRecorderClick={null}
+                    />
+                  ) : (
+                    <AbsentName name={n.key} type={n.type} />
+                  )}
+
+                  {index === 1 && <hr className={styles.divider} />}
+                </React.Fragment>
+              ))}
+          </>
+        )}
+    </>
   );
 };
 
