@@ -7,6 +7,7 @@ import {
   User,
   Target,
   TargetTypeSig,
+  PermissionsManager,
 } from "gpdb-api-client";
 import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
@@ -24,7 +25,9 @@ export default class FrontController implements IFrontController {
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
-  async complexSearch(names: Array<Name>, meta?: Meta) {
+  async complexSearch(names: Array<Name>, nameOwner?: NameOwner, meta?: Meta) {
+    const owner = nameOwner || this.nameOwnerContext;
+
     const result: { [t in NameTypes]: Pronunciation[] } = {
       [NameTypes.FirstName]: [],
       [NameTypes.LastName]: [],
@@ -34,7 +37,7 @@ export default class FrontController implements IFrontController {
     const targets: Target[] = names.map((name) => ({
       target: name.key,
       targetTypeSig: NameTypesFactory[name.type],
-      targetOwnerContext: this.nameOwnerContext,
+      targetOwnerContext: owner,
     }));
 
     const response: any = await this.apiClient.pronunciations.complexSearch({
@@ -48,14 +51,14 @@ export default class FrontController implements IFrontController {
       );
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
+          if (result[NameTypes.FullName].length > 0) return;
           if (
             result[NameTypes.FullName].length === 0 &&
             pronunciation.target_type_sig === TargetTypeSig.FullName
           ) {
             const nameOwnerCreated =
               pronunciation.audio_source === AudioSource.NameOwner &&
-              pronunciation.name_owner_signature ===
-                this.nameOwnerContext.signature;
+              pronunciation.name_owner_signature === owner.signature;
 
             result[NameTypes.FullName] = [
               pronunciationMap({ ...pronunciation, nameOwnerCreated }),
@@ -65,6 +68,7 @@ export default class FrontController implements IFrontController {
           return pronunciationMap(pronunciation);
         })
         .filter(Boolean);
+      if (result[NameTypes.FullName].length > 0) return;
 
       result[name.type] = pronunciations;
     });
@@ -187,5 +191,9 @@ export default class FrontController implements IFrontController {
     };
 
     return result;
+  }
+
+  async loadPermissions(): Promise<PermissionsManager> {
+    return this.apiClient.permissions.load();
   }
 }
