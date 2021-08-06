@@ -10,11 +10,6 @@ import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import NameLine from "../NameLine";
 import AbsentName from "../AbsentName";
-import useRecorderState, {
-  TermsAndConditions,
-} from "../../hooks/useRecorderState";
-import { usePronunciations } from "../../hooks/pronunciations";
-import Recorder from "../Recorder";
 
 export interface NameOption {
   key: string;
@@ -29,7 +24,6 @@ export interface Props {
   canUserResponse?: boolean;
   canUserRequest?: boolean;
   canCreate?: boolean;
-  termsAndConditions?: TermsAndConditions;
 }
 
 type PronunciationsMap = Record<NameTypes, Pronunciation[] | Pronunciation>;
@@ -50,42 +44,6 @@ const FullNamesList = (props: Props) => {
   const [current, setCurrent] = useState<Pronunciation | null>();
   const [selectValue, setValue] = useState<Option>();
   const [nameParts, setNameParts] = useState<Record<string, Name[]>>();
-  const {
-    pronunciations,
-    setPronunciations,
-    updatePronunciationsByType,
-  } = usePronunciations();
-  const [
-    recorderState,
-    setRecorderClosed,
-    setRecorderOpen,
-  ] = useRecorderState();
-  const { isOpen: isRecorderOpen } = recorderState;
-
-  const openRecorder = (name, type) =>
-    setRecorderOpen(true, name, type, props.termsAndConditions);
-
-  const simpleSearch = async (key: string | number, type: NameTypes) => {
-    const name = nameParts[key].find((part) => part.type === type);
-
-    await controller.simpleSearch(name).then((pronunciations) => {
-      updatePronunciationsByType(type, pronunciations);
-      setCache((m) => {
-        const newCache = m;
-
-        newCache[key][type] = pronunciations;
-
-        return newCache;
-      });
-    });
-  };
-
-  const reloadName = (key: string | number) => {
-    return async (type: string | number) => {
-      if (type === NameTypes.LastName || type === NameTypes.FirstName)
-        return await simpleSearch(key, type);
-    };
-  };
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
@@ -96,7 +54,6 @@ const FullNamesList = (props: Props) => {
 
     if (cache && cache[name.key]) {
       setCurrent(cache[name.key].fullName);
-      setPronunciations(cache[name.key]);
     } else {
       const names = await controller.verifyNames(name.value);
 
@@ -113,7 +70,6 @@ const FullNamesList = (props: Props) => {
 
       setCurrent(fullNamePronunciation);
 
-      setPronunciations({ fullName, lastName, firstName });
       setCache((m) => ({
         ...m,
         [name.key]: {
@@ -177,40 +133,26 @@ const FullNamesList = (props: Props) => {
             <div className={cx(styles.title, styles.m_20)}>
               Pronunciations from Library
             </div>
-            {!isRecorderOpen &&
-              nameParts[selectValue.value]
-                .filter((n) => n.type !== NameTypes.FullName)
-                .map((n, index) => (
-                  <React.Fragment key={`${n}-${index}`}>
-                    <hr className={styles.divider} />
-                    {cache[selectValue.value][n.type].length > 0 ? (
-                      <NameLine
-                        pronunciations={pronunciations[n.type]}
-                        name={n.key}
-                        type={n.type}
-                        reload={reloadName(selectValue.value)}
-                        onRecorderClick={openRecorder}
-                      />
-                    ) : (
-                      <AbsentName
-                        name={n.key}
-                        type={n.type}
-                        onRecorderClick={openRecorder}
-                      />
-                    )}
+            {nameParts[selectValue.value]
+              .filter((n) => n.type !== NameTypes.FullName)
+              .map((n, index) => (
+                <React.Fragment key={`${n}-${index}`}>
+                  <hr className={styles.divider} />
+                  {cache[selectValue.value][n.type].length > 0 ? (
+                    <NameLine
+                      pronunciations={cache[selectValue.value][n.type]}
+                      name={n.key}
+                      type={n.type}
+                      reload={null}
+                      onRecorderClick={null}
+                    />
+                  ) : (
+                    <AbsentName name={n.key} type={n.type} />
+                  )}
 
-                    {index === 1 && <hr className={styles.divider} />}
-                  </React.Fragment>
-                ))}
-
-            {isRecorderOpen && !loading && (
-              <Recorder
-                name={recorderState.name}
-                type={recorderState.type}
-                onRecorderClose={setRecorderClosed}
-                termsAndConditions={recorderState.termsAndConditions}
-              />
-            )}
+                  {index === 1 && <hr className={styles.divider} />}
+                </React.Fragment>
+              ))}
           </>
         )}
     </>
