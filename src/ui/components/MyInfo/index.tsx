@@ -73,13 +73,11 @@ const MyInfo = (props: Props) => {
       if (!canPronunciation("index")) return;
 
       setLoading(true);
-      const { fullName } = await client.complexSearch(
-        [
-          {
-            key: props.name.value,
-            type: NameTypes.FullName,
-          },
-        ],
+      const fullName = await client.simpleSearch(
+        {
+          key: props.name.value,
+          type: NameTypes.FullName,
+        },
         props.name.owner
       );
 
