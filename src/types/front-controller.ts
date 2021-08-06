@@ -17,6 +17,7 @@ export interface PublicAttributes {
 }
 
 export interface GpdbRequests {
+  permissions: PermissionsManager;
   complexSearch: (
     names: Array<Omit<Name, "exist">>,
     nameOwner?: NameOwner,
@@ -35,8 +36,7 @@ export interface GpdbRequests {
     owner?: NameOwner
   ) => PromiseLike<void>;
   requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
-
-  loadPermissions: () => PromiseLike<PermissionsManager>;
+  loadPermissions: () => PromiseLike<void>;
 }
 
 export interface NamesServiceRequests {
