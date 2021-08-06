@@ -8,8 +8,11 @@ interface Props {
 }
 
 const MyInfoSection = (props: Props) => {
-  const me = { value: 'John Snow', owner: { signature: 'jack@nc-demo.com', email: 'jack@nc-demo.com' } }
-  const names = [{ key: 'snow', ...me }, { key: "outlook", value: 'outlook test', owner: { signature: 'jack@nc-demo.com', email: 'jack@nc-demo.com' } }]
+  const me = { value: 'Veronika Peknaia', owner: { signature: 'veronika.peknaia@jetruby.com', email: 'veronika.peknaia@jetruby.com' } }
+  const names = [
+    { key: 'jack', value: 'Jack Green', owner: { signature: 'jack@nc-demo.com', email: 'jack@nc-demo.com'}},
+    { key: 'alla', value: 'Alla Stone', owner: { signature: 'test@yopmail.com', email: 'test@yopmail.com'}},
+    {key: 'ver', ...me}]
 
   return (<MyInfo client={props.client} name={me} names={names} manager={props.manager} />)
 }
