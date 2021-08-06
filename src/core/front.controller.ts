@@ -14,15 +14,19 @@ import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
+import NameParser from "./name-parser";
 
 // TODO: provide error handling and nullable responses
 
 export default class FrontController implements IFrontController {
+  public permissions: PermissionsManager;
+
   constructor(
     private readonly apiClient: GpdbClient,
     public nameOwnerContext: NameOwner,
     public userContext: User,
-    private readonly namesApi: NamesApi = new NamesApi()
+    private readonly namesApi: NamesApi = new NamesApi(),
+    private readonly nameParser: NameParser = new NameParser()
   ) {}
 
   async complexSearch(names: Array<Name>, nameOwner?: NameOwner, meta?: Meta) {
@@ -95,7 +99,7 @@ export default class FrontController implements IFrontController {
       targetOwnerSig: owner.signature,
       targetTypeSig: NameTypesFactory[name.type],
       target_owner_email: owner?.email,
-      user_sig: this.userContext.signature
+      user_sig: this.userContext.signature,
     });
 
     return pronunciations.map(pronunciationMap);
@@ -162,15 +166,13 @@ export default class FrontController implements IFrontController {
       this.apiClient.application.instanceSig
     );
     const { allNames, fullName } = foundNames;
+    const { firstName, lastName } = this.nameParser.parse(name);
     const parsedName = name.split(" ");
 
     const isNamePartExist = (n) =>
       !!allNames.find((foundName) =>
         new RegExp(`\\b${foundName}\\b`, "i").test(n)
       );
-
-    const firstName = parsedName.slice(0, -1).join(" ").trim();
-    const lastName = parsedName[parsedName.length - 1];
 
     const result = {
       [NameTypes.FirstName]: {
@@ -193,7 +195,9 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  async loadPermissions(): Promise<PermissionsManager> {
-    return this.apiClient.permissions.load();
+  async loadPermissions() {
+    this.permissions = await this.apiClient.permissions.load();
+
+    return Promise.resolve();
   }
 }
