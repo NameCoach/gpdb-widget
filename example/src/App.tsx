@@ -1,39 +1,38 @@
 import React, { useEffect, useState } from 'react'
 
-import { Widget, loadClient } from 'gpdb-widget'
+import { loadClient, Widget } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
 import MyInfoSection from './examples/MyInfoSection'
-import { PermissionsManager } from "gpdb-api-client";
 
 const style = {
   margin: '50px auto 0 auto',
 };
 
+const creds = {
+  accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
+  secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
+};
+const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
+const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
+const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+
 const App = () => {
   const [name, setName] = useState('Jon Snow');
-  const [manager, setManager] = useState<PermissionsManager>();
-
-  const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
-  const userContext = { email: 'veronika.peknaia@jetruby.com', signature: 'veronika.peknaia@jetruby.com' }
+  const [loading, setLoading] = useState(true);
   const client = loadClient(
-    {
-      accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
-    },
+    creds,
     applicationContext,
     nameOwnerContext,
     userContext
   );
-  const loadPermissions = async () => {
-    const permissions = await client.loadPermissions();
-    setManager(permissions);
-  };
 
   useEffect(() => {
+    const load = async () => {
+      await client.loadPermissions()
 
-    loadPermissions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setLoading(false);
+    }
+  load()
   }, []);
 
   const debounced = useDebouncedCallback(
@@ -58,7 +57,7 @@ const App = () => {
 
       <hr className='divider'/>
 
-    {manager && <MyInfoSection client={client} manager={manager} />}
+    {!loading && <MyInfoSection client={client} />}
     </div>
 }
 
