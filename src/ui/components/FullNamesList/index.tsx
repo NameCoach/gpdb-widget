@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
 import Loader from "../Loader";
-import ControllerContext from "../../contexts/controller";
-import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
@@ -17,10 +15,11 @@ export interface NameOption {
 
 export interface Props {
   names: NameOption[];
-  onSelect?: (NameOption) => void;
+  value: Pronunciation;
+  loading?: boolean;
+  onSelect?: (NameOption) => PromiseLike<void>;
+  hideActions?: boolean;
 }
-
-type PronunciationsMap = Record<string, Pronunciation[]>;
 
 const cx = classNames.bind(styles);
 const selectStyles = { fontWeight: "bold" };
@@ -31,53 +30,23 @@ const nameToOption = (name: NameOption): Option => ({
 });
 
 const FullNamesList = (props: Props) => {
-  const controller = useContext(ControllerContext);
   const [autoplay, setAutoplay] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [cache, setCache] = useState<PronunciationsMap>({});
-  const [current, setCurrent] = useState<Pronunciation | null>();
   const [selectValue, setValue] = useState<Option>();
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
-  const load = async (name: NameOption) => {
-    setLoading(true);
-
-    const owner = props.names.find((n) => n.key === name.key).owner;
-    const pronunciations =
-      cache[name.key] ||
-      (await controller.simpleSearch(
-        {
-          key: name.value,
-          type: NameTypes.FullName,
-        },
-        owner
-      ));
-
-    if (pronunciations.length === 0) setCurrent(null);
-    else {
-      setCurrent(pronunciations[0]);
-      setCache((m) => ({ ...m, [name.key]: Array(pronunciations[0]) }));
-    }
-
-    setLoading(false);
-  };
-
-  const onChange = (name) => {
+  const onChange = async (name) => {
     const _name: NameOption = { key: name.value, value: name.label };
-
     setValue(nameToOption(_name));
 
-    if (props.onSelect) props.onSelect(_name);
+    if (props.onSelect) await props.onSelect(_name);
 
-    load(_name);
     setAutoplay(true);
   };
 
   useEffect(() => {
     setAutoplay(false);
     setValue(nameToOption(props.names[0]));
-    load(props.names[0]);
   }, [props.names]);
 
   return (
@@ -89,16 +58,16 @@ const FullNamesList = (props: Props) => {
         value={selectValue}
         styles={selectStyles}
       />
-      {loading && (
+      {props.loading && (
         <div>
           <Loader />
         </div>
       )}
-      {!loading && current === null && (
+      {!props.hideActions && !props.loading && !props.value && (
         <span className={cx(styles.hint)}>not available</span>
       )}
-      {!loading && current !== null && (
-        <Player audioSrc={current.audioSrc} autoplay={autoplay} />
+      {!props.hideActions && !props.loading && props.value && (
+        <Player audioSrc={props.value.audioSrc} autoplay={autoplay} />
       )}
     </div>
   );
