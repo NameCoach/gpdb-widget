@@ -18,6 +18,8 @@ interface Props {
   pronunciations: Pronunciation[];
   name: string;
   type: NameTypes;
+  canRecord: boolean;
+  canVote: boolean;
   reload: (type: NameTypes) => void;
   onRecorderClick: (name, type) => void;
 }
@@ -102,18 +104,22 @@ const NameLine = (props: Props) => {
               onClick={onPlayClick}
             />
 
-            <RecordAction
-              className={styles.pronunciation__action}
-              onClick={() => props.onRecorderClick(props.name, props.type)}
-            />
-            <UserResponseAction
-              className={styles.pronunciation__action}
-              active={
-                currentPronunciation?.userResponse?.response ===
-                UserResponse.Save
-              }
-              onClick={onUserResponse}
-            />
+            {props.canRecord && (
+              <RecordAction
+                className={styles.pronunciation__action}
+                onClick={() => props.onRecorderClick(props.name, props.type)}
+              />
+            )}
+            {props.canVote && (
+              <UserResponseAction
+                className={styles.pronunciation__action}
+                active={
+                  currentPronunciation?.userResponse?.response ===
+                  UserResponse.Save
+                }
+                onClick={onUserResponse}
+              />
+            )}
           </div>
 
           {currentPronunciation.phoneticSpelling && (
@@ -125,6 +131,11 @@ const NameLine = (props: Props) => {
       )}
     </div>
   );
+};
+
+NameLine.defaultProps = {
+  canRecord: true,
+  canVote: true,
 };
 
 export default React.memo(NameLine);
