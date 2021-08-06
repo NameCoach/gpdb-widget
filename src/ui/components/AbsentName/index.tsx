@@ -13,6 +13,7 @@ const cx = classNames.bind([styles, nameLineStyles]);
 interface Props {
   name: string;
   type: NameTypes;
+  onRecorderClick?: (name, type) => void;
 }
 
 const AbsentName = (props: Props) => {
@@ -55,7 +56,13 @@ const AbsentName = (props: Props) => {
           onClick={onRequest}
           disabled={isRequested}
         />
-        <RecordAction className={nameLineStyles.pronunciation__action} />
+        <RecordAction
+          className={nameLineStyles.pronunciation__action}
+          onClick={() =>
+            props.onRecorderClick &&
+            props.onRecorderClick(props.name, props.type)
+          }
+        />
       </div>
     </div>
   );
