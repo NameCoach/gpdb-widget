@@ -1,6 +1,11 @@
 import Name, { NameTypes } from "./resources/name";
 import Pronunciation from "./resources/pronunciation";
-import { NameOwner, User, UserResponse } from "gpdb-api-client";
+import {
+  NameOwner,
+  User,
+  UserResponse,
+  PermissionsManager,
+} from "gpdb-api-client";
 
 export interface Meta {
   uri?: string;
@@ -14,6 +19,7 @@ export interface PublicAttributes {
 export interface GpdbRequests {
   complexSearch: (
     names: Array<Omit<Name, "exist">>,
+    nameOwner?: NameOwner,
     meta?: Meta
   ) => PromiseLike<{ [t in NameTypes]: Pronunciation[] }>;
   simpleSearch: (
@@ -29,6 +35,8 @@ export interface GpdbRequests {
     owner?: NameOwner
   ) => PromiseLike<void>;
   requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
+
+  loadPermissions: () => PromiseLike<PermissionsManager>;
 }
 
 export interface NamesServiceRequests {
