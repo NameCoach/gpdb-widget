@@ -1,0 +1,71 @@
+import React, { useContext, useState } from "react";
+import { NameTypes } from "../../../types/resources/name";
+import classNames from "classnames/bind";
+import styles from "./styles.module.css";
+import nameLineStyles from "../NameLine/styles.module.css";
+import RequestAction from "../Actions/Request";
+import RecordAction from "../Actions/Record";
+import ControllerContext from "../../contexts/controller";
+import Loader from "../Loader";
+
+const cx = classNames.bind([styles, nameLineStyles]);
+
+interface Props {
+  name: string;
+  type: NameTypes;
+  onRecorderClick?: (name, type) => void;
+}
+
+const AbsentName = (props: Props) => {
+  const controller = useContext(ControllerContext);
+  const [isRequested, setRequest] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onRequest = async () => {
+    setLoading(true);
+    await controller.requestRecording(props.name, props.type);
+    setRequest(true);
+    setLoading(false);
+  };
+
+  return (
+    <div
+      className={cx(
+        styles.pronunciation__not_exist,
+        nameLineStyles.pronunciation
+      )}
+    >
+      <span
+        className={cx(
+          nameLineStyles.pronunciation__name,
+          styles.name__not_exist
+        )}
+      >
+        {props.name}
+      </span>
+      <span className={nameLineStyles.pronunciation__mid}>
+        {isRequested
+          ? "pronunciation request pending"
+          : "pronunciations not available"}
+        {loading && <Loader inline sm />}
+      </span>
+
+      <div className={nameLineStyles.pronunciation__actions}>
+        <RequestAction
+          className={nameLineStyles.pronunciation__action}
+          onClick={onRequest}
+          disabled={isRequested}
+        />
+        <RecordAction
+          className={nameLineStyles.pronunciation__action}
+          onClick={() =>
+            props.onRecorderClick &&
+            props.onRecorderClick(props.name, props.type)
+          }
+        />
+      </div>
+    </div>
+  );
+};
+
+export default AbsentName;
