@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Widget, loadClient } from 'gpdb-widget'
+import { loadClient, Widget } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
 import MyInfoSection from './examples/MyInfoSection'
 
@@ -8,21 +8,32 @@ const style = {
   margin: '50px auto 0 auto',
 };
 
+const creds = {
+  accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
+  secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
+};
+const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
+const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
+const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+
 const App = () => {
   const [name, setName] = useState('Jon Snow');
-
-  const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-  const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
-  const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+  const [loading, setLoading] = useState(true);
   const client = loadClient(
-    {
-      accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
-      secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
-    },
+    creds,
     applicationContext,
     nameOwnerContext,
     userContext
   );
+
+  useEffect(() => {
+    const load = async () => {
+      await client.loadPermissions()
+
+      setLoading(false);
+    }
+  load()
+  }, []);
 
   const debounced = useDebouncedCallback(
     (value) => {
@@ -42,11 +53,11 @@ const App = () => {
         style={{ width: "80%", marginLeft: "20px" }}
       />
 
-      <Widget client={client} name={name} style={style} />
+    <Widget client={client} name={name} style={style} />
 
       <hr className='divider'/>
 
-      <MyInfoSection client={client} />
+    {!loading && <MyInfoSection client={client} />}
     </div>
 }
 
