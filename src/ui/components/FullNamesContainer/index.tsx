@@ -59,14 +59,15 @@ const FullNamesContainer = (props: Props) => {
     if (canComplexSearch) {
       const parsedNames = nameParser.parse(name.value);
       const allNames = { ...parsedNames, fullName: name.value };
-      const names = Object.values(NameTypes).map((type) => ({
-        key: allNames[type],
-        type,
-      }));
-
+      const names = Object.values(NameTypes)
+        .filter((type) => allNames[type])
+        .map((type) => ({
+          key: allNames[type],
+          type,
+        }));
       const result = await controller.complexSearch(names, name.owner);
-
       const _current = result.fullName[0];
+
       setCurrent(_current);
       setLoading(false);
 
@@ -122,7 +123,9 @@ const FullNamesContainer = (props: Props) => {
         onSelect={onSelect}
         value={currentPronunciation}
         loading={loading}
-        hideActions={canComplexSearch && !currentPronunciation}
+        hideActions={
+          canComplexSearch && !currentPronunciation && nameParts.length > 0
+        }
       />
 
       {canComplexSearch && !isRecorderOpen && (
@@ -141,7 +144,11 @@ const FullNamesContainer = (props: Props) => {
                   onRecorderClick={openRecorder}
                 />
               ) : (
-                <AbsentName name={name.key} type={name.type} />
+                <AbsentName
+                  name={name.key}
+                  type={name.type}
+                  onRecorderClick={openRecorder}
+                />
               )}
 
               {index === 0 && <hr className={styles.divider} />}
