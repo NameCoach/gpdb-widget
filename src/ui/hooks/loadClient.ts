@@ -10,12 +10,14 @@ import Credentials from "../../types/credentials";
 import { ANALYTICS_API_URL, GPDB_API_URL } from "../../constants";
 import IFrontController from "../../types/front-controller";
 import FrontController from "../../core/front.controller";
+import NameParser from "../../types/name-parser";
 
 export default function loadClient(
   credentials: Credentials,
   application: Application,
   nameOwnerContext: NameOwner,
-  userContext: User
+  userContext: User,
+  nameParser?: NameParser
 ): IFrontController {
   const initialization = () => {
     let configuration: Configuration;
@@ -30,7 +32,12 @@ export default function loadClient(
       });
 
     const client = new Client(application, configuration);
-    return new FrontController(client, nameOwnerContext, userContext);
+    return new FrontController(
+      client,
+      nameOwnerContext,
+      userContext,
+      nameParser
+    );
   };
 
   return useMemo(initialization, [
@@ -38,5 +45,6 @@ export default function loadClient(
     application,
     nameOwnerContext,
     userContext,
+    nameParser,
   ]);
 }
