@@ -11,6 +11,9 @@ import Player from "./ui/components/Player";
 // TYPES
 import type IFrontController from "./types/front-controller";
 
+// INTERFACES
+import NameParser, { NPResult } from "./types/name-parser";
+
 // CONTEXTS
 import ControllerContext from "./ui/contexts/controller";
 
@@ -30,4 +33,6 @@ export {
   FullNamesList,
   ControllerContext,
   IFrontController,
+  NPResult,
+  NameParser,
 };
