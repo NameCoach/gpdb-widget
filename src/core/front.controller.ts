@@ -14,7 +14,8 @@ import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
-import NameParser from "./name-parser";
+import NameParser from "../types/name-parser";
+import DefaultNameParser from "./default-name-parser";
 
 // TODO: provide error handling and nullable responses
 
@@ -25,8 +26,8 @@ export default class FrontController implements IFrontController {
     private readonly apiClient: GpdbClient,
     public nameOwnerContext: NameOwner,
     public userContext: User,
-    private readonly namesApi: NamesApi = new NamesApi(),
-    private readonly nameParser: NameParser = new NameParser()
+    public nameParser: NameParser = new DefaultNameParser(),
+    private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
   async complexSearch(names: Array<Name>, nameOwner?: NameOwner, meta?: Meta) {
