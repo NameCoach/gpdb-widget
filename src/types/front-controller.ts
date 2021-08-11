@@ -6,6 +6,7 @@ import {
   UserResponse,
   PermissionsManager,
 } from "gpdb-api-client";
+import NameParser from "./name-parser";
 
 export interface Meta {
   uri?: string;
@@ -14,6 +15,7 @@ export interface Meta {
 export interface PublicAttributes {
   nameOwnerContext: NameOwner;
   userContext: User;
+  nameParser: NameParser;
 }
 
 export interface GpdbRequests {
