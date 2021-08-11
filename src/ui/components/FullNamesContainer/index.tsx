@@ -6,7 +6,6 @@ import FullNamesList, { NameOption } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
-import NameParser from "../../../core/name-parser";
 import Name, { NameTypes } from "../../../types/resources/name";
 import { usePronunciations } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
@@ -19,8 +18,6 @@ interface Props {
   onSelect?: (NameOption) => void;
   termsAndConditions?: TermsAndConditions;
 }
-
-const nameParser = new NameParser();
 
 const FullNamesContainer = (props: Props) => {
   const controller = useContext(ControllerContext);
@@ -57,12 +54,11 @@ const FullNamesContainer = (props: Props) => {
     setLoading(true);
 
     if (canComplexSearch) {
-      const parsedNames = nameParser.parse(name.value);
-      const allNames = { ...parsedNames, fullName: name.value };
+      const parsedNames = controller.nameParser.parse(name.value);
       const names = Object.values(NameTypes)
-        .filter((type) => allNames[type])
+        .filter((type) => parsedNames[type])
         .map((type) => ({
-          key: allNames[type],
+          key: parsedNames[type],
           type,
         }));
       const result = await controller.complexSearch(names, name.owner);
