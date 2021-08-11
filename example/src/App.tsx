@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { loadClient, Widget } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
 import MyInfoSection from './examples/MyInfoSection'
+import Parser from './parser';
 
 const style = {
   margin: '50px auto 0 auto',
@@ -15,6 +16,7 @@ const creds = {
 const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
 const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
 const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+const parser = new Parser();
 
 const App = () => {
   const [name, setName] = useState('Jon Snow');
@@ -23,7 +25,8 @@ const App = () => {
     creds,
     applicationContext,
     nameOwnerContext,
-    userContext
+    userContext,
+    parser
   );
 
   useEffect(() => {
