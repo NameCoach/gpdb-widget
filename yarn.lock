@@ -1919,10 +1919,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.1.13:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.13.tgz#dc6014b2cb475cc715ec74b0efee92f69a36b808"
-  integrity sha512-oZhNepq/Q/5c+EgkoP0KGdoUOx6p/UBZ39s10X+GrKggUuriWBlVtcWptfBDztHfSXcTiongjlRZkZAEm8haGw==
+gpdb-api-client@^1.1.15:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.15.tgz#38e1f491bcde880eb5091f896d1ef9b1776472b6"
+  integrity sha512-M+9QpIayyjKzHPV4xt4fJybAvRstoRqJ8I3Kr0Ua8UI96unlZxPxaILmmY333vsOL+88RU9Hz4rfEDlVgF3SCQ==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
