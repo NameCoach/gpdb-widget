@@ -201,4 +201,11 @@ export default class FrontController implements IFrontController {
 
     return Promise.resolve();
   }
+
+  //TODO NAM-159 implement saving to and loading from localStorageor or get rid of this methods
+  async saveAudioSampleRate() {};
+
+  async loadAudioSampleRate() {
+    return 1;
+  }
 }
