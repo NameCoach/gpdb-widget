@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import styles from "./styles.module.css";
 import Name, { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
@@ -11,6 +11,7 @@ import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
 import useRecorderState, { TermsAndConditions } from "../../hooks/useRecorderState";
 import AbsentName from "../AbsentName";
+import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 interface Props {
   firstName: Name;
@@ -39,6 +40,16 @@ const Container = (props: Props) => {
     setPronunciations,
     updatePronunciationsByType,
   } = usePronunciations();
+
+  const canRecordingRequestCreate = useMemo(
+    () => controller.permissions.can(Resources.RecordingRequest, "create"),
+    [controller.permissions]
+  );
+
+  const canPronunciationCreate = useMemo(
+    () => controller.permissions.can(Resources.Pronunciation, "create"),
+    [controller.permissions]
+  );
 
   const simpleSearch = async (type: NameTypes) => {
     updatePronunciationsByType(
@@ -121,7 +132,12 @@ const Container = (props: Props) => {
                     onRecorderClick={openRecorder}
                   />
                 ) : (
-                  <AbsentName name={name.key} type={name.type} />
+                  <AbsentName
+                    canRecordingRequestCreate={canRecordingRequestCreate}
+                    canPronunciationCreate={canPronunciationCreate}
+                    name={name.key}
+                    type={name.type}
+                  />
                 )}
 
                 {index === 0 && <hr className={styles.divider} />}
