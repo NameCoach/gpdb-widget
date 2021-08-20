@@ -47,15 +47,9 @@ const MyInfo = (props: Props) => {
 
   const blockPermissions = useMemo(
     () => ({
-      [Blocks.Pronunciations]:
-        canPronunciation("index") ||
-        (canPronunciation("index") && canPronunciation("search")),
+      [Blocks.Pronunciations]: canPronunciation("index"),
       [Blocks.MyInfo]: canPronunciation("index") && canPronunciation("create"),
-      [Blocks.Invalid]: !(
-        canPronunciation("index") ||
-        canPronunciation("search") ||
-        canPronunciation("create")
-      ),
+      [Blocks.Invalid]: !canPronunciation("index"),
     }),
     [client.permissions]
   );
