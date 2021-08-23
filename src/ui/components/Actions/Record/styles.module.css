@@ -1,0 +1,11 @@
+.wrapper {
+  composes: icon-btn from "../../../styles/icons.css";
+}
+
+.active {
+  composes: active from "../../../styles/icons.css";
+}
+
+.mic_icon {
+  composes: mic from "../../../styles/icons.css";
+}
