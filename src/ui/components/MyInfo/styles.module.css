@@ -1,0 +1,26 @@
+@import "../../styles/fonts/fonts.css";
+
+.container {
+  font-family: 'Montserrat', sans-seris;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.m_20 {
+  margin: 20px 0;
+}
+
+.title {
+  font-weight: bold;
+  line-height: 16px;
+  font-size: 18px;
+}
+
+.actions {
+  display: flex;
+}
