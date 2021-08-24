@@ -14,6 +14,8 @@ interface Props {
   name: string;
   type: NameTypes;
   onRecorderClick?: (name, type) => void;
+  canRecordingRequestCreate: boolean;
+  canPronunciationCreate: boolean;
 }
 
 const AbsentName = (props: Props) => {
@@ -51,18 +53,22 @@ const AbsentName = (props: Props) => {
       </span>
 
       <div className={nameLineStyles.pronunciation__actions}>
-        <RequestAction
-          className={nameLineStyles.pronunciation__action}
-          onClick={onRequest}
-          disabled={isRequested}
-        />
-        <RecordAction
-          className={nameLineStyles.pronunciation__action}
-          onClick={() =>
-            props.onRecorderClick &&
-            props.onRecorderClick(props.name, props.type)
-          }
-        />
+        {props.canRecordingRequestCreate && (
+          <RequestAction
+            className={nameLineStyles.pronunciation__action}
+            onClick={onRequest}
+            disabled={isRequested}
+          />
+        )}
+        {props.canPronunciationCreate && (
+          <RecordAction
+            className={nameLineStyles.pronunciation__action}
+            onClick={() =>
+              props.onRecorderClick &&
+              props.onRecorderClick(props.name, props.type)
+            }
+          />
+        )}
       </div>
     </div>
   );
