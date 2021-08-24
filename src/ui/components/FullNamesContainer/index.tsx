@@ -50,6 +50,11 @@ const FullNamesContainer = (props: Props) => {
     [controller.permissions]
   );
 
+  const canRecordingRequestCreate = useMemo(
+    () => controller.permissions.can(Resources.RecordingRequest, "create"),
+    [controller.permissions]
+  );
+
   const loadName = async (name: NameOption) => {
     setLoading(true);
 
@@ -141,6 +146,8 @@ const FullNamesContainer = (props: Props) => {
                 />
               ) : (
                 <AbsentName
+                  canRecordingRequestCreate={canRecordingRequestCreate}
+                  canPronunciationCreate={canRecord}
                   name={name.key}
                   type={name.type}
                   onRecorderClick={openRecorder}
