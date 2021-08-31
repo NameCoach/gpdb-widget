@@ -18,12 +18,12 @@ interface Props {
   canPronunciationCreate: boolean;
 }
 
-const AbsentName = (props: Props) => {
+const AbsentName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onRequest = async () => {
+  const onRequest = async (): Promise<void> => {
     setLoading(true);
     await controller.requestRecording(props.name, props.type);
     setRequest(true);
@@ -63,7 +63,7 @@ const AbsentName = (props: Props) => {
         {props.canPronunciationCreate && (
           <RecordAction
             className={nameLineStyles.pronunciation__action}
-            onClick={() =>
+            onClick={(): void =>
               props.onRecorderClick &&
               props.onRecorderClick(props.name, props.type)
             }
