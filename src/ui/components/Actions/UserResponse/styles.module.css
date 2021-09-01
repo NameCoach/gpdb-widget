@@ -1,0 +1,16 @@
+.wrapper {
+  composes: icon-btn from "../../../styles/icons.css";
+}
+
+.active {
+  background-color: transparent !important;
+  composes: active from "../../../styles/icons.css";
+}
+
+.bookmark_active_icon {
+  composes: bookmark--active from "../../../styles/icons.css";
+}
+
+.bookmark_icon {
+  composes: bookmark from "../../../styles/icons.css";
+}
