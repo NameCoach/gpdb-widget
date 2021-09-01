@@ -17,8 +17,10 @@ export function usePronunciations(): HookReturn {
     [NameTypes.FullName]: [],
   });
 
-  const updatePronunciationsByType = (type: NameTypes, data: Pronunciation[]) =>
-    setPronunciations((state) => ({ ...state, [type]: data }));
+  const updatePronunciationsByType = (
+    type: NameTypes,
+    data: Pronunciation[]
+  ): void => setPronunciations((state) => ({ ...state, [type]: data }));
 
   return {
     pronunciations,
