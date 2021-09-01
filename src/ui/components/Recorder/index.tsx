@@ -33,6 +33,7 @@ interface Props {
   name: string;
   type: NameTypes;
   owner?: NameOwner;
+  onRecorded?: () => Promise<void>;
   onRecorderClose: () => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
@@ -68,13 +69,14 @@ export const EVENTS = {
 };
 
 const Recorder = ({
+  onRecorded,
   onRecorderClose,
   name,
   owner,
   type,
   termsAndConditions,
   onSaved,
-}: Props) => {
+}: Props): JSX.Element => {
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
   const [countdown, setCountdown] = useState<number>(COUNTDOWN);
@@ -115,8 +117,8 @@ const Recorder = ({
     [step]
   );
 
-  const onStop = async () => {
-    const stopRecording = () =>
+  const onStop = async (): Promise<void> => {
+    const stopRecording = (): Promise<unknown> =>
       new Promise((resolve) =>
         recorder.current.stopRecording(() => resolve(1))
       );
@@ -133,12 +135,12 @@ const Recorder = ({
     sendEvent(EVENTS.stop);
   };
 
-  const onReady = async () => {
+  const onReady = async (): Promise<void> => {
     sendEvent(EVENTS.ready);
 
     if (timeoutId) clearTimeout(timeoutId);
 
-    const delayTimer = () => {
+    const delayTimer = (): void => {
       if (currentStep.current !== STATES.RECORD) return;
 
       setTimeout(() => {
@@ -162,7 +164,7 @@ const Recorder = ({
     termsAndConditions.onAccept();
   };
 
-  const onStart = async () => {
+  const onStart = async (): Promise<void> => {
     setCountdown(COUNTDOWN);
     setTimer(TIMER);
     try {
@@ -187,22 +189,24 @@ const Recorder = ({
     }
   };
 
-  const onSave = async () => {
+  const onSave = async (): Promise<void> => {
     sendEvent(EVENTS.save);
     const str = await blobToBase64String(blob);
 
     await controller.createRecording(name, type, str, owner);
 
+    onRecorded();
+
     if (onSaved) onSaved(blob);
     setTimeout(onRecorderClose, ONE_SECOND * 2);
   };
 
-  const onSampleRateSave = () => {
+  const onSampleRateSave = (): void => {
     closeSlider();
     controller.saveAudioSampleRate(sampleRate.value);
   };
 
-  const updateSampleRate = (val) => setSampleRate({ value: val });
+  const updateSampleRate = (val): void => setSampleRate({ value: val });
 
   return (
     <div className={styles.recorder}>
