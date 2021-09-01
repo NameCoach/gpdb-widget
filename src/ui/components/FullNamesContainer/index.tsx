@@ -19,7 +19,7 @@ interface Props {
   termsAndConditions?: TermsAndConditions;
 }
 
-const FullNamesContainer = (props: Props) => {
+const FullNamesContainer = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const {
     pronunciations,
@@ -55,7 +55,7 @@ const FullNamesContainer = (props: Props) => {
     [controller.permissions]
   );
 
-  const loadName = async (name: NameOption) => {
+  const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
 
     if (canComplexSearch) {
@@ -97,20 +97,30 @@ const FullNamesContainer = (props: Props) => {
     }
   };
 
-  const onSelect = (name: NameOption) => {
+  const onSelect = (name: NameOption): Promise<void> => {
     const owner = props.names.find((n) => n.key === name.key).owner;
     setNameParts([]);
     return loadName({ ...name, owner });
   };
 
-  const reloadName = async (type: NameTypes) => {
-    updatePronunciationsByType(
-      type,
-      await controller.simpleSearch(nameParts.find((n) => n.type === type))
+  const reloadName = async (type: NameTypes): Promise<void> => {
+    const pronunciations = await controller.simpleSearch(
+      nameParts.find((n) => n.type === type)
+    );
+
+    updatePronunciationsByType(type, pronunciations);
+
+    setNameParts(
+      nameParts
+        .filter((n) => n.type !== NameTypes.FullName)
+        .map((name) => ({
+          ...name,
+          exist: name.type === type ? true : name.exist,
+        }))
     );
   };
 
-  const openRecorder = (name, type) =>
+  const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
   useEffect(() => {
@@ -164,6 +174,7 @@ const FullNamesContainer = (props: Props) => {
         <Recorder
           name={recorderState.name}
           type={recorderState.type}
+          onRecorded={(): Promise<void> => reloadName(recorderState.type)}
           onRecorderClose={setRecorderClosed}
           termsAndConditions={recorderState.termsAndConditions}
         />
