@@ -195,7 +195,7 @@ const Recorder = ({
 
     await controller.createRecording(name, type, str, owner);
 
-    onRecorded();
+    onRecorded && onRecorded();
 
     if (onSaved) onSaved(blob);
     setTimeout(onRecorderClose, ONE_SECOND * 2);
