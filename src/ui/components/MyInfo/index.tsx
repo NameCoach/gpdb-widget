@@ -30,7 +30,8 @@ enum Blocks {
 }
 
 const cx = classNames.bind(styles);
-const MyInfo = (props: Props) => {
+
+const MyInfo = (props: Props): JSX.Element => {
   if (!props.name.value.trim()) throw new Error("Name shouldn't be blank");
 
   const client = useMemo(() => props.client, [props.client]);
@@ -42,7 +43,7 @@ const MyInfo = (props: Props) => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const canPronunciation = (permission) =>
+  const canPronunciation = (permission): boolean =>
     client.permissions.can(Resources.Pronunciation, permission);
 
   const blockPermissions = useMemo(
@@ -54,7 +55,7 @@ const MyInfo = (props: Props) => {
     [client.permissions]
   );
 
-  const onRecorderOpen = () =>
+  const onRecorderOpen = (): void =>
     setRecorderOpen(
       true,
       props.name.value,
@@ -62,27 +63,27 @@ const MyInfo = (props: Props) => {
       props.termsAndConditions
     );
 
+  const load = async (): Promise<void> => {
+    if (!canPronunciation("index")) return;
+
+    setLoading(true);
+    const fullName = await client.simpleSearch(
+      {
+        key: props.name.value,
+        type: NameTypes.FullName,
+      },
+      props.name.owner
+    );
+
+    setPronunciation(fullName[0]);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      if (!canPronunciation("index")) return;
-
-      setLoading(true);
-      const fullName = await client.simpleSearch(
-        {
-          key: props.name.value,
-          type: NameTypes.FullName,
-        },
-        props.name.owner
-      );
-
-      setPronunciation(fullName[0]);
-      setLoading(false);
-    };
-
     load();
   }, [props.name, client]);
 
-  const renderContainer = () => (
+  const renderContainer = (): JSX.Element => (
     <div className={cx(styles.container)}>
       {props.names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
         <>
@@ -118,6 +119,7 @@ const MyInfo = (props: Props) => {
               name={props.name.value}
               type={NameTypes.FullName}
               owner={props.name.owner}
+              onRecorded={(): Promise<void> => load()}
               onRecorderClose={setRecorderClosed}
               termsAndConditions={props.termsAndConditions}
             />
