@@ -29,7 +29,7 @@ const nameToOption = (name: NameOption): Option => ({
   value: name.key,
 });
 
-const FullNamesList = (props: Props) => {
+const FullNamesList = (props: Props): JSX.Element => {
   const [autoplay, setAutoplay] = useState<boolean>(false);
   const [selectValue, setValue] = useState<Option>();
 
