@@ -1,5 +1,3 @@
-import colors from "./ui/styles/colors.css";
-
 // COMPONENTS
 import Widget from "./ui/components/Widget";
 import MyInfo from "./ui/components/MyInfo";
@@ -7,6 +5,7 @@ import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
 import Recorder from "./ui/components/Recorder";
 import Player from "./ui/components/Player";
+import SearchWidget from "./ui/components/SearchWidget";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -35,4 +34,5 @@ export {
   IFrontController,
   NPResult,
   NameParser,
+  SearchWidget,
 };
