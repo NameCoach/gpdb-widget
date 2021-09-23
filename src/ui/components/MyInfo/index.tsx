@@ -15,6 +15,8 @@ import useRecorderState, {
 import Recorder from "../Recorder";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import FullNamesContainer from "../FullNamesContainer";
+import NoPermissionsError from "../NoPermissionsError";
+import { UserPermissions } from "../../../types/permissions";
 
 interface Props {
   client: IFrontController;
@@ -46,6 +48,18 @@ const MyInfo = (props: Props): JSX.Element => {
   const canPronunciation = (permission): boolean =>
     client.permissions.can(Resources.Pronunciation, permission);
 
+  const canComplexSearch = (): boolean =>
+    client.permissions.can(Resources.Pronunciation, "search");
+
+  const canUserResponseCreate = (): boolean =>
+    client.permissions.can(Resources.UserResponse, "create");
+
+  const canPronunciationCreate = (): boolean =>
+    client.permissions.can(Resources.Pronunciation, "create");
+
+  const canRecordingRequestCreate = (): boolean =>
+    client.permissions.can(Resources.RecordingRequest, "create");
+
   const blockPermissions = useMemo(
     () => ({
       [Blocks.Pronunciations]: canPronunciation("index"),
@@ -54,6 +68,16 @@ const MyInfo = (props: Props): JSX.Element => {
     }),
     [client.permissions]
   );
+
+  const permissions = {
+    canPronunciation: {
+      create: canPronunciationCreate(),
+      search: canComplexSearch(),
+      index: canPronunciation("index"),
+    },
+    canUserResponse: { create: canUserResponseCreate() },
+    canRecordingRequest: { craet: canRecordingRequestCreate() },
+  } as UserPermissions;
 
   const onRecorderOpen = (): void =>
     setRecorderOpen(
@@ -91,6 +115,8 @@ const MyInfo = (props: Props): JSX.Element => {
           <FullNamesContainer
             names={props.names}
             termsAndConditions={props.termsAndConditions}
+            controller={client}
+            permissions={permissions}
           />
         </>
       )}
@@ -129,16 +155,11 @@ const MyInfo = (props: Props): JSX.Element => {
     </div>
   );
 
-  const renderError = () => (
-    <div className={cx(styles.container)}>
-      You can't create or listen to any recordings. Please contact your
-      administrator to get this fixed.
-    </div>
-  );
-
   return (
     <ControllerContext.Provider value={client}>
-      {blockPermissions[Blocks.Invalid] ? renderError() : renderContainer()}
+      {blockPermissions[Blocks.Invalid]
+        ? NoPermissionsError()
+        : renderContainer()}
     </ControllerContext.Provider>
   );
 };
