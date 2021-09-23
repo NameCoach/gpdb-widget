@@ -1,4 +1,4 @@
-import NameParser, { NPResult } from "../types/name-parser";
+import NameParser, { NPResult } from "../../types/name-parser";
 
 export default class DefaultNameParser implements NameParser {
   parse(name: string): NPResult {
