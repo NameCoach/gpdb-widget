@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import styles from "./styles.module.css";
 import Name, { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
@@ -9,7 +9,9 @@ import Logo from "../Logo";
 import NameLine from "../NameLine";
 import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
-import useRecorderState, { TermsAndConditions } from "../../hooks/useRecorderState";
+import useRecorderState, {
+  TermsAndConditions,
+} from "../../hooks/useRecorderState";
 import AbsentName from "../AbsentName";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 
