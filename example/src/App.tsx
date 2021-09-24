@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { loadClient, Widget } from 'gpdb-widget'
+import { loadClient, Widget, SearchWidget } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
 import MyInfoSection from './examples/MyInfoSection'
 import Parser from './parser';
@@ -61,6 +61,10 @@ const App = () => {
       <hr className='divider'/>
 
     {!loading && <MyInfoSection client={client} />}
+
+      <hr className='divider'/>
+
+    <SearchWidget client={client} />
     </div>
 }
 
