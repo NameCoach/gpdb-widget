@@ -168,17 +168,18 @@ export default class FrontController implements IFrontController {
     recordingId?: string,
     rootUrl?: string
   ): Promise<void> {
-    await this.apiClient.analyticsEvents.create({
+    await this.apiClient.browserExtension.create({
       entityId: this.nameOwnerContext.signature,
       customerId: this.userContext.email || "anonymous",
       entityType: "browser_extension_user",
-      rootUrl,
+      rootUrl: rootUrl || "emptyUrl",
       eventType,
       recordingId,
       message:
         typeof message === "object" ? JSON.stringify(message) : String(message),
       userId: this.nameOwnerContext.signature,
-      toolSignature: "gpdb-widget",
+      toolSignature: "browser_extension",
+      versionInfo: {}
     });
   }
 
