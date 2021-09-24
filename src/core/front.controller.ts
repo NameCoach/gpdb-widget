@@ -15,7 +15,7 @@ import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
 import NameParser from "../types/name-parser";
-import DefaultNameParser from "./default-name-parser";
+import DefaultNameParser from "./parsers/default-name-parser";
 
 // TODO: provide error handling and nullable responses
 
@@ -91,7 +91,7 @@ export default class FrontController implements IFrontController {
     name: Omit<Name, "exist">,
     nameOwner?: NameOwner,
     meta?: Meta
-  ) {
+  ): Promise<any> {
     const owner = nameOwner || this.nameOwnerContext;
     const {
       target_result: { pronunciations },
@@ -111,7 +111,7 @@ export default class FrontController implements IFrontController {
     type: NameTypes,
     audio: string,
     nameOwner?: NameOwner
-  ) {
+  ): Promise<any> {
     const owner = nameOwner || this.nameOwnerContext;
 
     return this.apiClient.pronunciations.createRecording({
@@ -146,7 +146,7 @@ export default class FrontController implements IFrontController {
     message: string | object | boolean,
     recordingId?: string,
     rootUrl?: string
-  ) {
+  ): Promise<void> {
     await this.apiClient.analyticsEvents.create({
       entityId: this.nameOwnerContext.signature,
       customerId: this.userContext.email || "anonymous",
@@ -196,16 +196,17 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  async loadPermissions() {
+  async loadPermissions(): Promise<void> {
     this.permissions = await this.apiClient.permissions.load();
 
     return Promise.resolve();
   }
 
-  //TODO NAM-159 implement saving to and loading from localStorageor or get rid of this methods
-  async saveAudioSampleRate() {};
+  // TODO NAM-159 implement saving to and loading from localStorageor or get rid of this methods
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async saveAudioSampleRate(): Promise<void> {}
 
-  async loadAudioSampleRate() {
+  async loadAudioSampleRate(): Promise<number> {
     return 1;
   }
 }

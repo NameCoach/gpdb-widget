@@ -1,26 +1,27 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
 import FullNamesList, { NameOption } from "../FullNamesList";
-import ControllerContext from "../../contexts/controller";
 import Pronunciation from "../../../types/resources/pronunciation";
-import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import Name, { NameTypes } from "../../../types/resources/name";
 import { usePronunciations } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
 import AbsentName from "../AbsentName";
 import styles from "../Container/styles.module.css";
 import Recorder from "../Recorder";
+import IFrontController from "../../../types/front-controller";
+import { UserPermissions } from "../../../types/permissions";
 
 interface Props {
   names: NameOption[];
   onSelect?: (NameOption) => void;
   termsAndConditions?: TermsAndConditions;
+  controller: IFrontController;
+  permissions: UserPermissions;
 }
 
 const FullNamesContainer = (props: Props): JSX.Element => {
-  const controller = useContext(ControllerContext);
   const {
     pronunciations,
     setPronunciations,
@@ -36,37 +37,18 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
 
-  const canComplexSearch = useMemo(
-    () => controller.permissions.can(Resources.Pronunciation, "search"),
-    [controller.permissions]
-  );
-  const canUserResponse = useMemo(
-    () => controller.permissions.can(Resources.UserResponse, "create"),
-    [controller.permissions]
-  );
-
-  const canRecord = useMemo(
-    () => controller.permissions.can(Resources.Pronunciation, "create"),
-    [controller.permissions]
-  );
-
-  const canRecordingRequestCreate = useMemo(
-    () => controller.permissions.can(Resources.RecordingRequest, "create"),
-    [controller.permissions]
-  );
-
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
 
-    if (canComplexSearch) {
-      const parsedNames = controller.nameParser.parse(name.value);
+    if (props.permissions.canPronunciation.search) {
+      const parsedNames = props.controller.nameParser.parse(name.value);
       const names = Object.values(NameTypes)
         .filter((type) => parsedNames[type])
         .map((type) => ({
           key: parsedNames[type],
           type,
         }));
-      const result = await controller.complexSearch(names, name.owner);
+      const result = await props.controller.complexSearch(names, name.owner);
       const _current = result.fullName[0];
 
       setCurrent(_current);
@@ -84,7 +66,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
       );
       setPronunciations(result);
     } else {
-      const pronunciations = await controller.simpleSearch(
+      const pronunciations = await props.controller.simpleSearch(
         {
           key: name.value,
           type: NameTypes.FullName,
@@ -104,7 +86,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   };
 
   const reloadName = async (type: NameTypes): Promise<void> => {
-    const pronunciations = await controller.simpleSearch(
+    const pronunciations = await props.controller.simpleSearch(
       nameParts.find((n) => n.type === type)
     );
 
@@ -135,11 +117,13 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         value={currentPronunciation}
         loading={loading}
         hideActions={
-          canComplexSearch && !currentPronunciation && nameParts.length > 0
+          props.permissions.canPronunciation.search &&
+          !currentPronunciation &&
+          nameParts.length > 0
         }
       />
 
-      {canComplexSearch && !isRecorderOpen && (
+      {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
           <br />
           {nameParts.map((name, index) => (
@@ -150,14 +134,18 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   name={name.key}
                   type={name.type}
                   reload={reloadName}
-                  canRecord={canRecord}
-                  canUserResponse={canUserResponse}
+                  canRecord={props.permissions.canPronunciation.create}
+                  canUserResponse={props.permissions.canUserResponse.create}
                   onRecorderClick={openRecorder}
                 />
               ) : (
                 <AbsentName
-                  canRecordingRequestCreate={canRecordingRequestCreate}
-                  canPronunciationCreate={canRecord}
+                  canRecordingRequestCreate={
+                    props.permissions.canRecordingRequest.create
+                  }
+                  canPronunciationCreate={
+                    props.permissions.canPronunciation.create
+                  }
                   name={name.key}
                   type={name.type}
                   onRecorderClick={openRecorder}
@@ -170,15 +158,17 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         </>
       )}
 
-      {canComplexSearch && isRecorderOpen && !loading && (
-        <Recorder
-          name={recorderState.name}
-          type={recorderState.type}
-          onRecorded={(): Promise<void> => reloadName(recorderState.type)}
-          onRecorderClose={setRecorderClosed}
-          termsAndConditions={recorderState.termsAndConditions}
-        />
-      )}
+      {props.permissions.canPronunciation.search &&
+        isRecorderOpen &&
+        !loading && (
+          <Recorder
+            name={recorderState.name}
+            type={recorderState.type}
+            onRecorded={(): Promise<void> => reloadName(recorderState.type)}
+            onRecorderClose={setRecorderClosed}
+            termsAndConditions={recorderState.termsAndConditions}
+          />
+        )}
     </>
   );
 };
