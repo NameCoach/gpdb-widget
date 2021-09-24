@@ -195,10 +195,14 @@ const Recorder = ({
 
     await controller.createRecording(name, type, str, owner);
 
-    onRecorded && onRecorded();
-
     if (onSaved) onSaved(blob);
-    setTimeout(onRecorderClose, ONE_SECOND * 2);
+
+    const closeAndCallback = (): void => {
+      onRecorded && onRecorded();
+      onRecorderClose();
+    };
+
+    setTimeout(closeAndCallback, ONE_SECOND * 2);
   };
 
   const onSampleRateSave = (): void => {
