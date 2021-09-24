@@ -24,7 +24,7 @@ interface Props {
   onRecorderClick: (name, type) => void;
 }
 
-const NameLine = (props: Props) => {
+const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,23 +41,24 @@ const NameLine = (props: Props) => {
     [props.pronunciations]
   );
 
-  const sendAnalytics = (event, index = currentIndex) =>
+  const sendAnalytics = (event, index = currentIndex): PromiseLike<void> =>
     controller.sendAnalytics(
       `${NameTypesFactory[props.type]}_${event}_${index}`,
       { name: props.name, type: props.type },
       currentPronunciation.id
     );
 
-  const onSelect = ({ value }) => {
+  const onSelect = ({ value }): void => {
     setCurrentIndex(value);
     setAutoplay(true);
     setPronunciation(props.pronunciations[value]);
     sendAnalytics("recording_select_list_change_to", value);
   };
 
-  const onPlayClick = () => sendAnalytics("play_button_click");
+  const onPlayClick = (): PromiseLike<void> =>
+    sendAnalytics("play_button_click");
 
-  const onUserResponse = async () => {
+  const onUserResponse = async (): Promise<void> => {
     const response =
       currentPronunciation?.userResponse?.response === UserResponse.Save
         ? UserResponse.Reject
@@ -107,7 +108,9 @@ const NameLine = (props: Props) => {
             {props.canRecord && (
               <RecordAction
                 className={styles.pronunciation__action}
-                onClick={() => props.onRecorderClick(props.name, props.type)}
+                onClick={(): void =>
+                  props.onRecorderClick(props.name, props.type)
+                }
               />
             )}
             {props.canUserResponse && (
