@@ -197,12 +197,12 @@ const Recorder = ({
 
     if (onSaved) onSaved(blob);
 
-    const closeAndCallback = (): void => {
-      onRecorded && onRecorded();
+    const closeAndCallback = async (): Promise<void> => {
+      onRecorded && (await onRecorded());
       onRecorderClose();
     };
 
-    setTimeout(closeAndCallback, ONE_SECOND * 2);
+    setTimeout(await closeAndCallback, ONE_SECOND * 2);
   };
 
   const onSampleRateSave = (): void => {
