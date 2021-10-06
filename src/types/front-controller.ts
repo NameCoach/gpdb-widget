@@ -38,6 +38,7 @@ export interface GpdbRequests {
     owner?: NameOwner
   ) => PromiseLike<void>;
   requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
+  findRecordingRequest: (name: string, type: NameTypes) => PromiseLike<boolean>;
   loadPermissions: () => PromiseLike<void>;
 }
 
