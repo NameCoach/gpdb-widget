@@ -1,0 +1,27 @@
+@value primaryBrandColor, secondaryGray from "../../../styles/colors.css";
+
+.pitch {
+  position: relative;
+  width: 90%;
+  padding: 8px;
+}
+
+.slider__label {
+  font-size: 10px;
+  left: 8px;
+  top: -18px;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.slider__hint {
+  position: absolute;
+  font-size: 10px;
+}
+.slider__hint.left {
+  left: 8px;
+}
+.slider__hint.right {
+  right: 4px;
+}
+
