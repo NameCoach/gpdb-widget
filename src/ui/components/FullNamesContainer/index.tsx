@@ -37,6 +37,32 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
 
+  const getRequestedNames = async (
+    result: { [t in NameTypes]: Pronunciation[] },
+    names: { key: string; type: string }[]
+  ): Promise<{ firstName: boolean; lastName: boolean }> => {
+    const isRequested = async (pronunciations, name): Promise<boolean> => {
+      if (pronunciations.length === 0) {
+        const result = await props.controller.findRecordingRequest(
+          name.key,
+          name.type
+        );
+
+        return result;
+      } else {
+        return false;
+      }
+    };
+
+    const firstName = names.filter((n) => n.type === NameTypes.FirstName)[0];
+    const lastName = names.filter((n) => n.type === NameTypes.LastName)[0];
+
+    return {
+      firstName: await isRequested(result[NameTypes.FirstName], firstName),
+      lastName: await isRequested(result[NameTypes.LastName], lastName),
+    };
+  };
+
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
 
@@ -52,9 +78,10 @@ const FullNamesContainer = (props: Props): JSX.Element => {
       const _current = result.fullName[0];
 
       setCurrent(_current);
-      setLoading(false);
 
       if (_current) return;
+
+      const _requestedNames = await getRequestedNames(result, names);
 
       setNameParts(
         names
@@ -62,9 +89,13 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           .map((name) => ({
             ...name,
             exist: result[name.type].length !== 0,
+            isRequested: _requestedNames[name.type],
           }))
       );
+
       setPronunciations(result);
+
+      setLoading(false);
     } else {
       const pronunciations = await props.controller.simpleSearch(
         {
@@ -148,6 +179,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   }
                   name={name.key}
                   type={name.type}
+                  isRequested={name.isRequested}
                   onRecorderClick={openRecorder}
                 />
               )}
