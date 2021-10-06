@@ -8,4 +8,5 @@ export default interface Name {
   key: string;
   exist: boolean;
   type: NameTypes;
+  isRequested?: boolean;
 }
