@@ -30,7 +30,11 @@ export default class FrontController implements IFrontController {
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
-  async complexSearch(names: Array<Name>, nameOwner?: NameOwner, meta?: Meta) {
+  async complexSearch(
+    names: Array<Name>,
+    nameOwner?: NameOwner,
+    meta?: Meta
+  ): Promise<{ [t in NameTypes]: Pronunciation[] }> {
     const owner = nameOwner || this.nameOwnerContext;
 
     const result: { [t in NameTypes]: Pronunciation[] } = {
@@ -139,6 +143,23 @@ export default class FrontController implements IFrontController {
       targetOwnerContext: this.nameOwnerContext,
       userContext: this.userContext,
     });
+  }
+
+  async findRecordingRequest(name: string, type: NameTypes): Promise<boolean> {
+    try {
+      await this.apiClient.pronunciations.findRecordingRequest({
+        target: name,
+        targetTypeSig: NameTypesFactory[type],
+        targetOwnerContext: this.nameOwnerContext,
+        userContext: this.userContext,
+      });
+
+      return true;
+    } catch (error) {
+      if (!error.message.includes("Not Found")) console.error(error);
+
+      return false;
+    }
   }
 
   async sendAnalytics(
