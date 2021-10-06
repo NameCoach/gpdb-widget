@@ -13,6 +13,7 @@ const cx = classNames.bind([styles, nameLineStyles]);
 interface Props {
   name: string;
   type: NameTypes;
+  isRequested?: boolean;
   onRecorderClick?: (name, type) => void;
   canRecordingRequestCreate: boolean;
   canPronunciationCreate: boolean;
@@ -20,7 +21,7 @@ interface Props {
 
 const AbsentName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const [isRequested, setRequest] = useState(false);
+  const [isRequested, setRequest] = useState(props.isRequested || false);
   const [loading, setLoading] = useState(false);
 
   const onRequest = async (): Promise<void> => {
