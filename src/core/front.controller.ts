@@ -166,7 +166,8 @@ export default class FrontController implements IFrontController {
     eventType: string,
     message: string | object | boolean,
     recordingId?: string,
-    rootUrl?: string
+    rootUrl?: string,
+    toolSignature?: string
   ): Promise<void> {
     await this.apiClient.browserExtension.create({
       entityId: this.nameOwnerContext.signature,
@@ -178,7 +179,7 @@ export default class FrontController implements IFrontController {
       message:
         typeof message === "object" ? JSON.stringify(message) : String(message),
       userId: this.nameOwnerContext.signature,
-      toolSignature: "browser_extension",
+      toolSignature: toolSignature || "gpdb_widget",
       versionInfo: {}
     });
   }
