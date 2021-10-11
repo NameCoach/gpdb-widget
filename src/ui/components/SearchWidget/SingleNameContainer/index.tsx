@@ -30,6 +30,22 @@ const SingleNameContainer = (props: Props): JSX.Element => {
   const [name, setName] = useState<Name>();
   const [pronunciations, setPronunciations] = useState<Pronunciation[]>([]);
 
+  const getRequestedNames = async (
+    result: Pronunciation[],
+    name: { key: string; type: NameTypes }
+  ): Promise<boolean> => {
+    if (result.length === 0) {
+      const result = await props.controller.findRecordingRequest(
+        name.key,
+        name.type
+      );
+
+      return result;
+    } else {
+      return false;
+    }
+  };
+
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
     const pronunciations = await props.controller.simpleSearch(
@@ -42,10 +58,16 @@ const SingleNameContainer = (props: Props): JSX.Element => {
 
     setPronunciations(pronunciations);
 
+    const _requestedName = await getRequestedNames(pronunciations, {
+      key: name.key,
+      type: NameTypes.FirstName,
+    });
+
     setName({
       key: name.key,
       type: NameTypes.FirstName,
       exist: pronunciations.length !== 0,
+      isRequested: _requestedName,
     });
 
     setLoading(false);
@@ -74,7 +96,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 pronunciations={pronunciations}
                 name={name.key}
                 type={name.type}
-                reload={() => loadName(props.name)}
+                reload={(): Promise<void> => loadName(props.name)}
                 canRecord={props.permissions.canPronunciation.create}
                 canUserResponse={props.permissions.canUserResponse.create}
                 onRecorderClick={openRecorder}
@@ -89,6 +111,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 }
                 name={name.key}
                 type={name.type}
+                isRequested={name.isRequested}
                 onRecorderClick={openRecorder}
               />
             )}
