@@ -76,7 +76,7 @@ const MyInfo = (props: Props): JSX.Element => {
       index: canPronunciation("index"),
     },
     canUserResponse: { create: canUserResponseCreate() },
-    canRecordingRequest: { craet: canRecordingRequestCreate() },
+    canRecordingRequest: { create: canRecordingRequestCreate() },
   } as UserPermissions;
 
   const onRecorderOpen = (): void =>
