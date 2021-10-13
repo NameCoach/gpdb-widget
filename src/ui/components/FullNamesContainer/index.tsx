@@ -79,7 +79,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
       setCurrent(_current);
 
-      if (_current) return;
+      if (_current) return setLoading(false);
 
       const _requestedNames = await getRequestedNames(result, names);
 
