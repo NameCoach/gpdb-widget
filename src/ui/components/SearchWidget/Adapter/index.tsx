@@ -8,6 +8,7 @@ import SingleNameContainer from "../SingleNameContainer";
 import NoPermissionsError from "../../NoPermissionsError";
 import { UserPermissions } from "../../../../types/permissions";
 import ControllerContext from "../../../contexts/controller";
+import { DEFAULT_NAME_OWNER } from "../../../../constants";
 
 interface Props {
   client: IFrontController;
@@ -30,7 +31,7 @@ const Adapter = (props: Props): JSX.Element => {
   const name = {
     key: props.name,
     value: props.name,
-    owner: props.client.nameOwnerContext,
+    owner: { signature: DEFAULT_NAME_OWNER },
   };
 
   const names = [name] as NameOption[];
@@ -87,7 +88,9 @@ const Adapter = (props: Props): JSX.Element => {
   );
   return (
     <ControllerContext.Provider value={client}>
-      {canPronunciationSimpleSearch ? renderContainer() : NoPermissionsError()}
+      {canPronunciationSimpleSearch()
+        ? renderContainer()
+        : NoPermissionsError()}
     </ControllerContext.Provider>
   );
 };
