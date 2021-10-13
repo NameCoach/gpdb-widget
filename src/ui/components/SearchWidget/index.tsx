@@ -22,6 +22,7 @@ const SearchWidget = (props: Props): JSX.Element => {
     inputValue ? setName(inputValue) : setName(name);
 
   const handleChange = (value: string): void => {
+    setName("");
     inputValue = value;
   };
 
