@@ -23,7 +23,7 @@
   "dependencies": {
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
-    "gpdb-api-client": "1.1.27",
+    "gpdb-api-client": "1.1.29",
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
     "recordrtc": "^5.6.2"
