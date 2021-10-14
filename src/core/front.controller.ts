@@ -16,6 +16,7 @@ import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
 import NameParser from "../types/name-parser";
 import DefaultNameParser from "./parsers/default-name-parser";
+import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 // TODO: provide error handling and nullable responses
 
@@ -219,8 +220,8 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  async loadPermissions(): Promise<void> {
-    this.permissions = await this.apiClient.permissions.load();
+  async loadPermissions(rest?: loadParams): Promise<void> {
+    this.permissions = await this.apiClient.permissions.load(rest);
 
     return Promise.resolve();
   }
