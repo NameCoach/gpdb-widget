@@ -88,9 +88,15 @@ const Recorder = ({
   const currentStep = useRef(step);
   const recorder = useRef(null);
 
-  const [sampleRate, setSampleRate] = useState<{ value: number }>({
-    value: DEFAULT_SAMPLE_RATE,
-  });
+  const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
+
+  const [sampleRate, setSampleRate] = useState<{ value: number }>(
+    defaultSampleRate
+  );
+
+  const [tempSampleRate, setTempSampleRate] = useState<{ value: number }>(
+    defaultSampleRate
+  );
 
   currentStep.current = step;
 
@@ -205,8 +211,18 @@ const Recorder = ({
     setTimeout(await closeAndCallback, ONE_SECOND * 2);
   };
 
+  const setSampleRateToDefault = (): void => {
+    setSampleRate(defaultSampleRate);
+  };
+
+  const onSampleRateCancel = (): void => {
+    closeSlider();
+    setSampleRate(tempSampleRate);
+  };
+
   const onSampleRateSave = (): void => {
     closeSlider();
+    setTempSampleRate(sampleRate);
     controller.saveAudioSampleRate(sampleRate.value);
   };
 
@@ -273,8 +289,9 @@ const Recorder = ({
               min={MIN_SAMPLE_RATE}
               values={[sampleRate.value]}
               onChange={updateSampleRate}
+              onDefaultClicked={setSampleRateToDefault}
             />
-            <button onClick={closeSlider} className={styles.secondary}>
+            <button onClick={onSampleRateCancel} className={styles.secondary}>
               BACK
             </button>
             <button onClick={onSampleRateSave}>SAVE</button>
