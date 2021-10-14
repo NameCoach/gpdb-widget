@@ -31,7 +31,7 @@ const App = () => {
 
   useEffect(() => {
     const load = async () => {
-      await client.loadPermissions()
+      await client.loadPermissions({ user_sig: userContext.email })
 
       setLoading(false);
     }
