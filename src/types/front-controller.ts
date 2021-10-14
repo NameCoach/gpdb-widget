@@ -7,6 +7,7 @@ import {
   PermissionsManager,
 } from "gpdb-api-client";
 import NameParser from "./name-parser";
+import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 export interface Meta {
   uri?: string;
@@ -39,7 +40,7 @@ export interface GpdbRequests {
   ) => PromiseLike<void>;
   requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
   findRecordingRequest: (name: string, type: NameTypes) => PromiseLike<boolean>;
-  loadPermissions: () => PromiseLike<void>;
+  loadPermissions: (rest?: loadParams) => PromiseLike<void>;
 }
 
 export interface NamesServiceRequests {
