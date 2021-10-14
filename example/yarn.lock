@@ -4946,14 +4946,14 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.1.13:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.13.tgz#dc6014b2cb475cc715ec74b0efee92f69a36b808"
-  integrity sha512-oZhNepq/Q/5c+EgkoP0KGdoUOx6p/UBZ39s10X+GrKggUuriWBlVtcWptfBDztHfSXcTiongjlRZkZAEm8haGw==
+gpdb-api-client@1.1.29:
+  version "1.1.29"
+  resolved "https://registry.npmjs.org/gpdb-api-client/-/gpdb-api-client-1.1.29.tgz#8c408ae6acdcaeb4a03c1cf18e9f6a05ac53b1c9"
+  integrity sha512-eoXz97SNyTNzn5ZD4qjS1x1rOi2eoKRacAC1CSqdZpgdakeb1oi0kmDT3Us1Dd/eCQmJl4ESTqAanui+XBRNVw==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
-    query-string "^6.13.7"
+    query-string "^5.0.0"
     snakecase-keys "^3.2.0"
 
 "gpdb-widget@link:..":
