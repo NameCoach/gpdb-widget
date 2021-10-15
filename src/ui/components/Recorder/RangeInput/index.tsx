@@ -26,10 +26,19 @@ const trackStyle = {
   alignSelf: "center",
 };
 
-const RangeInput = ({ min, max, values, onChange }) => {
+const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
   return (
     <div className={styles.pitch}>
-      <div className={styles.slider__label}>Adjust recording audio pitch</div>
+      <div className={styles.slider__label_container}>
+        <div className={styles.slider__label}>Adjust recording audio pitch</div>
+        <div
+          className={styles.slider__default_pitch_value}
+          onClick={onDefaultClicked}
+        >
+          Default
+        </div>
+      </div>
+
       <div className={cx(styles.slider__hint, { left: true })}>Low</div>
       <div className={cx(styles.slider__hint, { right: true })}>High</div>
       <Range
