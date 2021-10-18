@@ -38,12 +38,6 @@ export default class FrontController implements IFrontController {
   ): Promise<{ [t in NameTypes]: Pronunciation[] }> {
     const owner = nameOwner || this.nameOwnerContext;
 
-    const result: { [t in NameTypes]: Pronunciation[] } = {
-      [NameTypes.FirstName]: [],
-      [NameTypes.LastName]: [],
-      [NameTypes.FullName]: [],
-    };
-
     const targets: Target[] = names.map((name) => ({
       target: name.key,
       targetTypeSig: NameTypesFactory[name.type],
@@ -55,33 +49,7 @@ export default class FrontController implements IFrontController {
       userContext: this.userContext,
     });
 
-    names.forEach((name) => {
-      const target = response.target_results.find(
-        (res) => res.target_origin === name.key
-      );
-      const pronunciations: Pronunciation[] = target.pronunciations
-        .map((pronunciation) => {
-          if (result[NameTypes.FullName].length > 0) return;
-          if (
-            result[NameTypes.FullName].length === 0 &&
-            pronunciation.target_type_sig === TargetTypeSig.FullName
-          ) {
-            const nameOwnerCreated =
-              pronunciation.audio_source === AudioSource.NameOwner &&
-              pronunciation.name_owner_signature === owner.signature;
-
-            result[NameTypes.FullName] = [
-              pronunciationMap({ ...pronunciation, nameOwnerCreated }),
-            ];
-            return;
-          }
-          return pronunciationMap(pronunciation);
-        })
-        .filter(Boolean);
-      if (result[NameTypes.FullName].length > 0) return;
-
-      result[name.type] = pronunciations;
-    });
+    const result = this.resultByTargets(names, response.target_results, owner);
 
     try {
       await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
@@ -109,6 +77,29 @@ export default class FrontController implements IFrontController {
     });
 
     return pronunciations.map(pronunciationMap);
+  }
+
+  async searchBySig(nameOwner?: NameOwner, meta?: Meta): Promise<any> {
+    const owner = nameOwner || this.nameOwnerContext;
+    const {
+      target_results,
+    }: any = await this.apiClient.pronunciations.searchBySig({
+      targetOwnerContext: owner,
+      userContext: this.userContext,
+    });
+
+    const names = target_results.map((target) => ({
+      key: target.target_origin,
+    }));
+
+    const result = this.resultByTargets(names, target_results, owner);
+
+    try {
+      await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
+    } catch (e) {
+      console.error(e);
+    }
+    return [names, result];
   }
 
   createRecording(
@@ -181,7 +172,7 @@ export default class FrontController implements IFrontController {
         typeof message === "object" ? JSON.stringify(message) : String(message),
       userId: this.nameOwnerContext.signature,
       toolSignature: toolSignature || "gpdb_widget",
-      versionInfo: {}
+      versionInfo: {},
     });
   }
 
@@ -232,5 +223,50 @@ export default class FrontController implements IFrontController {
 
   async loadAudioSampleRate(): Promise<number> {
     return 1;
+  }
+
+  resultByTargets(names, target_results, owner): any {
+    const result: { [t in NameTypes]: Pronunciation[] } = {
+      [NameTypes.FirstName]: [],
+      [NameTypes.LastName]: [],
+      [NameTypes.FullName]: [],
+    };
+    names.forEach((name) => {
+      const target = target_results.find(
+        (res) => res.target_origin === name.key
+      );
+      const pronunciations: Pronunciation[] = target.pronunciations
+        .map((pronunciation) => {
+          if (result[NameTypes.FullName].length > 0) return;
+          if (
+            result[NameTypes.FullName].length === 0 &&
+            pronunciation.target_type_sig === TargetTypeSig.FullName
+          ) {
+            const nameOwnerCreated =
+              pronunciation.audio_source === AudioSource.NameOwner &&
+              pronunciation.name_owner_signature === owner.signature;
+
+            result[NameTypes.FullName] = [
+              pronunciationMap({ ...pronunciation, nameOwnerCreated }),
+            ];
+            if (!name.type) {
+              name.type = NameTypes.FullName;
+            }
+            return;
+          }
+          if (!name.type) {
+            TargetTypeSig.FirstName === pronunciation.target_type_sig
+              ? (name.type = NameTypes.FirstName)
+              : (name.type = NameTypes.LastName);
+          }
+          return pronunciationMap(pronunciation);
+        })
+        .filter(Boolean);
+      if (result[NameTypes.FullName].length > 0) return;
+
+      result[name.type] = pronunciations;
+    });
+
+    return result;
   }
 }
