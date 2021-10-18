@@ -31,6 +31,11 @@ export interface GpdbRequests {
     nameOwner?: NameOwner,
     meta?: Meta
   ) => PromiseLike<Pronunciation[]>;
+  searchBySig: (
+    nameOwner?: NameOwner
+  ) => PromiseLike<
+    [Array<Omit<Name, "exist">>, { [t in NameTypes]: Pronunciation[] }]
+  >;
   createUserResponse: (id: string, type: UserResponse) => PromiseLike<void>;
   createRecording: (
     name: string,
