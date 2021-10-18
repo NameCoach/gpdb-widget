@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
@@ -36,6 +36,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
+  const fullNamesOject = useRef([]);
 
   const getRequestedNames = async (
     result: { [t in NameTypes]: Pronunciation[] },
@@ -63,39 +64,90 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     };
   };
 
+  const searchBySig = async (name: NameOption): Promise<void> => {
+    const nameOwner = { signature: name.value, email: name.value };
+    const [names, result] = await props.controller.searchBySig(nameOwner);
+
+    const fullName = names.find((n) => n.type === NameTypes.FullName);
+
+    fullNamesOject.current =
+      typeof fullName === "object"
+        ? [{ key: name.key, value: fullName.key, owner: nameOwner }]
+        : [name];
+
+    const _current = result.fullName[0];
+    setCurrent(_current);
+
+    if (_current) return setLoading(false);
+
+    const mappedNames = Object.values(NameTypes).map((_type) => {
+      let _name = names.find((n) => n.type === _type) as Name;
+
+      if (!_name) _name = { key: "", type: _type, exist: false };
+      else _name.exist = true;
+
+      return { ..._name };
+    });
+
+    const _requestedNames = await getRequestedNames(result, mappedNames);
+
+    setNameParts(
+      names
+        .filter((n) => n.type !== NameTypes.FullName)
+        .map((name) => ({
+          ...name,
+          exist: result[name.type].length !== 0,
+          isRequested: _requestedNames[name.type],
+        }))
+    );
+
+    setPronunciations(result);
+
+    setLoading(false);
+  };
+
+  const complexSearch = async (name: NameOption): Promise<void> => {
+    fullNamesOject.current = [name];
+    const parsedNames = props.controller.nameParser.parse(name.value);
+    const names = Object.values(NameTypes)
+      .filter((type) => parsedNames[type])
+      .map((type) => ({
+        key: parsedNames[type],
+        type,
+      }));
+    const result = await props.controller.complexSearch(names, name.owner);
+    const _current = result.fullName[0];
+
+    setCurrent(_current);
+
+    if (_current) return setLoading(false);
+
+    const _requestedNames = await getRequestedNames(result, names);
+
+    setNameParts(
+      names
+        .filter((n) => n.type !== NameTypes.FullName)
+        .map((name) => ({
+          ...name,
+          exist: result[name.type].length !== 0,
+          isRequested: _requestedNames[name.type],
+        }))
+    );
+
+    setPronunciations(result);
+
+    setLoading(false);
+  };
+
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
-
-    if (props.permissions.canPronunciation.search) {
-      const parsedNames = props.controller.nameParser.parse(name.value);
-      const names = Object.values(NameTypes)
-        .filter((type) => parsedNames[type])
-        .map((type) => ({
-          key: parsedNames[type],
-          type,
-        }));
-      const result = await props.controller.complexSearch(names, name.owner);
-      const _current = result.fullName[0];
-
-      setCurrent(_current);
-
-      if (_current) return setLoading(false);
-
-      const _requestedNames = await getRequestedNames(result, names);
-
-      setNameParts(
-        names
-          .filter((n) => n.type !== NameTypes.FullName)
-          .map((name) => ({
-            ...name,
-            exist: result[name.type].length !== 0,
-            isRequested: _requestedNames[name.type],
-          }))
-      );
-
-      setPronunciations(result);
-
-      setLoading(false);
+    if (
+      name.value.includes("@") &&
+      props.permissions.canPronunciation.search_by_sig
+    ) {
+      await searchBySig(name);
+    } else if (props.permissions.canPronunciation.search) {
+      await complexSearch(name);
     } else {
       const pronunciations = await props.controller.simpleSearch(
         {
@@ -111,7 +163,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   };
 
   const onSelect = (name: NameOption): Promise<void> => {
-    const owner = props.names.find((n) => n.key === name.key).owner;
+    const owner = fullNamesOject.current.find((n) => n.key === name.key).owner;
     setNameParts([]);
     return loadName({ ...name, owner });
   };
@@ -142,17 +194,19 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   return (
     <>
-      <FullNamesList
-        names={props.names}
-        onSelect={onSelect}
-        value={currentPronunciation}
-        loading={loading}
-        hideActions={
-          props.permissions.canPronunciation.search &&
-          !currentPronunciation &&
-          nameParts.length > 0
-        }
-      />
+      {fullNamesOject.current.length > 0 && (
+        <FullNamesList
+          names={fullNamesOject.current}
+          onSelect={onSelect}
+          value={currentPronunciation}
+          loading={loading}
+          hideActions={
+            props.permissions.canPronunciation.search &&
+            !currentPronunciation &&
+            nameParts.length > 0
+          }
+        />
+      )}
 
       {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
