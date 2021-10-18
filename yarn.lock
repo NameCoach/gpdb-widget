@@ -1914,10 +1914,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@1.1.29:
-  version "1.1.29"
-  resolved "https://registry.npmjs.org/gpdb-api-client/-/gpdb-api-client-1.1.29.tgz#8c408ae6acdcaeb4a03c1cf18e9f6a05ac53b1c9"
-  integrity sha512-eoXz97SNyTNzn5ZD4qjS1x1rOi2eoKRacAC1CSqdZpgdakeb1oi0kmDT3Us1Dd/eCQmJl4ESTqAanui+XBRNVw==
+gpdb-api-client@1.1.31:
+  version "1.1.31"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.31.tgz#db7d993639328c75bcf4c37c0e16d6d918381b64"
+  integrity sha512-Bmvly2leAjxVTvz83jhthEIKf3LzKa/dC+86eh0bC6Z42YnXsbKknd/cUfKFqaaHsBgm+YgCZO9Ggmn5hGGNtg==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
