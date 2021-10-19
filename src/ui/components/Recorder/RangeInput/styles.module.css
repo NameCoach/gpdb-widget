@@ -1,0 +1,45 @@
+@value primaryBrandColor, secondaryGray from "../../../styles/colors.css";
+
+.pitch {
+  position: relative;
+  width: 90%;
+  padding: 8px;
+}
+
+.slider__label_container {
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.slider__label {
+  left: 8px;
+  top: -18px;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.slider__default_pitch_value{
+  margin-bottom: 10px;
+  line-height: 1.8;
+  color: blue;
+}
+
+.slider__default_pitch_value:hover{
+  cursor: pointer;
+  color: #8A49D5;
+  margin-bottom: 10px;
+  line-height: 1.8;
+}
+
+.slider__hint {
+  position: absolute;
+  font-size: 10px;
+}
+.slider__hint.left {
+  left: 8px;
+}
+.slider__hint.right {
+  right: 4px;
+}
+
