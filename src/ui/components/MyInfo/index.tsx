@@ -117,6 +117,7 @@ const MyInfo = (props: Props): JSX.Element => {
             termsAndConditions={props.termsAndConditions}
             controller={client}
             permissions={permissions}
+            byMyInfo
           />
         </>
       )}
