@@ -8,6 +8,7 @@
 .control {
   flex: 0 0 80%;
   margin-right: 2%;
+  margin-bottom: 10px;
 }
 
 .hint {
