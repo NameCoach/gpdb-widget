@@ -76,7 +76,13 @@ export default class FrontController implements IFrontController {
       user_sig: this.userContext.signature,
     });
 
-    return pronunciations.map(pronunciationMap);
+    return pronunciations
+      .filter(
+        (p) =>
+          p.audio_source === AudioSource.NameOwner &&
+          p.name_owner_signature === owner.signature
+      )
+      .map(pronunciationMap);
   }
 
   async searchBySig(nameOwner?: NameOwner, meta?: Meta): Promise<any> {
