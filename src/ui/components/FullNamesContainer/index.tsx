@@ -163,7 +163,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   };
 
   const onSelect = (name: NameOption): Promise<void> => {
-    const owner = fullNamesOject.current.find((n) => n.key === name.key).owner;
+    const owner = props.names.find((n) => n.key === name.key).owner;
     setNameParts([]);
     return loadName({ ...name, owner });
   };
@@ -194,19 +194,17 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   return (
     <>
-      {fullNamesOject.current.length > 0 && (
-        <FullNamesList
-          names={fullNamesOject.current}
-          onSelect={onSelect}
-          value={currentPronunciation}
-          loading={loading}
-          hideActions={
-            props.permissions.canPronunciation.search &&
-            !currentPronunciation &&
-            nameParts.length > 0
-          }
-        />
-      )}
+      <FullNamesList
+        names={props.names}
+        onSelect={onSelect}
+        value={currentPronunciation}
+        loading={loading}
+        hideActions={
+          props.permissions.canPronunciation.search &&
+          !currentPronunciation &&
+          nameParts.length > 0
+        }
+      />
 
       {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
