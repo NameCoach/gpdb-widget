@@ -23,7 +23,7 @@ const SearchWidget = (props: Props): JSX.Element => {
 
   const handleChange = (value: string): void => {
     setName("");
-    inputValue = value;
+    inputValue = value.trim();
   };
 
   const handleEnterPressed = (e): void => {
