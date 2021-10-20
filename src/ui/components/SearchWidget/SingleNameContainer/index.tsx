@@ -34,7 +34,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
     result: Pronunciation[],
     name: { key: string; type: NameTypes }
   ): Promise<boolean> => {
-    if (result.length === 0) {
+    if (result.length === 0 && props.permissions.canRecordingRequest.find) {
       const result = await props.controller.findRecordingRequest(
         name.key,
         name.type
