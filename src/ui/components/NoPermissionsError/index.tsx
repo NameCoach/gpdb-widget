@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames/bind";
-import styles from "../MyInfo/styles.module.css";
+import styles from "../PronunciationMyInfoWidget/styles.module.css";
 
 const cx = classNames.bind(styles);
 
