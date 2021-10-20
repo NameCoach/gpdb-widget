@@ -44,7 +44,10 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     names: { key: string; type: string }[]
   ): Promise<{ firstName: boolean; lastName: boolean }> => {
     const isRequested = async (pronunciations, name): Promise<boolean> => {
-      if (pronunciations.length === 0) {
+      if (
+        pronunciations.length === 0 &&
+        props.permissions.canRecordingRequest.find
+      ) {
         const result = await props.controller.findRecordingRequest(
           name.key,
           name.type
@@ -123,7 +126,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     if (props.byMyInfo) {
       const fullNamePronunciation = result.fullName[0];
 
-      _current = fullNamePronunciation.nameOwnerCreated
+      _current = fullNamePronunciation?.nameOwnerCreated
         ? fullNamePronunciation
         : null;
     } else {
