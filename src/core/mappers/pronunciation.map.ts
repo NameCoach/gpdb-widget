@@ -1,9 +1,11 @@
-import Pronunciation from "../../types/resources/pronunciation";
+import Pronunciation, {
+  AudioSource,
+} from "../../types/resources/pronunciation";
 
 const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
   id: raw.id,
   audioSrc: raw.audio_url,
-  nameOwnerCreated: raw.nameOwnerCreated,
+  nameOwnerCreated: raw.audio_source === AudioSource.NameOwner,
   language:
     raw.language_metadata?.origin_language?.[0]?.language ||
     raw.language_metadata?.speaker_language,
