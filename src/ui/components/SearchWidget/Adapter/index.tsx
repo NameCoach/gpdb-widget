@@ -47,6 +47,9 @@ const Adapter = (props: Props): JSX.Element => {
   const canRecordingRequestCreate = (): boolean =>
     client.permissions.can(Resources.RecordingRequest, "create");
 
+  const canRecordingRequestFind = (): boolean =>
+    client.permissions.can(Resources.RecordingRequest, "find");
+
   const canPronunciationComplexSearch = (): boolean =>
     client.permissions.can(Resources.Pronunciation, "search");
 
@@ -54,7 +57,7 @@ const Adapter = (props: Props): JSX.Element => {
     client.permissions.can(Resources.Pronunciation, "index");
 
   const canPronunciationSearchBySig = (): boolean =>
-  client.permissions.can(Resources.Pronunciation, "search_by_sig");
+    client.permissions.can(Resources.Pronunciation, "search_by_sig");
 
   const permissions = {
     canUserResponse: { create: canUserResponseCreate() },
@@ -64,7 +67,10 @@ const Adapter = (props: Props): JSX.Element => {
       index: canPronunciationSimpleSearch(),
       search_by_sig: canPronunciationSearchBySig(),
     },
-    canRecordingRequest: { create: canRecordingRequestCreate() },
+    canRecordingRequest: {
+      create: canRecordingRequestCreate(),
+      find: canRecordingRequestFind(),
+    },
   } as UserPermissions;
 
   const renderContainer = (): JSX.Element => (
