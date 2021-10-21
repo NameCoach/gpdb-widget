@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import IFrontController from "../../../types/front-controller";
-import { SEARCH_BOX_TIP } from "../../../constants";
-import styles from "../MyInfo/styles.module.css";
+import styles from "../PronunciationMyInfoWidget/styles.module.css";
 import classNames from "classnames/bind";
 import NamesListContainer from "./Adapter";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
+import Header from "./Header";
 
 const cx = classNames.bind(styles);
 
@@ -16,39 +16,23 @@ type Props = {
 const SearchWidget = (props: Props): JSX.Element => {
   let inputValue = "";
   const [name, setName] = useState("");
-  const [state, setState] = useState(false);
 
   const handleSubmit = (): void =>
-    inputValue ? setName(inputValue) : setName(name);
+    inputValue ? setName(inputValue.trim()) : setName(name);
 
   const handleChange = (value: string): void => {
     setName("");
-    inputValue = value.trim();
+    inputValue = value;
   };
 
   const handleEnterPressed = (e): void => {
     if (e.key === "Enter" || e.keyCode === 13) handleSubmit();
   };
 
-  const tooltipChangeState = (): void => {
-    state ? setState(false) : setState(true);
-  };
-
   const renderContainer = (): JSX.Element => (
     <div className={cx(styles.container)}>
-      <div className={cx(styles.row, styles.m_5)}>
-        <div aria-label="Search" className={cx(styles.title, styles.m_20)}>
-          Search
-        </div>
-        <div
-          aria-label="Tooltip"
-          className={cx(styles.player)}
-          onClick={tooltipChangeState}
-        >
-          <i className={cx("tooltip")} />
-        </div>
-      </div>
-      {state && <div> {SEARCH_BOX_TIP}</div>}
+      <Header />
+
       <div className={cx(styles.row)}>
         <input
           aria-label="Search input field"
@@ -59,6 +43,7 @@ const SearchWidget = (props: Props): JSX.Element => {
           onKeyPress={(e): void => handleEnterPressed(e)}
           style={{ width: "85%", marginLeft: "20px" }}
         />
+
         <div
           aria-label="Search button"
           className={cx(styles.player)}
