@@ -64,7 +64,7 @@ export default class FrontController implements IFrontController {
     name: Omit<Name, "exist">,
     nameOwner?: NameOwner,
     meta?: Meta
-  ): Promise<any> {
+  ): Promise<Pronunciation[]> {
     const owner = nameOwner || this.nameOwnerContext;
     const {
       target_result: { pronunciations },
@@ -76,13 +76,7 @@ export default class FrontController implements IFrontController {
       user_sig: this.userContext.signature,
     });
 
-    return pronunciations
-      .filter(
-        (p) =>
-          p.audio_source === AudioSource.NameOwner &&
-          p.name_owner_signature === owner.signature
-      )
-      .map(pronunciationMap);
+    return pronunciations.map((p) => pronunciationMap(p));
   }
 
   async searchBySig(nameOwner?: NameOwner, meta?: Meta): Promise<any> {
