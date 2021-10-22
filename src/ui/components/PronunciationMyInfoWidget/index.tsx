@@ -34,20 +34,11 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
   const canPronunciation = (permission): boolean =>
     client.permissions.can(Resources.Pronunciation, permission);
 
-  const canComplexSearch = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "search");
+  const canUserResponse = (permission): boolean =>
+    client.permissions.can(Resources.UserResponse, permission);
 
-  const canUserResponseCreate = (): boolean =>
-    client.permissions.can(Resources.UserResponse, "create");
-
-  const canPronunciationCreate = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "create");
-
-  const canRecordingRequestCreate = (): boolean =>
-    client.permissions.can(Resources.RecordingRequest, "create");
-
-  const canRecordingRequestFind = (): boolean =>
-    client.permissions.can(Resources.RecordingRequest, "find");
+  const canRecordingRequest = (permission): boolean =>
+    client.permissions.can(Resources.RecordingRequest, permission);
 
   const blockPermissions = useMemo(
     () => ({
@@ -60,14 +51,14 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
 
   const permissions = {
     canPronunciation: {
-      create: canPronunciationCreate(),
-      search: canComplexSearch(),
+      create: canPronunciation("create"),
+      search: canPronunciation("search"),
       index: canPronunciation("index"),
     },
-    canUserResponse: { create: canUserResponseCreate() },
+    canUserResponse: { create: canUserResponse("create") },
     canRecordingRequest: {
-      create: canRecordingRequestCreate(),
-      find: canRecordingRequestFind(),
+      create: canRecordingRequest("create"),
+      find: canRecordingRequest("find"),
     },
   } as UserPermissions;
 
