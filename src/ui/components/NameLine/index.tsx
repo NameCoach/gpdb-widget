@@ -6,7 +6,7 @@ import Loader from "../Loader";
 import Player from "../Player";
 import RecordAction from "../Actions/Record";
 import UserResponseAction from "../Actions/UserResponse";
-import { UserResponse } from "gpdb-api-client";
+import { NameOwner, UserResponse } from "gpdb-api-client";
 import ControllerContext from "../../contexts/controller";
 import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
@@ -18,6 +18,7 @@ interface Props {
   pronunciations: Pronunciation[];
   name: string;
   type: NameTypes;
+  owner?: NameOwner;
   canRecord: boolean;
   canUserResponse: boolean;
   reload: (type: NameTypes) => void;
@@ -64,7 +65,12 @@ const NameLine = (props: Props): JSX.Element => {
         ? UserResponse.Reject
         : UserResponse.Save;
 
-    await controller.createUserResponse(currentPronunciation.id, response);
+    await controller.createUserResponse(
+      currentPronunciation.id,
+      response,
+      props.owner
+    );
+
     sendAnalytics("save_button_click");
     setPronunciation(null);
     setTimeout(() => props.reload(props.type), 1500);
