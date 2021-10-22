@@ -36,15 +36,27 @@ export interface GpdbRequests {
   ) => PromiseLike<
     [Array<Omit<Name, "exist">>, { [t in NameTypes]: Pronunciation[] }]
   >;
-  createUserResponse: (id: string, type: UserResponse) => PromiseLike<void>;
+  createUserResponse: (
+    id: string,
+    type: UserResponse,
+    nameOwner?: NameOwner
+  ) => PromiseLike<void>;
   createRecording: (
     name: string,
     type: NameTypes,
     audio: string,
     owner?: NameOwner
   ) => PromiseLike<void>;
-  requestRecording: (name: string, type: NameTypes) => PromiseLike<void>;
-  findRecordingRequest: (name: string, type: NameTypes) => PromiseLike<boolean>;
+  requestRecording: (
+    name: string,
+    type: NameTypes,
+    nameOwner?: NameOwner
+  ) => PromiseLike<void>;
+  findRecordingRequest: (
+    name: string,
+    type: NameTypes,
+    nameOwner?: NameOwner
+  ) => PromiseLike<boolean>;
   loadPermissions: (rest?: loadParams) => PromiseLike<void>;
 }
 
