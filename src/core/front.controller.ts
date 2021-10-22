@@ -44,7 +44,7 @@ export default class FrontController implements IFrontController {
       targetOwnerContext: owner,
     }));
 
-    const response: any = await this.apiClient.pronunciations.complexSearch({
+    const response = await this.apiClient.pronunciations.complexSearch({
       targets,
       userContext: this.userContext,
     });
@@ -62,10 +62,10 @@ export default class FrontController implements IFrontController {
 
   async simpleSearch(
     name: Omit<Name, "exist">,
-    nameOwner?: NameOwner,
-    meta?: Meta
+    nameOwner?: NameOwner
   ): Promise<Pronunciation[]> {
     const owner = nameOwner || this.nameOwnerContext;
+
     const {
       target_result: { pronunciations },
     }: any = await this.apiClient.pronunciations.simpleSearch({
@@ -81,9 +81,8 @@ export default class FrontController implements IFrontController {
 
   async searchBySig(nameOwner?: NameOwner, meta?: Meta): Promise<any> {
     const owner = nameOwner || this.nameOwnerContext;
-    const {
-      target_results,
-    }: any = await this.apiClient.pronunciations.searchBySig({
+
+    const { target_results } = await this.apiClient.pronunciations.searchBySig({
       targetOwnerContext: owner,
       userContext: this.userContext,
     });
@@ -119,30 +118,48 @@ export default class FrontController implements IFrontController {
     });
   }
 
-  createUserResponse(id: string, type: UserResponse): PromiseLike<void> {
+  createUserResponse(
+    id: string,
+    type: UserResponse,
+    nameOwner?: NameOwner
+  ): PromiseLike<void> {
+    const ownerSig = nameOwner?.signature || this.nameOwnerContext.signature;
+
     return this.apiClient.pronunciations.userResponse({
       recordingId: id,
       userResponse: type,
-      targetOwnerSig: this.nameOwnerContext.signature,
+      targetOwnerSig: ownerSig,
       userContext: this.userContext,
     });
   }
 
-  requestRecording(name: string, type: NameTypes): PromiseLike<void> {
+  requestRecording(
+    name: string,
+    type: NameTypes,
+    nameOwner?: NameOwner
+  ): PromiseLike<void> {
+    const owner = nameOwner || this.nameOwnerContext;
+
     return this.apiClient.pronunciations.createRecordingRequest({
       target: name,
       targetTypeSig: NameTypesFactory[type],
-      targetOwnerContext: this.nameOwnerContext,
+      targetOwnerContext: owner,
       userContext: this.userContext,
     });
   }
 
-  async findRecordingRequest(name: string, type: NameTypes): Promise<boolean> {
+  async findRecordingRequest(
+    name: string,
+    type: NameTypes,
+    nameOwner?: NameOwner
+  ): Promise<boolean> {
+    const owner = nameOwner || this.nameOwnerContext;
+
     try {
       await this.apiClient.pronunciations.findRecordingRequest({
         target: name,
         targetTypeSig: NameTypesFactory[type],
-        targetOwnerContext: this.nameOwnerContext,
+        targetOwnerContext: owner,
         userContext: this.userContext,
       });
 
@@ -176,7 +193,7 @@ export default class FrontController implements IFrontController {
     });
   }
 
-  async verifyNames(name: string) {
+  async verifyNames(name: string): Promise<any> {
     const foundNames = await this.namesApi.searchNames(
       name,
       this.apiClient.application.instanceSig
@@ -185,7 +202,7 @@ export default class FrontController implements IFrontController {
     const { firstName, lastName } = this.nameParser.parse(name);
     const parsedName = name.split(" ");
 
-    const isNamePartExist = (n) =>
+    const isNamePartExist = (n: string): boolean =>
       !!allNames.find((foundName) =>
         new RegExp(`\\b${foundName}\\b`, "i").test(n)
       );
