@@ -37,7 +37,8 @@ const SingleNameContainer = (props: Props): JSX.Element => {
     if (result.length === 0 && props.permissions.canRecordingRequest.find) {
       const result = await props.controller.findRecordingRequest(
         name.key,
-        name.type
+        name.type,
+        props.name.owner
       );
 
       return result;
@@ -96,6 +97,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 pronunciations={pronunciations}
                 name={name.key}
                 type={name.type}
+                owner={props.name.owner}
                 reload={(): Promise<void> => loadName(props.name)}
                 canRecord={props.permissions.canPronunciation.create}
                 canUserResponse={props.permissions.canUserResponse.create}
@@ -111,6 +113,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 }
                 name={name.key}
                 type={name.type}
+                owner={props.name.owner}
                 isRequested={name.isRequested}
                 onRecorderClick={openRecorder}
               />
@@ -123,6 +126,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
         <Recorder
           name={recorderState.name}
           type={recorderState.type}
+          owner={props.name.owner}
           onRecorded={(): Promise<void> => loadName(props.name)}
           onRecorderClose={setRecorderClosed}
           termsAndConditions={recorderState.termsAndConditions}
