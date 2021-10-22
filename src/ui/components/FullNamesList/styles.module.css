@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  flex: 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.control {
+  flex: 0 0 80%;
+  margin-right: 2%;
+  margin-bottom: 10px;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.m_20 {
+  margin: 20px 0;
+}
+
+.title {
+  font-weight: bold;
+  line-height: 16px;
+  font-size: 18px;
+}
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
