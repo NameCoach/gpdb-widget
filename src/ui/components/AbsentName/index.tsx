@@ -7,12 +7,14 @@ import RequestAction from "../Actions/Request";
 import RecordAction from "../Actions/Record";
 import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
+import { NameOwner } from "gpdb-api-client";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
 interface Props {
   name: string;
   type: NameTypes;
+  owner?: NameOwner;
   isRequested?: boolean;
   onRecorderClick?: (name, type) => void;
   canRecordingRequestCreate: boolean;
@@ -26,7 +28,7 @@ const AbsentName = (props: Props): JSX.Element => {
 
   const onRequest = async (): Promise<void> => {
     setLoading(true);
-    await controller.requestRecording(props.name, props.type);
+    await controller.requestRecording(props.name, props.type, props.owner);
     setRequest(true);
     setLoading(false);
   };
