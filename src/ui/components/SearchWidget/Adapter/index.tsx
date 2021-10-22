@@ -27,49 +27,40 @@ const checkfullName = (name: string): boolean => {
 
 const Adapter = (props: Props): JSX.Element => {
   const isFullName = checkfullName(props.name);
+  const nameIsEmail = props.name.includes("@");
+  const ownerSignature = nameIsEmail ? props.name : DEFAULT_NAME_OWNER;
 
   const name = {
     key: props.name,
     value: props.name,
-    owner: { signature: DEFAULT_NAME_OWNER },
+    owner: { signature: ownerSignature },
   };
-
   const names = [name] as NameOption[];
 
   const client = useMemo(() => props.client, [props.client]);
 
-  const canUserResponseCreate = (): boolean =>
-    client.permissions.can(Resources.UserResponse, "create");
+  const canUserResponse = (permissions): boolean =>
+    client.permissions.can(Resources.UserResponse, permissions);
 
-  const canPronunciationCreate = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "create");
+  const canPronunciation = (permissions): boolean =>
+    client.permissions.can(Resources.Pronunciation, permissions);
 
-  const canRecordingRequestCreate = (): boolean =>
-    client.permissions.can(Resources.RecordingRequest, "create");
-
-  const canRecordingRequestFind = (): boolean =>
-    client.permissions.can(Resources.RecordingRequest, "find");
-
-  const canPronunciationComplexSearch = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "search");
-
-  const canPronunciationSimpleSearch = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "index");
-
-  const canPronunciationSearchBySig = (): boolean =>
-    client.permissions.can(Resources.Pronunciation, "search_by_sig");
+  const canRecordingRequest = (permissions): boolean =>
+    client.permissions.can(Resources.RecordingRequest, permissions);
 
   const permissions = {
-    canUserResponse: { create: canUserResponseCreate() },
+    canUserResponse: {
+      create: nameIsEmail ? canUserResponse("create") : false,
+    },
     canPronunciation: {
-      create: canPronunciationCreate(),
-      search: canPronunciationComplexSearch(),
-      index: canPronunciationSimpleSearch(),
-      search_by_sig: canPronunciationSearchBySig(),
+      create: nameIsEmail ? canPronunciation("create") : false,
+      search: canPronunciation("search"),
+      index: canPronunciation("index"),
+      search_by_sig: canPronunciation("search_by_sig"),
     },
     canRecordingRequest: {
-      create: canRecordingRequestCreate(),
-      find: canRecordingRequestFind(),
+      create: nameIsEmail ? canRecordingRequest("create") : false,
+      find: nameIsEmail ? canRecordingRequest("find") : false,
     },
   } as UserPermissions;
 
@@ -98,9 +89,7 @@ const Adapter = (props: Props): JSX.Element => {
   );
   return (
     <ControllerContext.Provider value={client}>
-      {canPronunciationSimpleSearch()
-        ? renderContainer()
-        : NoPermissionsError()}
+      {canPronunciation("index") ? renderContainer() : NoPermissionsError()}
     </ControllerContext.Provider>
   );
 };
