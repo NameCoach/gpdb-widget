@@ -12,6 +12,7 @@ import styles from "../Container/styles.module.css";
 import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
 import { UserPermissions } from "../../../types/permissions";
+import { NameOwner } from "gpdb-api-client";
 
 interface Props {
   names: NameOption[];
@@ -38,6 +39,8 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
   const fullNamesOject = useRef([]);
+
+  const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
 
   const getRequestedNames = async (
     result: { [t in NameTypes]: Pronunciation[] },
@@ -179,13 +182,17 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const onSelect = (name: NameOption): Promise<void> => {
     const owner = props.names.find((n) => n.key === name.key).owner;
+    setNameOwner(owner);
+
     setNameParts([]);
+
     return loadName({ ...name, owner });
   };
 
   const reloadName = async (type: NameTypes): Promise<void> => {
     const pronunciations = await props.controller.simpleSearch(
-      nameParts.find((n) => n.type === type)
+      nameParts.find((n) => n.type === type),
+      nameOwner
     );
 
     updatePronunciationsByType(type, pronunciations);
@@ -231,6 +238,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   pronunciations={pronunciations[name.type]}
                   name={name.key}
                   type={name.type}
+                  owner={nameOwner}
                   reload={reloadName}
                   canRecord={props.permissions.canPronunciation.create}
                   canUserResponse={props.permissions.canUserResponse.create}
@@ -246,6 +254,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   }
                   name={name.key}
                   type={name.type}
+                  owner={nameOwner}
                   isRequested={name.isRequested}
                   onRecorderClick={openRecorder}
                 />
@@ -263,6 +272,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           <Recorder
             name={recorderState.name}
             type={recorderState.type}
+            owner={nameOwner}
             onRecorded={(): Promise<void> => reloadName(recorderState.type)}
             onRecorderClose={setRecorderClosed}
             termsAndConditions={recorderState.termsAndConditions}
