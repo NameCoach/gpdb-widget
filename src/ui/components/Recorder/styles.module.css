@@ -23,7 +23,8 @@
 .recorder__actions {
   display: flex;
   width: 100%;
-  justify-content: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -32,6 +33,7 @@
 }
 
 .recorder__actions button {
+  margin-top: 10px;
   margin-left: 10px;
 }
 
