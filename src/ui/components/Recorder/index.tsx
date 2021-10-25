@@ -303,6 +303,7 @@ const Recorder = ({
             </button>
 
             <ReactTooltip
+              uuid="save_pitch_tooltip_id"
               multiline
               eventOff="mouseout"
               textColor="white"
