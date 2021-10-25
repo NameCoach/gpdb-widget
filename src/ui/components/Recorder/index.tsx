@@ -19,6 +19,8 @@ import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
+import ReactTooltip from "react-tooltip";
+import { SAVE_PITCH_TIP } from "../../../constants";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -291,10 +293,21 @@ const Recorder = ({
               onChange={updateSampleRate}
               onDefaultClicked={setSampleRateToDefault}
             />
+
             <button onClick={onSampleRateCancel} className={styles.secondary}>
               BACK
             </button>
-            <button onClick={onSampleRateSave}>SAVE</button>
+
+            <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
+              SAVE PITCH
+            </button>
+
+            <ReactTooltip
+              multiline
+              eventOff="mouseout"
+              textColor="white"
+              backgroundColor="#946cc1"
+            />
           </>
         )}
         {step === STATES.RECORDED && !slider && (
@@ -303,7 +316,7 @@ const Recorder = ({
               CLOSE
             </button>
             <button onClick={onStart}>RERECORD</button>
-            <button onClick={onSave}>SAVE</button>
+            <button onClick={onSave}>SAVE PRONUNCIATION</button>
           </>
         )}
       </div>
