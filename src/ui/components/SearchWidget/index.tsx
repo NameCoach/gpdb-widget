@@ -5,6 +5,7 @@ import classNames from "classnames/bind";
 import NamesListContainer from "./Adapter";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import Header from "./Header";
+import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,11 @@ type Props = {
 };
 
 const SearchWidget = (props: Props): JSX.Element => {
+  const canSearchWidget = props.client.permissions?.can(
+    Resources.Pronunciation,
+    "search-widget"
+  );
+
   let inputValue = "";
   const [name, setName] = useState("");
 
@@ -63,7 +69,7 @@ const SearchWidget = (props: Props): JSX.Element => {
     </div>
   );
 
-  return renderContainer();
+  return canSearchWidget ? renderContainer() : <div />;
 };
 
 export default SearchWidget;
