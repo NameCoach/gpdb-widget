@@ -24,6 +24,7 @@
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
     "gpdb-api-client": "1.1.31",
+    "react-copy-to-clipboard": "^5.0.4",
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
     "react-tooltip": "^4.2.21",
