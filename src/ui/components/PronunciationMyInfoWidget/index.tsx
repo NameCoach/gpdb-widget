@@ -54,6 +54,7 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       create: canPronunciation("create"),
       search: canPronunciation("search"),
       index: canPronunciation("index"),
+      share: canPronunciation("share"),
     },
     canUserResponse: { create: canUserResponse("create") },
     canRecordingRequest: {
