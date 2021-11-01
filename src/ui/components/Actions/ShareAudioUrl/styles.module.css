@@ -1,0 +1,7 @@
+.share-audio-url {
+  composes: share-audio-url from "../../../styles/icons.css";
+}
+
+.icon_button {
+  composes: icon-btn from "../../../styles/icons.css";
+}
