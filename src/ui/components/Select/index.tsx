@@ -55,7 +55,7 @@ const customStyles = (controlStyles = {}) => ({
   }),
 });
 
-const SelectComponent = (props: Props) => {
+const SelectComponent = (props: Props): JSX.Element => {
   const initValue = useMemo(() => props.options[0], props.options);
 
   return (
