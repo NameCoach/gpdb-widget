@@ -1,7 +1,7 @@
 {
   "name": "gpdb-widget",
   "homepage": "https://NameCoachDevTeam.github.io/gpdb-widget",
-  "version": "1.2.96",
+  "version": "1.2.98",
   "description": "GPDB widget react component",
   "author": "NameCoach",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "dependencies": {
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
-    "gpdb-api-client": "1.1.31",
+    "gpdb-api-client": "1.1.33",
     "react-copy-to-clipboard": "^5.0.4",
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
@@ -33,7 +33,7 @@
   "peerDependencies": {
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
-    "gpdb-api-client": "^1.1.27",
+    "gpdb-api-client": "^1.1.33",
     "react": "^16.0.0",
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
@@ -63,7 +63,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.1.0",
     "gh-pages": "^2.2.0",
-    "gpdb-api-client": "^1.1.27",
+    "gpdb-api-client": "^1.1.33",
     "lodash": "^4.17.21",
     "postcss": "^8.2.10",
     "postcss-modules-values": "^4.0.0",

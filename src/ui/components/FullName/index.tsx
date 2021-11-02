@@ -25,7 +25,7 @@ const FullName = (props: Props) => {
   const onUserResponse = async () => {
     const response =
       pronunciation?.userResponse?.response === UserResponse.Save
-        ? UserResponse.Reject
+        ? UserResponse.NoOpinion
         : UserResponse.Save;
 
     await controller.createUserResponse(pronunciation.id, response);
