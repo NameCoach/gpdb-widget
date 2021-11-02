@@ -4,6 +4,7 @@ import { loadClient, Widget, SearchWidget } from 'gpdb-widget'
 import { useDebouncedCallback } from 'use-debounce'
 import MyInfoSection from './examples/MyInfoSection'
 import Parser from './parser';
+import ScreenResizer from './dev-tools/ScreenResizer';
 
 const style = {
   margin: '50px auto 0 auto',
@@ -47,6 +48,8 @@ const App = () => {
   );
 
   return <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
+    <ScreenResizer />
+    <div>
       Name:
       <input
         defaultValue={name}
@@ -55,6 +58,7 @@ const App = () => {
         required
         style={{ width: "80%", marginLeft: "20px" }}
       />
+    </div>
 
     <Widget client={client} name={name} style={style} />
 
