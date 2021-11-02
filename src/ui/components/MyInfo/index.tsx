@@ -13,6 +13,7 @@ import useRecorderState, {
 } from "../../hooks/useRecorderState";
 import Recorder from "../Recorder";
 import { UserPermissions } from "../../../types/permissions";
+import ShareAudioUrlAction from "../Actions/ShareAudioUrl";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -69,9 +70,20 @@ const MyInfo = (props: Props): JSX.Element => {
 
         <div className={cx(styles.actions)}>
           {loading && <Loader />}
+
+          {!loading &&
+            props.permissions.canPronunciation.share &&
+            pronunciation && (
+              <ShareAudioUrlAction
+                url={pronunciation.audioSrc}
+                text="Audio URL copied"
+              />
+            )}
+
           {!loading && pronunciation && (
             <Player audioSrc={pronunciation.audioSrc} />
           )}
+
           {!loading && (
             <RecordAction
               active={recorderState.isOpen}
