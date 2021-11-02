@@ -44,16 +44,19 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const getRequestedNames = async (
     result: { [t in NameTypes]: Pronunciation[] },
-    names: { key: string; type: string }[]
+    names: { key: string; type: string }[],
+    owner: NameOwner
   ): Promise<{ firstName: boolean; lastName: boolean }> => {
     const isRequested = async (pronunciations, name): Promise<boolean> => {
       if (
         pronunciations.length === 0 &&
-        props.permissions.canRecordingRequest.find
+        props.permissions.canRecordingRequest.find &&
+        name
       ) {
         const result = await props.controller.findRecordingRequest(
           name.key,
-          name.type
+          name.type,
+          owner
         );
 
         return result;
@@ -96,7 +99,11 @@ const FullNamesContainer = (props: Props): JSX.Element => {
       return { ..._name };
     });
 
-    const _requestedNames = await getRequestedNames(result, mappedNames);
+    const _requestedNames = await getRequestedNames(
+      result,
+      mappedNames,
+      name.owner
+    );
 
     setNameParts(
       names
@@ -140,7 +147,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     if (_current) return setLoading(false);
 
-    const _requestedNames = await getRequestedNames(result, names);
+    const _requestedNames = await getRequestedNames(result, names, name.owner);
 
     setNameParts(
       names
@@ -159,6 +166,9 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
+
+    setNameOwner(name.owner);
+
     if (
       name.value.includes("@") &&
       props.permissions.canPronunciation.search_by_sig
@@ -182,7 +192,6 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const onSelect = (name: NameOption): Promise<void> => {
     const owner = props.names.find((n) => n.key === name.key).owner;
-    setNameOwner(owner);
 
     setNameParts([]);
 
