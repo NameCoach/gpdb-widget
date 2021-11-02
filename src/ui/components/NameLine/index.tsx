@@ -62,7 +62,7 @@ const NameLine = (props: Props): JSX.Element => {
   const onUserResponse = async (): Promise<void> => {
     const response =
       currentPronunciation?.userResponse?.response === UserResponse.Save
-        ? UserResponse.Reject
+        ? UserResponse.NoOpinion
         : UserResponse.Save;
 
     await controller.createUserResponse(
