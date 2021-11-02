@@ -1,0 +1,21 @@
+.head-line {
+  display: flex;
+  align-items: flex-end;
+}
+
+.name-word {
+  max-height: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.name-word--secondary {
+  color: #cccccc;
+}
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
