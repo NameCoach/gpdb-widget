@@ -14,13 +14,15 @@ interface Props {
 const ShareAudioUrlAction = (props: Props): JSX.Element => {
   const tooltipDataRef = useRef(null);
 
+  const url = props.url.split("?")[0];
+
   const showTooltip = (): void => {
     ReactTooltip.show(tooltipDataRef.current);
   };
 
   return (
     <>
-      <CopyToClipboard text={props.url}>
+      <CopyToClipboard text={url}>
         <div
           ref={tooltipDataRef}
           data-tip={props.text}
