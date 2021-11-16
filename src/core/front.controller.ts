@@ -178,7 +178,7 @@ export default class FrontController implements IFrontController {
     rootUrl?: string,
     toolSignature?: string
   ): Promise<void> {
-    await this.apiClient.browserExtension.create({
+    await this.apiClient.analyticsEvents.create({
       entityId: this.nameOwnerContext.signature,
       customerId: this.userContext.email || "anonymous",
       entityType: "browser_extension_user",
