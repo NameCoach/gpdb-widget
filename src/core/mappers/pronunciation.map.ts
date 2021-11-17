@@ -14,6 +14,16 @@ const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
     id: raw.user_responses?.[0]?.response_id,
     response: raw.user_responses?.[0]?.user_response,
   },
+  phoneticTranscriptions:
+    (raw.phonetic_transcriptions &&
+      raw.phonetic_transcriptions.map((transcriptions) => ({
+        phoneticTranscription: transcriptions.phonetic_transcription,
+        phoneticsSystemSig: transcriptions.phonetics_system_sig,
+        workerSignature: transcriptions.worker_signature,
+        discussPhonetics: transcriptions.discuss_phonetics,
+        createdAt: new Date(transcriptions.created_at),
+      }))) ||
+    [],
 });
 
 export default pronunciationMap;
