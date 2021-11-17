@@ -1,0 +1,15 @@
+.player {
+  composes: icon-btn from "../../styles/icons.css";
+}
+
+.player__active {
+  composes: active from "../../styles/icons.css";
+}
+
+.speaker {
+  composes: speaker from "../../styles/icons.css";
+}
+
+.playable {
+  composes: playable from "../../styles/icons.css";
+}
