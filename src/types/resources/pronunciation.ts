@@ -1,3 +1,4 @@
+import Phonetic from "./phonetic";
 import UserResponse from "./user-response";
 
 export enum AudioSource {
@@ -13,4 +14,5 @@ export default interface Pronunciation {
   language?: string;
   phoneticSpelling?: string;
   userResponse?: UserResponse;
+  phoneticTranscriptions?: Array<Phonetic>;
 }
