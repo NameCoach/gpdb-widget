@@ -1,0 +1,15 @@
+@value labelGray from "../../../styles/colors.css";
+
+.label {
+  display: inline-block;
+  color: labelGray;
+}
+
+.line {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
