@@ -50,26 +50,31 @@ const FullNamesList = (props: Props): JSX.Element => {
   }, [props.names]);
 
   return (
-    <div className={cx(styles.wrapper)}>
-      <Select
-        className={cx(styles.control)}
-        onChange={onChange}
-        options={options}
-        value={selectValue}
-        styles={selectStyles}
-      />
-      {props.loading && (
-        <div>
-          <Loader />
-        </div>
+    <>
+      <div className={cx(styles.wrapper)}>
+        <Select
+          className={cx(styles.control)}
+          onChange={onChange}
+          options={options}
+          value={selectValue}
+          styles={selectStyles}
+        />
+        {props.loading && (
+          <div>
+            <Loader />
+          </div>
+        )}
+        {!props.hideActions && !props.loading && !props.value && (
+          <span className={cx(styles.hint)}>not available</span>
+        )}
+        {!props.hideActions && !props.loading && props.value && (
+          <Player audioSrc={props.value.audioSrc} autoplay={autoplay} />
+        )}
+      </div>
+      {!props.loading && props.value?.phoneticSpelling && (
+        <div className={styles.phonetic}>{props.value.phoneticSpelling}</div>
       )}
-      {!props.hideActions && !props.loading && !props.value && (
-        <span className={cx(styles.hint)}>not available</span>
-      )}
-      {!props.hideActions && !props.loading && props.value && (
-        <Player audioSrc={props.value.audioSrc} autoplay={autoplay} />
-      )}
-    </div>
+    </>
   );
 };
 
