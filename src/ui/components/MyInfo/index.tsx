@@ -14,6 +14,8 @@ import useRecorderState, {
 import Recorder from "../Recorder";
 import { UserPermissions } from "../../../types/permissions";
 import ShareAudioUrlAction from "../Actions/ShareAudioUrl";
+import CustomAttributes from "../CustomAttributes";
+import CollapsableAction from "../Actions/Collapsable";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -29,6 +31,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
   const [pronunciation, setPronunciation] = useState<Pronunciation>();
   const [loading, setLoading] = useState(true);
+  const [collapsableActive, setCollapsable] = useState(false);
   const [
     recorderState,
     setRecorderClosed,
@@ -42,6 +45,8 @@ const MyInfo = (props: Props): JSX.Element => {
       NameTypes.FullName,
       props.termsAndConditions
     );
+
+  const onCollapsable = () => setCollapsable((value) => !value);
 
   const load = async (): Promise<void> => {
     if (!props.permissions.canPronunciation.index) return;
@@ -80,6 +85,13 @@ const MyInfo = (props: Props): JSX.Element => {
               />
             )}
 
+          {!loading && pronunciation && pronunciation.customAttributes && (
+            <CollapsableAction
+              active={collapsableActive}
+              onClick={onCollapsable}
+            />
+          )}
+
           {!loading && pronunciation && (
             <Player audioSrc={pronunciation.audioSrc} />
           )}
@@ -92,6 +104,16 @@ const MyInfo = (props: Props): JSX.Element => {
           )}
         </div>
       </div>
+
+      {!loading &&
+        pronunciation &&
+        pronunciation.customAttributes &&
+        collapsableActive && (
+          <CustomAttributes
+            attributes={pronunciation.customAttributes}
+            disabled
+          />
+        )}
 
       {recorderState.isOpen && (
         <Recorder
