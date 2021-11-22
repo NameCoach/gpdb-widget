@@ -38,7 +38,12 @@ const FullName = (props: Props) => {
 
   return (
     <div className={styles.head}>
-      <div className={styles.head__names}>{props.children}</div>
+      <div className={styles.head__names}>
+        <span>{props.children}</span>
+        {pronunciation?.phoneticSpelling && (
+          <div className={styles.phonetic}>{pronunciation.phoneticSpelling}</div>
+        )}
+      </div>
 
       {pronunciation?.userResponse && (
         <div className={styles.head__actions}>
