@@ -13,6 +13,7 @@ import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
 import { UserPermissions } from "../../../types/permissions";
 import { NameOwner } from "gpdb-api-client";
+import CustomAttributes from "../CustomAttributes";
 
 interface Props {
   names: NameOption[];
@@ -236,6 +237,13 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           nameParts.length > 0
         }
       />
+
+      {currentPronunciation && currentPronunciation.customAttributes && (
+        <CustomAttributes
+          attributes={currentPronunciation.customAttributes}
+          disabled
+        />
+      )}
 
       {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
