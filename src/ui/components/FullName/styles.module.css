@@ -4,7 +4,7 @@
   min-width: 0;
   overflow: hidden;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -15,12 +15,17 @@
 
 .head__names {
   display: inline-block;
-  font-weight: bold;
-  font-size: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
+}
+.head__names > span {
+  font-weight: bold;
+  font-size: 20px;
+}
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
 }
 
 .head__actions {
