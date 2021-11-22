@@ -50,3 +50,7 @@
 .tooltip{
   composes: tooltip from "../../styles/icons.css";
 }
+
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+}
