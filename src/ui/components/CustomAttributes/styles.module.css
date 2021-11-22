@@ -1,0 +1,23 @@
+input:disabled {
+  border: 0px none;
+  background-color: white;
+  font-family: 'Montserrat', sans-seris;
+  color: black;
+  font-size: 16px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+input[type="checkbox"]:disabled {
+  margin-right: 15px;
+}
+
+.scrollable {
+  height: 40px;
+  overflow-y: scroll;
+}
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
