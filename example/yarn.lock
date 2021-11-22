@@ -3212,6 +3212,13 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
+copy-to-clipboard@^3:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz#115aa1a9998ffab6196f93076ad6da3b913662ae"
+  integrity sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==
+  dependencies:
+    toggle-selection "^1.0.6"
+
 core-js-compat@^3.6.2, core-js-compat@^3.9.0, core-js-compat@^3.9.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.10.1.tgz#62183a3a77ceeffcc420d907a3e6fc67d9b27f1c"
@@ -4941,10 +4948,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@1.1.31:
-  version "1.1.31"
-  resolved "https://registry.npmjs.org/gpdb-api-client/-/gpdb-api-client-1.1.31.tgz#db7d993639328c75bcf4c37c0e16d6d918381b64"
-  integrity sha512-Bmvly2leAjxVTvz83jhthEIKf3LzKa/dC+86eh0bC6Z42YnXsbKknd/cUfKFqaaHsBgm+YgCZO9Ggmn5hGGNtg==
+gpdb-api-client@1.1.33:
+  version "1.1.33"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.33.tgz#5ab40a64fdd5daf305a1a8fe2413658ab97fdfb2"
+  integrity sha512-x2TDRKZ0ZzqI8CIdW8fPz1b4ocsYShJfuWkCIyt6kvflcEV2FjOE9SbZrxmzAR3nXL+2QBC+NDlsg2Ncx/Xkyw==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
@@ -8655,6 +8662,14 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
+react-copy-to-clipboard@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/react-copy-to-clipboard/-/react-copy-to-clipboard-5.0.4.tgz#42ec519b03eb9413b118af92d1780c403a5f19bf"
+  integrity sha512-IeVAiNVKjSPeGax/Gmkqfa/+PuMTBhutEvFUaMQLwE2tS0EXrAdgOpWDX26bWTXF3HrioorR7lr08NqeYUWQCQ==
+  dependencies:
+    copy-to-clipboard "^3"
+    prop-types "^15.5.8"
+
 react-dev-utils@^10.2.1:
   version "10.2.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-10.2.1.tgz#f6de325ae25fa4d546d09df4bb1befdc6dd19c19"
@@ -10180,6 +10195,11 @@ to-space-case@^1.0.0:
   integrity sha1-sFLar7Gysp3HcM6gFj5ewOvJ/Bc=
   dependencies:
     to-no-case "^1.0.0"
+
+toggle-selection@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/toggle-selection/-/toggle-selection-1.0.6.tgz#6e45b1263f2017fa0acc7d89d78b15b8bf77da32"
+  integrity sha1-bkWxJj8gF/oKzH2J14sVuL932jI=
 
 toidentifier@1.0.0:
   version "1.0.0"
