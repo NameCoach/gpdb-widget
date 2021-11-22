@@ -67,6 +67,9 @@ const MyInfo = (props: Props): JSX.Element => {
     <>
       <div className={cx(styles.row)}>
         <span className={cx(styles.title)}>My info</span>
+        {pronunciation?.phoneticSpelling && (
+          <span className={styles.phonetic}>{pronunciation.phoneticSpelling}</span>
+        )}
 
         <div className={cx(styles.actions)}>
           {loading && <Loader />}
