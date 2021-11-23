@@ -8,13 +8,11 @@ input:disabled {
   text-align: right;
 }
 
-input[type="checkbox"]:disabled {
-  margin-right: 15px;
-}
-
 .scrollable {
   height: 40px;
   overflow-y: scroll;
+  overflow-x: hidden;
+
 }
 .container input {
   position: absolute;
