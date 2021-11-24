@@ -16,13 +16,15 @@ const Checkbox = (props: Props) => {
       <label className={styles.label} htmlFor={props.id}>
         {props.label}
       </label>
-      <input
-        type="checkbox"
-        id={props.id}
-        onClick={nullCallback}
-        checked={props.value}
-        disabled={props.disabled}
-      />
+      <span className={styles.checkbox_wrapper}>
+        <input
+          type="checkbox"
+          id={props.id}
+          onClick={nullCallback}
+          checked={props.value}
+          disabled={props.disabled}
+        />
+      </span>
     </div>
   );
 };
