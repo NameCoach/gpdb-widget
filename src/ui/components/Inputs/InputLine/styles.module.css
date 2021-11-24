@@ -5,9 +5,15 @@
   color: labelGray;
 }
 
+.input_wrapper {
+  float: right;
+}
+
 .line {
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 2px;
+  width: 97%;
 }
