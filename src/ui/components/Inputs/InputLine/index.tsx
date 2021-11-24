@@ -16,13 +16,15 @@ const InputLine = (props: Props) => {
       <label className={styles.label} htmlFor={props.id}>
         {props.label}
       </label>
-      <input
-        type="text"
-        id={props.id}
-        onClick={nullCallback}
-        value={props.value ? props.value : ""}
-        disabled={props.disabled}
-      />
+      <span className={styles.input_wrapper}>
+        <input
+          type="text"
+          id={props.id}
+          onClick={nullCallback}
+          value={props.value ? props.value : ""}
+          disabled={props.disabled}
+        />
+      </span>
     </div>
   );
 };
