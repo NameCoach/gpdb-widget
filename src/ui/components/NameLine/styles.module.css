@@ -18,13 +18,13 @@
 .pronunciation__mid {
   position: relative;
   display: flex;
-  align-items: center;
   flex: 0 0 36%;
   max-width: 36%;
   font-size: 12px;
   font-weight: 400;
   line-height: 12px;
   color: #9d9d9d;
+  flex-direction: column;
 }
 
 .pronunciation__control {
@@ -127,9 +127,7 @@
 
 .pronunciation__phonetic {
   composes: phonetic from "../../styles/phonetic.css";
-  position: absolute;
-  left: 1px;
-  top: 20px;
+  margin: 5px 0 0 5px;
   color: black;
 }
 
