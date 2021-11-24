@@ -96,6 +96,11 @@ const NameLine = (props: Props): JSX.Element => {
               className={styles.pronunciation__control}
               onChange={onSelect}
             />
+            {currentPronunciation.phoneticSpelling && (
+              <span className={styles.pronunciation__phonetic}>
+                {currentPronunciation.phoneticSpelling}
+              </span>
+            )}
           </div>
 
           <div
@@ -130,12 +135,6 @@ const NameLine = (props: Props): JSX.Element => {
               />
             )}
           </div>
-
-          {currentPronunciation.phoneticSpelling && (
-            <span className={styles.pronunciation__phonetic}>
-              {currentPronunciation.phoneticSpelling}
-            </span>
-          )}
         </>
       )}
     </div>
