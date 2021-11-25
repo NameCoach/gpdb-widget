@@ -247,7 +247,6 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
       {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
-          <br />
           {nameParts.map((name, index) => (
             <React.Fragment key={name.key}>
               {name.exist ? (
