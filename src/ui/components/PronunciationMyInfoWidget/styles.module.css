@@ -1,0 +1,60 @@
+@import "../../styles/fonts/fonts.css";
+
+.container {
+  font-family: 'Montserrat', sans-seris;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.m_20 {
+  margin: 20px 0;
+}
+
+.m_10 {
+  margin: 10px 0;
+}
+
+.title {
+  font-weight: bold;
+  line-height: 16px;
+  font-size: 18px;
+}
+
+.actions {
+  display: flex;
+}
+
+.m_5 {
+  margin: 5px 0;
+}
+
+.input {
+  font-family: 'Montserrat', sans-seris;
+  font-size: larger;
+  border-style: solid;
+  border-radius: 10px;
+  min-height: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.player {
+  composes: icon-btn from "../../styles/icons.css";
+}
+
+.search {
+  composes: search from "../../styles/icons.css";
+}
+
+.tooltip{
+  composes: tooltip from "../../styles/icons.css";
+}
+
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+}
