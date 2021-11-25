@@ -1,0 +1,9 @@
+.phonetic {
+  font-size: 12px;
+  word-break: keep-all;
+  width: 110px;
+  max-width: 110px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
