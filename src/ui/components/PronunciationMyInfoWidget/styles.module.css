@@ -8,11 +8,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .m_20 {
   margin: 20px 0;
+}
+
+.m_10 {
+  margin: 10px 0;
 }
 
 .title {
