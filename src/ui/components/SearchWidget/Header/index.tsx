@@ -15,7 +15,7 @@ const Header = (): JSX.Element => {
   const renderContainer = (): JSX.Element => (
     <div>
       <div className={cx(styles.row, styles.m_5)}>
-        <div aria-label="Search" className={cx(styles.title, styles.m_20)}>
+        <div aria-label="Search" className={cx(styles.title, styles.m_10)}>
           Search
         </div>
         <div
