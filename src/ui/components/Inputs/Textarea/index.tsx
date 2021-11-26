@@ -5,10 +5,9 @@ interface Props {
   id: string;
   label: string;
   value: string;
-  disabled: boolean;
 }
 
-const InputLine = (props: Props) => {
+const Textarea = (props: Props) => {
   const nullCallback = (_) => false;
 
   return (
@@ -17,16 +16,14 @@ const InputLine = (props: Props) => {
         {props.label}
       </label>
       <span className={styles.input_wrapper}>
-        <input
-          type="text"
+        <textarea
           id={props.id}
           onClick={nullCallback}
           value={props.value ? props.value : ""}
-          disabled={props.disabled}
         />
       </span>
     </div>
   );
 };
 
-export default InputLine;
+export default Textarea;
