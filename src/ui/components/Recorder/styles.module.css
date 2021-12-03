@@ -1,0 +1,72 @@
+@value primaryBrandColor, borderColor, secondary from "../../styles/colors.css";
+
+.recorder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 2.5em;
+  min-height: 90px;
+}
+
+.recorder__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  line-height: 22px;
+}
+
+.recorder__actions {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inline {
+  display: inline-flex;
+}
+
+.recorder__actions button {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.recorder__countdown {
+  margin-top: 5px;
+  font-size: 22px;
+}
+
+.recorder__timer {
+  font-weight: 500;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid borderColor;
+  box-sizing: border-box;
+  border-radius: 2px;
+  padding: 6px 10px;
+  background: transparent;
+  color: primaryBrandColor;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: secondary;
+}
+
+button:active {
+  background-color: secondary;
+}
+
+.no__border {
+  border: none;
+}
