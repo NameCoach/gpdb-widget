@@ -90,12 +90,15 @@ const MyInfo = (props: Props): JSX.Element => {
               />
             )}
 
-          {!loading && pronunciation && pronunciation.customAttributes && (
-            <CollapsableAction
-              active={collapsableActive}
-              onClick={onCollapsable}
-            />
-          )}
+          {!loading &&
+            pronunciation &&
+            pronunciation.customAttributes &&
+            pronunciation.customAttributes.length > 0 && (
+              <CollapsableAction
+                active={collapsableActive}
+                onClick={onCollapsable}
+              />
+            )}
 
           {!loading && pronunciation && (
             <Player audioSrc={pronunciation.audioSrc} />
@@ -113,6 +116,7 @@ const MyInfo = (props: Props): JSX.Element => {
       {!loading &&
         pronunciation &&
         pronunciation.customAttributes &&
+        pronunciation.customAttributes.length > 0 &&
         collapsableActive && (
           <CustomAttributes
             attributes={pronunciation.customAttributes}
