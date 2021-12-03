@@ -238,12 +238,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         }
       />
 
-      {currentPronunciation && currentPronunciation.customAttributes && (
-        <CustomAttributes
-          attributes={currentPronunciation.customAttributes}
-          disabled
-        />
-      )}
+      {currentPronunciation &&
+        currentPronunciation.customAttributes &&
+        currentPronunciation.customAttributes.length > 0 && (
+          <CustomAttributes
+            attributes={currentPronunciation.customAttributes}
+            disabled
+          />
+        )}
 
       {props.permissions.canPronunciation.search && !isRecorderOpen && (
         <>
