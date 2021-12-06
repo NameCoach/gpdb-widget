@@ -112,6 +112,7 @@ const NameLine = (props: Props): JSX.Element => {
             <Player
               className={styles.pronunciation__action}
               audioSrc={currentPronunciation.audioSrc}
+              audioCreator={currentPronunciation.audioCreator}
               autoplay={autoplay}
               onClick={onPlayClick}
             />
