@@ -10,6 +10,18 @@
   composes: speaker from "../../styles/icons.css";
 }
 
+.speaker-gpdb {
+  composes: speaker-gpdb from "../../styles/icons.css";
+}
+
+.speaker-name-owner {
+  composes: speaker-name-owner from "../../styles/icons.css";
+}
+
+.speaker-user {
+  composes: speaker-user from "../../styles/icons.css";
+}
+
 .playable {
   composes: playable from "../../styles/icons.css";
 }
