@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
+import { AudioSource } from "../../../types/resources/pronunciation";
 
 interface Props {
   icon?: "speaker" | "playable";
   autoplay?: boolean;
   audioSrc: string;
+  audioCreator?: AudioSource;
   className?: string;
   onClick?: () => void;
 }
@@ -13,12 +15,19 @@ interface Props {
 const cx = classNames.bind(styles);
 let currentAudio;
 
-const Player = (props: Props) => {
+const speakerCssClasses = {
+  default: "speaker",
+  gpdb: "speaker-gpdb",
+  user: "speaker-user",
+  nameOwner: "speaker-name-owner",
+};
+
+const Player = (props: Props): JSX.Element => {
   const audioRef = useRef(new Audio(props.audioSrc));
   const [isPlaying, setPlaying] = useState<boolean>(false);
 
-  const stop = () => setPlaying(false);
-  const play = async () => {
+  const stop = (): void => setPlaying(false);
+  const play = async (): Promise<void> => {
     try {
       if (props.onClick) props.onClick();
 
@@ -45,11 +54,26 @@ const Player = (props: Props) => {
   }, [props.audioSrc]);
 
   useEffect(() => {
-    return () => {
+    return (): void => {
       audioRef.current.removeEventListener("pause", stop);
       if (currentAudio) currentAudio.removeEventListener("pause", stop);
     };
   }, []);
+
+  const getSpeakerClassName = (audioCreator: string): string => {
+    switch (audioCreator) {
+      case AudioSource.Gpdb:
+        return speakerCssClasses.gpdb;
+      case AudioSource.NameUser:
+        return speakerCssClasses.user;
+      case AudioSource.NameOwner:
+        return speakerCssClasses.nameOwner;
+      default:
+        return speakerCssClasses.default;
+    }
+  };
+
+  const speakerClassName = getSpeakerClassName(props.audioCreator);
 
   return (
     <div
@@ -58,7 +82,7 @@ const Player = (props: Props) => {
       })}
       onClick={play}
     >
-      <i className={cx("speaker")} />
+      <i className={cx(speakerClassName)} />
     </div>
   );
 };
