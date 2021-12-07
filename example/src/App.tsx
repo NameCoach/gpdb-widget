@@ -36,8 +36,9 @@ const App = () => {
 
       setLoading(false);
     }
-  load()
-  }, []);
+
+    load();
+  }, [client]);
 
   const debounced = useDebouncedCallback(
     (value) => {
