@@ -26,7 +26,7 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const Container = (props: Props) => {
+const Container = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [loading, setLoading] = useState(false);
   const [
@@ -53,31 +53,34 @@ const Container = (props: Props) => {
     [controller.permissions]
   );
 
-  const simpleSearch = async (type: NameTypes) => {
+  const simpleSearch = async (type: NameTypes): Promise<void> => {
     updatePronunciationsByType(
       type,
       await controller.simpleSearch(props[type])
     );
   };
 
-  const reloadName = async (type: NameTypes) => {
+  const reloadName = async (type: NameTypes): Promise<void> => {
     if (type === NameTypes.LastName || type === NameTypes.FirstName)
       return await simpleSearch(type);
     else return await props.verifyNames();
   };
 
-  const openRecorder = (name, type) =>
+  const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
   useEffect(() => {
-    const complexSearch = async () => {
+    const complexSearch = async (): Promise<void> => {
       const existedNames = [firstName, lastName, fullName].filter(
         (n) => n.exist
       );
 
       if (existedNames.length === 0) return;
       setLoading(true);
-      setPronunciations(await controller.complexSearch(existedNames));
+
+      const complexSearchResult = await controller.complexSearch(existedNames);
+      setPronunciations(complexSearchResult);
+
       setLoading(false);
     };
 
