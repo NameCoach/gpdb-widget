@@ -1,6 +1,5 @@
 /* URLs */
-export const NAMES_API_URL =
-  "https://search-gpdb-names-vgem6u5rsmbiqdrqmvx7ht2qie.us-east-1.es.amazonaws.com/recordings_new";
+export const EXTENSION_BACKEND_API_URL = "https://ext-api.name-coach.com";
 export const GPDB_API_URL = "https://gpdb.name-coach.com/api/public/v1";
 export const ANALYTICS_API_URL = "https://analytics-api.name-coach.com/api/v1";
 
