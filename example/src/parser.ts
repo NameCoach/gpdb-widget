@@ -11,13 +11,14 @@ const split = (name: string, char: string) => {
 
 export default class Parser implements NameParser {
   parse(name: string): NPResult {
-    if (!name.includes(" ") && !name.includes("@")) return { firstName: null, lastName: null, fullName: name };
-  
-    if (name.includes(" ")) {
-        return split(name, " ");
+    const trimmedName = name.trim();
+    if (!trimmedName.includes(" ") && !trimmedName.includes("@")) return { firstName: null, lastName: null, fullName: trimmedName };
+
+    if (trimmedName.includes(" ")) {
+        return split(trimmedName, " ");
     }
     else {
-        return split(name.split("@")[0], ".");
+        return split(trimmedName.split("@")[0], ".");
     }
   }
 }
