@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import styles from "./styles.module.css";
 import Name, { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
@@ -16,9 +22,7 @@ import AbsentName from "../AbsentName";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 interface Props {
-  firstName: Name;
-  lastName: Name;
-  fullName: Name;
+  names: { [t in NameTypes]: Name };
   verifyNames: () => PromiseLike<void>;
   hideLogo?: boolean;
   termsAndConditions?: TermsAndConditions;
@@ -29,6 +33,10 @@ const cx = classNames.bind(styles);
 const Container = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState(props.names.firstName as Name);
+  const [lastName, setLastName] = useState(props.names.lastName as Name);
+  const [fullName, setFullName] = useState(props.names.fullName as Name);
+
   const [
     recorderState,
     setRecorderClosed,
@@ -36,7 +44,6 @@ const Container = (props: Props): JSX.Element => {
   ] = useRecorderState();
 
   const { isOpen: isRecorderOpen } = recorderState;
-  const { firstName, lastName, fullName } = props;
   const {
     pronunciations,
     setPronunciations,
@@ -69,23 +76,72 @@ const Container = (props: Props): JSX.Element => {
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
+  const resetNameExist = (type, complexSearchResult) =>
+    props.names[type]
+      ? {
+          ...props.names[type],
+          exist: complexSearchResult[type].length > 0,
+        }
+      : {};
+
+  const complexSearch = useCallback(async () => {
+    const existedNames = Object.values(props.names).filter((n) => n.exist);
+
+    if (existedNames.length === 0) return;
+
+    const complexSearchResult = await controller.complexSearch(existedNames);
+
+    setPronunciations(complexSearchResult);
+
+    setFirstName(resetNameExist(NameTypes.FirstName, complexSearchResult));
+    setLastName(resetNameExist(NameTypes.LastName, complexSearchResult));
+    setFullName(resetNameExist(NameTypes.FullName, complexSearchResult));
+  }, []);
+
   useEffect(() => {
-    const complexSearch = async (): Promise<void> => {
-      const existedNames = [firstName, lastName, fullName].filter(
-        (n) => n.exist
+    setLoading(true);
+    complexSearch().then(() => setLoading(false));
+  }, []);
+
+  const getNameParts = () => {
+    const parts = [firstName, lastName].filter((n) => n.key);
+    if (parts.length > 0) return parts;
+
+    return [fullName];
+  };
+
+  const renderNameHeader = () => {
+    if (fullName && fullName.exist) {
+      return (
+        <span className={cx({ "name-word--secondary": !fullName.exist })}>
+          {fullName.key}
+        </span>
       );
+    } else {
+      return (
+        <>
+          {firstName.key && (
+            <span className={cx({ "name-word--secondary": !firstName.exist })}>
+              {`${firstName.key} `}
+            </span>
+          )}
+          {lastName.key && (
+            <span className={cx({ "name-word--secondary": !lastName.exist })}>
+              {lastName.key}
+            </span>
+          )}
+          {!(firstName.key || lastName.key) && (
+            <span className={cx({ "name-word--secondary": !fullName.exist })}>
+              {fullName.key}
+            </span>
+          )}
+        </>
+      );
+    }
+  };
 
-      if (existedNames.length === 0) return;
-      setLoading(true);
-
-      const complexSearchResult = await controller.complexSearch(existedNames);
-      setPronunciations(complexSearchResult);
-
-      setLoading(false);
-    };
-
-    complexSearch();
-  }, [props.fullName, props.firstName, props.lastName]);
+  const nameParts = getNameParts();
+  const isFullName = firstName.exist || lastName.exist;
 
   return (
     <>
@@ -95,23 +151,20 @@ const Container = (props: Props): JSX.Element => {
         <FullName
           name={fullName.key}
           pronunciations={pronunciations.fullName}
+          canPronunciationCreate={canPronunciationCreate}
+          isFullName={isFullName}
           reload={reloadName}
           onRecorderClick={openRecorder}
         >
-          <span className={cx({ "name-word--secondary": !firstName.exist })}>
-            {`${firstName.key}, `}
-          </span>
-          <span className={cx({ "name-word--secondary": !lastName.exist })}>
-            {lastName.key}
-          </span>
+          {renderNameHeader()}
         </FullName>
       </div>
 
-      {!pronunciations.fullName?.[0]?.nameOwnerCreated && (
+      {!pronunciations.fullName?.[0]?.nameOwnerCreated && lastName && (
         <hr className={styles.divider} />
       )}
 
-      {loading && <Loader />}
+      {loading && lastName && <Loader inline />}
 
       {isRecorderOpen && !loading && (
         <Recorder
@@ -126,7 +179,7 @@ const Container = (props: Props): JSX.Element => {
         !isRecorderOpen &&
         !pronunciations.fullName?.[0]?.nameOwnerCreated && (
           <>
-            {[firstName, lastName].map((name, index) => (
+            {nameParts.map((name, index) => (
               <React.Fragment key={`${name.key}-${index}`}>
                 {name.exist ? (
                   <NameLine
@@ -141,11 +194,17 @@ const Container = (props: Props): JSX.Element => {
                     canRecordingRequestCreate={canRecordingRequestCreate}
                     canPronunciationCreate={canPronunciationCreate}
                     name={name.key}
-                    type={name.type}
+                    type={
+                      !firstName.exist && !lastName.exist && !fullName.exist
+                        ? NameTypes.FirstName
+                        : name.type
+                    }
                   />
                 )}
 
-                {index === 0 && <hr className={styles.divider} />}
+                {index === 0 && nameParts.length > 1 && (
+                  <hr className={styles.divider} />
+                )}
               </React.Fragment>
             ))}
           </>
