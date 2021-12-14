@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { loadClient, Widget, SearchWidget, ExtensionWidget } from 'gpdb-widget';
+import { loadClient, Widget, SearchWidget, ExtensionWidget, InfoWidget } from 'gpdb-widget';
 import { useDebouncedCallback } from 'use-debounce';
 import MyInfoSection from './examples/MyInfoSection';
 import Parser from './parser';
 import ScreenResizer from './dev-tools/ScreenResizer';
 import Name, { NameTypes } from "../../src/types/resources/name";
+import { TERMS_AND_CONDITIONS_REQUEST_RESULT } from './examples/constants';
 
 const style = {
   margin: '50px auto 0 auto',
@@ -57,33 +58,56 @@ const App = () => {
     600
   );
 
-  return <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
-    <ScreenResizer />
-    <div>
-      Name:
-      <input
-        defaultValue={name}
-        type="text"
-        onChange={(e) => debounced(e.target.value)}
-        required
-        style={{ width: "80%", marginLeft: "20px" }}
-      />
-    </div>
+  const renderApp = () => (
+<   div>
+      <div>
+        Name:
+        <input
+          defaultValue={name}
+          type="text"
+          onChange={(e) => debounced(e.target.value)}
+          required
+          style={{ width: "80%", marginLeft: "20px" }}
+        />
+      </div>
 
-    <Widget client={client} name={name} style={style} />
-
-      <hr className='divider'/>
-
-    {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
+      <Widget client={client} name={name} style={style} />
 
       <hr className='divider'/>
 
-    {!loading && <MyInfoSection client={client} />}
+      {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
 
       <hr className='divider'/>
 
-    <SearchWidget client={client} />
-    </div>
+      {!loading && <MyInfoSection client={client} />}
+
+      <hr className='divider'/>
+
+      <SearchWidget client={client} />
+      </div>
+  );
+
+  const renderWrapper = () => {
+    const props = {
+      name,
+      parser,
+      callbackComponent: () => renderApp(),
+      callbackAction: () => console.log("Terms accepted"),
+      documentToRender:  TERMS_AND_CONDITIONS_REQUEST_RESULT.data,
+      application: applicationContext,
+      nameOwner: nameOwnerContext,
+      user: userContext
+    };
+
+    return (
+      <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
+        <ScreenResizer />
+        { process.env.NODE_ENV === "development" ?  <InfoWidget {...props} /> : renderApp()}
+      </div>
+    );
+  };
+    
+  return renderWrapper();
 }
 
-export default App
+export default App;
