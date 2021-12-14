@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
-import { loadClient, Widget, SearchWidget } from 'gpdb-widget'
-import { useDebouncedCallback } from 'use-debounce'
-import MyInfoSection from './examples/MyInfoSection'
+import { loadClient, Widget, SearchWidget, ExtensionWidget } from 'gpdb-widget';
+import { useDebouncedCallback } from 'use-debounce';
+import MyInfoSection from './examples/MyInfoSection';
 import Parser from './parser';
 import ScreenResizer from './dev-tools/ScreenResizer';
+import Name, { NameTypes } from "../../src/types/resources/name";
 
 const style = {
   margin: '50px auto 0 auto',
@@ -18,6 +19,14 @@ const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_
 const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
 const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
 const parser = new Parser();
+
+const extensionWidgetNames: { [t in NameTypes]: Name } =
+  {
+    firstName: {key: 'Cole', type: 'firstName' as NameTypes.FirstName, exist: true},
+    fullName: {key: 'Cole Cassidy', type: 'fullName' as NameTypes.FullName, exist: true},
+    lastName: {key: 'Cassidy', type: 'lastName' as NameTypes.LastName, exist: false},
+  };
+
 
 const App = () => {
   const [name, setName] = useState('Jon Snow');
@@ -62,6 +71,10 @@ const App = () => {
     </div>
 
     <Widget client={client} name={name} style={style} />
+
+      <hr className='divider'/>
+
+    {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
 
       <hr className='divider'/>
 
