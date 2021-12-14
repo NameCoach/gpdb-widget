@@ -19,6 +19,7 @@
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
+  height: 30px;
 }
 .head__names > span {
   font-weight: bold;
