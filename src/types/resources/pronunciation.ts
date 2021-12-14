@@ -15,6 +15,6 @@ export default interface Pronunciation {
   language?: string;
   phoneticSpelling?: string;
   userResponse?: UserResponse;
-  phoneticTranscriptions?: Array<Phonetic>
+  phoneticTranscriptions?: Array<Phonetic>;
   customAttributes?: CustomAttribute[];
 }
