@@ -1,5 +1,6 @@
 // COMPONENTS
 import Widget from "./ui/components/Widget";
+import ExtensionWidget from "./ui/components/ExtensionWidget";
 import PronunciationMyInfoWidget from "./ui/components/PronunciationMyInfoWidget";
 import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
@@ -23,6 +24,7 @@ import { Configuration } from "gpdb-api-client";
 
 export {
   Widget,
+  ExtensionWidget,
   PronunciationMyInfoWidget,
   Recorder,
   Player,
