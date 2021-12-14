@@ -9,10 +9,6 @@ import Close from "../Close";
 import Loader from "../Loader";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 
-export interface UIProps {
-  hideLogo?: boolean;
-}
-
 export interface ElemStyleProps {
   width?: number | string;
   height?: number | string;
@@ -21,33 +17,27 @@ export interface ElemStyleProps {
 }
 
 interface MainProperties {
-  name: string;
+  names: { [t in NameTypes]: Name };
   client: IFrontController;
   closable?: boolean;
   onClose?: MouseEventHandler;
   termsAndConditions?: TermsAndConditions;
 }
 
-type Props = MainProperties & ElemStyleProps & UIProps;
+type Props = MainProperties & ElemStyleProps;
 
 const cx = classNames.bind(styles);
 
-const Widget = (props: Props) => {
-  if (!props.name.trim()) throw new Error("Name shouldn't be blank");
-
+const ExtensionWidget = (props: Props) => {
   const controllerContextValue = useMemo(() => props.client, [props.client]);
-  const [names, setNames] = useState<{ [t in NameTypes]: Name }>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [names, setNames] = useState<{ [t in NameTypes]: Name }>(props.names);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const verifyNames = async () => {
     setLoading(true);
-    setNames(await props.client.verifyNames(props.name));
+    setNames(await props.client.verifyNames(props.names.fullName.key));
     setLoading(false);
   };
-
-  useEffect(() => {
-    verifyNames();
-  }, [props.name]);
 
   return (
     <div
@@ -55,21 +45,15 @@ const Widget = (props: Props) => {
       style={{ ...props.style, maxWidth: props.width, height: props.height }}
     >
       {props.closable && <Close onClick={props.onClose} />}
-
       {loading ? (
         <Loader inline />
       ) : (
         <ControllerContext.Provider value={controllerContextValue}>
-          <Container
-            names={names}
-            verifyNames={verifyNames}
-            hideLogo={props.hideLogo}
-            termsAndConditions={props.termsAndConditions}
-          />
+          <Container names={names} verifyNames={verifyNames} />
         </ControllerContext.Provider>
       )}
     </div>
   );
 };
 
-export default Widget;
+export default ExtensionWidget;
