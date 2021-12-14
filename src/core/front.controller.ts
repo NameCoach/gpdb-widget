@@ -194,20 +194,33 @@ export default class FrontController implements IFrontController {
   }
 
   async verifyNames(name: string): Promise<any> {
+    const trimmedName = name.trim();
+    const { firstName, lastName, fullName } = this.nameParser.parse(
+      trimmedName
+    );
     const foundNames = await this.namesApi.searchNames(
-      name,
+      fullName,
       this.apiClient.application.instanceSig
     );
-    const { allNames, fullName } = foundNames;
-    const { firstName, lastName } = this.nameParser.parse(name);
-    const parsedName = name.split(" ");
+    const { allNames, fullName: foundFullName } = foundNames;
 
     const isNamePartExist = (n: string): boolean =>
       !!allNames.find((foundName) =>
         new RegExp(`\\b${foundName}\\b`, "i").test(n)
       );
 
+    const isFullNameExist = !(firstName || lastName)
+      ? isNamePartExist(fullName)
+      : trimmedName
+          .split(" ")
+          .every((n) => foundFullName.includes(n.toLowerCase()));
+
     const result = {
+      [NameTypes.FullName]: {
+        key: fullName,
+        type: NameTypes.FullName,
+        exist: isFullNameExist,
+      },
       [NameTypes.FirstName]: {
         key: firstName,
         type: NameTypes.FirstName,
@@ -217,11 +230,6 @@ export default class FrontController implements IFrontController {
         key: lastName,
         type: NameTypes.LastName,
         exist: isNamePartExist(lastName),
-      },
-      [NameTypes.FullName]: {
-        key: name,
-        type: NameTypes.FullName,
-        exist: parsedName.every((n) => fullName.includes(n.toLowerCase())),
       },
     };
 
@@ -254,7 +262,6 @@ export default class FrontController implements IFrontController {
       );
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
-          if (result[NameTypes.FullName].length > 0) return;
           if (
             result[NameTypes.FullName].length === 0 &&
             pronunciation.target_type_sig === TargetTypeSig.FullName
@@ -263,13 +270,10 @@ export default class FrontController implements IFrontController {
               pronunciation.audio_source === AudioSource.NameOwner &&
               pronunciation.name_owner_signature === owner.signature;
 
-            result[NameTypes.FullName] = [
-              pronunciationMap({ ...pronunciation, nameOwnerCreated }),
-            ];
             if (!name.type) {
               name.type = NameTypes.FullName;
             }
-            return;
+            return pronunciationMap({ ...pronunciation, nameOwnerCreated });
           }
           if (!name.type) {
             TargetTypeSig.FirstName === pronunciation.target_type_sig
@@ -279,7 +283,6 @@ export default class FrontController implements IFrontController {
           return pronunciationMap(pronunciation);
         })
         .filter(Boolean);
-      if (result[NameTypes.FullName].length > 0) return;
 
       result[name.type] = pronunciations;
     });
