@@ -22,6 +22,8 @@ import loadClient from "./ui/hooks/loadClient";
 
 import { Configuration } from "gpdb-api-client";
 
+import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
+
 export {
   Widget,
   ExtensionWidget,
@@ -37,4 +39,5 @@ export {
   NPResult,
   NameParser,
   SearchWidget,
+  InfoWidget,
 };
