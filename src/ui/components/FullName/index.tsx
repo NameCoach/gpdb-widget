@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import Pronunciation from "../../../types/resources/pronunciation";
@@ -16,10 +16,19 @@ interface Props {
   isFullName: boolean;
 }
 
-const FullName = (props: Props) => {
+const FullName = (props: Props): JSX.Element => {
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
 
-  const onRecord = () => props.onRecorderClick(props.name, NameTypes.FullName);
+  const onRecord = (): void =>
+    props.onRecorderClick(props.name, NameTypes.FullName);
+
+  const canCreatePronunciation = useMemo(() => {
+    return (
+      props.canPronunciationCreate &&
+      props.isFullName &&
+      !pronunciation?.nameOwnerCreated
+    );
+  }, [pronunciation?.nameOwnerCreated]);
 
   useEffect(() => {
     setPronunciation(props.pronunciations?.[0]);
@@ -43,7 +52,7 @@ const FullName = (props: Props) => {
             className={nameLineStyles.pronunciation__action}
           />
         )}
-        {props.canPronunciationCreate && props.isFullName && (
+        {canCreatePronunciation && (
           <RecordAction
             className={nameLineStyles.pronunciation__action}
             onClick={onRecord}
