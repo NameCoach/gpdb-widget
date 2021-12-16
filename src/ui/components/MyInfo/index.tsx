@@ -46,7 +46,7 @@ const MyInfo = (props: Props): JSX.Element => {
       props.termsAndConditions
     );
 
-  const onCollapsable = () => setCollapsable((value) => !value);
+  const onCollapsable = (): void => setCollapsable((value) => !value);
 
   const load = async (): Promise<void> => {
     if (!props.permissions.canPronunciation.index) return;

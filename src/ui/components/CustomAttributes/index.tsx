@@ -12,7 +12,7 @@ interface Props {
   disabled: boolean;
 }
 
-const CustomAttributes = (props: Props) => (
+const CustomAttributes = (props: Props): JSX.Element => (
   <div className={styles.attributes_wrapper}>
     <div className={styles.scrollable}>
       {props.attributes.map((attribute) => {
