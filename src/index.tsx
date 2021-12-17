@@ -11,6 +11,9 @@ import SearchWidget from "./ui/components/SearchWidget";
 // TYPES
 import type IFrontController from "./types/front-controller";
 
+// LOADER
+import loadExtensionClient from "./core/loadExtensionClient";
+
 // INTERFACES
 import NameParser, { NPResult } from "./types/name-parser";
 
@@ -36,6 +39,7 @@ export {
   FullNamesList,
   ControllerContext,
   IFrontController,
+  loadExtensionClient,
   NPResult,
   NameParser,
   SearchWidget,

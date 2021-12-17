@@ -71,7 +71,7 @@ const App = () => {
         />
       </div>
 
-      <Widget client={client} name={name} style={style} />
+    {!loading && <Widget client={client} name={name} style={style} />}
 
       <hr className='divider'/>
 
@@ -106,7 +106,7 @@ const App = () => {
       </div>
     );
   };
-    
+
   return renderWrapper();
 }
 
