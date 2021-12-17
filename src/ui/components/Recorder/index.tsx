@@ -210,7 +210,7 @@ const Recorder = ({
       onRecorderClose();
     };
 
-    setTimeout(await closeAndCallback, ONE_SECOND * 2);
+    setTimeout(await closeAndCallback, ONE_SECOND);
   };
 
   const setSampleRateToDefault = (): void => {
