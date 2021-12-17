@@ -49,15 +49,7 @@ export default class FrontController implements IFrontController {
       userContext: this.userContext,
     });
 
-    const result = this.resultByTargets(names, response.target_results, owner);
-
-    try {
-      await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
-    } catch (e) {
-      console.error(e);
-    }
-
-    return result;
+    return this.resultByTargets(names, response.target_results, owner);
   }
 
   async simpleSearch(
@@ -76,7 +68,13 @@ export default class FrontController implements IFrontController {
       user_sig: this.userContext.signature,
     });
 
-    return pronunciations.map((p) => pronunciationMap(p));
+    return pronunciations.map((p) => {
+      const nameOwnerCreated =
+        p.audio_source === AudioSource.NameOwner &&
+        p.name_owner_signature === owner.signature;
+
+      return pronunciationMap({ ...p, nameOwnerCreated });
+    });
   }
 
   async searchBySig(nameOwner?: NameOwner, meta?: Meta): Promise<any> {
@@ -209,18 +207,27 @@ export default class FrontController implements IFrontController {
         new RegExp(`\\b${foundName}\\b`, "i").test(n)
       );
 
-    const isFullNameExist = !(firstName || lastName)
-      ? isNamePartExist(fullName)
-      : trimmedName
-          .split(" ")
-          .every((n) => foundFullName.includes(n.toLowerCase()));
+    if (!(firstName || lastName)) {
+      return {
+        [NameTypes.FirstName]: {
+          key: fullName,
+          type: NameTypes.FirstName,
+          exist: isNamePartExist(fullName),
+        },
+        [NameTypes.LastName]: {
+          key: lastName,
+          type: NameTypes.LastName,
+          exist: isNamePartExist(lastName),
+        },
+        [NameTypes.FullName]: {
+          key: null,
+          type: NameTypes.FullName,
+          exist: false,
+        },
+      };
+    }
 
     const result = {
-      [NameTypes.FullName]: {
-        key: fullName,
-        type: NameTypes.FullName,
-        exist: isFullNameExist,
-      },
       [NameTypes.FirstName]: {
         key: firstName,
         type: NameTypes.FirstName,
@@ -230,6 +237,13 @@ export default class FrontController implements IFrontController {
         key: lastName,
         type: NameTypes.LastName,
         exist: isNamePartExist(lastName),
+      },
+      [NameTypes.FullName]: {
+        key: fullName,
+        type: NameTypes.FullName,
+        exist: fullName
+          .split(" ")
+          .every((n) => foundFullName.includes(n.toLowerCase())),
       },
     };
 
@@ -270,10 +284,16 @@ export default class FrontController implements IFrontController {
               pronunciation.audio_source === AudioSource.NameOwner &&
               pronunciation.name_owner_signature === owner.signature;
 
+            const isHedb = pronunciation.id.match(/hedb_/);
+
             if (!name.type) {
               name.type = NameTypes.FullName;
             }
-            return pronunciationMap({ ...pronunciation, nameOwnerCreated });
+            return pronunciationMap({
+              ...pronunciation,
+              nameOwnerCreated,
+              isHedb,
+            });
           }
           if (!name.type) {
             TargetTypeSig.FirstName === pronunciation.target_type_sig
