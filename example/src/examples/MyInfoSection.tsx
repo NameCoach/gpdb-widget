@@ -6,21 +6,21 @@ interface Props {
 }
 
 const MyInfoSection = (props: Props) => {
-  const me = { 
+  const me = {
     value: 'Jack Green',
     owner: {
       signature: 'jack@name-coach.com',
       email: 'jack@name-coach.com'
-    } 
+    }
   };
-  const email = { 
-    value: 'sometest.email@gmail.com', 
-    owner: { 
+  const email = {
+    value: 'sometest.email@gmail.com',
+    owner: {
       signature: 'sometest.email@gmail.com',
       email: 'sometest.email@gmail.com'
-    } 
+    }
   };
-  const emailWithoutDot = { 
+  const emailWithoutDot = {
     value: 'sometestemailwithoutadot@gmail.com',
     owner: {
       signature: 'sometestemailwithoutadot@gmail.com',
