@@ -60,7 +60,7 @@ const MyInfo = (props: Props): JSX.Element => {
       props.name.owner
     );
 
-    setPronunciation(fullName.filter((p) => p.nameOwnerCreated)[0]);
+    setPronunciation(fullName.find((p) => p.nameOwnerCreated));
     setLoading(false);
   };
 
