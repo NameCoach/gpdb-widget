@@ -12,6 +12,7 @@ export default interface Pronunciation {
   id: string;
   audioSrc: string;
   nameOwnerCreated?: boolean;
+  isHedb?: boolean;
   language?: string;
   phoneticSpelling?: string;
   userResponse?: UserResponse;
