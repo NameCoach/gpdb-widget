@@ -12,14 +12,14 @@ import { usePronunciations } from "../../hooks/pronunciations";
 import Loader from "../Loader";
 import FullName from "../FullName";
 import Logo from "../Logo";
-import NameLine from "../NameLine";
 import Recorder from "../Recorder";
 import ControllerContext from "../../contexts/controller";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
-import AbsentName from "../AbsentName";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
+import SingleName from "../SingleName";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -37,33 +37,29 @@ const Container = (props: Props): JSX.Element => {
   const [lastName, setLastName] = useState(props.names.lastName as Name);
   const [fullName, setFullName] = useState(props.names.fullName as Name);
 
-  const [
-    recorderState,
-    setRecorderClosed,
-    setRecorderOpen,
-  ] = useRecorderState();
+  const [recorderState, setRecorderClosed, setRecorderOpen] =
+    useRecorderState();
 
   const { isOpen: isRecorderOpen } = recorderState;
-  const {
-    pronunciations,
-    setPronunciations,
-    updatePronunciationsByType,
-  } = usePronunciations();
+  const { pronunciations, setPronunciations, updatePronunciationsByType } =
+    usePronunciations();
 
-  const canRecordingRequestCreate = useMemo(
-    () => controller.permissions.can(Resources.RecordingRequest, "create"),
-    [controller.permissions]
-  );
+  const canRecordingRequestCreate = useMemo(() => {
+    return controller.permissions.can(Resources.RecordingRequest, "create");
+  }, [controller.permissions]);
 
-  const canPronunciationCreate = useMemo(
-    () => controller.permissions.can(Resources.Pronunciation, "create"),
-    [controller.permissions]
-  );
+  const canUserResponse = useMemo(() => {
+    return controller.permissions.can(Resources.UserResponse, "create");
+  }, [controller.permissions]);
+
+  const canPronunciationCreate = useMemo(() => {
+    return controller.permissions.can(Resources.Pronunciation, "create");
+  }, [controller.permissions]);
 
   const simpleSearch = async (type: NameTypes): Promise<void> => {
     updatePronunciationsByType(
       type,
-      await controller.simpleSearch(props[type])
+      await controller.simpleSearch(props.names[type])
     );
   };
 
@@ -71,6 +67,13 @@ const Container = (props: Props): JSX.Element => {
     if (type === NameTypes.LastName || type === NameTypes.FirstName)
       return await simpleSearch(type);
     else return await props.verifyNames();
+  };
+
+  const onRecorded = () => {
+    updatePronunciationsByType(recorderState.type, []);
+    reloadName(recorderState.type);
+
+    return Promise.resolve();
   };
 
   const openRecorder = (name, type): void =>
@@ -98,117 +101,118 @@ const Container = (props: Props): JSX.Element => {
     setFullName(resetNameExist(NameTypes.FullName, complexSearchResult));
   }, []);
 
+  const sendAnalytics = (): PromiseLike<void> =>
+    controller.sendAnalytics(
+      AnalyticsEventType.Available,
+      Object.values(props.names)
+    );
+
   useEffect(() => {
     setLoading(true);
-    complexSearch().then(() => setLoading(false));
-  }, []);
+    complexSearch()
+      .then(() => setLoading(false))
+      .then(() => sendAnalytics())
+      .catch((e) => console.log(e));
+  }, [props.names]);
 
-  const getNameParts = () => {
-    const parts = [firstName, lastName].filter((n) => n.key);
-    if (parts.length > 0) return parts;
+  const isSingleName = !(lastName.key || fullName.key);
 
-    return [fullName];
-  };
-
-  const renderNameHeader = () => {
-    if (fullName && fullName.exist) {
-      return (
-        <span className={cx({ "name-word--secondary": !fullName.exist })}>
-          {fullName.key}
-        </span>
-      );
-    } else {
-      return (
-        <>
-          {firstName.key && (
-            <span className={cx({ "name-word--secondary": !firstName.exist })}>
-              {`${firstName.key} `}
-            </span>
-          )}
-          {lastName.key && (
-            <span className={cx({ "name-word--secondary": !lastName.exist })}>
-              {lastName.key}
-            </span>
-          )}
-          {!(firstName.key || lastName.key) && (
-            <span className={cx({ "name-word--secondary": !fullName.exist })}>
-              {fullName.key}
-            </span>
-          )}
-        </>
-      );
-    }
-  };
-
-  const nameParts = getNameParts();
-  const isFullName = firstName.exist || lastName.exist;
-
-  return (
+  const renderSingleNameHeader = () => (
     <>
       <div className={cx("head-line")}>
         {!props.hideLogo && <Logo />}
+        <div className={styles.head}>
+          <div className={styles.head__names}>
+            <span className={cx({ "name-word--secondary": !firstName.exist })}>
+              {firstName.key}
+            </span>
+          </div>
+        </div>
+      </div>
+      <hr className={styles.divider} />
+    </>
+  );
 
+  const renderFullNameHeader = () => (
+    <>
+      <div className={cx("head-line")}>
+        {!props.hideLogo && <Logo />}
         <FullName
           name={fullName.key}
           pronunciations={pronunciations.fullName}
           canPronunciationCreate={canPronunciationCreate}
-          isFullName={isFullName}
           reload={reloadName}
           onRecorderClick={openRecorder}
         >
-          {renderNameHeader()}
+          {fullName && fullName.exist ? (
+            <span className={cx({ "name-word--secondary": !fullName.exist })}>
+              {fullName.key}
+            </span>
+          ) : (
+            <>
+              <span
+                className={cx({ "name-word--secondary": !firstName.exist })}
+              >
+                {`${firstName.key} `}
+              </span>
+              <span className={cx({ "name-word--secondary": !lastName.exist })}>
+                {lastName.key}
+              </span>
+            </>
+          )}
         </FullName>
       </div>
-
-      {!pronunciations.fullName?.[0]?.nameOwnerCreated && lastName && (
+      {!pronunciations.fullName?.[0]?.nameOwnerCreated && (
         <hr className={styles.divider} />
       )}
+      {loading && <Loader inline />}
+    </>
+  );
 
-      {loading && lastName && <Loader inline />}
-
+  return (
+    <>
+      {isSingleName ? renderSingleNameHeader() : renderFullNameHeader()}
       {isRecorderOpen && !loading && (
         <Recorder
           name={recorderState.name}
           type={recorderState.type}
           onRecorderClose={setRecorderClosed}
+          onRecorded={onRecorded}
           termsAndConditions={recorderState.termsAndConditions}
         />
       )}
-
-      {!loading &&
-        !isRecorderOpen &&
-        !pronunciations.fullName?.[0]?.nameOwnerCreated && (
-          <>
-            {nameParts.map((name, index) => (
-              <React.Fragment key={`${name.key}-${index}`}>
-                {name.exist ? (
-                  <NameLine
-                    pronunciations={pronunciations[name.type]}
-                    name={name.key}
-                    type={name.type}
-                    reload={reloadName}
-                    onRecorderClick={openRecorder}
-                  />
-                ) : (
-                  <AbsentName
+      {isSingleName
+        ? !isRecorderOpen && (
+            <SingleName
+              canRecordingRequestCreate={canRecordingRequestCreate}
+              canUserResponse={canUserResponse}
+              canPronunciationCreate={canPronunciationCreate}
+              openRecorder={openRecorder}
+              reloadName={reloadName}
+              name={firstName}
+              pronunciations={pronunciations[NameTypes.FirstName]}
+            />
+          )
+        : !loading &&
+          !isRecorderOpen &&
+          !pronunciations.fullName?.[0]?.nameOwnerCreated && (
+            <>
+              {[firstName, lastName].map((name, index) => (
+                <>
+                  <SingleName
                     canRecordingRequestCreate={canRecordingRequestCreate}
+                    canUserResponse={canUserResponse}
                     canPronunciationCreate={canPronunciationCreate}
-                    name={name.key}
-                    type={
-                      !firstName.exist && !lastName.exist && !fullName.exist
-                        ? NameTypes.FirstName
-                        : name.type
-                    }
+                    openRecorder={openRecorder}
+                    reloadName={reloadName}
+                    name={name}
+                    pronunciations={pronunciations[name.type]}
                   />
-                )}
-
-                {index === 0 && nameParts.length > 1 && (
-                  <hr className={styles.divider} />
-                )}
-              </React.Fragment>
-            ))}
-          </>
-        )}
+                  {index === 0 && <hr className={styles.divider} />}
+                </>
+              ))}
+            </>
+          )}
     </>
   );
 };
