@@ -1,3 +1,27 @@
+.head {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.head__names {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  height: 30px;
+}
+
+.head__names > span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .head-line {
   display: flex;
   align-items: flex-end;
