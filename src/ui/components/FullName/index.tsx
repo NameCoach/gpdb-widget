@@ -13,7 +13,6 @@ interface Props {
   reload: (type: NameTypes) => void;
   onRecorderClick: (name: string, type: NameTypes) => void;
   canPronunciationCreate: boolean;
-  isFullName: boolean;
 }
 
 const FullName = (props: Props): JSX.Element => {
@@ -23,12 +22,10 @@ const FullName = (props: Props): JSX.Element => {
     props.onRecorderClick(props.name, NameTypes.FullName);
 
   const canCreatePronunciation = useMemo(() => {
-    return (
-      props.canPronunciationCreate &&
-      props.isFullName &&
-      !pronunciation?.nameOwnerCreated
-    );
-  }, [pronunciation?.nameOwnerCreated]);
+    return pronunciation
+      ? !pronunciation?.isHedb
+      : props.canPronunciationCreate;
+  }, [pronunciation?.isHedb]);
 
   useEffect(() => {
     setPronunciation(props.pronunciations?.[0]);
@@ -46,7 +43,7 @@ const FullName = (props: Props): JSX.Element => {
       </div>
 
       <div className={styles.head__actions}>
-        {pronunciation && pronunciation.audioSrc && props.isFullName && (
+        {pronunciation && pronunciation.audioSrc && (
           <Player
             audioSrc={pronunciation.audioSrc}
             className={nameLineStyles.pronunciation__action}
