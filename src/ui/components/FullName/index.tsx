@@ -46,6 +46,7 @@ const FullName = (props: Props): JSX.Element => {
         {pronunciation && pronunciation.audioSrc && (
           <Player
             audioSrc={pronunciation.audioSrc}
+            audioCreator={pronunciation.audioCreator}
             className={nameLineStyles.pronunciation__action}
           />
         )}
