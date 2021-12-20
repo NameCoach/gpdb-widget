@@ -101,7 +101,10 @@ const MyInfo = (props: Props): JSX.Element => {
             )}
 
           {!loading && pronunciation && (
-            <Player audioSrc={pronunciation.audioSrc} />
+            <Player
+              audioSrc={pronunciation.audioSrc}
+              audioCreator={pronunciation.audioCreator}
+            />
           )}
 
           {!loading && (
