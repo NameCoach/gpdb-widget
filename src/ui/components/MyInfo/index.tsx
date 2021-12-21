@@ -13,7 +13,7 @@ import useRecorderState, {
 } from "../../hooks/useRecorderState";
 import Recorder from "../Recorder";
 import { UserPermissions } from "../../../types/permissions";
-import ShareAudioUrlAction from "../Actions/ShareAudioUrl";
+import ShareAudioUrlAction, { CopyButton } from "../Actions/ShareAudioUrl";
 import CustomAttributes from "../CustomAttributes";
 import CollapsableAction from "../Actions/Collapsable";
 
@@ -68,6 +68,15 @@ const MyInfo = (props: Props): JSX.Element => {
     load();
   }, [props.name, props.controller]);
 
+  const getCopyButtons = (pronunciation): CopyButton[] => {
+    const result = [{ url: pronunciation.audioSrc, text: "Audio URL" }];
+
+    if (pronunciation.nameBadgeLink)
+      result.push({ url: pronunciation.nameBadgeLink, text: "NameBadge Link" });
+
+    return result;
+  };
+
   const renderContainer = (): JSX.Element => (
     <>
       <div className={cx(styles.row)}>
@@ -84,10 +93,7 @@ const MyInfo = (props: Props): JSX.Element => {
           {!loading &&
             props.permissions.canPronunciation.share &&
             pronunciation && (
-              <ShareAudioUrlAction
-                url={pronunciation.audioSrc}
-                text="Audio URL copied"
-              />
+              <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
             )}
 
           {!loading &&
