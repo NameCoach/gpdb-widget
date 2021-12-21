@@ -21,4 +21,5 @@ export default interface Pronunciation {
   userResponse?: UserResponse;
   phoneticTranscriptions?: Array<Phonetic>;
   customAttributes?: CustomAttribute[];
+  nameBadgeLink?: string;
 }
