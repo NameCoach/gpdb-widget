@@ -18,6 +18,7 @@ const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
     id: raw.user_responses?.[0]?.response_id,
     response: raw.user_responses?.[0]?.user_response,
   },
+  nameBadgeLink: raw.name_badge_link,
   customAttributes: raw.custom_attributes,
   phoneticTranscriptions:
     (raw.phonetic_transcriptions &&
