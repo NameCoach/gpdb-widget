@@ -1,9 +1,12 @@
 import React from 'react'
+import ErrorHandler from '../error-handler';
 import { IFrontController, PronunciationMyInfoWidget } from 'gpdb-widget'
 
 interface Props {
   client: IFrontController
 }
+
+const errorHandler = new ErrorHandler();
 
 const MyInfoSection = (props: Props) => {
   const me = {
@@ -65,7 +68,7 @@ const MyInfoSection = (props: Props) => {
     { key: "widget",  ...widgetTest },
   ]
 
-  return (<PronunciationMyInfoWidget client={props.client} name={me} names={names}/>)
+  return (<PronunciationMyInfoWidget client={props.client} name={me} names={names} errorHandler={errorHandler}/>)
 }
 
 export default MyInfoSection;
