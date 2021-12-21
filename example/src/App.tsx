@@ -79,7 +79,7 @@ const App = () => {
 
       <hr className='divider'/>
 
-      {!loading && <MyInfoSection client={client} />}
+    {!loading && <MyInfoSection client={client}/>}
 
       <hr className='divider'/>
 
