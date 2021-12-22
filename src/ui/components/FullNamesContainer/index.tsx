@@ -14,6 +14,7 @@ import IFrontController from "../../../types/front-controller";
 import { UserPermissions } from "../../../types/permissions";
 import { NameOwner } from "gpdb-api-client";
 import CustomAttributes from "../CustomAttributes";
+import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 
 interface Props {
   names: NameOption[];
@@ -121,6 +122,22 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     setLoading(false);
   };
 
+  const sendAnalytics = (name: NameOption): PromiseLike<void> => {
+    const parsedNames = props.controller.nameParser.parse(name.value);
+    const names = Object.values(NameTypes)
+      .filter((type) => parsedNames[type])
+      .map((type) => ({
+        key: parsedNames[type],
+        type,
+      }));
+    
+    
+    return props.controller.sendAnalytics(
+      AnalyticsEventType.Available,
+      Object.values(names)
+    );
+  }
+
   const complexSearch = async (name: NameOption): Promise<void> => {
     fullNamesOject.current = [name];
     const parsedNames = props.controller.nameParser.parse(name.value);
@@ -176,7 +193,9 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     ) {
       await searchBySig(name);
     } else if (props.permissions.canPronunciation.search) {
-      await complexSearch(name);
+      await complexSearch(name)
+        .then(() => sendAnalytics(name))
+        .catch((e) => console.log(e));
     } else {
       const pronunciations = await props.controller.simpleSearch(
         {
