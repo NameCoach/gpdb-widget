@@ -17,7 +17,7 @@ import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
-import { TermsAndConditions } from "../../hooks/useRecorderState";
+import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
@@ -39,6 +39,7 @@ interface Props {
   onRecorderClose: () => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
+  errorHandler?: ErrorHandler;
 }
 
 const machineSpec = {
@@ -77,6 +78,7 @@ const Recorder = ({
   owner,
   type,
   termsAndConditions,
+  errorHandler,
   onSaved,
 }: Props): JSX.Element => {
   const [step, setStep] = useState(machineSpec.initialState);
@@ -192,8 +194,9 @@ const Recorder = ({
           if (st === COUNTDOWN) onReady();
         }, st * 950);
       });
-    } catch {
+    } catch (error) {
       setTimeout(() => sendEvent(EVENTS.fail), 0);
+      if (errorHandler) errorHandler.capture(error);
     }
   };
 
