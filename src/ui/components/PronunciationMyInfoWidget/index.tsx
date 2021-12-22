@@ -4,7 +4,7 @@ import { NameOption } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
-import { TermsAndConditions } from "../../hooks/useRecorderState";
+import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import FullNamesContainer from "../FullNamesContainer";
 import NoPermissionsError from "../NoPermissionsError";
@@ -16,6 +16,7 @@ interface Props {
   name: Omit<NameOption, "key">;
   names: NameOption[];
   termsAndConditions?: TermsAndConditions;
+  errorHandler?: ErrorHandler;
 }
 
 enum Blocks {
@@ -84,6 +85,7 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
           name={props.name}
           permissions={permissions}
           termsAndConditions={props.termsAndConditions}
+          errorHandler={props.errorHandler}
         />
       )}
     </div>
