@@ -5,7 +5,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const cx = classNames.bind(styles);
 
-const modalMargin = 15;
+const modalMargin = { top: 15, left: 100 };
 
 export interface CopyButton {
   url: string;
@@ -85,9 +85,9 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
     if (shareButton.current) {
       const position = shareButton.current.getBoundingClientRect();
       styles.top =
-        position.top <= 0 ? position.top : position.top - modalMargin;
+        position.top <= 0 ? position.top : position.top - modalMargin.top;
       styles.left =
-        position.left <= 0 ? position.left : position.left - modalMargin;
+        position.left <= 0 ? position.left : position.left - modalMargin.left;
     }
 
     return styles;
