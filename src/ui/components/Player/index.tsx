@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import ReactTooltip from "react-tooltip";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { AudioSource } from "../../../types/resources/pronunciation";
@@ -60,20 +61,36 @@ const Player = (props: Props): JSX.Element => {
     };
   }, []);
 
-  const getSpeakerClassName = (audioCreator: string): string => {
+  const getSpeakerClassNameAndTip = (
+    audioCreator: string
+  ): { className: string; tip: string } => {
+    let className, tip;
     switch (audioCreator) {
-      case AudioSource.Gpdb:
-        return speakerCssClasses.gpdb;
-      case AudioSource.NameUser:
-        return speakerCssClasses.user;
-      case AudioSource.NameOwner:
-        return speakerCssClasses.nameOwner;
-      default:
-        return speakerCssClasses.default;
+      case AudioSource.Gpdb: {
+        className = speakerCssClasses.gpdb;
+        tip = "This is a NameCoach Library Recording";
+        break;
+      }
+      case AudioSource.NameUser: {
+        className = speakerCssClasses.user;
+        tip = "This recording is provided by a peer in your organization";
+        break;
+      }
+      case AudioSource.NameOwner: {
+        className = speakerCssClasses.nameOwner;
+        tip = "This is a self recorded name";
+        break;
+      }
+      default: {
+        className = speakerCssClasses.default;
+        tip = "";
+      }
     }
+
+    return { className, tip };
   };
 
-  const speakerClassName = getSpeakerClassName(props.audioCreator);
+  const { className: speakerClassName, tip: speakerTip } = getSpeakerClassNameAndTip(props.audioCreator);
 
   return (
     <div
@@ -82,7 +99,8 @@ const Player = (props: Props): JSX.Element => {
       })}
       onClick={play}
     >
-      <i className={cx(speakerClassName)} />
+      <ReactTooltip textColor="white" backgroundColor="#946cc1" multiline />
+      <i className={cx(speakerClassName)} data-tip={speakerTip} />
     </div>
   );
 };
