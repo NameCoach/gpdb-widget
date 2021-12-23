@@ -35,7 +35,7 @@ const FullNamesList = (props: Props): JSX.Element => {
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
-  const onChange = async (name) => {
+  const onChange = async (name): void => {
     const _name: NameOption = { key: name.value, value: name.label };
     setValue(nameToOption(_name));
 
@@ -68,7 +68,11 @@ const FullNamesList = (props: Props): JSX.Element => {
           <span className={cx(styles.hint)}>not available</span>
         )}
         {!props.hideActions && !props.loading && props.value && (
-          <Player audioSrc={props.value.audioSrc} autoplay={autoplay} />
+          <Player
+            audioSrc={props.value.audioSrc}
+            audioCreator={props.value.audioCreator}
+            autoplay={autoplay}
+          />
         )}
       </div>
       {!props.loading && props.value?.phoneticSpelling && (
