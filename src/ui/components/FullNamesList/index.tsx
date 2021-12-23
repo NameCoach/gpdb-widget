@@ -35,7 +35,7 @@ const FullNamesList = (props: Props): JSX.Element => {
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
-  const onChange = async (name): void => {
+  const onChange = async (name): Promise<void> => {
     const _name: NameOption = { key: name.value, value: name.label };
     setValue(nameToOption(_name));
 
