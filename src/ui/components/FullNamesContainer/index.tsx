@@ -44,38 +44,6 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
 
-  const getRequestedNames = async (
-    result: { [t in NameTypes]: Pronunciation[] },
-    names: { key: string; type: string }[],
-    owner: NameOwner
-  ): Promise<{ firstName: boolean; lastName: boolean }> => {
-    const isRequested = async (pronunciations, name): Promise<boolean> => {
-      if (
-        pronunciations.length === 0 &&
-        props.permissions.canRecordingRequest.find &&
-        name
-      ) {
-        const result = await props.controller.findRecordingRequest(
-          name.key,
-          name.type,
-          owner
-        );
-
-        return result;
-      } else {
-        return false;
-      }
-    };
-
-    const firstName = names.filter((n) => n.type === NameTypes.FirstName)[0];
-    const lastName = names.filter((n) => n.type === NameTypes.LastName)[0];
-
-    return {
-      firstName: await isRequested(result[NameTypes.FirstName], firstName),
-      lastName: await isRequested(result[NameTypes.LastName], lastName),
-    };
-  };
-
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
     const [names, result] = await props.controller.searchBySig(nameOwner);
@@ -92,28 +60,12 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     if (_current) return setLoading(false);
 
-    const mappedNames = Object.values(NameTypes).map((_type) => {
-      let _name = names.find((n) => n.type === _type) as Name;
-
-      if (!_name) _name = { key: "", type: _type, exist: false };
-      else _name.exist = true;
-
-      return { ..._name };
-    });
-
-    const _requestedNames = await getRequestedNames(
-      result,
-      mappedNames,
-      name.owner
-    );
-
     setNameParts(
       names
         .filter((n) => n.type !== NameTypes.FullName)
         .map((name) => ({
           ...name,
           exist: result[name.type].length !== 0,
-          isRequested: _requestedNames[name.type],
         }))
     );
 
@@ -165,15 +117,12 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     if (_current) return setLoading(false);
 
-    const _requestedNames = await getRequestedNames(result, names, name.owner);
-
     setNameParts(
       names
         .filter((n) => n.type !== NameTypes.FullName)
         .map((name) => ({
           ...name,
           exist: result[name.type].length !== 0,
-          isRequested: _requestedNames[name.type],
         }))
     );
 
@@ -289,10 +238,12 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   canPronunciationCreate={
                     props.permissions.canPronunciation.create
                   }
+                  canRecordingRequestFind={
+                    props.permissions.canRecordingRequest.find
+                  }
                   name={name.key}
                   type={name.type}
                   owner={nameOwner}
-                  isRequested={name.isRequested}
                   onRecorderClick={openRecorder}
                 />
               )}
