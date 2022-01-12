@@ -1,0 +1,40 @@
+.head {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.head__prompt {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.head__names {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  height: 30px;
+}
+.head__names > span {
+  font-weight: bold;
+  font-size: 20px;
+}
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+}
+
+.head__actions {
+  display: inline-flex;
+  width: 28.7%;
+  justify-content: flex-end;
+}
+.head__recorder {
+  float: left;
+  margin-bottom: 5px;
+}
