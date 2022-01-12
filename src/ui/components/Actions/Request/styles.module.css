@@ -5,3 +5,7 @@
 .request_icon {
   composes: request from "../../../styles/icons.css";
 }
+
+.disabled {
+  composes: disabled from "../../../styles/icons.css";
+}
