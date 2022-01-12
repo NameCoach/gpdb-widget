@@ -17,6 +17,7 @@
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
     "react-scripts": "^3.4.1",
+    "react-tooltip": "^4.2.21",
     "typescript": "link:../node_modules/typescript",
     "use-debounce": "^6.0.1"
   },
