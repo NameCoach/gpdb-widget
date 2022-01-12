@@ -20,6 +20,7 @@ import useRecorderState, {
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
+import CustomAttributes from "../CustomAttributes";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -32,20 +33,31 @@ const cx = classNames.bind(styles);
 
 const Container = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState(props.names.firstName as Name);
   const [lastName, setLastName] = useState(props.names.lastName as Name);
   const [fullName, setFullName] = useState(props.names.fullName as Name);
 
-  const [recorderState, setRecorderClosed, setRecorderOpen] =
-    useRecorderState();
+  const [
+    recorderState,
+    setRecorderClosed,
+    setRecorderOpen,
+  ] = useRecorderState();
+
+  const {
+    pronunciations,
+    setPronunciations,
+    updatePronunciationsByType,
+  } = usePronunciations();
 
   const { isOpen: isRecorderOpen } = recorderState;
-  const { pronunciations, setPronunciations, updatePronunciationsByType } =
-    usePronunciations();
 
   const canRecordingRequestCreate = useMemo(() => {
     return controller.permissions.can(Resources.RecordingRequest, "create");
+  }, [controller.permissions]);
+
+  const canRecordingRequestFind = useMemo(() => {
+    return controller.permissions.can(Resources.RecordingRequest, "find");
   }, [controller.permissions]);
 
   const canUserResponse = useMemo(() => {
@@ -79,13 +91,18 @@ const Container = (props: Props): JSX.Element => {
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
-  const resetNameExist = (type, complexSearchResult) =>
-    props.names[type]
-      ? {
-          ...props.names[type],
-          exist: complexSearchResult[type].length > 0,
-        }
-      : {};
+  const resetNameExist = (type, complexSearchResult, stateCb) => {
+    const stateName = props.names[type];
+
+    const refreshedExist = complexSearchResult[type].length > 0;
+
+    if (stateName.exist !== refreshedExist) {
+      stateCb({
+        ...stateName,
+        exist: refreshedExist,
+      });
+    }
+  };
 
   const complexSearch = useCallback(async () => {
     const existedNames = Object.values(props.names).filter((n) => n.exist);
@@ -96,9 +113,9 @@ const Container = (props: Props): JSX.Element => {
 
     setPronunciations(complexSearchResult);
 
-    setFirstName(resetNameExist(NameTypes.FirstName, complexSearchResult));
-    setLastName(resetNameExist(NameTypes.LastName, complexSearchResult));
-    setFullName(resetNameExist(NameTypes.FullName, complexSearchResult));
+    resetNameExist(NameTypes.FirstName, complexSearchResult, setFirstName);
+    resetNameExist(NameTypes.LastName, complexSearchResult, setLastName);
+    resetNameExist(NameTypes.FullName, complexSearchResult, setFullName);
   }, []);
 
   const sendAnalytics = (): PromiseLike<void> =>
@@ -108,12 +125,11 @@ const Container = (props: Props): JSX.Element => {
     );
 
   useEffect(() => {
-    setLoading(true);
     complexSearch()
       .then(() => setLoading(false))
       .then(() => sendAnalytics())
       .catch((e) => console.log(e));
-  }, [props.names]);
+  }, []);
 
   const isSingleName = !(lastName.key || fullName.key);
 
@@ -165,6 +181,17 @@ const Container = (props: Props): JSX.Element => {
       {!pronunciations.fullName?.[0]?.nameOwnerCreated && (
         <hr className={styles.divider} />
       )}
+      {pronunciations.fullName[0] &&
+        pronunciations.fullName[0].customAttributes &&
+        pronunciations.fullName[0].customAttributes.length > 0 && (
+          <>
+            <br />
+            <CustomAttributes
+              attributes={pronunciations.fullName[0].customAttributes}
+              disabled
+            />
+          </>
+        )}
       {loading && <Loader inline />}
     </>
   );
@@ -185,6 +212,7 @@ const Container = (props: Props): JSX.Element => {
         ? !isRecorderOpen && (
             <SingleName
               canRecordingRequestCreate={canRecordingRequestCreate}
+              canRecordingRequestFind={canRecordingRequestFind}
               canUserResponse={canUserResponse}
               canPronunciationCreate={canPronunciationCreate}
               openRecorder={openRecorder}
@@ -201,6 +229,7 @@ const Container = (props: Props): JSX.Element => {
                 <>
                   <SingleName
                     canRecordingRequestCreate={canRecordingRequestCreate}
+                    canRecordingRequestFind={canRecordingRequestFind}
                     canUserResponse={canUserResponse}
                     canPronunciationCreate={canPronunciationCreate}
                     openRecorder={openRecorder}
