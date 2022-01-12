@@ -1,0 +1,42 @@
+{
+  "name": "gpdb-widget-example",
+  "homepage": ".",
+  "version": "1.2.4",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@types/node": "link:../node_modules/@types/node",
+    "@types/react": "link:../node_modules/@types/react",
+    "@types/react-dom": "link:../node_modules/@types/react-dom",
+    "eslint": "^6.6.0",
+    "gpdb-widget": "link:..",
+    "react": "link:../node_modules/react",
+    "react-dom": "link:../node_modules/react-dom",
+    "react-scripts": "^3.4.1",
+    "react-tooltip": "^4.2.21",
+    "typescript": "link:../node_modules/typescript",
+    "use-debounce": "^6.0.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
