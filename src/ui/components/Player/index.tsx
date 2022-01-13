@@ -68,12 +68,12 @@ const Player = (props: Props): JSX.Element => {
     switch (audioCreator) {
       case AudioSource.Gpdb: {
         className = speakerCssClasses.gpdb;
-        tip = "This is a NameCoach Library Recording";
+        tip = "This is a NameCoach<br />Library Recording";
         break;
       }
       case AudioSource.NameUser: {
         className = speakerCssClasses.user;
-        tip = "This recording is provided by a peer in your organization";
+        tip = "This recording<br />is provided by a peer<br />in your organization";
         break;
       }
       case AudioSource.NameOwner: {
@@ -90,7 +90,10 @@ const Player = (props: Props): JSX.Element => {
     return { className, tip };
   };
 
-  const { className: speakerClassName, tip: speakerTip } = getSpeakerClassNameAndTip(props.audioCreator);
+  const {
+    className: speakerClassName,
+    tip: speakerTip,
+  } = getSpeakerClassNameAndTip(props.audioCreator);
 
   return (
     <div
