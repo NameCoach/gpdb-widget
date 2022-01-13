@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { loadClient, Widget, SearchWidget, ExtensionWidget, InfoWidget } from 'gpdb-widget';
+import {
+  loadClient,
+  Widget,
+  SearchWidget,
+  ExtensionWidget,
+  InfoWidget,
+  StyleContext,
+  useUserAgentManager
+} from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
 import MyInfoSection from './examples/MyInfoSection';
 import Parser from './parser';
@@ -28,7 +36,6 @@ const extensionWidgetNames: { [t in NameTypes]: Name } =
     lastName: {key: 'Cassidy', type: 'lastName' as NameTypes.LastName, exist: false},
   };
 
-
 const App = () => {
   const [name, setName] = useState('Jon Snow');
   const [loading, setLoading] = useState(true);
@@ -39,6 +46,7 @@ const App = () => {
     userContext,
     parser
   );
+  const userAgentManager = useUserAgentManager();
 
   useEffect(() => {
     const load = async () => {
@@ -59,32 +67,34 @@ const App = () => {
   );
 
   const renderApp = () => (
-<   div>
+    <StyleContext.Provider value={{userAgentManager}}>
       <div>
-        Name:
-        <input
-          defaultValue={name}
-          type="text"
-          onChange={(e) => debounced(e.target.value)}
-          required
-          style={{ width: "80%", marginLeft: "20px" }}
-        />
+        <div>
+          Name:
+          <input
+            defaultValue={name}
+            type="text"
+            onChange={(e) => debounced(e.target.value)}
+            required
+            style={{ width: "80%", marginLeft: "20px" }}
+          />
+        </div>
+
+        {!loading && <Widget client={client} name={name} style={style} />}
+
+        <hr className='divider'/>
+
+        {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
+
+        <hr className='divider'/>
+
+        {!loading && <MyInfoSection client={client}/>}
+
+        <hr className='divider'/>
+
+        <SearchWidget client={client} />
       </div>
-
-    {!loading && <Widget client={client} name={name} style={style} />}
-
-      <hr className='divider'/>
-
-      {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
-
-      <hr className='divider'/>
-
-    {!loading && <MyInfoSection client={client}/>}
-
-      <hr className='divider'/>
-
-      <SearchWidget client={client} />
-      </div>
+    </StyleContext.Provider>
   );
 
   const renderWrapper = () => {
