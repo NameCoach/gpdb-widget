@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
-import styles from "../PronunciationMyInfoWidget/styles.module.css";
+import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { NameTypes } from "../../../types/resources/name";
@@ -81,47 +81,50 @@ const MyInfo = (props: Props): JSX.Element => {
 
   const renderContainer = (): JSX.Element => (
     <>
-      <div className={cx(styles.row)}>
-        <span className={cx(styles.title)}>My info</span>
-        {pronunciation?.phoneticSpelling && (
-          <span className={styles.phonetic}>
-            {pronunciation.phoneticSpelling}
-          </span>
-        )}
+      <div>
+        <div className={cx(styles.row)}>
+          <span className={cx(styles.title)}>My info</span>
 
-        <div className={cx(styles.actions)}>
-          {loading && <Loader />}
+          <div className={cx(styles.actions)}>
+            {loading && <Loader />}
 
-          {!loading &&
-            props.permissions.canPronunciation.share &&
-            pronunciation && (
-              <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
-            )}
+            {!loading &&
+              props.permissions.canPronunciation.share &&
+              pronunciation && (
+                <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
+              )}
 
-          {!loading &&
-            pronunciation &&
-            pronunciation.customAttributes &&
-            pronunciation.customAttributes.length > 0 && (
-              <CollapsableAction
-                active={collapsableActive}
-                onClick={onCollapsable}
+            {!loading &&
+              pronunciation &&
+              pronunciation.customAttributes &&
+              pronunciation.customAttributes.length > 0 && (
+                <CollapsableAction
+                  active={collapsableActive}
+                  onClick={onCollapsable}
+                />
+              )}
+
+            {!loading && pronunciation && (
+              <Player
+                audioSrc={pronunciation.audioSrc}
+                audioCreator={pronunciation.audioCreator}
               />
             )}
 
-          {!loading && pronunciation && (
-            <Player
-              audioSrc={pronunciation.audioSrc}
-              audioCreator={pronunciation.audioCreator}
-            />
-          )}
-
-          {!loading && (
-            <RecordAction
-              active={recorderState.isOpen}
-              onClick={onRecorderOpen}
-            />
-          )}
+            {!loading && (
+              <RecordAction
+                active={recorderState.isOpen}
+                onClick={onRecorderOpen}
+              />
+            )}
+          </div>
         </div>
+
+        {pronunciation?.phoneticSpelling && (
+          <div className={styles.phonetic}>
+            {pronunciation.phoneticSpelling}
+          </div>
+        )}
       </div>
 
       {!loading &&
