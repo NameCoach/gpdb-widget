@@ -25,6 +25,7 @@
     "classnames": "~2.3.1",
     "gpdb-api-client": "1.1.33",
     "html-react-parser": "^1.4.3",
+    "lamejs": "1.2.0",
     "react-collapsible": "^2.8.4",
     "react-copy-to-clipboard": "^5.0.4",
     "react-range": "^1.8.7",
