@@ -1,3 +1,5 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 import React, { useEffect, useState } from "react";
 
 import {
@@ -36,6 +38,10 @@ const extensionWidgetNames: { [t in NameTypes]: Name } =
     lastName: {key: 'Cassidy', type: 'lastName' as NameTypes.LastName, exist: false},
   };
 
+const renderWelcomeScreen = false;
+const showUserAgentManager = false;
+
+
 const App = () => {
   const [name, setName] = useState('Jon Snow');
   const [loading, setLoading] = useState(true);
@@ -69,6 +75,12 @@ const App = () => {
   const renderApp = () => (
     <StyleContext.Provider value={{userAgentManager}}>
       <div>
+        {showUserAgentManager && <>
+          <div>isIE: {`${userAgentManager.isIE}`}</div>
+          <div>isDeprecated: {`${userAgentManager.isDeprecated}`}</div>
+          <div>userAgent: {userAgentManager.userAgent}</div>
+        </>
+        }
         <div>
           Name:
           <input
@@ -112,7 +124,7 @@ const App = () => {
     return (
       <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
         <ScreenResizer />
-        { process.env.NODE_ENV === "development" ?  <InfoWidget {...props} /> : renderApp()}
+        { renderWelcomeScreen ?  <InfoWidget {...props} /> : renderApp()}
       </div>
     );
   };
