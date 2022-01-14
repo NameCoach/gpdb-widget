@@ -9,7 +9,6 @@ interface Props {
   canRecordingRequestCreate: boolean;
   canUserResponse: boolean;
   canPronunciationCreate: boolean;
-  canRecordingRequestFind: boolean;
   openRecorder: (name, type) => void;
   reloadName: (type: NameTypes) => void;
   name: Name;
@@ -35,8 +34,6 @@ const SingleName = (props: Props): JSX.Element => {
         <AbsentName
           canRecordingRequestCreate={props.canRecordingRequestCreate}
           canPronunciationCreate={props.canPronunciationCreate}
-          canRecordingRequestFind={props.canRecordingRequestFind}
-          onRecorderClick={props.openRecorder}
           name={name.key}
           type={name.type}
         />
