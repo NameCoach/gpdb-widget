@@ -32,31 +32,32 @@ const FullName = (props: Props): JSX.Element => {
   }, [props.pronunciations]);
 
   return (
-    <div className={styles.head}>
-      <div className={styles.head__names}>
-        <span>{props.children}</span>
-        {pronunciation?.phoneticSpelling && (
-          <div className={styles.phonetic}>
-            {pronunciation.phoneticSpelling}
-          </div>
-        )}
+    <div className={styles.head__container}>
+      <div className={styles.head}>
+        <div className={styles.head__names}>
+          <span>{props.children}</span>
+        </div>
+
+        <div className={styles.head__actions}>
+          {pronunciation && pronunciation.audioSrc && (
+            <Player
+              audioSrc={pronunciation.audioSrc}
+              audioCreator={pronunciation.audioCreator}
+              className={nameLineStyles.pronunciation__action}
+            />
+          )}
+          {canCreatePronunciation && (
+            <RecordAction
+              className={nameLineStyles.pronunciation__action}
+              onClick={onRecord}
+            />
+          )}
+        </div>
       </div>
 
-      <div className={styles.head__actions}>
-        {pronunciation && pronunciation.audioSrc && (
-          <Player
-            audioSrc={pronunciation.audioSrc}
-            audioCreator={pronunciation.audioCreator}
-            className={nameLineStyles.pronunciation__action}
-          />
-        )}
-        {canCreatePronunciation && (
-          <RecordAction
-            className={nameLineStyles.pronunciation__action}
-            onClick={onRecord}
-          />
-        )}
-      </div>
+      {pronunciation?.phoneticSpelling && (
+        <div className={styles.phonetic}>{pronunciation.phoneticSpelling}</div>
+      )}
     </div>
   );
 };
