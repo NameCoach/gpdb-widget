@@ -7,10 +7,10 @@ import Name, { NameTypes } from "../../../../types/resources/name";
 import NameLine from "../../NameLine";
 import AbsentName from "../../AbsentName";
 import Recorder from "../../Recorder";
-import { Loader } from "../../../..";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import IFrontController from "../../../../types/front-controller";
 import { UserPermissions } from "../../../../types/permissions";
+import Loader from "../../Loader";
 
 interface Props {
   name: NameOption;
