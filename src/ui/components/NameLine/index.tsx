@@ -81,62 +81,65 @@ const NameLine = (props: Props): JSX.Element => {
   }, [props.pronunciations]);
 
   return (
-    <div className={cx(styles.pronunciation, "pronunciation_container")}>
-      <span className={cx(styles.pronunciation__name, "pronunciation_name")}>
-        {props.name}
-      </span>
+    <div className={cx(styles.pronunciation, "name_line_container")}>
+      <div className={cx(styles.pronunciation, "pronunciation_container")}>
+        <span className={cx(styles.pronunciation__name, "pronunciation_name")}>
+          {props.name}
+        </span>
 
-      {!currentPronunciation ? (
-        <Loader />
-      ) : (
-        <>
-          <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
-            <Select
-              options={options}
-              className={styles.pronunciation__control}
-              onChange={onSelect}
-            />
-            {currentPronunciation.phoneticSpelling && (
-              <span className={styles.pronunciation__phonetic}>
-                {currentPronunciation.phoneticSpelling}
-              </span>
-            )}
-          </div>
-
-          <div
-            className={cx(
-              styles.pronunciation__actions,
-              "pronunciation_actions"
-            )}
-          >
-            <Player
-              className={styles.pronunciation__action}
-              audioSrc={currentPronunciation.audioSrc}
-              audioCreator={currentPronunciation.audioCreator}
-              autoplay={autoplay}
-              onClick={onPlayClick}
-            />
-
-            {props.canRecord && (
-              <RecordAction
-                className={styles.pronunciation__action}
-                onClick={(): void =>
-                  props.onRecorderClick(props.name, props.type)
-                }
+        {!currentPronunciation ? (
+          <Loader />
+        ) : (
+          <>
+            <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
+              <Select
+                options={options}
+                className={styles.pronunciation__control}
+                onChange={onSelect}
               />
-            )}
-            {props.canUserResponse && (
-              <UserResponseAction
+            </div>
+
+            <div
+              className={cx(
+                styles.pronunciation__actions,
+                "pronunciation_actions"
+              )}
+            >
+              <Player
                 className={styles.pronunciation__action}
-                active={
-                  currentPronunciation?.userResponse?.response ===
-                  UserResponse.Save
-                }
-                onClick={onUserResponse}
+                audioSrc={currentPronunciation.audioSrc}
+                audioCreator={currentPronunciation.audioCreator}
+                autoplay={autoplay}
+                onClick={onPlayClick}
               />
-            )}
-          </div>
-        </>
+
+              {props.canRecord && (
+                <RecordAction
+                  className={styles.pronunciation__action}
+                  onClick={(): void =>
+                    props.onRecorderClick(props.name, props.type)
+                  }
+                />
+              )}
+              {props.canUserResponse && (
+                <UserResponseAction
+                  className={styles.pronunciation__action}
+                  active={
+                    currentPronunciation?.userResponse?.response ===
+                    UserResponse.Save
+                  }
+                  onClick={onUserResponse}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {currentPronunciation?.phoneticSpelling && (
+        <div className={styles.phonetic}>
+          {currentPronunciation.phoneticSpelling}
+        </div>
       )}
     </div>
   );
