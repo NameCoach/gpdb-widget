@@ -15,6 +15,7 @@
     "eslint": "^6.6.0",
     "gpdb-widget": "link:..",
     "react": "link:../node_modules/react",
+    "react-app-polyfill": "^3.0.0",
     "react-dom": "link:../node_modules/react-dom",
     "react-scripts": "^3.4.1",
     "react-tooltip": "^4.2.21",
@@ -36,7 +37,8 @@
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 1 safari version"
+      "last 1 safari version",
+      "ie 11"
     ]
   }
 }
