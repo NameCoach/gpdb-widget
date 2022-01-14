@@ -34,5 +34,6 @@
 
 .phonetic {
   composes: phonetic from "../../styles/phonetic.css";
+  margin-top: -5px;
   margin-left: 10px;
 }
