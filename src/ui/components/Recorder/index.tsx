@@ -15,12 +15,14 @@ import Settings from "./Settings";
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
+import StyleContext from "../../contexts/style";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
+import classNames from "classnames/bind";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -42,6 +44,8 @@ interface Props {
   errorHandler?: ErrorHandler;
 }
 
+const cx = classNames.bind(styles);
+
 const machineSpec = {
   initialState: STATES.INIT,
   transitions: [
@@ -56,7 +60,7 @@ const machineSpec = {
       to: STATES.STARTED,
     },
     { name: "ready", from: STATES.STARTED, to: STATES.RECORD },
-    { name: "stop", from: STATES.RECORD, to: STATES.RECORDED },
+    { name: "stop", from: [STATES.RECORD, STATES.FAILED], to: STATES.RECORDED },
     { name: "save", from: STATES.RECORDED, to: STATES.SAVED },
     { name: "fail", from: STATES.ALL, to: STATES.FAILED },
   ],
@@ -86,9 +90,13 @@ const Recorder = ({
   const [countdown, setCountdown] = useState<number>(COUNTDOWN);
   const [blob, setBlob] = useState<Blob>();
   const [audioUrl, setAudioUrl] = useState<string>();
+  const [showSlider, setShowSlider] = useState<boolean>(true);
   const [slider, openSlider, closeSlider] = useSliderState();
   const [timeoutId, setTimeoutId] = useState(null);
+  const [fileSizeError, setFileSizeError] = useState<boolean>(false);
   const controller = useContext(ControllerContext);
+  const styleContext = useContext(StyleContext);
+  const isOld = styleContext.userAgentManager.isDeprecated;
   const currentStep = useRef(step);
   const recorder = useRef(null);
 
@@ -231,15 +239,42 @@ const Recorder = ({
     controller.saveAudioSampleRate(sampleRate.value);
   };
 
+  const onUploaderChange = (e): void => {
+    const files = e.target.files;
+
+    if (!files || files.length === 0) return;
+
+    // 5MB
+    if (files[0].size > 5242880) {
+      setFileSizeError(true);
+
+      return;
+    }
+
+    const fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(files[0]);
+    fileReader.onload = (e): void => {
+      const b = new Blob([e.target.result]);
+      const a = URL.createObjectURL(b);
+
+      setBlob(b);
+      setAudioUrl(a);
+      setShowSlider(false);
+      setFileSizeError(false);
+
+      sendEvent(EVENTS.stop);
+    };
+  };
+
   const updateSampleRate = (val): void => setSampleRate({ value: val });
 
   return (
-    <div className={styles.recorder}>
+    <div className={cx(styles.recorder, { old: isOld })}>
       {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
         <Close onClick={onRecorderClose} />
       )}
       {step === STATES.SAVED && <Loader inline />}
-      <div className={styles.recorder__body}>
+      <div className={cx(styles.recorder__body, { old: isOld })}>
         {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
         {step === STATES.INIT &&
@@ -262,12 +297,38 @@ const Recorder = ({
         {step === STATES.RECORDED && (
           <div className={styles.inline}>
             <Player audioSrc={audioUrl} icon="playable" className="player" />
-            <Settings onClick={openSlider} active={slider} />
+            {showSlider && <Settings onClick={openSlider} active={slider} />}
           </div>
         )}
 
         {step === STATES.FAILED && (
-          <span>Allow microphone and try again, please.</span>
+          <>
+            <span>Allow microphone and try again, please.</span>
+            <div className={cx(styles.uploader, { old: isOld })}>
+              <div className={styles.uploader__message}>
+                If you are having trouble with your microphone, please upload an
+                mp3 file.
+              </div>
+              <div className={styles.uploader__action}>
+                <label
+                  htmlFor="pronunciation-upload"
+                  className={styles.upload__label}
+                >
+                  Upload
+                </label>
+                <input
+                  type="file"
+                  id="pronunciation-upload"
+                  name="recording"
+                  accept=".mp3"
+                  onChange={onUploaderChange}
+                />
+              </div>
+            </div>
+            {fileSizeError && (
+              <div className={styles.error}>File max size is 5 MB</div>
+            )}
+          </>
         )}
       </div>
       <div className={styles.recorder__actions}>
