@@ -81,7 +81,7 @@ const Container = (props: Props): JSX.Element => {
     else return await props.verifyNames();
   };
 
-  const onRecorded = () => {
+  const onRecorded = (): Promise<void> => {
     updatePronunciationsByType(recorderState.type, []);
     reloadName(recorderState.type);
 
