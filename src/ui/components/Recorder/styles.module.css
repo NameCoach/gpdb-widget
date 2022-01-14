@@ -1,4 +1,4 @@
-@value primaryBrandColor, borderColor, secondary from "../../styles/colors.css";
+@value primaryBrandColor, borderColor, secondary, errorColor from "../../styles/colors.css";
 
 .recorder {
   position: relative;
@@ -20,6 +20,12 @@
   line-height: 22px;
 }
 
+.old {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .recorder__actions {
   display: flex;
   width: 100%;
@@ -30,6 +36,8 @@
 
 .inline {
   display: inline-flex;
+  width: 100%;
+  justify-content: center;
 }
 
 .recorder__actions button {
@@ -69,4 +77,36 @@ button:active {
 
 .no__border {
   border: none;
+}
+
+/*UPLOADER STYLES*/
+.uploader {
+  position: relative;
+  display: flex;
+  margin-top: 20px;
+}
+
+.uploader__message {
+  display: flex;
+  max-width: 80%;
+  width: 80%;
+}
+
+.uploader__action {
+  display: flex;
+  align-items: flex-end;
+}
+
+.upload__label {
+  cursor: pointer;
+  color: primaryBrandColor;
+  font-weight: 600;
+}
+
+.error {
+  color: errorColor;
+}
+
+input[type="file"] {
+  display: none;
 }
