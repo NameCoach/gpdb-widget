@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { AudioSource } from "../../../types/resources/pronunciation";
+import useAudioRef from "../../hooks/useAudioRef";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -24,7 +25,7 @@ const speakerCssClasses = {
 };
 
 const Player = (props: Props): JSX.Element => {
-  const audioRef = useRef(new Audio(props.audioSrc));
+  const { audioRef, audioReady } = useAudioRef(props.audioSrc);
   const [isPlaying, setPlaying] = useState<boolean>(false);
 
   const stop = (): void => setPlaying(false);
@@ -50,9 +51,8 @@ const Player = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    audioRef.current = new Audio(props.audioSrc);
-    if (props.autoplay) play();
-  }, [props.audioSrc]);
+    if (props.autoplay && audioReady) play();
+  }, [audioReady]);
 
   useEffect(() => {
     return (): void => {
@@ -73,7 +73,8 @@ const Player = (props: Props): JSX.Element => {
       }
       case AudioSource.NameUser: {
         className = speakerCssClasses.user;
-        tip = "This recording<br />is provided by a peer<br />in your organization";
+        tip =
+          "This recording<br />is provided by a peer<br />in your organization";
         break;
       }
       case AudioSource.NameOwner: {
