@@ -41,6 +41,11 @@
   width: 28.7%;
   justify-content: flex-end;
 }
+
+.old {
+  justify-content: space-around;
+  padding-right: 0.75rem;
+}
 .head__recorder {
   float: left;
   margin-bottom: 5px;
