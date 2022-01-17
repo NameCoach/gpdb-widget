@@ -6,6 +6,7 @@ import nameLineStyles from "../NameLine/styles.module.css";
 import RequestAction from "../Actions/Request";
 import RecordAction from "../Actions/Record";
 import ControllerContext from "../../contexts/controller";
+import StyleContext from "../../contexts/style";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
 
@@ -23,6 +24,8 @@ interface Props {
 
 const AbsentName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
+  const styleContext = useContext(StyleContext);
+  const isOld = styleContext.userAgentManager.isDeprecated;
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +50,7 @@ const AbsentName = (props: Props): JSX.Element => {
     }
   }, [name]);
 
-  const renderRequestedMessage = () =>
+  const renderRequestedMessage = (): string =>
     isRequested
       ? "pronunciation request pending"
       : "pronunciations not available";
@@ -78,7 +81,13 @@ const AbsentName = (props: Props): JSX.Element => {
         {loading && <Loader inline sm />}
       </span>
 
-      <div className={nameLineStyles.pronunciation__actions}>
+      <div
+        className={
+          isOld
+            ? cx(nameLineStyles.pronunciation__actions, nameLineStyles.old)
+            : nameLineStyles.pronunciation__actions
+        }
+      >
         {props.canRecordingRequestCreate && (
           <RequestAction
             className={nameLineStyles.pronunciation__action}
