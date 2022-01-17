@@ -91,11 +91,8 @@ export default class FrontController implements IFrontController {
 
     const result = this.resultByTargets(names, target_results, owner);
 
-    try {
-      await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
-    } catch (e) {
-      console.error(e);
-    }
+    await this.sendAnalytics(AnalyticsEventType.Available, names, meta?.uri);
+
     return [names, result];
   }
 
@@ -176,19 +173,23 @@ export default class FrontController implements IFrontController {
     rootUrl?: string,
     toolSignature?: string
   ): Promise<void> {
-    await this.apiClient.analyticsEvents.create({
-      entityId: this.nameOwnerContext.signature,
-      customerId: this.userContext.email || "anonymous",
-      entityType: "browser_extension_user",
-      rootUrl: rootUrl || "emptyUrl",
-      eventType,
-      recordingId,
-      message:
-        typeof message === "object" ? JSON.stringify(message) : String(message),
-      userId: this.nameOwnerContext.signature,
-      toolSignature: toolSignature || "gpdb_widget",
-      versionInfo: {},
-    });
+    try {
+      await this.apiClient.analyticsEvents.create({
+        entityId: this.nameOwnerContext.signature,
+        customerId: this.userContext.email || "anonymous",
+        entityType: "browser_extension_user",
+        rootUrl: rootUrl || "emptyUrl",
+        eventType,
+        recordingId,
+        message:
+          typeof message === "object" ? JSON.stringify(message) : String(message),
+        userId: this.nameOwnerContext.signature,
+        toolSignature: toolSignature || "gpdb_widget",
+        versionInfo: {},
+      });
+    } catch (e) {
+      console.log(`sendAnalytics error: ${e}`);
+    }
   }
 
   async verifyNames(name: string): Promise<any> {
