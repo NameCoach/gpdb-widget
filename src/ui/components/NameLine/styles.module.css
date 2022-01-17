@@ -134,6 +134,11 @@
   composes: phonetic from "../../styles/phonetic.css";
 }
 
+.old {
+  justify-content: space-around;
+  padding-right: 0.75rem;
+}
+
 .pronunciation__action {
   display: flex;
   align-items: center;
