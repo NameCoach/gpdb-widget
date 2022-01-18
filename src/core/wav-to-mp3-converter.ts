@@ -8,7 +8,7 @@ const defaultOptions: Options = {
   kbps: 128,
   sampleBlockSize: 1152,
 };
-const mp3MimeTypes = ["audio/mpeg", "audio/mp3"];
+const mp3MimeTypes = ["audio/mp3"];
 
 export default class WavToMp3Converter implements IWavToMp3Converter {
   public file;
@@ -34,19 +34,24 @@ export default class WavToMp3Converter implements IWavToMp3Converter {
     }
   }
 
+  private async readFileArrayBuffer(): Promise<ArrayBuffer> {
+    const fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(this.file);
+    return new Promise((resolve) => {
+      fileReader.onload = (e): void => {
+        const arrayBuffer = e.target.result as ArrayBuffer;
+        resolve(arrayBuffer);
+      };
+    });
+  }
+
   public async convert(): Promise<Blob> {
     if (!this.convertRequired) return this.mp3Blob;
 
-    const audioContext = new AudioContext();
-
-    const buffer = await this.file.arrayBuffer();
-    const _buffer = buffer.slice(0); // We need to clone it because decodeAudioData() empties this buffer
-
-    const decodedAudioBuffer = await audioContext.decodeAudioData(_buffer);
-    const { numberOfChannels } = decodedAudioBuffer;
+    const buffer = await this.readFileArrayBuffer();
+    const numberOfChannels = 1;
 
     const dataArray = new Int16Array(buffer);
-
     const monoDataArray = this.convertToMono(dataArray, numberOfChannels);
     this.mp3Blob = this.encode(monoDataArray);
     this.mp3BlobUrl = WavToMp3Converter.getBlobUrl(this.mp3Blob);
