@@ -25,7 +25,7 @@ interface Props {
 const AbsentName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
-  const isOld = styleContext.userAgentManager.isDeprecated;
+  const isOld = styleContext?.userAgentManager?.isDeprecated;
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(true);
 
