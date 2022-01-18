@@ -20,6 +20,7 @@ export default function useAudioRef(
 ): HookResult {
   const styleContext = useContext(StyleContext);
   const isOld = styleContext.userAgentManager.isDeprecated;
+  const isBlob = audioSrc.includes("Blob:");
 
   const _converter = converter || new WavToMp3Converter();
 
@@ -45,7 +46,7 @@ export default function useAudioRef(
       }
     };
 
-    if (isOld) convertToMp3(audioSrc);
+    if (isOld && !isBlob) convertToMp3(audioSrc);
     else {
       audioRef.current = new Audio(audioSrc);
       setAudioReady(true);
