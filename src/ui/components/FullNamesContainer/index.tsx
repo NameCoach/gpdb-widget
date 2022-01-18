@@ -82,13 +82,12 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         key: parsedNames[type],
         type,
       }));
-    
-    
+
     return props.controller.sendAnalytics(
       AnalyticsEventType.Available,
       Object.values(names)
     );
-  }
+  };
 
   const complexSearch = async (name: NameOption): Promise<void> => {
     fullNamesOject.current = [name];
