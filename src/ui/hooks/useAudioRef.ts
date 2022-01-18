@@ -20,7 +20,8 @@ export default function useAudioRef(
 ): HookResult {
   const styleContext = useContext(StyleContext);
   const isOld = styleContext.userAgentManager.isDeprecated;
-  const isBlob = audioSrc.includes("Blob:");
+  const isBlob = audioSrc.includes("blob");
+  const isMp3Source = audioSrc.includes(".mp3");
 
   const _converter = converter || new WavToMp3Converter();
 
@@ -46,7 +47,8 @@ export default function useAudioRef(
       }
     };
 
-    if (isOld && !isBlob) convertToMp3(audioSrc);
+    // temporary solution, should be addressed in NAM-814
+    if (isOld && !isBlob && !isMp3Source) convertToMp3(audioSrc);
     else {
       audioRef.current = new Audio(audioSrc);
       setAudioReady(true);
