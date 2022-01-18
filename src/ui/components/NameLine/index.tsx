@@ -12,6 +12,7 @@ import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
 import classNames from "classnames/bind";
 import StyleContext from "../../contexts/style";
+import { AnalyticsEventType } from "../../..";
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +30,7 @@ interface Props {
 const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
-  const isOld = styleContext.userAgentManager.isDeprecated;
+  const isOld = styleContext?.userAgentManager?.isDeprecated;
   const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
@@ -56,11 +57,11 @@ const NameLine = (props: Props): JSX.Element => {
     setCurrentIndex(value);
     setAutoplay(true);
     setPronunciation(props.pronunciations[value]);
-    sendAnalytics("recording_select_list_change_to", value);
+    sendAnalytics(AnalyticsEventType.Recording_select_list_change_to, value);
   };
 
   const onPlayClick = (): PromiseLike<void> =>
-    sendAnalytics("play_button_click");
+    sendAnalytics(AnalyticsEventType.Play_button_click);
 
   const onUserResponse = async (): Promise<void> => {
     const response =
@@ -74,7 +75,7 @@ const NameLine = (props: Props): JSX.Element => {
       props.owner
     );
 
-    sendAnalytics("save_button_click");
+    sendAnalytics(AnalyticsEventType.Save_button_click);
     setPronunciation(null);
     setTimeout(() => props.reload(props.type), 1500);
   };
