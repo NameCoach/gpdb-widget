@@ -4,6 +4,7 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { AudioSource } from "../../../types/resources/pronunciation";
 import useAudioRef from "../../hooks/useAudioRef";
+import Loader from "../Loader";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -52,11 +53,11 @@ const Player = (props: Props): JSX.Element => {
 
   useEffect(() => {
     if (props.autoplay && audioReady) play();
-  }, [audioReady]);
+  }, [props.audioSrc, audioReady]);
 
   useEffect(() => {
     return (): void => {
-      audioRef.current.removeEventListener("pause", stop);
+      if (audioReady) audioRef.current.removeEventListener("pause", stop);
       if (currentAudio) currentAudio.removeEventListener("pause", stop);
     };
   }, []);
@@ -104,7 +105,11 @@ const Player = (props: Props): JSX.Element => {
       onClick={play}
     >
       <ReactTooltip textColor="white" backgroundColor="#946cc1" multiline />
-      <i className={cx(speakerClassName)} data-tip={speakerTip} />
+      {audioReady ? (
+        <i className={cx(speakerClassName)} data-tip={speakerTip} />
+      ) : (
+        <Loader inline sm />
+      )}
     </div>
   );
 };
