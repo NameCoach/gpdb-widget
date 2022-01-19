@@ -96,7 +96,7 @@ const Recorder = ({
   const [fileSizeError, setFileSizeError] = useState<boolean>(false);
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
-  const isOld = styleContext.userAgentManager.isDeprecated;
+  const isOld = styleContext?.userAgentManager?.isDeprecated;
   const currentStep = useRef(step);
   const recorder = useRef(null);
 
