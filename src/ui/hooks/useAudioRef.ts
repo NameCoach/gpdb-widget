@@ -19,7 +19,7 @@ export default function useAudioRef(
   converter?: IWavToMp3Converter
 ): HookResult {
   const styleContext = useContext(StyleContext);
-  const isOld = styleContext.userAgentManager.isDeprecated;
+  const isOld = styleContext?.userAgentManager?.isDeprecated;
   const isBlob = audioSrc.includes("blob");
   const isMp3Source = audioSrc.includes(".mp3");
 
