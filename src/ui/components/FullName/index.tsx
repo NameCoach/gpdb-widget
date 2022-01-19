@@ -1,4 +1,10 @@
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import Pronunciation from "../../../types/resources/pronunciation";
@@ -7,6 +13,8 @@ import RecordAction from "../Actions/Record";
 import { NameTypes } from "../../../types/resources/name";
 import StyleContext from "../../contexts/style";
 import classNames from "classnames/bind";
+import ControllerContext from "../../contexts/controller";
+import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -22,7 +30,18 @@ interface Props {
 const FullName = (props: Props): JSX.Element => {
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
   const styleContext = useContext(StyleContext);
-  const isOld = styleContext.userAgentManager.isDeprecated;
+  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const controller = useContext(ControllerContext);
+
+  const sendAnalytics = (eventType): PromiseLike<void> =>
+    controller.sendAnalytics(
+      eventType,
+      { name: props.name, type: NameTypes.FullName },
+      pronunciation.id
+    );
+
+  const onPlayClick = (): PromiseLike<void> =>
+    sendAnalytics(AnalyticsEventType.Full_name_play_button_click);
 
   const onRecord = (): void =>
     props.onRecorderClick(props.name, NameTypes.FullName);
@@ -51,6 +70,7 @@ const FullName = (props: Props): JSX.Element => {
         >
           {pronunciation && pronunciation.audioSrc && (
             <Player
+              onClick={onPlayClick}
               audioSrc={pronunciation.audioSrc}
               audioCreator={pronunciation.audioCreator}
               className={nameLineStyles.pronunciation__action}
