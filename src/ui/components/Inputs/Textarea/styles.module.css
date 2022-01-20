@@ -1,0 +1,18 @@
+@value labelGray from "../../../styles/colors.css";
+
+.label {
+  color: labelGray;
+  display: flex;
+}
+
+.input_wrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.line {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
