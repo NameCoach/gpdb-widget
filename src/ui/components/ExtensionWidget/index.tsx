@@ -28,12 +28,12 @@ type Props = MainProperties & ElemStyleProps;
 
 const cx = classNames.bind(styles);
 
-const ExtensionWidget = (props: Props) => {
+const ExtensionWidget = (props: Props): JSX.Element => {
   const controllerContextValue = useMemo(() => props.client, [props.client]);
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>(props.names);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const verifyNames = async () => {
+  const verifyNames = async (): Promise<void> => {
     setLoading(true);
     setNames(await props.client.verifyNames(props.names.fullName.key));
     setLoading(false);
