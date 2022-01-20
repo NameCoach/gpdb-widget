@@ -13,6 +13,7 @@ interface Props {
   audioCreator?: AudioSource;
   className?: string;
   onClick?: () => void;
+  tooltipId?: string;
 }
 
 const cx = classNames.bind(styles);
@@ -28,7 +29,7 @@ const speakerCssClasses = {
 const Player = (props: Props): JSX.Element => {
   const { audioRef, audioReady } = useAudioRef(props.audioSrc);
   const [isPlaying, setPlaying] = useState<boolean>(false);
-
+  const tooltipId = props.tooltipId || Date.now().toString();
   const stop = (): void => setPlaying(false);
   const play = async (): Promise<void> => {
     try {
@@ -52,6 +53,7 @@ const Player = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
+    ReactTooltip.rebuild();
     if (props.autoplay && audioReady) play();
   }, [props.audioSrc, audioReady]);
 
@@ -104,9 +106,18 @@ const Player = (props: Props): JSX.Element => {
       })}
       onClick={play}
     >
-      <ReactTooltip textColor="white" backgroundColor="#946cc1" multiline />
+      <ReactTooltip
+        id={tooltipId}
+        textColor="white"
+        backgroundColor="#946cc1"
+        multiline
+      />
       {audioReady ? (
-        <i className={cx(speakerClassName)} data-tip={speakerTip} />
+        <i
+          className={cx(speakerClassName)}
+          data-tip={speakerTip}
+          data-for={tooltipId}
+        />
       ) : (
         <Loader inline sm />
       )}
