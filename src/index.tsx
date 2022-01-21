@@ -11,7 +11,6 @@ import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
-import type IUserAgentManager from "./types/user-agent-manager";
 
 // LOADER
 import loadExtensionClient from "./core/loadExtensionClient";
@@ -27,7 +26,6 @@ import StyleContext from "./ui/contexts/style";
 
 // HOOKS
 import loadClient from "./ui/hooks/loadClient";
-import useUserAgentManager from "./ui/hooks/useUserAgentManager";
 import { AnalyticsEventType } from "./types/resources/analytics-event-type";
 
 export {
@@ -44,8 +42,6 @@ export {
   StyleContext,
   IFrontController,
   IStyleContext,
-  useUserAgentManager,
-  IUserAgentManager,
   loadExtensionClient,
   NPResult,
   NameParser,
