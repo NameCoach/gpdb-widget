@@ -11,8 +11,8 @@ import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
 import RecordAction from "../Actions/Record";
 import { NameTypes } from "../../../types/resources/name";
-import StyleContext from "../../contexts/style";
 import classNames from "classnames/bind";
+import userAgentManager from "../../../core/userAgentManager";
 import ControllerContext from "../../contexts/controller";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 
@@ -29,8 +29,7 @@ interface Props {
 
 const FullName = (props: Props): JSX.Element => {
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
-  const styleContext = useContext(StyleContext);
-  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
 
   const sendAnalytics = (eventType): PromiseLike<void> =>
