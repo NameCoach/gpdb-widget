@@ -46,9 +46,7 @@ const FullName = (props: Props): JSX.Element => {
     props.onRecorderClick(props.name, NameTypes.FullName);
 
   const canCreatePronunciation = useMemo(() => {
-    return pronunciation
-      ? !pronunciation?.isHedb
-      : props.canPronunciationCreate;
+    return !(!props.canPronunciationCreate || pronunciation?.isHedb);
   }, [pronunciation?.isHedb]);
 
   useEffect(() => {
