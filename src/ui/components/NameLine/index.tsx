@@ -11,7 +11,7 @@ import ControllerContext from "../../contexts/controller";
 import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
 import classNames from "classnames/bind";
-import StyleContext from "../../contexts/style";
+import userAgentManager from "../../../core/userAgentManager";
 import { AnalyticsEventType } from "../../..";
 
 const cx = classNames.bind(styles);
@@ -29,8 +29,7 @@ interface Props {
 
 const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const { isDeprecated: isOld } = userAgentManager;
   const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
