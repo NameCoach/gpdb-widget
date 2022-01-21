@@ -6,9 +6,9 @@ import nameLineStyles from "../NameLine/styles.module.css";
 import RequestAction from "../Actions/Request";
 import RecordAction from "../Actions/Record";
 import ControllerContext from "../../contexts/controller";
-import StyleContext from "../../contexts/style";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
+import userAgentManager from "../../../core/userAgentManager";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -24,8 +24,7 @@ interface Props {
 
 const AbsentName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const { isDeprecated: isOld } = userAgentManager;
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(true);
 
