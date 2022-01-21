@@ -1,13 +1,7 @@
-import {
-  MutableRefObject,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import StyleContext from "../contexts/style";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import WavToMp3Converter from "../../core/wav-to-mp3-converter";
 import IWavToMp3Converter from "../../types/wav-to-mp3-converter";
+import userAgentManager from "../../core/userAgentManager";
 
 type HookResult = {
   audioRef: MutableRefObject<HTMLAudioElement | null>;
@@ -18,8 +12,7 @@ export default function useAudioRef(
   audioSrc: string,
   converter?: IWavToMp3Converter
 ): HookResult {
-  const styleContext = useContext(StyleContext);
-  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const { isDeprecated: isOld } = userAgentManager;
   const isBlob = audioSrc.includes("blob");
   const isMp3Source = audioSrc.includes(".mp3");
 
