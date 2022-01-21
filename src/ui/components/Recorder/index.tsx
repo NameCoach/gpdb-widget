@@ -15,7 +15,6 @@ import Settings from "./Settings";
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
-import StyleContext from "../../contexts/style";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
@@ -23,6 +22,7 @@ import { NameOwner } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
+import userAgentManager from "../../../core/userAgentManager";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -95,8 +95,7 @@ const Recorder = ({
   const [timeoutId, setTimeoutId] = useState(null);
   const [fileSizeError, setFileSizeError] = useState<boolean>(false);
   const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const isOld = styleContext?.userAgentManager?.isDeprecated;
+  const { isDeprecated: isOld } = userAgentManager;
   const currentStep = useRef(step);
   const recorder = useRef(null);
 

@@ -1,13 +1,13 @@
 import IUserAgentManager from "../types/user-agent-manager";
 
-export default class UserAgentManager implements IUserAgentManager {
+class UserAgentManager implements IUserAgentManager {
   public readonly userAgent: string;
   public readonly isDeprecated: boolean;
   public readonly isIE: boolean;
 
   constructor() {
-    this.userAgent = this.getUserAgent();
-    this.isIE = this.checkIE();
+    this.userAgent = UserAgentManager.getUserAgent();
+    this.isIE = UserAgentManager.checkIE();
     this.isDeprecated = this.decideDeprecated();
   }
 
@@ -17,12 +17,16 @@ export default class UserAgentManager implements IUserAgentManager {
     return false;
   }
 
-  private checkIE(): boolean {
+  private static checkIE(): boolean {
     // @ts-ignore
     return !!window.document.documentMode;
   }
 
-  private getUserAgent(): string {
+  private static getUserAgent(): string {
     return navigator.userAgent;
   }
 }
+
+const userAgentManager = new UserAgentManager();
+
+export default userAgentManager;
