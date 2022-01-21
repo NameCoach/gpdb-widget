@@ -1,7 +1,3 @@
-import IUserAgentManager from "./user-agent-manager";
-
-type IStyleContext = {
-  userAgentManager: IUserAgentManager;
-};
+type IStyleContext = {};
 
 export default IStyleContext;
