@@ -8,8 +8,6 @@ import {
   SearchWidget,
   ExtensionWidget,
   InfoWidget,
-  StyleContext,
-  useUserAgentManager
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
 import MyInfoSection from './examples/MyInfoSection';
@@ -39,8 +37,6 @@ const extensionWidgetNames: { [t in NameTypes]: Name } =
   };
 
 const renderWelcomeScreen = false;
-const showUserAgentManager = false;
-
 
 const App = () => {
   const [name, setName] = useState('Jon Snow');
@@ -52,7 +48,6 @@ const App = () => {
     userContext,
     parser
   );
-  const userAgentManager = useUserAgentManager();
 
   useEffect(() => {
     const load = async () => {
@@ -73,40 +68,32 @@ const App = () => {
   );
 
   const renderApp = () => (
-    <StyleContext.Provider value={{userAgentManager}}>
+    <div>
       <div>
-        {showUserAgentManager && <>
-          <div>isIE: {`${userAgentManager.isIE}`}</div>
-          <div>isDeprecated: {`${userAgentManager.isDeprecated}`}</div>
-          <div>userAgent: {userAgentManager.userAgent}</div>
-        </>
-        }
-        <div>
-          Name:
-          <input
-            defaultValue={name}
-            type="text"
-            onChange={(e) => debounced(e.target.value)}
-            required
-            style={{ width: "80%", marginLeft: "20px" }}
-          />
-        </div>
-
-        {!loading && <Widget client={client} name={name} style={style} />}
-
-        <hr className='divider'/>
-
-        {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
-
-        <hr className='divider'/>
-
-        {!loading && <MyInfoSection client={client}/>}
-
-        <hr className='divider'/>
-
-        <SearchWidget client={client} />
+        Name:
+        <input
+          defaultValue={name}
+          type="text"
+          onChange={(e) => debounced(e.target.value)}
+          required
+          style={{ width: "80%", marginLeft: "20px" }}
+        />
       </div>
-    </StyleContext.Provider>
+
+      {!loading && <Widget client={client} name={name} style={style} />}
+
+      <hr className='divider'/>
+
+      {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
+
+      <hr className='divider'/>
+
+      {!loading && <MyInfoSection client={client}/>}
+
+      <hr className='divider'/>
+
+      <SearchWidget client={client} />
+    </div>
   );
 
   const renderWrapper = () => {
