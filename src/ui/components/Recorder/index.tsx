@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import RecordRTC from "recordrtc";
+import RecordRTC, { Options } from "recordrtc";
 import { blobToBase64String } from "blob-util";
 import RangeInput from "./RangeInput";
 import STATES from "./states";
@@ -186,12 +186,16 @@ const Recorder = ({
     setTimer(TIMER);
     try {
       sendEvent(EVENTS.start);
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      recorder.current = new RecordRTC(stream, {
+
+      const options = {
         recorderType: RecordRTC.StereoAudioRecorder,
         mimeType: "audio/wav",
+        noWorker: true,
         sampleRate: sampleRate.value,
-      });
+      } as Options;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recorder.current = new RecordRTC(stream, options);
 
       Array.from({ length: COUNTDOWN }, (_, index) => {
         const st = index + 1;
