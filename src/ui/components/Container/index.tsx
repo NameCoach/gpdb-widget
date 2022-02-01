@@ -68,11 +68,18 @@ const Container = (props: Props): JSX.Element => {
     return controller.permissions.can(Resources.Pronunciation, "create");
   }, [controller.permissions]);
 
+  const setNameExistByType = (type): void => {
+    // eslint-disable-next-line prettier/prettier
+    if (type === NameTypes.FirstName) setFirstName({ ...firstName, exist: true });
+    if (type === NameTypes.LastName) setLastName({ ...lastName, exist: true });
+    if (type === NameTypes.FullName) setFullName({ ...fullName, exist: true });
+  };
+
   const simpleSearch = async (type: NameTypes): Promise<void> => {
-    updatePronunciationsByType(
-      type,
-      await controller.simpleSearch(props.names[type])
-    );
+    const simpleSearchResult = await controller.simpleSearch(props.names[type]);
+    updatePronunciationsByType(type, simpleSearchResult);
+
+    if (simpleSearchResult.length > 0) setNameExistByType(type);
   };
 
   const reloadName = async (type: NameTypes): Promise<void> => {
@@ -91,7 +98,7 @@ const Container = (props: Props): JSX.Element => {
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
-  const resetNameExist = (type, complexSearchResult, stateCb) => {
+  const resetNameExist = (type, complexSearchResult, stateCb): void => {
     const stateName = props.names[type];
 
     const refreshedExist = complexSearchResult[type].length > 0;
