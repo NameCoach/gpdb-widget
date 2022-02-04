@@ -1,0 +1,45 @@
+.head {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.head__names {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  height: 30px;
+}
+
+.head__names > span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.head-line {
+  display: flex;
+  align-items: flex-end;
+}
+
+.name-word {
+  max-height: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.name-word--secondary {
+  color: #cccccc;
+}
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
