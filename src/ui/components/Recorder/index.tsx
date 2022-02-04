@@ -23,6 +23,7 @@ import ReactTooltip from "react-tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
+import StyleContext from "../../contexts/style";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -94,7 +95,10 @@ const Recorder = ({
   const [slider, openSlider, closeSlider] = useSliderState();
   const [timeoutId, setTimeoutId] = useState(null);
   const [fileSizeError, setFileSizeError] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
   const controller = useContext(ControllerContext);
+  const styleContext = useContext(StyleContext);
+  const displaySaving = styleContext?.displayRecorderSavingMessage || false;
   const { isDeprecated: isOld } = userAgentManager;
   const currentStep = useRef(step);
   const recorder = useRef(null);
@@ -212,10 +216,14 @@ const Recorder = ({
   };
 
   const onSave = async (): Promise<void> => {
+    setSaving(true);
+
     sendEvent(EVENTS.save);
     const str = await blobToBase64String(blob);
 
     await controller.createRecording(name, type, str, owner);
+
+    setSaving(false);
 
     if (onSaved) onSaved(blob);
 
@@ -276,7 +284,14 @@ const Recorder = ({
       {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
         <Close onClick={onRecorderClose} />
       )}
-      {step === STATES.SAVED && <Loader inline />}
+      {step === STATES.SAVED &&
+        <>
+          {displaySaving &&
+            (saving ? "Saving your pronunciation" : "Pronunciation saved!")
+          }
+          <Loader inline />
+        </>
+      }
       <div className={cx(styles.recorder__body, { old: isOld })}>
         {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
