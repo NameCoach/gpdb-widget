@@ -56,7 +56,7 @@
   opacity: 0.6;
 }
 
-button {
+.recorder button {
   cursor: pointer;
   border: 1px solid borderColor;
   box-sizing: border-box;
@@ -67,11 +67,11 @@ button {
   font-weight: 600;
 }
 
-button:hover {
+.recorder button:hover {
   background-color: secondary;
 }
 
-button:active {
+.recorder button:active {
   background-color: secondary;
 }
 
@@ -84,6 +84,10 @@ button:active {
   position: relative;
   display: flex;
   margin-top: 20px;
+}
+
+.uploader input[type="file"] {
+  display: none;
 }
 
 .uploader__message {
@@ -105,8 +109,4 @@ button:active {
 
 .error {
   color: errorColor;
-}
-
-input[type="file"] {
-  display: none;
 }
