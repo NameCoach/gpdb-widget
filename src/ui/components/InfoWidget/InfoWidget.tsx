@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { InfoDocumentElements } from "../../../types/info-document-elememts";
 import Container from "./Container/Container";
 import parse from "html-react-parser";
+import Loader from "../Loader";
 
 const InfoWidget = (props): JSX.Element => {
   const [errorEncounted, setErrorEncounted] = useState(false);
   const [onCloseWidget, setCloseWidget] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const document = props.documentToRender;
   const elements = document?.elements;
@@ -14,10 +16,13 @@ const InfoWidget = (props): JSX.Element => {
 
   const handleOnCloseWidget = async (): Promise<void> => {
     try {
+      setLoading(true);
       await props.callbackAction();
+      setLoading(false);
 
       setCloseWidget(true);
     } catch (e) {
+      setLoading(false);
       setErrorEncounted(true);
       console.log(e);
     }
@@ -58,13 +63,19 @@ const InfoWidget = (props): JSX.Element => {
             </>
           )}
 
-          {closeAction && (
+          {!loading && closeAction && (
             <div className="close-button">
               <button
                 onClick={closeAction.callBackAction && handleOnCloseWidget}
               >
                 {closeAction?.text ? closeAction.text : "Close"}
               </button>
+            </div>
+          )}
+
+          {loading && (
+            <div style={{ marginLeft: "46%" }}>
+              <Loader />
             </div>
           )}
         </div>
