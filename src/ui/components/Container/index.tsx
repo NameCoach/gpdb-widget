@@ -65,7 +65,14 @@ const Container = (props: Props): JSX.Element => {
   }, [controller.permissions]);
 
   const canPronunciationCreate = useMemo(() => {
-    return controller.permissions.can(Resources.Pronunciation, "create");
+    return (
+      controller.permissions.can(Resources.Pronunciation, "create") &&
+      controller.permissions.can(Resources.Pronunciation, "index")
+    );
+  }, [controller.permissions]);
+
+  const canPronunciationSearch = useMemo(() => {
+    return controller.permissions.can(Resources.Pronunciation, "search");
   }, [controller.permissions]);
 
   const setNameExistByType = (type): void => {
@@ -132,10 +139,14 @@ const Container = (props: Props): JSX.Element => {
     );
 
   useEffect(() => {
-    complexSearch()
-      .then(() => setLoading(false))
-      .then(() => sendAnalytics())
-      .catch((e) => console.log(e));
+    if (canPronunciationSearch) {
+      complexSearch()
+        .then(() => setLoading(false))
+        .then(() => sendAnalytics())
+        .catch((e) => console.log(e));
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const isSingleName = !(lastName.key || fullName.key);
@@ -203,18 +214,8 @@ const Container = (props: Props): JSX.Element => {
     </>
   );
 
-  return (
+  const renderContainer = (): JSX.Element => (
     <>
-      {isSingleName ? renderSingleNameHeader() : renderFullNameHeader()}
-      {isRecorderOpen && !loading && (
-        <Recorder
-          name={recorderState.name}
-          type={recorderState.type}
-          onRecorderClose={setRecorderClosed}
-          onRecorded={onRecorded}
-          termsAndConditions={recorderState.termsAndConditions}
-        />
-      )}
       {isSingleName
         ? !isRecorderOpen && (
             <SingleName
@@ -249,6 +250,29 @@ const Container = (props: Props): JSX.Element => {
               ))}
             </>
           )}
+    </>
+  );
+
+  return (
+    <>
+      {isSingleName ? renderSingleNameHeader() : renderFullNameHeader()}
+      {isRecorderOpen && !loading && (
+        <Recorder
+          name={recorderState.name}
+          type={recorderState.type}
+          onRecorderClose={setRecorderClosed}
+          onRecorded={onRecorded}
+          termsAndConditions={recorderState.termsAndConditions}
+        />
+      )}
+      {canPronunciationSearch ? (
+        renderContainer()
+      ) : (
+        <div className={cx(styles.permissions)}>
+          You can't create or listen to any of libraray recordings. Please
+          contact your administrator to get this fixed.
+        </div>
+      )}
     </>
   );
 };
