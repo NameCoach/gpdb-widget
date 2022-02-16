@@ -1,0 +1,18 @@
+@value labelGray from "../../../styles/colors.css";
+
+.label {
+  display: inline-block;
+  color: labelGray;
+}
+
+.checkbox_wrapper {
+  width: 5%;
+}
+
+.line {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
