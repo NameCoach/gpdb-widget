@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { AudioSource } from "../../../types/resources/pronunciation";
 import useAudioRef from "../../hooks/useAudioRef";
 import Loader from "../Loader";
+import SystemContext from "../../contexts/system";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -29,6 +30,8 @@ const speakerCssClasses = {
 const Player = (props: Props): JSX.Element => {
   const { audioRef, audioReady } = useAudioRef(props.audioSrc);
   const [isPlaying, setPlaying] = useState<boolean>(false);
+  const systemContext = useContext(SystemContext);
+  const errorHandler = systemContext?.errorHandler;
   const tooltipId = props.tooltipId || Date.now().toString();
   const stop = (): void => setPlaying(false);
   const play = async (): Promise<void> => {
@@ -47,6 +50,12 @@ const Player = (props: Props): JSX.Element => {
 
       await audioRef.current.play();
     } catch (e) {
+      errorHandler &&
+        errorHandler(e, "player", {
+          audioSrc: props.audioSrc,
+          autoplay: props.autoplay,
+          audioCreator: props.audioCreator,
+        });
       currentAudio = null;
       setPlaying(false);
     }
