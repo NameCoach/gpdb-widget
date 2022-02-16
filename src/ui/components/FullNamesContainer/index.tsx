@@ -22,7 +22,6 @@ interface Props {
   termsAndConditions?: TermsAndConditions;
   controller: IFrontController;
   permissions: UserPermissions;
-  byMyInfo?: boolean;
 }
 
 const FullNamesContainer = (props: Props): JSX.Element => {
@@ -98,23 +97,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         key: parsedNames[type],
         type,
       }));
+
     const result = await props.controller.complexSearch(names, name.owner);
 
-    let _current;
-
-    if (props.byMyInfo) {
-      const fullNamePronunciation = result.fullName[0];
-
-      _current = fullNamePronunciation?.nameOwnerCreated
-        ? fullNamePronunciation
-        : null;
-    } else {
-      _current = result.fullName[0];
-    }
+    const _current = result.fullName[0];
 
     setCurrent(_current);
 
-    if (_current) return setLoading(false);
+    if (_current?.nameOwnerCreated) return setLoading(false);
 
     setNameParts(
       names
