@@ -184,6 +184,11 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     );
   };
 
+  const onRecorderClose = async (): Promise<void> => {
+    await reloadName(recorderState.type);
+    setRecorderClosed();
+  };
+
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
@@ -260,8 +265,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
             name={recorderState.name}
             type={recorderState.type}
             owner={nameOwner}
-            onRecorded={(): Promise<void> => reloadName(recorderState.type)}
-            onRecorderClose={setRecorderClosed}
+            onRecorderClose={onRecorderClose}
             termsAndConditions={recorderState.termsAndConditions}
           />
         )}
