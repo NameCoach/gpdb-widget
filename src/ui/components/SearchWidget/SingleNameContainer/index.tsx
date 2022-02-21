@@ -54,6 +54,12 @@ const SingleNameContainer = (props: Props): JSX.Element => {
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
+  const onRecorderClose = async (): Promise<void> => {
+    await loadName(props.name);
+
+    setRecorderClosed();
+  };
+
   useEffect(() => {
     loadName(props.name);
   }, [props.name]);
@@ -106,8 +112,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
           name={recorderState.name}
           type={recorderState.type}
           owner={props.name.owner}
-          onRecorded={(): Promise<void> => loadName(props.name)}
-          onRecorderClose={setRecorderClosed}
+          onRecorderClose={onRecorderClose}
           termsAndConditions={recorderState.termsAndConditions}
         />
       )}
