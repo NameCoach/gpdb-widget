@@ -1,13 +1,14 @@
 import IFrontController, { Meta } from "../types/front-controller";
 import Name, { NameTypes } from "../types/resources/name";
 import {
-  UserResponse,
   Client as GpdbClient,
   NameOwner,
-  User,
+  PermissionsManager,
+  Resources,
   Target,
   TargetTypeSig,
-  PermissionsManager,
+  User,
+  UserResponse,
 } from "gpdb-api-client";
 import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
@@ -17,11 +18,15 @@ import NameTypesFactory from "../types/name-types-factory";
 import NameParser from "../types/name-parser";
 import DefaultNameParser from "./parsers/default-name-parser";
 import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import customAttributesMap, {
+  CustomAttributeObject,
+} from "./mappers/custom-attributes.map";
 
 // TODO: provide error handling and nullable responses
 
 export default class FrontController implements IFrontController {
   public permissions: PermissionsManager;
+  public customAttributes: CustomAttributeObject[];
 
   constructor(
     private readonly apiClient: GpdbClient,
@@ -73,7 +78,19 @@ export default class FrontController implements IFrontController {
         p.audio_source === AudioSource.NameOwner &&
         p.name_owner_signature === owner.signature;
 
-      return pronunciationMap({ ...p, nameOwnerCreated });
+      if (
+        nameOwnerCreated &&
+        owner.signature === this.userContext.signature &&
+        p.custom_attributes?.length > 0 &&
+        !this.permissions.can(Resources.Pronunciation, "index:hedb") &&
+        !this.permissions.can(Resources.Pronunciation, "index:name_badge")
+      ) {
+        this.customAttributes = customAttributesMap(p.custom_attributes);
+      }
+
+      const isHedb = /hedb_/.test(p.id);
+
+      return pronunciationMap({ ...p, nameOwnerCreated, isHedb });
     });
   }
 
@@ -166,6 +183,26 @@ export default class FrontController implements IFrontController {
     }
   }
 
+  async saveCustomAttributes(
+    customAttributesValues: { [x: string]: string | boolean },
+    nameOwner?: NameOwner
+  ): Promise<boolean> {
+    const owner = nameOwner || this.nameOwnerContext;
+
+    try {
+      await this.apiClient.customAttributes.saveValues({
+        userContext: this.userContext,
+        targetOwnerContext: owner,
+        customAttributesValues,
+      });
+    } catch (error) {
+      if (!error.message.includes("Not Found")) console.error(error);
+      return false;
+    }
+
+    return true;
+  }
+
   async sendAnalytics(
     eventType: string,
     message: string | object | boolean,
@@ -182,7 +219,9 @@ export default class FrontController implements IFrontController {
         eventType,
         recordingId,
         message:
-          typeof message === "object" ? JSON.stringify(message) : String(message),
+          typeof message === "object"
+            ? JSON.stringify(message)
+            : String(message),
         userId: this.nameOwnerContext.signature,
         toolSignature: toolSignature || "gpdb_widget",
         versionInfo: {},
@@ -257,6 +296,22 @@ export default class FrontController implements IFrontController {
     return Promise.resolve();
   }
 
+  async loadCustomAttributesConfig(): Promise<void> {
+    if (this.permissions.can(Resources.CustomAttributes, "retrieve_config")) {
+      try {
+        const result = await this.apiClient.customAttributes.retrieveConfig();
+        this.customAttributes = customAttributesMap(result.data);
+      } catch (error) {
+        if (!error.message.includes("Not Found")) console.error(error);
+        this.customAttributes = [] as CustomAttributeObject[];
+      }
+    } else {
+      this.customAttributes = [] as CustomAttributeObject[];
+    }
+
+    return Promise.resolve();
+  }
+
   // TODO NAM-159 implement saving to and loading from localStorageor or get rid of this methods
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async saveAudioSampleRate(): Promise<void> {}
@@ -285,7 +340,22 @@ export default class FrontController implements IFrontController {
               pronunciation.audio_source === AudioSource.NameOwner &&
               pronunciation.name_owner_signature === owner.signature;
 
-            const isHedb = pronunciation.id.match(/hedb_/);
+            if (
+              nameOwnerCreated &&
+              owner.signature === this.userContext.signature &&
+              pronunciation.custom_attributes?.length > 0 &&
+              !this.permissions.can(Resources.Pronunciation, "search:hedb") &&
+              !this.permissions.can(
+                Resources.Pronunciation,
+                "search:name_badge"
+              )
+            ) {
+              this.customAttributes = customAttributesMap(
+                pronunciation.custom_attributes
+              );
+            }
+
+            const isHedb = /hedb_/.test(pronunciation.id);
 
             if (!name.type) {
               name.type = NameTypes.FullName;
