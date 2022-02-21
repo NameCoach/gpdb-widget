@@ -1,6 +1,7 @@
 @value background: white;
 @value secondary: rgba(138, 73, 212, 0.2);
 @value labelGray: rgb(121 121 121);
+@value darkerGray: #424242;
 
 /* LOADER */
 @value mainSpin: #946cc1;
