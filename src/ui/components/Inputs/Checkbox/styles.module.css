@@ -1,0 +1,30 @@
+@value labelGray, darkerGray from "../../../styles/colors.css";
+
+.label-wrapper {
+  display: inline-block;
+  color: darkerGray;
+}
+
+.label-wrapper.disabled {
+  color: labelGray;
+}
+
+.checkbox_wrapper {
+  width: 5%;
+}
+
+.line-wrapper {
+  font-size: 14px;
+  line-height: 1.5em;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.line-wrapper.disabled {
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  line-height: 0.5em;
+  justify-content: space-between;
+}
+
