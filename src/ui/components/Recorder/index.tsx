@@ -1,9 +1,10 @@
 import React, {
-  useRef,
-  useContext,
-  useState,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import RecordRTC, { Options } from "recordrtc";
 import { blobToBase64String } from "blob-util";
@@ -17,13 +18,15 @@ import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
-import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
+import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
+import getSpec, { EVENTS } from "./machine/spec";
+import CustomAttributes from "../CustomAttributes";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -38,7 +41,6 @@ interface Props {
   name: string;
   type: NameTypes;
   owner?: NameOwner;
-  onRecorded?: () => Promise<void>;
   onRecorderClose: () => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
@@ -47,37 +49,7 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const machineSpec = {
-  initialState: STATES.INIT,
-  transitions: [
-    {
-      name: "accept",
-      from: STATES.TERMS_AND_CONDITIONS,
-      to: STATES.INIT,
-    },
-    {
-      name: "start",
-      from: [STATES.INIT, STATES.RECORDED],
-      to: STATES.STARTED,
-    },
-    { name: "ready", from: STATES.STARTED, to: STATES.RECORD },
-    { name: "stop", from: [STATES.RECORD, STATES.FAILED], to: STATES.RECORDED },
-    { name: "save", from: STATES.RECORDED, to: STATES.SAVED },
-    { name: "fail", from: STATES.ALL, to: STATES.FAILED },
-  ],
-};
-
-export const EVENTS = {
-  accept: "accept",
-  start: "start",
-  ready: "ready",
-  stop: "stop",
-  save: "save",
-  fail: "fail",
-};
-
 const Recorder = ({
-  onRecorded,
   onRecorderClose,
   name,
   owner,
@@ -86,6 +58,21 @@ const Recorder = ({
   errorHandler,
   onSaved,
 }: Props): JSX.Element => {
+  const controller = useContext(ControllerContext);
+  const machineSpec = useMemo(() => getSpec(controller, owner), [
+    controller,
+    owner,
+  ]);
+
+  const styleContext = useContext(StyleContext);
+  const displaySaving =
+    styleContext?.displayRecorderSavingMessage ||
+    machineSpec.canCustomAttributesCreate;
+
+  const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
+
+  const { isDeprecated: isOld } = userAgentManager;
+
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
   const [countdown, setCountdown] = useState<number>(COUNTDOWN);
@@ -96,22 +83,15 @@ const Recorder = ({
   const [timeoutId, setTimeoutId] = useState(null);
   const [fileSizeError, setFileSizeError] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
-  const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const displaySaving = styleContext?.displayRecorderSavingMessage || false;
-  const { isDeprecated: isOld } = userAgentManager;
-  const currentStep = useRef(step);
-  const recorder = useRef(null);
-
-  const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
-
   const [sampleRate, setSampleRate] = useState<{ value: number }>(
     defaultSampleRate
   );
-
   const [tempSampleRate, setTempSampleRate] = useState<{ value: number }>(
     defaultSampleRate
   );
+
+  const currentStep = useRef(step);
+  const recorder = useRef(null);
 
   currentStep.current = step;
 
@@ -227,13 +207,13 @@ const Recorder = ({
 
     if (onSaved) onSaved(blob);
 
-    const closeAndCallback = async (): Promise<void> => {
-      onRecorded && (await onRecorded());
-      onRecorderClose();
-    };
-
-    setTimeout(await closeAndCallback, ONE_SECOND);
+    if (!machineSpec.canCustomAttributesCreate) onRecorderClose();
+    if (machineSpec.canCustomAttributesCreate) sendEvent(EVENTS.customAttrs);
   };
+
+  const onCustomAttributesSaved = () => setTimeout(onRecorderClose, ONE_SECOND);
+
+  const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
   const setSampleRateToDefault = (): void => {
     setSampleRate(defaultSampleRate);
@@ -284,14 +264,6 @@ const Recorder = ({
       {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
         <Close onClick={onRecorderClose} />
       )}
-      {step === STATES.SAVED &&
-        <>
-          {displaySaving &&
-            (saving ? "Saving your pronunciation" : "Pronunciation saved!")
-          }
-          <Loader inline />
-        </>
-      }
       <div className={cx(styles.recorder__body, { old: isOld })}>
         {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
@@ -403,6 +375,25 @@ const Recorder = ({
           </>
         )}
       </div>
+      {step === STATES.SAVED && (
+        <>
+          {displaySaving &&
+            (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
+          <Loader inline />
+        </>
+      )}
+      {step === STATES.CUSTOM_ATTRS && machineSpec.canCustomAttributesCreate && (
+        <>
+          <CustomAttributes
+            disabled={false}
+            saving
+            noBorder
+            onCustomAttributesSaved={onCustomAttributesSaved}
+            onBack={onCustomAttributesBack}
+            onRecorderClose={onRecorderClose}
+          />
+        </>
+      )}
     </div>
   );
 };
