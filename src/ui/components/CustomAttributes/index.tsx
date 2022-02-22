@@ -18,6 +18,7 @@ import ControllerContext from "../../contexts/controller";
 import Close from "../Close";
 import { CustomAttributeObject } from "../../../core/mappers/custom-attributes.map";
 import Loader from "../Loader";
+import { NameOwner } from "gpdb-api-client";
 
 const ONE_SECOND = 1000;
 
@@ -32,9 +33,11 @@ enum STATES {
 
 interface Props {
   disabled: boolean;
+  owner?: NameOwner;
   saving?: boolean;
   attributes?: CustomAttribute[];
   noBorder?: boolean;
+  high?: boolean;
   onCustomAttributesSave?: () => void;
   onCustomAttributesSaved?: () => void;
   onBack?: () => void;
@@ -46,7 +49,9 @@ const cx = classNames.bind(styles);
 const CustomAttributes = ({
   disabled,
   attributes,
+  owner,
   noBorder,
+  high,
   onCustomAttributesSave,
   onCustomAttributesSaved,
   onBack,
@@ -73,7 +78,7 @@ const CustomAttributes = ({
       {}
     );
 
-    const result = await controller.saveCustomAttributes(customValues);
+    const result = await controller.saveCustomAttributes(customValues, owner);
 
     if (result) {
       setTimeout(() => setState(STATES.SAVED), ONE_SECOND);
@@ -104,7 +109,13 @@ const CustomAttributes = ({
           )}
         >
           <div className={cx("attributes__wrapper", { active: !disabled })}>
-            <div className={cx("scroll", { disabled })}>
+            <div
+              className={cx(
+                "scroll",
+                { disabled },
+                { high: !disabled && high }
+              )}
+            >
               {dataArray.map((attribute, index) => {
                 return (
                   <React.Fragment key={attribute.id + index}>
