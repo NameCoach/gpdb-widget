@@ -388,6 +388,7 @@ const Recorder = ({
             disabled={false}
             saving
             noBorder
+            owner={owner}
             onCustomAttributesSaved={onCustomAttributesSaved}
             onBack={onCustomAttributesBack}
             onRecorderClose={onRecorderClose}
