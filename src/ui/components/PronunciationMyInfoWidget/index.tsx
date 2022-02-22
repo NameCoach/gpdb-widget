@@ -4,7 +4,7 @@ import { NameOption } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
-import { TermsAndConditions, ErrorHandler } from "../../hooks/useRecorderState";
+import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import FullNamesContainer from "../FullNamesContainer";
 import NoPermissionsError from "../NoPermissionsError";
@@ -41,6 +41,9 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
   const canRecordingRequest = (permission): boolean =>
     client.permissions.can(Resources.RecordingRequest, permission);
 
+  const canCustomAttributes = (permission): boolean =>
+    client.permissions.can(Resources.CustomAttributes, permission);
+
   const blockPermissions = useMemo(
     () => ({
       [Blocks.Pronunciations]: canPronunciation("index"),
@@ -56,11 +59,17 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       search: canPronunciation("search"),
       index: canPronunciation("index"),
       share: canPronunciation("share"),
+      createNameBadge: canPronunciation("create:name_badge"),
+      indexNameBadge: canPronunciation("index:name_badge"),
     },
     canUserResponse: { create: canUserResponse("create") },
     canRecordingRequest: {
       create: canRecordingRequest("create"),
       find: canRecordingRequest("find"),
+    },
+    canCustomAttributes: {
+      saveValues: canCustomAttributes("save_values"),
+      retrieveConfig: canCustomAttributes("retrieve_config"),
     },
   } as UserPermissions;
 
