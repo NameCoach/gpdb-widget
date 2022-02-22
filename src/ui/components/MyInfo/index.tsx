@@ -66,6 +66,16 @@ const MyInfo = (props: Props): JSX.Element => {
     setLoading(false);
   };
 
+  const onRecorderClose = async (): Promise<void> => {
+    await load();
+    setRecorderClosed();
+  };
+
+  const onCustomAttributesSaved = async (): Promise<void> => {
+    await load();
+    setCollapsable(false);
+  };
+
   useEffect(() => {
     load();
   }, [props.name, props.controller]);
@@ -77,6 +87,30 @@ const MyInfo = (props: Props): JSX.Element => {
       result.push({ url: pronunciation.nameBadgeLink, text: "NameBadge Link" });
 
     return result;
+  };
+
+  const canCreateSelfRecording = (): boolean =>
+    (props.permissions.canPronunciation.createNameBadge &&
+      props.permissions.canPronunciation.indexNameBadge &&
+      pronunciation?.isHedb) ||
+    (props.permissions.canPronunciation.create && !pronunciation?.isHedb);
+
+  const displayCustomAttributes = (): boolean =>
+    pronunciation &&
+    pronunciation.customAttributes &&
+    pronunciation.customAttributes.length > 0;
+
+  const customAttributesDisabled = (): boolean => {
+    console.log(
+      props.permissions.canCustomAttributes.saveValues,
+      props.permissions.canCustomAttributes.retrieveConfig,
+      pronunciation?.isHedb
+    );
+    return (
+      !props.permissions.canCustomAttributes.saveValues ||
+      !props.permissions.canCustomAttributes.retrieveConfig ||
+      pronunciation?.isHedb
+    );
   };
 
   const renderContainer = (): JSX.Element => (
@@ -94,15 +128,12 @@ const MyInfo = (props: Props): JSX.Element => {
                 <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
               )}
 
-            {!loading &&
-              pronunciation &&
-              pronunciation.customAttributes &&
-              pronunciation.customAttributes.length > 0 && (
-                <CollapsableAction
-                  active={collapsableActive}
-                  onClick={onCollapsable}
-                />
-              )}
+            {!loading && displayCustomAttributes() && (
+              <CollapsableAction
+                active={collapsableActive}
+                onClick={onCollapsable}
+              />
+            )}
 
             {!loading && pronunciation && (
               <Player
@@ -111,7 +142,7 @@ const MyInfo = (props: Props): JSX.Element => {
               />
             )}
 
-            {!loading && (
+            {!loading && canCreateSelfRecording() && (
               <RecordAction
                 active={recorderState.isOpen}
                 onClick={onRecorderOpen}
@@ -127,24 +158,22 @@ const MyInfo = (props: Props): JSX.Element => {
         )}
       </div>
 
-      {!loading &&
-        pronunciation &&
-        pronunciation.customAttributes &&
-        pronunciation.customAttributes.length > 0 &&
-        collapsableActive && (
-          <CustomAttributes
-            attributes={pronunciation.customAttributes}
-            disabled
-          />
-        )}
+      {!loading && displayCustomAttributes() && collapsableActive && (
+        <CustomAttributes
+          attributes={pronunciation.customAttributes}
+          disabled={customAttributesDisabled()}
+          noBorder
+          onCustomAttributesSaved={onCustomAttributesSaved}
+          onBack={onCollapsable}
+        />
+      )}
 
       {recorderState.isOpen && (
         <Recorder
           name={props.name.value}
           type={NameTypes.FullName}
           owner={props.name.owner}
-          onRecorded={(): Promise<void> => load()}
-          onRecorderClose={setRecorderClosed}
+          onRecorderClose={onRecorderClose}
           termsAndConditions={props.termsAndConditions}
           errorHandler={props.errorHandler}
         />
