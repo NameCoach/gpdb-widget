@@ -16,17 +16,14 @@ interface Props {
   termsAndConditions?: TermsAndConditions;
 }
 
-const checkfullName = (name: string): boolean => {
+const checkFullName = (name: string): boolean => {
   const _name = name.trim();
 
-  if (_name.includes(" ") || _name.includes(",") || _name.includes("@"))
-    return true;
-
-  return false;
+  return _name.includes(" ") || _name.includes(",") || _name.includes("@");
 };
 
 const Adapter = (props: Props): JSX.Element => {
-  const isFullName = checkfullName(props.name);
+  const isFullName = checkFullName(props.name);
   const nameIsEmail = props.name.includes("@");
   const ownerSignature = nameIsEmail ? props.name : DEFAULT_NAME_OWNER;
 
@@ -61,6 +58,9 @@ const Adapter = (props: Props): JSX.Element => {
     canRecordingRequest: {
       create: nameIsEmail ? canRecordingRequest("create") : false,
       find: nameIsEmail ? canRecordingRequest("find") : false,
+    },
+    canCustomAttributes: {
+      save_values: false,
     },
   } as UserPermissions;
 
