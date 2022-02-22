@@ -1,4 +1,4 @@
-@value secondaryGray, errorColor from "../../styles/colors.css";
+@value secondaryGray, errorColor, borderColor, primaryBrandColor, secondary from "../../styles/colors.css";
 
 .attributes__container__wrapper {
   padding: 5px 0 5px 5px;
@@ -7,6 +7,25 @@
 .attributes__container__wrapper.bordered {
   border: 1px solid secondaryGray;
   border-radius: 5px;
+}
+
+.attributes__container__wrapper button {
+  cursor: pointer;
+  border: 1px solid borderColor;
+  box-sizing: border-box;
+  border-radius: 2px;
+  padding: 6px 6px;
+  background: transparent;
+  color: primaryBrandColor;
+  font-weight: 600;
+}
+
+.attributes__container__wrapper button:hover {
+  background-color: secondary;
+}
+
+.attributes__container__wrapper button:active {
+  background-color: secondary;
 }
 
 
@@ -43,7 +62,7 @@ input:disabled {
   overflow-y: scroll;
 }
 
-.scroll.tall {
+.scroll.high {
   max-height: 210px;
 }
 
