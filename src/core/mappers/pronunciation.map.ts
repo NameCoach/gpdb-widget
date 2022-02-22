@@ -1,6 +1,7 @@
 import Pronunciation, {
   AudioSource,
 } from "../../types/resources/pronunciation";
+import customAttributesMap from "./custom-attributes.map";
 
 const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
   id: raw.id,
@@ -19,7 +20,7 @@ const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
     response: raw.user_responses?.[0]?.user_response,
   },
   nameBadgeLink: raw.name_badge_link,
-  customAttributes: raw.custom_attributes,
+  customAttributes: customAttributesMap(raw.custom_attributes),
   phoneticTranscriptions:
     (raw.phonetic_transcriptions &&
       raw.phonetic_transcriptions.map((transcriptions) => ({

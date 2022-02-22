@@ -9,6 +9,6 @@ export default interface CustomAttribute {
   presentation: AttributePresentation;
   id: string;
   label: string;
-  value: null | string | boolean;
+  value: string | boolean;
   disabled?: boolean;
 }
