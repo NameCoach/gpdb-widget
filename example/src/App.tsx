@@ -52,7 +52,7 @@ const App = () => {
   useEffect(() => {
     const load = async () => {
       await client.loadPermissions({ user_sig: userContext.email })
-
+      await client.loadCustomAttributesConfig();
       setLoading(false);
     }
 
