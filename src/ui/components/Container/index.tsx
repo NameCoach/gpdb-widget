@@ -95,11 +95,11 @@ const Container = (props: Props): JSX.Element => {
     else return await props.verifyNames();
   };
 
-  const onRecorded = (): Promise<void> => {
+  const onRecorderClose = async (): Promise<void> => {
     updatePronunciationsByType(recorderState.type, []);
-    reloadName(recorderState.type);
+    await reloadName(recorderState.type);
 
-    return Promise.resolve();
+    setRecorderClosed();
   };
 
   const openRecorder = (name, type): void =>
@@ -147,11 +147,14 @@ const Container = (props: Props): JSX.Element => {
     } else {
       setLoading(false);
     }
+    return (): void => {
+      setLoading(true);
+    };
   }, []);
 
   const isSingleName = !(lastName.key || fullName.key);
 
-  const renderSingleNameHeader = () => (
+  const renderSingleNameHeader = (): JSX.Element => (
     <>
       <div className={cx("head-line")}>
         {!props.hideLogo && <Logo />}
@@ -167,7 +170,7 @@ const Container = (props: Props): JSX.Element => {
     </>
   );
 
-  const renderFullNameHeader = () => (
+  const renderFullNameHeader = (): JSX.Element => (
     <>
       <div className={cx("head-line")}>
         {!props.hideLogo && <Logo />}
@@ -199,14 +202,15 @@ const Container = (props: Props): JSX.Element => {
       {!pronunciations.fullName?.[0]?.nameOwnerCreated && (
         <hr className={styles.divider} />
       )}
-      {pronunciations.fullName[0] &&
+      {!isRecorderOpen &&
+        pronunciations.fullName[0] &&
         pronunciations.fullName[0].customAttributes &&
         pronunciations.fullName[0].customAttributes.length > 0 && (
           <>
-            <br />
             <CustomAttributes
               attributes={pronunciations.fullName[0].customAttributes}
               disabled
+              noBorder
             />
           </>
         )}
@@ -234,7 +238,7 @@ const Container = (props: Props): JSX.Element => {
           !pronunciations.fullName?.[0]?.nameOwnerCreated && (
             <>
               {[firstName, lastName].map((name, index) => (
-                <>
+                <React.Fragment key={name.type + index}>
                   <SingleName
                     canRecordingRequestCreate={canRecordingRequestCreate}
                     canRecordingRequestFind={canRecordingRequestFind}
@@ -246,7 +250,7 @@ const Container = (props: Props): JSX.Element => {
                     pronunciations={pronunciations[name.type]}
                   />
                   {index === 0 && <hr className={styles.divider} />}
-                </>
+                </React.Fragment>
               ))}
             </>
           )}
@@ -260,8 +264,7 @@ const Container = (props: Props): JSX.Element => {
         <Recorder
           name={recorderState.name}
           type={recorderState.type}
-          onRecorderClose={setRecorderClosed}
-          onRecorded={onRecorded}
+          onRecorderClose={onRecorderClose}
           termsAndConditions={recorderState.termsAndConditions}
         />
       )}
