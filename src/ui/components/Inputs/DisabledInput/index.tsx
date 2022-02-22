@@ -2,18 +2,16 @@ import React from "react";
 import styles from "./styles.module.css";
 
 interface Props {
-  id: string;
   label: string;
   value: string;
+  id: string;
 }
 
-const DisabledInput = (props: Props) => {
+const DisabledInput = ({ label, value }: Props): JSX.Element => {
   return (
-    <div className={styles.line}>
-      <div className={styles.label}>{props.label}</div>
-      <div className={styles.input_wrapper}>
-        {props.value ? props.value : ""}
-      </div>
+    <div className={styles.line_wrapper}>
+      <div className={styles.label}>{label}</div>
+      <div className={styles.input_wrapper}>{value || ""}</div>
     </div>
   );
 };
