@@ -40,13 +40,16 @@ const MyInfo = (props: Props): JSX.Element => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const onRecorderOpen = (): void =>
+  const onRecorderOpen = (): void => {
     setRecorderOpen(
       true,
       props.name.value,
       NameTypes.FullName,
       props.termsAndConditions
     );
+
+    if (collapsableActive) setCollapsable(false);
+  };
 
   const onCollapsable = (): void => setCollapsable((value) => !value);
 
@@ -161,10 +164,12 @@ const MyInfo = (props: Props): JSX.Element => {
       {!loading && displayCustomAttributes() && collapsableActive && (
         <CustomAttributes
           attributes={pronunciation.customAttributes}
+          owner={props.name.owner}
           disabled={customAttributesDisabled()}
-          noBorder
           onCustomAttributesSaved={onCustomAttributesSaved}
           onBack={onCollapsable}
+          noBorder
+          high
         />
       )}
 
