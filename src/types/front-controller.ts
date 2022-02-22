@@ -8,6 +8,7 @@ import {
 } from "gpdb-api-client";
 import NameParser from "./name-parser";
 import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { CustomAttributeObject } from "../core/mappers/custom-attributes.map";
 
 export interface Meta {
   uri?: string;
@@ -21,6 +22,7 @@ export interface PublicAttributes {
 
 export interface GpdbRequests {
   permissions: PermissionsManager;
+  customAttributes: CustomAttributeObject[];
   complexSearch: (
     names: Array<Omit<Name, "exist">>,
     nameOwner?: NameOwner,
@@ -58,6 +60,14 @@ export interface GpdbRequests {
     nameOwner?: NameOwner
   ) => PromiseLike<boolean>;
   loadPermissions: (rest?: loadParams) => PromiseLike<void>;
+  loadCustomAttributesConfig: () => PromiseLike<void>;
+}
+
+export interface CustomAttributesRequests {
+  saveCustomAttributes: (
+    customAttributesValues: { [x: string]: any },
+    nameOwner?: NameOwner
+  ) => Promise<boolean>;
 }
 
 export interface NamesServiceRequests {
@@ -80,6 +90,7 @@ export interface SettingsRequests {
 
 type IFrontController = PublicAttributes &
   GpdbRequests &
+  CustomAttributesRequests &
   NamesServiceRequests &
   AnalyticsRequests &
   Partial<SettingsRequests>;
