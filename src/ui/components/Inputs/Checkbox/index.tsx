@@ -1,32 +1,46 @@
-import React from "react";
+import React, { memo } from "react";
 import styles from "./styles.module.css";
+import classNames from "classnames/bind";
 
 interface Props {
   id: string;
   label: string;
   value: boolean;
   disabled: boolean;
+  onUpdate?: (any) => void;
 }
 
-const Checkbox = (props: Props) => {
-  const nullCallback = (_) => false;
+const cx = classNames.bind(styles);
 
+const Checkbox = ({
+  id,
+  value,
+  label,
+  disabled,
+  onUpdate,
+}: Props): JSX.Element => {
+  const nullCallback = (_): null => null;
+
+  const onChange = (_): void => {
+    if (onUpdate) onUpdate({ id, value: !value });
+  };
   return (
-    <div className={styles.line}>
-      <label className={styles.label} htmlFor={props.id}>
-        {props.label}
+    <div className={cx("line-wrapper", { disabled })}>
+      <label className={cx("label-wrapper", { disabled })} htmlFor={id}>
+        {label}
       </label>
       <span className={styles.checkbox_wrapper}>
         <input
           type="checkbox"
-          id={props.id}
-          onClick={nullCallback}
-          checked={props.value}
-          disabled={props.disabled}
+          id={id}
+          onClick={onChange}
+          onChange={nullCallback}
+          checked={!!value}
+          disabled={disabled}
         />
       </span>
     </div>
   );
 };
 
-export default Checkbox;
+export default memo(Checkbox);
