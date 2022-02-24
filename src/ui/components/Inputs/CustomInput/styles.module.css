@@ -1,0 +1,59 @@
+@value labelGray, secondaryGray, primaryBrandColor from "../../../styles/colors.css";
+
+.label {
+  color: labelGray;
+  display: flex;
+}
+
+.input_wrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.line {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.ca{
+  border-color: secondaryGray;
+}
+
+.ca:focus-within {
+  border-color: primaryBrandColor;
+}
+
+.attributes_input_wrapper {
+  border-radius: 4px;
+  padding: 0 10px;
+}
+
+.attributes_input_wrapper[data-focused="true"] {
+border-color: primaryBrandColor;
+}
+
+.attributes_input_wrapper[data-type=select]{
+  line-height: 5px;
+  height: 30px;
+}
+
+.attributes_input {
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.attributes_dropdown {
+  margin: 5px 0;
+}
+
+.attributes_label {
+  font-size: 14px;
+  margin: 10px 0 0;
+}
+
+.attributes_checker {
+  display: none;
+}
+
