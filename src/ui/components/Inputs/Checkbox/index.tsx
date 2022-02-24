@@ -26,10 +26,10 @@ const Checkbox = ({
   };
   return (
     <div className={cx("line-wrapper", { disabled })}>
-      <label className={cx("label-wrapper", { disabled })} htmlFor={id}>
-        {label}
-      </label>
-      <span className={styles.checkbox_wrapper}>
+      <div className={cx("label-wrapper", { disabled })}>
+        <label htmlFor={id}>{label}</label>
+      </div>
+      <div className={cx(styles.checkbox_wrapper, { disabled })}>
         <input
           type="checkbox"
           id={id}
@@ -38,7 +38,7 @@ const Checkbox = ({
           checked={!!value}
           disabled={disabled}
         />
-      </span>
+      </div>
     </div>
   );
 };
