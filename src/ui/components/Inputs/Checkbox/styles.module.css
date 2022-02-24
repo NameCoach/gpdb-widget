@@ -1,29 +1,40 @@
 @value labelGray, darkerGray from "../../../styles/colors.css";
 
 .label-wrapper {
-  display: inline-block;
+  display: flex;
   color: darkerGray;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
 }
 
 .label-wrapper.disabled {
+  display: inline-block;
+  font-size: 14px;
   color: labelGray;
 }
 
 .checkbox_wrapper {
+  display: flex;
+}
+
+.checkbox_wrapper.disabled {
+  display: inline-block;
   width: 5%;
 }
 
 .line-wrapper {
-  font-size: 14px;
+  width: 96%;
+  align-self: self-start;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
   line-height: 1.5em;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 .line-wrapper.disabled {
   font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  display: flex;
   line-height: 0.5em;
   justify-content: space-between;
 }
