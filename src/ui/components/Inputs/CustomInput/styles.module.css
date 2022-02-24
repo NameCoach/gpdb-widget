@@ -1,4 +1,4 @@
-@value labelGray, secondaryGray, primaryBrandColor from "../../../styles/colors.css";
+@value labelGray, darkerGray, secondaryGray, primaryBrandColor from "../../../styles/colors.css";
 
 .label {
   color: labelGray;
@@ -19,6 +19,9 @@
 
 .ca{
   border-color: secondaryGray;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
 }
 
 .ca:focus-within {
@@ -28,6 +31,7 @@
 .attributes_input_wrapper {
   border-radius: 4px;
   padding: 0 10px;
+  max-width: 90%;
 }
 
 .attributes_input_wrapper[data-focused="true"] {
@@ -36,21 +40,30 @@ border-color: primaryBrandColor;
 
 .attributes_input_wrapper[data-type=select]{
   line-height: 5px;
-  height: 30px;
+  height: 27px;
 }
 
 .attributes_input {
   border-radius: 4px;
   padding: 5px;
+  max-width: 90%;
 }
 
 .attributes_dropdown {
   margin: 5px 0;
 }
 
+.attributes_dropdown ul li {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 0;
+}
+
 .attributes_label {
-  font-size: 14px;
-  margin: 10px 0 0;
+  margin: 15px 0 0;
+  color: darkerGray;
+  line-height: 10px;
 }
 
 .attributes_checker {
