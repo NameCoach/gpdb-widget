@@ -37,7 +37,6 @@ interface Props {
   saving?: boolean;
   attributes?: CustomAttribute[];
   noBorder?: boolean;
-  high?: boolean;
   onCustomAttributesSave?: () => void;
   onCustomAttributesSaved?: () => void;
   onBack?: () => void;
@@ -51,7 +50,6 @@ const CustomAttributes = ({
   attributes,
   owner,
   noBorder,
-  high,
   onCustomAttributesSave,
   onCustomAttributesSaved,
   onBack,
@@ -108,12 +106,18 @@ const CustomAttributes = ({
             { bordered: !noBorder }
           )}
         >
-          <div className={cx("attributes__wrapper", { active: !disabled })}>
+          <div
+            className={cx(
+              "attributes__wrapper",
+              { active: !disabled },
+              { narrow: !!onRecorderClose }
+            )}
+          >
             <div
               className={cx(
                 "scroll",
                 { disabled },
-                { high: !disabled && high }
+                { high: !(disabled || !!onRecorderClose) }
               )}
             >
               {dataArray.map((attribute, index) => {
@@ -157,11 +161,7 @@ const CustomAttributes = ({
           {!disabled && (
             <div className={styles.attributes__actions}>
               {onRecorderClose && <Close onClick={onRecorderClose} />}
-              {onBack && (
-                <button className={styles.back__button} onClick={onBack}>
-                  BACK
-                </button>
-              )}
+              {onBack && <button onClick={onBack}>BACK</button>}
               <button onClick={onSave}>SAVE DATA</button>
             </div>
           )}
