@@ -169,7 +169,6 @@ const MyInfo = (props: Props): JSX.Element => {
           onCustomAttributesSaved={onCustomAttributesSaved}
           onBack={onCollapsable}
           noBorder
-          high
         />
       )}
 
