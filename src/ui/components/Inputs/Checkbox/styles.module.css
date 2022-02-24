@@ -20,7 +20,6 @@
 
 .checkbox_wrapper.disabled {
   display: inline-block;
-  width: 5%;
 }
 
 .line-wrapper {
@@ -34,8 +33,8 @@
 }
 
 .line-wrapper.disabled {
+  width: 99%;
   font-size: 14px;
-  line-height: 0.5em;
   justify-content: space-between;
 }
 
