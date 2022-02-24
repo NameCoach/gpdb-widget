@@ -3,24 +3,31 @@ import CustomAttribute, {
 } from "../../types/resources/custom-attribute";
 import { AttributeConfig } from "gpdb-api-client";
 
-export type CustomAttributeObject = CustomAttribute &
-  AttributeConfig & { values?: string[] };
+type Attribute = CustomAttribute & AttributeConfig;
+type CustomAttributesValue = string | boolean;
 
-const customAttributesMap = (
-  raw: (CustomAttribute & AttributeConfig)[]
-): CustomAttributeObject[] => {
+export type CustomAttributeObject = Attribute & { values?: string[] };
+
+const getValue = (attribute: Attribute): CustomAttributesValue => {
+  const value = attribute?.value;
+  const defaultValue = attribute?.metadata?.default_value;
+
+  if (attribute.presentation === AttributePresentation.Checkbox) {
+    const checkboxDefaultValue = defaultValue || false;
+
+    return value === undefined ? checkboxDefaultValue : value;
+  }
+
+  return value || defaultValue;
+};
+
+const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
   if (!raw || raw.length === 0) return [];
-
-  const defaultValue = (type): boolean | string =>
-    type === AttributePresentation.Checkbox ? false : "";
 
   return raw.map((attribute) => {
     const _attribute: CustomAttributeObject = {
       id: attribute.id,
-      value:
-        attribute?.value ||
-        attribute.metadata?.default_value ||
-        defaultValue(attribute.presentation),
+      value: getValue(attribute),
       label: attribute.label,
       presentation: attribute.presentation,
     };
