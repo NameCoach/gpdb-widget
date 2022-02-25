@@ -74,21 +74,15 @@ export default class FrontController implements IFrontController {
     });
 
     return pronunciations.map((p) => {
-      const nameOwnerCreated =
-        p.audio_source === AudioSource.NameOwner &&
-        p.name_owner_signature === owner.signature;
+      const isHedb = this.isHedb(p);
 
-      if (
-        nameOwnerCreated &&
-        owner.signature === this.userContext.signature &&
-        p.custom_attributes?.length > 0 &&
-        !this.permissions.can(Resources.Pronunciation, "index:hedb") &&
-        !this.permissions.can(Resources.Pronunciation, "index:name_badge")
-      ) {
+      const nameOwnerCreated = this.nameOwnerCreated(p, owner);
+
+      const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(p, owner);
+
+      if (shouldCustomAttributesUpdate) {
         this.customAttributes = customAttributesMap(p.custom_attributes);
       }
-
-      const isHedb = /hedb_/.test(p.id);
 
       return pronunciationMap({ ...p, nameOwnerCreated, isHedb });
     });
@@ -332,30 +326,21 @@ export default class FrontController implements IFrontController {
       );
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
+          const isHedb = this.isHedb(pronunciation);
+
+          const nameOwnerCreated = this.nameOwnerCreated(pronunciation, owner);
+
+          const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(pronunciation, owner);
+
           if (
             result[NameTypes.FullName].length === 0 &&
             pronunciation.target_type_sig === TargetTypeSig.FullName
           ) {
-            const nameOwnerCreated =
-              pronunciation.audio_source === AudioSource.NameOwner &&
-              pronunciation.name_owner_signature === owner.signature;
-
-            if (
-              nameOwnerCreated &&
-              owner.signature === this.userContext.signature &&
-              pronunciation.custom_attributes?.length > 0 &&
-              !this.permissions.can(Resources.Pronunciation, "search:hedb") &&
-              !this.permissions.can(
-                Resources.Pronunciation,
-                "search:name_badge"
-              )
-            ) {
+            if (shouldCustomAttributesUpdate) {
               this.customAttributes = customAttributesMap(
                 pronunciation.custom_attributes
               );
             }
-
-            const isHedb = /hedb_/.test(pronunciation.id);
 
             if (!name.type) {
               name.type = NameTypes.FullName;
@@ -379,5 +364,26 @@ export default class FrontController implements IFrontController {
     });
 
     return result;
+  }
+
+  isHedb(pronunciation): boolean {
+    return /hedb_/.test(pronunciation.id);
+  }
+
+  nameOwnerCreated(pronunciation, owner): boolean {
+    return (
+      pronunciation.audio_source === AudioSource.NameOwner &&
+      pronunciation.name_owner_signature === owner.signature
+    );
+  }
+
+  shouldCustomAttributesUpdate(pronunciation, owner): boolean {
+    return (
+      this.nameOwnerCreated(pronunciation, owner) &&
+      !this.isHedb(pronunciation) &&
+      owner.signature === this.userContext.signature &&
+      !this.permissions.can(Resources.Pronunciation, "create:name_badge") &&
+      pronunciation.custom_attributes?.length > 0
+    );
   }
 }
