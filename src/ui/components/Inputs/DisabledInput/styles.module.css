@@ -12,6 +12,8 @@
 }
 
 .line_wrapper {
+  width: 100%;
+  align-self: flex-start;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   display: flex;
