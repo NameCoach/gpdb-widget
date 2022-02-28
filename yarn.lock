@@ -1951,10 +1951,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.1.41:
-  version "1.1.41"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.41.tgz#eaa67872cdea3053988484d61029172b71810145"
-  integrity sha512-tioIZBY8L9jIcT2Syev/FFBIYO/JOS2pRnrTP+ROXfz0YXJRaKlIVpvNG9vOn0gcWYbbDVABhnfjF9wVv7EH8w==
+gpdb-api-client@^1.1.43:
+  version "1.1.43"
+  resolved "https://registry.npmjs.org/gpdb-api-client/-/gpdb-api-client-1.1.43.tgz#fef905dc5ab9d4f7e7ea6422561421d0f6cbabb9"
+  integrity sha512-PIsmSmFYFHr2pEkbfAbP/mDimq3gJvMD5LLFqcfN7VWRYl7PBiwghRp5dkiEyrZT/NFddanZy7a3C3OwhwgR3A==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
