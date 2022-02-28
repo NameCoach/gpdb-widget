@@ -180,7 +180,7 @@ export default class FrontController implements IFrontController {
   async saveCustomAttributes(
     customAttributesValues: { [x: string]: string | boolean },
     nameOwner?: NameOwner
-  ): Promise<boolean> {
+  ): Promise<{ [x: string]: any }> {
     const owner = nameOwner || this.nameOwnerContext;
 
     try {
@@ -190,11 +190,12 @@ export default class FrontController implements IFrontController {
         customAttributesValues,
       });
     } catch (error) {
-      if (!error.message.includes("Not Found")) console.error(error);
-      return false;
+      const errors = error?.details?.body?.errors;
+
+      return { hasErrors: true, errors };
     }
 
-    return true;
+    return { hasErrors: false };
   }
 
   async sendAnalytics(
