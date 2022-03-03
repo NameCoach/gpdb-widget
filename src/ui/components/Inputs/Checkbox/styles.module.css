@@ -19,6 +19,7 @@
 }
 
 .checkbox_wrapper.disabled {
+  width: 5%;
   display: inline-block;
 }
 
