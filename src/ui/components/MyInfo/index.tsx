@@ -51,7 +51,11 @@ const MyInfo = (props: Props): JSX.Element => {
     if (collapsableActive) setCollapsable(false);
   };
 
-  const onCollapsable = (): void => setCollapsable((value) => !value);
+  const onCollapsable = (): void => {
+    setCollapsable((value) => !value);
+
+    if (recorderState.isOpen) setRecorderClosed();
+  };
 
   const load = async (): Promise<void> => {
     if (!props.permissions.canPronunciation.index) return;
