@@ -100,7 +100,10 @@ const CustomAttributes = ({
   };
 
   useEffect(() => {
-    const attributesArray = attributes || customAttributes;
+    const attributesArray =
+      Array.isArray(attributes) && attributes.length > 0
+        ? attributes
+        : customAttributes;
 
     setDataArray(attributesArray as CustomAttributeObject[]);
   }, []);
