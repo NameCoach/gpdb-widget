@@ -67,7 +67,6 @@ input:disabled {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .scroll.high {
@@ -90,7 +89,16 @@ input:disabled {
   line-height: 2.5em;
 }
 
-.error {
+.main__error__label {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
   color: errorColor;
 }
 
+.attribute__error {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: errorColor;
+  margin: unset;
+}
