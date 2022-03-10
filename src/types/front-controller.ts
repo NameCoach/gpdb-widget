@@ -67,7 +67,7 @@ export interface CustomAttributesRequests {
   saveCustomAttributes: (
     customAttributesValues: { [x: string]: any },
     nameOwner?: NameOwner
-  ) => Promise<boolean>;
+  ) => Promise<{ [x: string]: any }>;
 }
 
 export interface NamesServiceRequests {
