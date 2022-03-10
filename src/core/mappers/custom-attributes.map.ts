@@ -18,7 +18,7 @@ const getValue = (attribute: Attribute): CustomAttributesValue => {
     return value === undefined ? checkboxDefaultValue : value;
   }
 
-  return value || defaultValue;
+  return value || defaultValue || "";
 };
 
 const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
