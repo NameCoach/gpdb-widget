@@ -8,7 +8,7 @@ type MapperOptions = {
 const toErrorsString = (obj): string => {
   const rawString = JSON.stringify(obj);
 
-  return rawString.replace(/\{|\}|\[|\]|"|.*:/gi, "");
+  return rawString.replace(/\{|\}|\[|\]|"|value|:/gi, "");
 };
 
 const unexpectedErrorObject = (
