@@ -102,10 +102,20 @@ const MyInfo = (props: Props): JSX.Element => {
       pronunciation?.isHedb) ||
     (props.permissions.canPronunciation.create && !pronunciation?.isHedb);
 
-  const displayCustomAttributes = (): boolean =>
-    pronunciation &&
-    pronunciation.customAttributes &&
-    pronunciation.customAttributes.length > 0;
+  const displayCustomAttributes = (): boolean => {
+    const customAttributesConfig = props.controller?.customAttributes;
+
+    const dataPresent =
+      pronunciation &&
+      pronunciation.customAttributes &&
+      pronunciation.customAttributes.length > 0;
+
+    const configPresent =
+      customAttributesConfig && customAttributesConfig.length > 0;
+    const permissionsPresent = props.permissions.canCustomAttributes.saveValues;
+
+    return dataPresent || (configPresent && permissionsPresent);
+  };
 
   const customAttributesDisabled = (): boolean => {
     console.log(
@@ -167,7 +177,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
       {!loading && displayCustomAttributes() && collapsableActive && (
         <CustomAttributes
-          attributes={pronunciation.customAttributes}
+          attributes={pronunciation?.customAttributes}
           owner={props.name.owner}
           disabled={customAttributesDisabled()}
           onCustomAttributesSaved={onCustomAttributesSaved}
