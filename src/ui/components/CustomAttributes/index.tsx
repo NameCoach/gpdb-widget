@@ -19,6 +19,10 @@ import Close from "../Close";
 import { CustomAttributeObject } from "../../../core/mappers/custom-attributes.map";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
+import {
+  Errors,
+  mapCustomAttributesErrors,
+} from "../../../core/mappers/custom-attributes/save-values-errors.map";
 
 const ONE_SECOND = 1000;
 
@@ -60,6 +64,7 @@ const CustomAttributes = ({
   const [dataArray, setDataArray] = useState<CustomAttributeObject[]>([]);
   const customAttributes = controller.customAttributes;
   const [state, setState] = useState<State>(STATES.INITIAL);
+  const [errors, setErrors] = useState<Errors>();
 
   const onUpdate = useCallback(({ id, value }): void => {
     setDataArray((dataArray) =>
@@ -78,17 +83,21 @@ const CustomAttributes = ({
 
     const result = await controller.saveCustomAttributes(customValues, owner);
 
-    if (result) {
+    if (result.hasErrors) {
+      const mappedErrors = mapCustomAttributesErrors({
+        errors: result.errors,
+        config: customAttributes,
+      });
+
+      setErrors(mappedErrors);
+      setState(STATES.FAILED);
+    } else {
       setTimeout(() => setState(STATES.SAVED), ONE_SECOND);
 
       if (onCustomAttributesSaved)
         setTimeout(onCustomAttributesSaved, ONE_SECOND);
-    } else {
-      setState(STATES.FAILED);
     }
   };
-
-  const backToInitial = (): void => setState(STATES.INITIAL);
 
   useEffect(() => {
     const attributesArray = attributes || customAttributes;
@@ -98,7 +107,7 @@ const CustomAttributes = ({
 
   return (
     <>
-      {state === STATES.INITIAL && (
+      {(state === STATES.INITIAL || state === STATES.FAILED) && (
         <div
           className={cx(
             "attributes__container__wrapper",
@@ -106,6 +115,11 @@ const CustomAttributes = ({
             { bordered: !noBorder }
           )}
         >
+          {state === STATES.FAILED && errors && errors._defaultMapperError && (
+            <p className={styles.main__error__label}>
+              {errors._defaultMapperError}
+            </p>
+          )}
           <div
             className={cx(
               "attributes__wrapper",
@@ -153,6 +167,12 @@ const CustomAttributes = ({
                         )}
                       </>
                     )}
+
+                    {state === STATES.FAILED && errors[attribute.id] && (
+                      <p className={styles.attribute__error}>
+                        {errors[attribute.id]}
+                      </p>
+                    )}
                   </React.Fragment>
                 );
               })}
@@ -175,14 +195,6 @@ const CustomAttributes = ({
       )}
       {state === STATES.SAVED && (
         <div className={styles.modal__wrapper}>Data saved!</div>
-      )}
-      {state === STATES.FAILED && (
-        <div className={styles.modal__wrapper}>
-          <div className={styles.error}>
-            Error! Please fill in all the required fields.
-          </div>
-          <button onClick={backToInitial}>OK</button>
-        </div>
       )}
     </>
   );
