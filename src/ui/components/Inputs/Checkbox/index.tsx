@@ -5,7 +5,7 @@ import classNames from "classnames/bind";
 interface Props {
   id: string;
   label: string;
-  value: boolean;
+  value: string;
   disabled: boolean;
   onUpdate?: (any) => void;
 }
@@ -19,22 +19,25 @@ const Checkbox = ({
   disabled,
   onUpdate,
 }: Props): JSX.Element => {
-  const nullCallback = (_): null => null;
 
-  const onChange = (_): void => {
-    if (onUpdate) onUpdate({ id, value: !value });
+  const onChange = (e): void => {
+    if (onUpdate) {
+      const value = e.target.checked;
+
+      onUpdate({ id, value })
+    }
   };
+
   return (
-    <div className={cx("line-wrapper", { disabled })}>
-      <div className={cx("label-wrapper", { disabled })}>
-        <label htmlFor={id}>{label}</label>
-      </div>
-      <div className={cx(styles.checkbox_wrapper, { disabled })}>
+    <div className={styles.checkbox_field}>
+      <div className={cx(styles.attributes_label, { disabled })}>{label}</div>
+      <div className={styles.checkbox_input_field}>
         <input
           type="checkbox"
           id={id}
-          onClick={onChange}
-          onChange={nullCallback}
+          onChange={onChange}
+          name={label}
+          placeholder={label}
           checked={!!value}
           disabled={disabled}
         />
