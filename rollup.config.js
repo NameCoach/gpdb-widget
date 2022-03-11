@@ -30,7 +30,7 @@ export default {
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
     postcss({
-      modules: true,
+      modules: { root: '.' },
       plugins: [postcssUrl({ url: "inline" }), autoprefixer()],
     }),
   ],
