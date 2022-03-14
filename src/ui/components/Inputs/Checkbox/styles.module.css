@@ -1,41 +1,23 @@
 @value labelGray, darkerGray from "../../../styles/colors.css";
 
-.label-wrapper {
+.checkbox_input_field {
+  text-align: right;
+  width: 90%;
+}
+
+.checkbox_field {
   display: flex;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  align-items: center;
+}
+
+.attributes_label {
   color: darkerGray;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  font-size: 13px;
+  line-height: 10px;
 }
 
-.label-wrapper.disabled {
-  display: inline-block;
-  font-size: 14px;
+.attributes_label.disabled {
   color: labelGray;
+  line-height: 10px;
 }
-
-.checkbox_wrapper {
-  display: flex;
-}
-
-.checkbox_wrapper.disabled {
-  width: 5%;
-  display: inline-block;
-}
-
-.line-wrapper {
-  width: 96%;
-  align-self: self-start;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px;
-  line-height: 1.5em;
-  display: flex;
-  justify-content: space-between;
-}
-
-.line-wrapper.disabled {
-  width: 99%;
-  font-size: 14px;
-  justify-content: space-between;
-}
-
