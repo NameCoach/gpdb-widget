@@ -173,7 +173,7 @@ const MyInfo = (props: Props): JSX.Element => {
         </div>
 
         {!loading && !pronunciation && canCreateSelfRecording() && (
-          <div className={styles.phonetic}>
+          <div className={styles.unavailable_hint}>
             Your name recording is unavailable, click on the microphone icon to record your name
           </div>
         )}
