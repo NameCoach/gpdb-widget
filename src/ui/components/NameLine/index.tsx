@@ -114,6 +114,7 @@ const NameLine = (props: Props): JSX.Element => {
               {props.canRecord && (
                 <RecordAction
                   className={styles.pronunciation__action}
+                  rerecord={!!currentPronunciation}
                   onClick={(): void =>
                     props.onRecorderClick(props.name, props.type)
                   }
