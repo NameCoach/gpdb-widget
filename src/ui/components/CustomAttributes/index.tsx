@@ -23,6 +23,7 @@ import {
   Errors,
   mapCustomAttributesErrors,
 } from "../../../core/mappers/custom-attributes/save-values-errors.map";
+import userAgentManager from "../../../core/userAgentManager";
 
 const ONE_SECOND = 1000;
 
@@ -60,6 +61,7 @@ const CustomAttributes = ({
   onRecorderClose,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
+  const { isDeprecated: isOld } = userAgentManager;
 
   const [dataArray, setDataArray] = useState<CustomAttributeObject[]>([]);
   const customAttributes = controller.customAttributes;
@@ -114,7 +116,7 @@ const CustomAttributes = ({
         <div
           className={cx(
             "attributes__container__wrapper",
-            { active: !disabled },
+            { active: !disabled && !isOld },
             { bordered: !noBorder }
           )}
         >
@@ -140,35 +142,29 @@ const CustomAttributes = ({
               {dataArray.map((attribute, index) => {
                 return (
                   <React.Fragment key={attribute.id + index}>
-                    {attribute.presentation ===
-                    AttributePresentation.Checkbox ? (
-                      <Checkbox
+                    {!disabled && (
+                      <CustomInput
+                        type={attribute.presentation}
                         label={attribute.label}
-                        value={attribute.value as boolean}
+                        value={attribute.value as string}
                         id={attribute.id}
-                        disabled={disabled}
+                        values={attribute?.values}
                         onUpdate={onUpdate}
                       />
-                    ) : (
-                      <>
-                        {!disabled && (
-                          <CustomInput
-                            type={attribute.presentation}
-                            label={attribute.label}
-                            value={attribute.value as string}
-                            id={attribute.id}
-                            values={attribute?.values}
-                            onUpdate={onUpdate}
-                          />
-                        )}
-                        {disabled && (
-                          <DisabledInput
-                            id={attribute.id}
-                            label={attribute.label}
-                            value={attribute.value as string}
-                          />
-                        )}
-                      </>
+                    )}
+
+                    {disabled && ( attribute.presentation !== AttributePresentation.Checkbox
+                      ? <DisabledInput
+                        id={attribute.id}
+                        label={attribute.label}
+                        value={attribute.value as string}
+                      />
+                      : <Checkbox 
+                          id={attribute.id}
+                          label={attribute.label}
+                          value={attribute.value as string}
+                          disabled
+                          onUpdate={onUpdate}/>
                     )}
 
                     {state === STATES.FAILED && errors[attribute.id] && (
