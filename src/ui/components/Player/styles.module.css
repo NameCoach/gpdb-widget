@@ -25,3 +25,7 @@
 .playable {
   composes: playable from "../../styles/icons.css";
 }
+
+.player__disabled {
+  composes: disabled from "../../styles/icons.css";
+}
