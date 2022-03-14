@@ -220,7 +220,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   type={name.type}
                   owner={nameOwner}
                   reload={reloadName}
-                  canRecord={props.permissions.canPronunciation.create}
+                  canRecord={props.permissions.canPronunciation.create.orgPeer}
                   canUserResponse={props.permissions.canUserResponse.create}
                   onRecorderClick={openRecorder}
                 />
@@ -230,7 +230,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                     props.permissions.canRecordingRequest.create
                   }
                   canPronunciationCreate={
-                    props.permissions.canPronunciation.create
+                    props.permissions.canPronunciation.create.orgPeer
                   }
                   canRecordingRequestFind={
                     props.permissions.canRecordingRequest.find
