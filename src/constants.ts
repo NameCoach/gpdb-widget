@@ -1,7 +1,16 @@
 /* URLs */
-export const EXTENSION_BACKEND_API_URL = "https://ext-api.name-coach.com";
-export const GPDB_API_URL = "https://gpdb.name-coach.com/api/public/v1";
-export const ANALYTICS_API_URL = "https://analytics-api.name-coach.com/api/v1";
+export const EXTENSION_BACKEND_API_URL =
+  process.env.NODE_ENV === "development"
+    ? "https://ext-api-staging.name-coach.com"
+    : "https://ext-api.name-coach.com";
+export const GPDB_API_URL =
+  process.env.NODE_ENV === "development"
+    ? "https://gpdb-staging.name-coach.com/api/public/v1"
+    : "https://gpdb.name-coach.com/api/public/v1";
+export const ANALYTICS_API_URL =
+  process.env.NODE_ENV === "development"
+    ? "https://analytics-api-staging.name-coach.com/api/v1"
+    : "https://analytics-api.name-coach.com/api/v1";
 
 /*
  COLORS
