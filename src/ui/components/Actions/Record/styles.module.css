@@ -9,3 +9,7 @@
 .mic_icon {
   composes: mic from "../../../styles/icons.css";
 }
+
+.mic_rerecord_icon {
+  composes: edit-mic from "../../../styles/icons.css";
+}
