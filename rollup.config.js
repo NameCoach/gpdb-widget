@@ -9,6 +9,8 @@ import image from "@rollup/plugin-image";
 
 import packageJson from "./package.json";
 
+const modules = process.platform === "win32" ? { root: "." } : true;
+
 export default {
   input: "src/index.tsx",
   output: [
@@ -30,7 +32,7 @@ export default {
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
     postcss({
-      modules: { root: '.' },
+      modules: modules,
       plugins: [postcssUrl({ url: "inline" }), autoprefixer()],
     }),
   ],
