@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.99](https://github.com/NameCoach/gpdb-widget/compare/v1.3.95...v1.3.99) (2022-03-14)
+
 ### [1.3.97](https://github.com/NameCoach/gpdb-widget/compare/v1.3.95...v1.3.97) (2022-03-11)
 
 ### [1.3.95](https://github.com/NameCoach/gpdb-widget/compare/v1.3.89...v1.3.95) (2022-03-10)
