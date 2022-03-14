@@ -17,6 +17,7 @@ import { UserPermissions } from "../../../types/permissions";
 import ShareAudioUrlAction, { CopyButton } from "../Actions/ShareAudioUrl";
 import CustomAttributes from "../CustomAttributes";
 import CollapsableAction from "../Actions/Collapsable";
+import DisabledPlayer from "../Player/Disabled";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -159,14 +160,23 @@ const MyInfo = (props: Props): JSX.Element => {
               />
             )}
 
+            {!loading && !pronunciation && <DisabledPlayer />}
+
             {!loading && canCreateSelfRecording() && (
               <RecordAction
                 active={recorderState.isOpen}
                 onClick={onRecorderOpen}
+                rerecord={!!pronunciation}
               />
             )}
           </div>
         </div>
+
+        {!loading && !pronunciation && canCreateSelfRecording() && (
+          <div className={styles.phonetic}>
+            Your name recording is unavailable, click on the microphone icon to record your name
+          </div>
+        )}
 
         {pronunciation?.phoneticSpelling && (
           <div className={styles.phonetic}>
