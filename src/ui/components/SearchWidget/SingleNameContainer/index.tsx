@@ -82,7 +82,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 type={name.type}
                 owner={props.name.owner}
                 reload={(): Promise<void> => loadName(props.name)}
-                canRecord={props.permissions.canPronunciation.create}
+                canRecord={props.permissions.canPronunciation.create.orgPeer}
                 canUserResponse={props.permissions.canUserResponse.create}
                 onRecorderClick={openRecorder}
               />
@@ -95,7 +95,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                   props.permissions.canRecordingRequest.find
                 }
                 canPronunciationCreate={
-                  props.permissions.canPronunciation.create
+                  props.permissions.canPronunciation.create.orgPeer
                 }
                 name={name.key}
                 type={name.type}
