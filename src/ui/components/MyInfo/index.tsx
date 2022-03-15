@@ -101,7 +101,7 @@ const MyInfo = (props: Props): JSX.Element => {
     (props.permissions.canPronunciation.createNameBadge &&
       props.permissions.canPronunciation.indexNameBadge &&
       pronunciation?.isHedb) ||
-    (props.permissions.canPronunciation.create && !pronunciation?.isHedb);
+    (props.permissions.canPronunciation.create.self && !pronunciation?.isHedb);
 
   const displayCustomAttributes = (): boolean => {
     const customAttributesConfig = props.controller?.customAttributes;
