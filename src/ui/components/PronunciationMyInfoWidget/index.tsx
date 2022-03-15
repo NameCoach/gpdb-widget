@@ -32,6 +32,9 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
 
   const client = useMemo(() => props.client, [props.client]);
 
+  const cannotPronunciation = (permission): boolean =>
+    client.permissions.cannot(Resources.Pronunciation, permission);
+
   const canPronunciation = (permission): boolean =>
     client.permissions.can(Resources.Pronunciation, permission);
 
@@ -55,7 +58,11 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
 
   const permissions = {
     canPronunciation: {
-      create: canPronunciation("create"),
+      create: {
+        self: canPronunciation("create") && !cannotPronunciation("create:self"),
+        orgPeer:
+          canPronunciation("create") && !cannotPronunciation("create:org_peer"),
+      },
       search: canPronunciation("search"),
       index: canPronunciation("index"),
       share: canPronunciation("share"),
