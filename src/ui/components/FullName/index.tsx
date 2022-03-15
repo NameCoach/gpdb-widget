@@ -77,7 +77,6 @@ const FullName = (props: Props): JSX.Element => {
             <RecordAction
               className={nameLineStyles.pronunciation__action}
               onClick={onRecord}
-              rerecord={!!pronunciation}
             />
           )}
         </div>
