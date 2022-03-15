@@ -9,6 +9,7 @@ import {
   TargetTypeSig,
   User,
   UserResponse,
+  ClientPreferences,
 } from "gpdb-api-client";
 import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
@@ -27,6 +28,7 @@ import customAttributesMap, {
 export default class FrontController implements IFrontController {
   public permissions: PermissionsManager;
   public customAttributes: CustomAttributeObject[];
+  public preferences: ClientPreferences;
 
   constructor(
     private readonly apiClient: GpdbClient,
@@ -287,6 +289,12 @@ export default class FrontController implements IFrontController {
 
   async loadPermissions(rest?: loadParams): Promise<void> {
     this.permissions = await this.apiClient.permissions.load(rest);
+
+    return Promise.resolve();
+  }
+
+  async loadClientPreferences(rest?: loadParams): Promise<void> {
+    this.preferences = await this.apiClient.clientPreferences.load(rest);
 
     return Promise.resolve();
   }
