@@ -1,6 +1,6 @@
 export interface UserPermissions {
-  canUserResponse: Record<string, boolean>;
-  canPronunciation: Record<string, boolean>;
-  canRecordingRequest: Record<string, boolean>;
-  canCustomAttributes: Record<string, boolean>;
+  canUserResponse: { [x: string]: boolean };
+  canPronunciation: { [x: string]: any };
+  canRecordingRequest: { [x: string]: boolean };
+  canCustomAttributes: { [x: string]: boolean };
 }
