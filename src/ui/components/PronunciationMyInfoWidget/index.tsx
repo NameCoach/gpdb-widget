@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
+import StyleContext from "../../contexts/style";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
@@ -10,6 +11,8 @@ import FullNamesContainer from "../FullNamesContainer";
 import NoPermissionsError from "../NoPermissionsError";
 import { UserPermissions } from "../../../types/permissions";
 import MyInfo from "../MyInfo";
+import loadT from "../../hooks/LoadT";
+import loadCustomFeatures from "../../hooks/loadCustomFatures";
 
 interface Props {
   client: IFrontController;
@@ -31,6 +34,11 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
   if (!props.name.value.trim()) throw new Error("Name shouldn't be blank");
 
   const client = useMemo(() => props.client, [props.client]);
+  const styleContext = useContext(StyleContext);
+  const t = loadT(client?.preferences?.translations);
+  const customFeatures = loadCustomFeatures(
+    client?.preferences?.custom_features
+  );
 
   const cannotPronunciation = (permission): boolean =>
     client.permissions.cannot(Resources.Pronunciation, permission);
@@ -84,7 +92,9 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
     <div className={cx(styles.container)}>
       {props.names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
         <>
-          <div className={cx(styles.title, styles.m_20)}>Pronunciations</div>
+          <div className={cx(styles.title, styles.m_20)}>
+            {t("pronunciations_section_name", "Pronunciations")}
+          </div>
           <FullNamesContainer
             names={props.names}
             termsAndConditions={props.termsAndConditions}
@@ -107,11 +117,20 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
   );
 
   return (
-    <ControllerContext.Provider value={client}>
-      {blockPermissions[Blocks.Invalid]
-        ? NoPermissionsError()
-        : renderContainer()}
-    </ControllerContext.Provider>
+    <StyleContext.Provider
+      value={{
+        displayRecorderSavingMessage:
+          styleContext?.displayRecorderSavingMessage,
+        customFeatures,
+        t,
+      }}
+    >
+      <ControllerContext.Provider value={client}>
+        {blockPermissions[Blocks.Invalid]
+          ? NoPermissionsError()
+          : renderContainer()}
+      </ControllerContext.Provider>
+    </StyleContext.Provider>
   );
 };
 
