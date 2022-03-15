@@ -53,6 +53,8 @@ const App = () => {
     const load = async () => {
       await client.loadPermissions({ user_sig: userContext.email })
       await client.loadCustomAttributesConfig();
+      await client.loadClientPreferences({ user_sig: userContext.email });
+
       setLoading(false);
     }
 
