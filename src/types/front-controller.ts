@@ -5,6 +5,7 @@ import {
   User,
   UserResponse,
   PermissionsManager,
+  ClientPreferences,
 } from "gpdb-api-client";
 import NameParser from "./name-parser";
 import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
@@ -23,6 +24,7 @@ export interface PublicAttributes {
 export interface GpdbRequests {
   permissions: PermissionsManager;
   customAttributes: CustomAttributeObject[];
+  preferences: ClientPreferences;
   complexSearch: (
     names: Array<Omit<Name, "exist">>,
     nameOwner?: NameOwner,
@@ -61,6 +63,7 @@ export interface GpdbRequests {
   ) => PromiseLike<boolean>;
   loadPermissions: (rest?: loadParams) => PromiseLike<void>;
   loadCustomAttributesConfig: () => PromiseLike<void>;
+  loadClientPreferences: (rest?: loadParams) => PromiseLike<void>;
 }
 
 export interface CustomAttributesRequests {
