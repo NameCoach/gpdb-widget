@@ -27,6 +27,8 @@ import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
 import getSpec, { EVENTS } from "./machine/spec";
 import CustomAttributes from "../CustomAttributes";
+import loadCustomFeatures from "../../hooks/loadCustomFatures";
+import loadT from "../../hooks/LoadT";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -65,6 +67,10 @@ const Recorder = ({
   ]);
 
   const styleContext = useContext(StyleContext);
+  const customFeatures =
+    styleContext.customFeatures ||
+    loadCustomFeatures(controller?.preferences?.custom_features);
+  const t = styleContext.t || loadT(controller?.preferences?.translations);
   const displaySaving =
     styleContext?.displayRecorderSavingMessage ||
     machineSpec.canCustomAttributesCreate;
@@ -260,142 +266,157 @@ const Recorder = ({
   const updateSampleRate = (val): void => setSampleRate({ value: val });
 
   return (
-    <div className={cx(styles.recorder, { old: isOld })}>
-      {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
-        <Close onClick={onRecorderClose} />
-      )}
-      <div className={cx(styles.recorder__body, { old: isOld })}>
-        {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
-
-        {step === STATES.INIT &&
-          "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."}
-
-        {step === STATES.STARTED && (
-          <>
-            <span className="flex-1">Recording starts in</span>
-            <div className={styles.recorder__countdown}>{countdown}</div>
-          </>
+    <StyleContext.Provider
+      value={{
+        displayRecorderSavingMessage:
+          styleContext?.displayRecorderSavingMessage,
+        customFeatures,
+        t,
+      }}
+    >
+      <div className={cx(styles.recorder, { old: isOld })}>
+        {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
+          <Close onClick={onRecorderClose} />
         )}
+        <div className={cx(styles.recorder__body, { old: isOld })}>
+          {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
-        {step === STATES.RECORD && (
-          <>
-            <span className="flex-1">Pronounce your name</span>
-            <div className={styles.recorder__timer}>00:0{timer} - 00:10</div>
-          </>
-        )}
+          {step === STATES.INIT &&
+            "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."}
 
-        {step === STATES.RECORDED && (
-          <div className={styles.inline}>
-            <Player audioSrc={audioUrl} icon="playable" className="player" />
-            {showSlider && <Settings onClick={openSlider} active={slider} />}
-          </div>
-        )}
+          {step === STATES.STARTED && (
+            <>
+              <span className="flex-1">Recording starts in</span>
+              <div className={styles.recorder__countdown}>{countdown}</div>
+            </>
+          )}
 
-        {step === STATES.FAILED && (
-          <>
-            <span>Allow microphone and try again, please.</span>
-            <div className={cx(styles.uploader, { old: isOld })}>
-              <div className={styles.uploader__message}>
-                If you are having trouble with your microphone, please upload an
-                mp3 file.
-              </div>
-              <div className={styles.uploader__action}>
-                <label
-                  htmlFor="pronunciation-upload"
-                  className={styles.upload__label}
-                >
-                  Upload
-                </label>
-                <input
-                  type="file"
-                  id="pronunciation-upload"
-                  name="recording"
-                  accept=".mp3"
-                  onChange={onUploaderChange}
-                />
-              </div>
+          {step === STATES.RECORD && (
+            <>
+              <span className="flex-1">Pronounce your name</span>
+              <div className={styles.recorder__timer}>00:0{timer} - 00:10</div>
+            </>
+          )}
+
+          {step === STATES.RECORDED && (
+            <div className={styles.inline}>
+              <Player audioSrc={audioUrl} icon="playable" className="player" />
+              {showSlider && <Settings onClick={openSlider} active={slider} />}
             </div>
-            {fileSizeError && (
-              <div className={styles.error}>File max size is 5 MB</div>
-            )}
+          )}
+
+          {step === STATES.FAILED && (
+            <>
+              <span>Allow microphone and try again, please.</span>
+              <div className={cx(styles.uploader, { old: isOld })}>
+                <div className={styles.uploader__message}>
+                  If you are having trouble with your microphone, please upload
+                  an mp3 file.
+                </div>
+                <div className={styles.uploader__action}>
+                  <label
+                    htmlFor="pronunciation-upload"
+                    className={styles.upload__label}
+                  >
+                    Upload
+                  </label>
+                  <input
+                    type="file"
+                    id="pronunciation-upload"
+                    name="recording"
+                    accept=".mp3"
+                    onChange={onUploaderChange}
+                  />
+                </div>
+              </div>
+              {fileSizeError && (
+                <div className={styles.error}>File max size is 5 MB</div>
+              )}
+            </>
+          )}
+        </div>
+        <div className={styles.recorder__actions}>
+          {step === STATES.TERMS_AND_CONDITIONS && (
+            <>
+              <button onClick={onRecorderClose}>
+                {t("recorder_back_button", "BACK")}
+              </button>
+              <button onClick={onAccept}>ACCEPT</button>
+            </>
+          )}
+
+          {step === STATES.INIT && (
+            <>
+              <button onClick={onRecorderClose}>
+                {t("recorder_back_button", "BACK")}
+              </button>
+              <button onClick={onStart}>
+                {t("recorder_start_button", "START")}
+              </button>
+            </>
+          )}
+
+          {step === STATES.RECORD && <button onClick={onStop}>STOP</button>}
+
+          {step === STATES.RECORDED && slider && (
+            <>
+              <RangeInput
+                max={MAX_SAMPLE_RATE}
+                min={MIN_SAMPLE_RATE}
+                values={[sampleRate.value]}
+                onChange={updateSampleRate}
+                onDefaultClicked={setSampleRateToDefault}
+              />
+
+              <button onClick={onSampleRateCancel} className={styles.secondary}>
+                BACK
+              </button>
+
+              <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
+                SAVE PITCH
+              </button>
+
+              <ReactTooltip
+                uuid="save_pitch_tooltip_id"
+                multiline
+                eventOff="mouseout"
+                textColor="white"
+                backgroundColor="#946cc1"
+              />
+            </>
+          )}
+          {step === STATES.RECORDED && !slider && (
+            <>
+              <button className={styles.no__border} onClick={onRecorderClose}>
+                CLOSE
+              </button>
+              <button onClick={onStart}>RERECORD</button>
+              <button onClick={onSave}>SAVE PRONUNCIATION</button>
+            </>
+          )}
+        </div>
+        {step === STATES.SAVED && (
+          <>
+            {displaySaving &&
+              (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
+            <Loader inline />
+          </>
+        )}
+        {step === STATES.CUSTOM_ATTRS && machineSpec.canCustomAttributesCreate && (
+          <>
+            <CustomAttributes
+              disabled={false}
+              saving
+              noBorder
+              owner={owner}
+              onCustomAttributesSaved={onCustomAttributesSaved}
+              onBack={onCustomAttributesBack}
+              onRecorderClose={onRecorderClose}
+            />
           </>
         )}
       </div>
-      <div className={styles.recorder__actions}>
-        {step === STATES.TERMS_AND_CONDITIONS && (
-          <>
-            <button onClick={onRecorderClose}>BACK</button>
-            <button onClick={onAccept}>ACCEPT</button>
-          </>
-        )}
-
-        {step === STATES.INIT && (
-          <>
-            <button onClick={onRecorderClose}>BACK</button>
-            <button onClick={onStart}>START</button>
-          </>
-        )}
-
-        {step === STATES.RECORD && <button onClick={onStop}>STOP</button>}
-
-        {step === STATES.RECORDED && slider && (
-          <>
-            <RangeInput
-              max={MAX_SAMPLE_RATE}
-              min={MIN_SAMPLE_RATE}
-              values={[sampleRate.value]}
-              onChange={updateSampleRate}
-              onDefaultClicked={setSampleRateToDefault}
-            />
-
-            <button onClick={onSampleRateCancel} className={styles.secondary}>
-              BACK
-            </button>
-
-            <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-              SAVE PITCH
-            </button>
-
-            <ReactTooltip
-              uuid="save_pitch_tooltip_id"
-              multiline
-              eventOff="mouseout"
-              textColor="white"
-              backgroundColor="#946cc1"
-            />
-          </>
-        )}
-        {step === STATES.RECORDED && !slider && (
-          <>
-            <button className={styles.no__border} onClick={onRecorderClose}>
-              CLOSE
-            </button>
-            <button onClick={onStart}>RERECORD</button>
-            <button onClick={onSave}>SAVE PRONUNCIATION</button>
-          </>
-        )}
-      </div>
-      {step === STATES.SAVED && (
-        <>
-          {displaySaving &&
-            (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
-          <Loader inline />
-        </>
-      )}
-      {step === STATES.CUSTOM_ATTRS && machineSpec.canCustomAttributesCreate && (
-        <>
-          <CustomAttributes
-            disabled={false}
-            saving
-            noBorder
-            owner={owner}
-            onCustomAttributesSaved={onCustomAttributesSaved}
-            onBack={onCustomAttributesBack}
-            onRecorderClose={onRecorderClose}
-          />
-        </>
-      )}
-    </div>
+    </StyleContext.Provider>
   );
 };
 
