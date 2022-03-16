@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
 import styles from "./styles.module.css";
@@ -18,6 +18,7 @@ import ShareAudioUrlAction, { CopyButton } from "../Actions/ShareAudioUrl";
 import CustomAttributes from "../CustomAttributes";
 import CollapsableAction from "../Actions/Collapsable";
 import DisabledPlayer from "../Player/Disabled";
+import StyleContext from "../../contexts/style";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -40,6 +41,8 @@ const MyInfo = (props: Props): JSX.Element => {
     setRecorderClosed,
     setRecorderOpen,
   ] = useRecorderState();
+
+  const { t } = useContext(StyleContext);
 
   const onRecorderOpen = (): void => {
     setRecorderOpen(
@@ -135,7 +138,9 @@ const MyInfo = (props: Props): JSX.Element => {
     <>
       <div>
         <div className={cx(styles.row)}>
-          <span className={cx(styles.title)}>My info</span>
+          <span className={cx(styles.title)}>
+            {t("my_info_section_name", "My Info")}
+          </span>
 
           <div className={cx(styles.actions)}>
             {loading && <Loader />}
