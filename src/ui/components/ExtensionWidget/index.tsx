@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useMemo, useState } from "react";
+import React, { MouseEventHandler, useContext, useEffect, useMemo, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import Container from "../Container";
@@ -8,6 +8,9 @@ import classNames from "classnames/bind";
 import Close from "../Close";
 import Loader from "../Loader";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
+import StyleContext from "../../contexts/style";
+import loadCustomFeatures from "../../hooks/loadCustomFatures";
+import loadT from "../../hooks/LoadT";
 
 export interface ElemStyleProps {
   width?: number | string;
@@ -32,6 +35,11 @@ const ExtensionWidget = (props: Props): JSX.Element => {
   const controllerContextValue = useMemo(() => props.client, [props.client]);
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>(props.names);
   const [loading, setLoading] = useState<boolean>(false);
+  const styleContext = useContext(StyleContext);
+  const t = loadT(props.client?.preferences?.translations);
+  const customFeatures = loadCustomFeatures(
+    props.client?.preferences?.custom_features
+  );
 
   const verifyNames = async (): Promise<void> => {
     setLoading(true);
@@ -48,9 +56,18 @@ const ExtensionWidget = (props: Props): JSX.Element => {
       {loading ? (
         <Loader inline />
       ) : (
-        <ControllerContext.Provider value={controllerContextValue}>
-          <Container names={names} verifyNames={verifyNames} />
-        </ControllerContext.Provider>
+        <StyleContext.Provider
+          value={{
+            displayRecorderSavingMessage:
+              styleContext?.displayRecorderSavingMessage,
+            customFeatures,
+            t,
+          }}
+        >
+          <ControllerContext.Provider value={controllerContextValue}>
+            <Container names={names} verifyNames={verifyNames} />
+          </ControllerContext.Provider>
+        </StyleContext.Provider>
       )}
     </div>
   );
