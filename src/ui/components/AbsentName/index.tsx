@@ -9,6 +9,7 @@ import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
 import userAgentManager from "../../../core/userAgentManager";
+import StyleContext from "../../contexts/style";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -27,6 +28,7 @@ const AbsentName = (props: Props): JSX.Element => {
   const { isDeprecated: isOld } = userAgentManager;
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { t, customFeatures } = useContext(StyleContext);
 
   const onRequest = async (): Promise<void> => {
     setLoading(true);
@@ -51,8 +53,8 @@ const AbsentName = (props: Props): JSX.Element => {
 
   const renderRequestedMessage = (): string =>
     isRequested
-      ? "pronunciation request pending"
-      : "pronunciations not available";
+      ? "Pronunciation Request Pending"
+      : t("pronunciations_not_available", "Pronunciations not Available");
 
   useEffect(() => {
     checkIfRequested()
@@ -75,7 +77,11 @@ const AbsentName = (props: Props): JSX.Element => {
       >
         {props.name}
       </span>
-      <span className={nameLineStyles.pronunciation__mid}>
+      <span
+        className={nameLineStyles.pronunciation__mid}
+        data-pronunciation_name-line-message
+        style={customFeatures.getStyle("pronunciation_name-line-message")}
+      >
         {!loading && renderRequestedMessage()}
         {loading && <Loader inline sm />}
       </span>
