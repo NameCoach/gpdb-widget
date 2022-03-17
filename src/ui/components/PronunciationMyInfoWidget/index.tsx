@@ -105,13 +105,16 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
-        <MyInfo
-          controller={client}
-          name={props.name}
-          permissions={permissions}
-          termsAndConditions={props.termsAndConditions}
-          errorHandler={props.errorHandler}
-        />
+        <>
+          <hr className={styles.divider} />
+          <MyInfo
+            controller={client}
+            name={props.name}
+            permissions={permissions}
+            termsAndConditions={props.termsAndConditions}
+            errorHandler={props.errorHandler}
+          />
+        </>
       )}
     </div>
   );
