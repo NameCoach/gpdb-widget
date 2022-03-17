@@ -18,7 +18,8 @@ import NamesApi from "./api/names.api";
 import NameTypesFactory from "../types/name-types-factory";
 import NameParser from "../types/name-parser";
 import DefaultNameParser from "./parsers/default-name-parser";
-import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
 import customAttributesMap, {
   CustomAttributeObject,
 } from "./mappers/custom-attributes.map";
@@ -287,13 +288,13 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  async loadPermissions(rest?: loadParams): Promise<void> {
+  async loadPermissions(rest?: permissionsLoadParams): Promise<void> {
     this.permissions = await this.apiClient.permissions.load(rest);
 
     return Promise.resolve();
   }
 
-  async loadClientPreferences(rest?: loadParams): Promise<void> {
+  async loadClientPreferences(rest?: preferencesLoadParams): Promise<void> {
     this.preferences = await this.apiClient.clientPreferences.load(rest);
 
     return Promise.resolve();
