@@ -138,7 +138,7 @@ const MyInfo = (props: Props): JSX.Element => {
     <>
       <div>
         <div className={cx(styles.row)}>
-          <span className={cx(styles.title)}>
+          <span className={cx(styles.title, styles.m_10)}>
             {t("my_info_section_name", "My Info")}
           </span>
 
