@@ -23,6 +23,7 @@ interface Props {
   owner?: NameOwner;
   canRecord: boolean;
   canUserResponse: boolean;
+  pronunciationNameClass?: string;
   reload: (type: NameTypes) => void;
   onRecorderClick: (name, type) => void;
 }
@@ -86,7 +87,13 @@ const NameLine = (props: Props): JSX.Element => {
   return (
     <div className={cx(styles.pronunciation, "name_line_container")}>
       <div className={cx(styles.pronunciation, "pronunciation_container")}>
-        <span className={cx(styles.pronunciation__name, "pronunciation_name")}>
+        <span
+          className={cx(
+            styles.pronunciation__name,
+            "pronunciation_name",
+            props.pronunciationNameClass
+          )}
+        >
           {props.name}
         </span>
 
