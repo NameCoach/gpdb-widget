@@ -8,7 +8,8 @@ import {
   ClientPreferences,
 } from "gpdb-api-client";
 import NameParser from "./name-parser";
-import { loadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
 import { CustomAttributeObject } from "../core/mappers/custom-attributes.map";
 
 export interface Meta {
@@ -61,9 +62,9 @@ export interface GpdbRequests {
     type: NameTypes,
     nameOwner?: NameOwner
   ) => PromiseLike<boolean>;
-  loadPermissions: (rest?: loadParams) => PromiseLike<void>;
+  loadPermissions: (rest?: permissionsLoadParams) => PromiseLike<void>;
   loadCustomAttributesConfig: () => PromiseLike<void>;
-  loadClientPreferences: (rest?: loadParams) => PromiseLike<void>;
+  loadClientPreferences: (rest?: preferencesLoadParams) => PromiseLike<void>;
 }
 
 export interface CustomAttributesRequests {
