@@ -15,6 +15,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
+    "watch-dev": "NODE_ENV=development rollup -c -w",
     "prepublish": "npm run build",
     "predeploy": "npm run build && cd example && npm run build",
     "deploy": "gh-pages -d example/build",
@@ -23,7 +24,7 @@
   "dependencies": {
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
-    "gpdb-api-client": "^1.1.45",
+    "gpdb-api-client": "^1.1.47",
     "html-react-parser": "^1.4.3",
     "i18next": "^21.6.14",
     "i18next-browser-languagedetector": "^6.1.3",
