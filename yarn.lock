@@ -1958,10 +1958,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.1.45:
-  version "1.1.46"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.46.tgz#6f4e2a53845cbb9b47e0fe4b924543375039a7cc"
-  integrity sha512-yTRQ4b0I602PBx+gswJbDieBMG7erD4OzFzFhCAaOuYm9z8oyu+0esRtOmPauZlthCVCjO7ATAm95h3xsac2aQ==
+gpdb-api-client@^1.1.47:
+  version "1.1.47"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.47.tgz#bbda42267c8afb56fc02046896c528b3582e9b53"
+  integrity sha512-0hCzLttmif7X+UwLP3ZA2SH621s8UxA52Uwc1Bu8dhUWvoVf/Dik2YDhH9uDH/BZyNPISPEHefT7sWHDJrpK/w==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
@@ -3617,7 +3617,7 @@ react-copy-to-clipboard@^5.0.4:
 
 react-dom@^16.0.0:
   version "16.14.0"
-  resolved "https://registry.npmjs.org/react-dom/-/react-dom-16.14.0.tgz#7ad838ec29a777fb3c75c3a190f661cf92ab8b89"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.14.0.tgz#7ad838ec29a777fb3c75c3a190f661cf92ab8b89"
   integrity sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==
   dependencies:
     loose-envify "^1.1.0"
@@ -3689,7 +3689,7 @@ react-transition-group@^4.3.0:
 
 react@^16.13.1:
   version "16.14.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
   integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
   dependencies:
     loose-envify "^1.1.0"
@@ -3995,7 +3995,7 @@ sax@~1.2.4:
 
 scheduler@^0.19.1:
   version "0.19.1"
-  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
   integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==
   dependencies:
     loose-envify "^1.1.0"
