@@ -21,6 +21,7 @@ interface Props {
   canRecordingRequestCreate: boolean;
   canRecordingRequestFind: boolean;
   canPronunciationCreate: boolean;
+  pronunciationNameClass?: string;
 }
 
 const AbsentName = (props: Props): JSX.Element => {
@@ -72,15 +73,18 @@ const AbsentName = (props: Props): JSX.Element => {
       <span
         className={cx(
           nameLineStyles.pronunciation__name,
-          styles.name__not_exist
+          nameLineStyles.name_not_exist,
+          props.pronunciationNameClass
+            ? nameLineStyles[props.pronunciationNameClass]
+            : ""
         )}
       >
         {props.name}
       </span>
       <span
         className={nameLineStyles.pronunciation__mid}
-        data-pronunciation_name-line-message
-        style={customFeatures.getStyle("pronunciation_name-line-message")}
+        data-pronunciation-name-line-message
+        style={customFeatures.getStyle("pronunciation-name-line-message")}
       >
         {!loading && renderRequestedMessage()}
         {loading && <Loader inline sm />}
