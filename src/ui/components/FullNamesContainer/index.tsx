@@ -42,9 +42,8 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
-  const fullNamesOject = useRef([]);
-
   const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
+  const fullNamesObject = useRef([]);
 
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
@@ -52,7 +51,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     const fullName = names.find((n) => n.type === NameTypes.FullName);
 
-    fullNamesOject.current =
+    fullNamesObject.current =
       typeof fullName === "object"
         ? [{ key: name.key, value: fullName.key, owner: nameOwner }]
         : [name];
@@ -92,7 +91,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   };
 
   const complexSearch = async (name: NameOption): Promise<void> => {
-    fullNamesOject.current = [name];
+    fullNamesObject.current = [name];
     const parsedNames = props.controller.nameParser.parse(name.value);
     const names = Object.values(NameTypes)
       .filter((type) => parsedNames[type])
