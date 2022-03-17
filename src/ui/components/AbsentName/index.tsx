@@ -10,6 +10,7 @@ import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
+import DisabledPlayer from "../Player/Disabled";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -97,6 +98,7 @@ const AbsentName = (props: Props): JSX.Element => {
             : nameLineStyles.pronunciation__actions
         }
       >
+        <DisabledPlayer />
         {props.canRecordingRequestCreate && (
           <RequestAction
             className={nameLineStyles.pronunciation__action}
