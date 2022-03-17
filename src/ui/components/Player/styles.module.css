@@ -10,6 +10,10 @@
   composes: speaker from "../../styles/icons.css";
 }
 
+.speaker-unavailable {
+  composes: speaker-unavailable from "../../styles/icons.css";
+}
+
 .speaker-gpdb {
   composes: speaker-gpdb from "../../styles/icons.css";
 }
@@ -28,4 +32,8 @@
 
 .player__disabled {
   composes: disabled from "../../styles/icons.css";
+}
+
+.unavailable__disabled {
+  composes: disabled-hoverable from "../../styles/icons.css";
 }
