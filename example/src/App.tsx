@@ -15,6 +15,8 @@ import Parser from './parser';
 import ScreenResizer from './dev-tools/ScreenResizer';
 import Name, { NameTypes } from "../../src/types/resources/name";
 import { TERMS_AND_CONDITIONS_REQUEST_RESULT } from './examples/constants';
+import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
+import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 
 const style = {
   margin: '50px auto 0 auto',
@@ -51,9 +53,9 @@ const App = () => {
 
   useEffect(() => {
     const load = async () => {
-      await client.loadPermissions({ user_sig: userContext.email })
+      await client.loadPermissions({ user_sig: userContext.email } as permissionsLoadParams)
       await client.loadCustomAttributesConfig();
-      await client.loadClientPreferences({ user_sig: userContext.email });
+      await client.loadClientPreferences({ user_sig: userContext.email } as preferencesLoadParams);
 
       setLoading(false);
     }
