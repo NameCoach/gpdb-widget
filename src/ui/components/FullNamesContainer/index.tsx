@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
@@ -23,6 +24,8 @@ interface Props {
   controller: IFrontController;
   permissions: UserPermissions;
 }
+
+const cx = classNames.bind(styles);
 
 const FullNamesContainer = (props: Props): JSX.Element => {
   const {
@@ -221,6 +224,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   owner={nameOwner}
                   reload={reloadName}
                   canRecord={props.permissions.canPronunciation.create.orgPeer}
+                  pronunciationNameClass="ft-17"
                   canUserResponse={props.permissions.canUserResponse.create}
                   onRecorderClick={openRecorder}
                 />
@@ -238,11 +242,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   name={name.key}
                   type={name.type}
                   owner={nameOwner}
+                  pronunciationNameClass="ft-17"
                   onRecorderClick={openRecorder}
                 />
               )}
 
-              {index === 0 && <hr className={styles.divider} />}
+              {index === 0 && (
+                <hr className={cx(styles.divider, styles.invisible)} />
+              )}
             </React.Fragment>
           ))}
         </>
