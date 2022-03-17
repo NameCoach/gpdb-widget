@@ -4,6 +4,9 @@
 .title {
     composes: title from "../PronunciationMyInfoWidget/styles.module.css";
 }
+.m_10 {
+    composes: m_10 from "../PronunciationMyInfoWidget/styles.module.css";
+}
 
 .phonetic {
     composes: phonetic from "../../styles/phonetic.css";
