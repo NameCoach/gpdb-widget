@@ -7,17 +7,23 @@
 .name_line_container {
   display: flex;
   flex-direction: column;
+  margin-top: auto;
 }
 
 .pronunciation__name {
   flex: 0 0 36%;
-  max-width: 36%;
+  max-width: 75%;
   padding-right: .75rem;
   font-size: 20px;
   font-weight: bold;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  margin-top: auto
+}
+
+.ft-17 {
+  font-size: 17px;
 }
 
 .pronunciation__mid {
@@ -30,6 +36,7 @@
   line-height: 12px;
   color: #9d9d9d;
   flex-direction: column;
+  margin-top: auto
 }
 
 .pronunciation__control {
