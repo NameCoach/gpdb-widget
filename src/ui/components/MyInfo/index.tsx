@@ -36,6 +36,7 @@ const MyInfo = (props: Props): JSX.Element => {
   const [pronunciation, setPronunciation] = useState<Pronunciation>();
   const [loading, setLoading] = useState(true);
   const [collapsableActive, setCollapsable] = useState(false);
+  const [myInfoHintShow, setMyInfoHintShow] = useState(true);
   const [
     recorderState,
     setRecorderClosed,
@@ -45,6 +46,7 @@ const MyInfo = (props: Props): JSX.Element => {
   const { t } = useContext(StyleContext);
 
   const onRecorderOpen = (): void => {
+    setMyInfoHintShow(false);
     setRecorderOpen(
       true,
       props.name.value,
@@ -79,6 +81,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
   const onRecorderClose = async (): Promise<void> => {
     await load();
+    setMyInfoHintShow(true);
     setRecorderClosed();
   };
 
@@ -177,11 +180,15 @@ const MyInfo = (props: Props): JSX.Element => {
           </div>
         </div>
 
-        {!loading && !pronunciation && canCreateSelfRecording() && (
-          <div className={styles.unavailable_hint}>
-            Your name recording is unavailable, click on the microphone icon to record your name
-          </div>
-        )}
+        {!loading &&
+          !pronunciation &&
+          canCreateSelfRecording() &&
+          myInfoHintShow && (
+            <div className={styles.unavailable_hint}>
+              Your name recording is unavailable, click on the microphone icon
+              to record your name
+            </div>
+          )}
 
         {pronunciation?.phoneticSpelling && (
           <div className={styles.phonetic}>
