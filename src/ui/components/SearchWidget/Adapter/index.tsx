@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import IFrontController from "../../../../types/front-controller";
 import { NameOption } from "../../FullNamesList";
 import { TermsAndConditions } from "../../../hooks/useRecorderState";
@@ -9,6 +9,9 @@ import NoPermissionsError from "../../NoPermissionsError";
 import { UserPermissions } from "../../../../types/permissions";
 import ControllerContext from "../../../contexts/controller";
 import { DEFAULT_NAME_OWNER } from "../../../../constants";
+import StyleContext from "../../../contexts/style";
+import loadT from "../../../hooks/LoadT";
+import loadCustomFeatures from "../../../hooks/loadCustomFatures";
 
 interface Props {
   client: IFrontController;
@@ -35,6 +38,12 @@ const Adapter = (props: Props): JSX.Element => {
   const names = [name] as NameOption[];
 
   const client = useMemo(() => props.client, [props.client]);
+
+  const t = loadT(client?.preferences?.translations);
+  const styleContext = useContext(StyleContext);
+  const customFeatures = loadCustomFeatures(
+    client?.preferences?.custom_features
+  );
 
   const canUserResponse = (permissions): boolean =>
     client.permissions.can(Resources.UserResponse, permissions);
@@ -88,9 +97,18 @@ const Adapter = (props: Props): JSX.Element => {
     </div>
   );
   return (
-    <ControllerContext.Provider value={client}>
-      {canPronunciation("index") ? renderContainer() : NoPermissionsError()}
-    </ControllerContext.Provider>
+    <StyleContext.Provider
+      value={{
+        displayRecorderSavingMessage:
+          styleContext?.displayRecorderSavingMessage,
+        customFeatures,
+        t,
+      }}
+    >
+      <ControllerContext.Provider value={client}>
+        {canPronunciation("index") ? renderContainer() : NoPermissionsError()}
+      </ControllerContext.Provider>
+    </StyleContext.Provider>
   );
 };
 
