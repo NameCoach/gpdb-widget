@@ -124,7 +124,9 @@ const MyInfo = (props: Props): JSX.Element => {
       customAttributesConfig && customAttributesConfig.length > 0;
     const permissionsPresent = props.permissions.canCustomAttributes.saveValues;
 
-    return dataPresent || (configPresent && permissionsPresent);
+    return (
+      dataPresent || (pronunciation && configPresent && permissionsPresent)
+    );
   };
 
   const customAttributesDisabled = (): boolean => {
