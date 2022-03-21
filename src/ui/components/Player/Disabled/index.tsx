@@ -5,13 +5,22 @@ import ReactTooltip from "react-tooltip";
 
 const cx = classNames.bind(styles);
 
-const DisabledPlayer = (): JSX.Element => {
+interface Props {
+  className?: string;
+}
+
+const DisabledPlayer = (props: Props): JSX.Element => {
   const tooltipId = Date.now().toString();
 
   return (
     <div
       aria-label="Disabled player"
-      className={cx(styles.player, "test", "player", "unavailable__disabled")}
+      className={cx(
+        props.className,
+        styles.player,
+        "player",
+        "unavailable__disabled"
+      )}
     >
       <ReactTooltip
         id={tooltipId}
