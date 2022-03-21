@@ -10,7 +10,7 @@ interface Props {
   onChange: (Option) => void;
   options: Option[];
   className?: string;
-  styles?: object;
+  styles?: { control: object; singleValue: object };
   value?: Option;
 }
 
@@ -24,19 +24,27 @@ const theme = (theme) => ({
   },
 });
 
-const customStyles = (controlStyles = {}) => ({
+const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
   control: (provided, state) => ({
     ...provided,
     minHeight: "30px",
-    height: "30px",
     boxShadow: null,
-    ...controlStyles,
+    ...controlStyles.control,
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided, state) => {
+    const value = state.getValue()[0];
+    const labelLength = value?.label?.length || 30;
+    return {
+      ...provided,
+      minHeight: "30px",
+      height: labelLength > 30 ? "40px" : "30px",
+      padding: "0 6px",
+      color: "black",
+    };
+  },
+  singleValue: (provided, state) => ({
     ...provided,
-    height: "30px",
-    padding: "0 6px",
-    color: "black",
+    ...controlStyles.singleValue,
   }),
   input: (provided, state) => ({
     ...provided,
