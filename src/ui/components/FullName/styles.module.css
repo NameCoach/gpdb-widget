@@ -15,11 +15,9 @@
 
 .head__names {
   display: inline-block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-wrap: break-word;
   max-width: 100%;
   overflow: hidden;
-  height: 30px;
 }
 
 .head__names > span {
