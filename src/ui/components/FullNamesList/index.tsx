@@ -22,7 +22,14 @@ export interface Props {
 }
 
 const cx = classNames.bind(styles);
-const selectStyles = { fontWeight: "bold" };
+const selectStyles = {
+  control: { fontWeight: "bold" },
+  singleValue: {
+    textOverflow: "initial",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+  },
+};
 
 const nameToOption = (name: NameOption): Option => ({
   label: name.value,
