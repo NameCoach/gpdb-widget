@@ -16,8 +16,7 @@
   padding-right: .75rem;
   font-size: 20px;
   font-weight: bold;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-wrap: break-word;
   overflow: hidden;
   margin-top: auto
 }
