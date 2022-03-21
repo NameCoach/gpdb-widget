@@ -98,7 +98,7 @@ const AbsentName = (props: Props): JSX.Element => {
             : nameLineStyles.pronunciation__actions
         }
       >
-        <DisabledPlayer />
+        <DisabledPlayer className={nameLineStyles.pronunciation__action} />
         {props.canRecordingRequestCreate && (
           <RequestAction
             className={nameLineStyles.pronunciation__action}
