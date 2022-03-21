@@ -46,7 +46,6 @@ const MyInfo = (props: Props): JSX.Element => {
   const { t } = useContext(StyleContext);
 
   const onRecorderOpen = (): void => {
-    setMyInfoHintShow(false);
     setRecorderOpen(
       true,
       props.name.value,
@@ -54,10 +53,13 @@ const MyInfo = (props: Props): JSX.Element => {
       props.termsAndConditions
     );
 
+    if (myInfoHintShow) setMyInfoHintShow(false);
+
     if (collapsableActive) setCollapsable(false);
   };
 
   const onCollapsable = (): void => {
+    setMyInfoHintShow(collapsableActive);
     setCollapsable((value) => !value);
 
     if (recorderState.isOpen) setRecorderClosed();
@@ -87,6 +89,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
   const onCustomAttributesSaved = async (): Promise<void> => {
     await load();
+    setMyInfoHintShow(true);
     setCollapsable(false);
   };
 
