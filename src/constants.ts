@@ -20,6 +20,7 @@ export const ANALYTICS_API_URL =
 export const BRAND_COLOR = "#946cc1";
 export const PRIMARY_COLOR = "rgba(138, 73, 212, 0.2)";
 export const SECONDARY_COLOR = "rgba(121, 121, 121, 0.1)";
+export const WHITE_COLOR = "#FFFFFF";
 
 // text
 export const SEARCH_BOX_TIP =
