@@ -21,7 +21,7 @@ import useSliderState from "../../hooks/useSliderState";
 import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
-import { SAVE_PITCH_TIP } from "../../../constants";
+import { BRAND_COLOR, SAVE_PITCH_TIP, WHITE_COLOR } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
@@ -380,8 +380,8 @@ const Recorder = ({
                 uuid="save_pitch_tooltip_id"
                 multiline
                 eventOff="mouseout"
-                textColor="white"
-                backgroundColor="#946cc1"
+                textColor={WHITE_COLOR}
+                backgroundColor={BRAND_COLOR}
               />
             </>
           )}
