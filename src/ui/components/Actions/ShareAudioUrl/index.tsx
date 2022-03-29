@@ -2,6 +2,7 @@ import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import ReactTooltip from "react-tooltip";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const ShareAudioUrlAction = (props: Props): JSX.Element => {
+  const tooltipId = Date.now().toString();
+
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -58,8 +61,7 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    if (showModal)
-      document.addEventListener("click", handleOutsideClick, { once: true });
+    if (showModal) document.addEventListener("click", handleOutsideClick);
 
     return (): void =>
       document.removeEventListener("click", handleOutsideClick);
@@ -97,9 +99,24 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
     <>
       <div aria-label="Share pronunciation" className={cx(styles.icon_button)}>
         <a onClick={onShareClick}>
-          <i className={cx("share-audio-url")} ref={shareButton} />
+          <i
+            className={cx("share-audio-url")}
+            ref={shareButton}
+            data-for={tooltipId}
+            data-tip="Copy your audio link here."
+          />
         </a>
       </div>
+      <ReactTooltip
+        id={tooltipId}
+        textColor="white"
+        backgroundColor="#946cc1"
+        multiline
+        eventOff="click"
+        globalEventOff="click"
+        disable={showModal}
+        delayShow={100}
+      />
       <div className={cx(styles.copy_modal)} style={getModalStyles()}>
         <div className={cx(styles.success_message)} hidden={!showSuccess}>
           {successMessage}
@@ -113,7 +130,6 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
               hidden={showSuccess}
             >
               <button
-                className="copy-modal-button"
                 disabled={!showModal}
                 ref={(el): void => {
                   buttonsRefs.current[index] = el;
