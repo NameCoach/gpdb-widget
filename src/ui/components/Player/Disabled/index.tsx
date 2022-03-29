@@ -2,6 +2,7 @@ import classNames from "classnames/bind";
 import React from "react";
 import styles from "../styles.module.css";
 import ReactTooltip from "react-tooltip";
+import { BRAND_COLOR, WHITE_COLOR } from "../../../../constants";
 
 const cx = classNames.bind(styles);
 
@@ -24,8 +25,8 @@ const DisabledPlayer = (props: Props): JSX.Element => {
     >
       <ReactTooltip
         id={tooltipId}
-        textColor="white"
-        backgroundColor="#946cc1"
+        textColor={WHITE_COLOR}
+        backgroundColor={BRAND_COLOR}
         multiline
       />
       <i
