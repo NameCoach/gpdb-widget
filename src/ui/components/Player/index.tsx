@@ -6,6 +6,7 @@ import { AudioSource } from "../../../types/resources/pronunciation";
 import useAudioRef from "../../hooks/useAudioRef";
 import Loader from "../Loader";
 import SystemContext from "../../contexts/system";
+import { BRAND_COLOR, WHITE_COLOR } from "../../../constants";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -117,8 +118,8 @@ const Player = (props: Props): JSX.Element => {
     >
       <ReactTooltip
         id={tooltipId}
-        textColor="white"
-        backgroundColor="#946cc1"
+        textColor={WHITE_COLOR}
+        backgroundColor={BRAND_COLOR}
         multiline
       />
       {audioReady ? (
