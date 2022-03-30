@@ -47,6 +47,7 @@ interface Props {
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
   errorHandler?: ErrorHandler;
+  rerecord?: boolean;
 }
 
 const cx = classNames.bind(styles);
@@ -58,6 +59,7 @@ const Recorder = ({
   type,
   termsAndConditions,
   errorHandler,
+  rerecord,
   onSaved,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
@@ -217,7 +219,8 @@ const Recorder = ({
     if (machineSpec.canCustomAttributesCreate) sendEvent(EVENTS.customAttrs);
   };
 
-  const onCustomAttributesSaved = () => setTimeout(onRecorderClose, ONE_SECOND);
+  const onCustomAttributesSaved = (): NodeJS.Timeout =>
+    setTimeout(onRecorderClose, ONE_SECOND);
 
   const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
@@ -282,6 +285,7 @@ const Recorder = ({
           {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
           {step === STATES.INIT &&
+            !rerecord &&
             "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."}
 
           {step === STATES.STARTED && (
@@ -351,7 +355,9 @@ const Recorder = ({
                 {t("recorder_back_button", "BACK")}
               </button>
               <button onClick={onStart}>
-                {t("recorder_start_button", "START")}
+                {rerecord
+                  ? t("recorder_rerecord_button", "RE-RECORD")
+                  : t("recorder_start_button", "START")}
               </button>
             </>
           )}
