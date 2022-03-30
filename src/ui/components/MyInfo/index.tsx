@@ -221,6 +221,7 @@ const MyInfo = (props: Props): JSX.Element => {
           onRecorderClose={onRecorderClose}
           termsAndConditions={props.termsAndConditions}
           errorHandler={props.errorHandler}
+          rerecord={!!pronunciation}
         />
       )}
     </>
