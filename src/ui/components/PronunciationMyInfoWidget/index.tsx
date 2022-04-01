@@ -40,9 +40,6 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
     client?.preferences?.custom_features
   );
 
-  const cannotPronunciation = (permission): boolean =>
-    client.permissions.cannot(Resources.Pronunciation, permission);
-
   const canPronunciation = (permission): boolean =>
     client.permissions.can(Resources.Pronunciation, permission);
 
@@ -66,11 +63,7 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
 
   const permissions = {
     canPronunciation: {
-      create: {
-        self: canPronunciation("create") && !cannotPronunciation("create:self"),
-        orgPeer:
-          canPronunciation("create") && !cannotPronunciation("create:org_peer"),
-      },
+      create: canPronunciation("create"),
       search: canPronunciation("search"),
       index: canPronunciation("index"),
       share: canPronunciation("share"),
