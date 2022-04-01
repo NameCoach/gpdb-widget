@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
@@ -16,6 +16,7 @@ import { UserPermissions } from "../../../types/permissions";
 import { NameOwner } from "gpdb-api-client";
 import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
+import StyleContext from "../../contexts/style";
 
 interface Props {
   names: NameOption[];
@@ -44,6 +45,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const [nameParts, setNameParts] = useState<Name[]>([]);
   const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
   const fullNamesObject = useRef([]);
+  const { customFeatures } = useContext(StyleContext);
 
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
@@ -184,6 +186,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
+  const canRecordOrgPeer = (ownerSignature) =>
+    customFeatures.canRecordOrgPeer(ownerSignature) &&
+    props.permissions.canPronunciation.create;
+
+  const canUserResponse = (ownerSignature) =>
+    customFeatures.canUserResponse(ownerSignature) &&
+    props.permissions.canPronunciation.create;
+
   useEffect(() => {
     loadName(props.names[0]);
   }, [props.names]);
@@ -222,9 +232,9 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   type={name.type}
                   owner={nameOwner}
                   reload={reloadName}
-                  canRecord={props.permissions.canPronunciation.create.orgPeer}
+                  canRecord={canRecordOrgPeer(nameOwner.signature)}
                   pronunciationNameClass="ft-17"
-                  canUserResponse={props.permissions.canUserResponse.create}
+                  canUserResponse={canUserResponse(nameOwner.signature)}
                   onRecorderClick={openRecorder}
                 />
               ) : (
@@ -232,9 +242,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   canRecordingRequestCreate={
                     props.permissions.canRecordingRequest.create
                   }
-                  canPronunciationCreate={
-                    props.permissions.canPronunciation.create.orgPeer
-                  }
+                  canPronunciationCreate={canRecordOrgPeer(nameOwner.signature)}
                   canRecordingRequestFind={
                     props.permissions.canRecordingRequest.find
                   }
