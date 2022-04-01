@@ -103,7 +103,7 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
             className={cx("share-audio-url")}
             ref={shareButton}
             data-for={tooltipId}
-            data-tip="Copy your audio link here."
+            data-tip="Copy your audio link here"
           />
         </a>
       </div>
