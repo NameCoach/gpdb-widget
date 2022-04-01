@@ -37,7 +37,7 @@ const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
     return {
       ...provided,
       minHeight: "30px",
-      height: labelLength > 30 ? "40px" : "30px",
+      height: labelLength > 30 ? "45px" : "30px",
       padding: "0 6px",
       color: "black",
     };
