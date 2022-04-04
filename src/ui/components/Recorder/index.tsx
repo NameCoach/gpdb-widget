@@ -286,7 +286,10 @@ const Recorder = ({
 
           {step === STATES.INIT &&
             !rerecord &&
-            "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."}
+            t(
+              "recorder_init_step_hint",
+              "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."
+            )}
 
           {step === STATES.STARTED && (
             <>
