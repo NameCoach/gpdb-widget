@@ -1,0 +1,52 @@
+@value secondary, darkerSecondary from "../../../styles/colors.css";
+
+.share-audio-url {
+  composes: share-audio-url from "../../../styles/icons.css";
+}
+
+.icon_button {
+  composes: icon-btn from "../../../styles/icons.css";
+}
+
+.copy_modal {
+  position: absolute;
+  z-index: 2247483647;
+  border-radius: 3px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
+  transition: 0.5s opacity, 0.5s visibility;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 150px;
+  min-height: 30px;
+  background-color: white;
+}
+
+.copy_modal button {
+  border-radius: 3px;
+  background-color: white;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  border: 0;
+  margin: 2px;
+  padding: 4px 0;
+}
+
+.copy_modal button:hover {
+  background-color: secondary;
+}
+
+.copy_modal button:focus {
+  background-color: secondary;
+}
+
+.success_message {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  text-align: center;
+  color: darkerSecondary;
+  background-color: white;
+  padding: 4px;
+  font-weight: bold;
+}
