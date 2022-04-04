@@ -53,7 +53,7 @@ export class CustomFeaturesManager implements FeaturesManager {
 
     const metadata = this.getMetadata("can_record_org_peer");
 
-    if (customRules.include("exclude_name_owner")) {
+    if (customRules.includes("exclude_name_owner")) {
       const excludeOwnerRegex = new RegExp(metadata.exclude_name_owner);
 
       return !excludeOwnerRegex.test(ownerSignature);
