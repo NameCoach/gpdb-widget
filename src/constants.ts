@@ -30,3 +30,5 @@ export const SAVE_PITCH_TIP =
   "Pitch settings changes do not effect already recorded pronunciation.<br>Please, re-record your pronunciation to apply the new settings.";
 
 export const DEFAULT_NAME_OWNER = "outlook-app";
+
+export const TOOLTIP_DELAY = 1500;
