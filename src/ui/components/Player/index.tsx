@@ -6,7 +6,7 @@ import { AudioSource } from "../../../types/resources/pronunciation";
 import useAudioRef from "../../hooks/useAudioRef";
 import Loader from "../Loader";
 import SystemContext from "../../contexts/system";
-import { BRAND_COLOR, WHITE_COLOR } from "../../../constants";
+import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../constants";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -121,7 +121,7 @@ const Player = (props: Props): JSX.Element => {
         textColor={WHITE_COLOR}
         backgroundColor={BRAND_COLOR}
         multiline
-        delayShow={1500}
+        delayShow={TOOLTIP_DELAY}
       />
       {audioReady ? (
         <i
