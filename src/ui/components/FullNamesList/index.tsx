@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
+import ReactTooltip from "react-tooltip";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
@@ -6,6 +7,8 @@ import Loader from "../Loader";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
+import StyleContext from "../../contexts/style";
+import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../constants";
 
 export interface NameOption {
   key: string;
@@ -39,6 +42,8 @@ const nameToOption = (name: NameOption): Option => ({
 const FullNamesList = (props: Props): JSX.Element => {
   const [autoplay, setAutoplay] = useState<boolean>(false);
   const [selectValue, setValue] = useState<Option>();
+  const tooltipId = Date.now().toString();
+  const { t } = useContext(StyleContext);
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
@@ -59,13 +64,30 @@ const FullNamesList = (props: Props): JSX.Element => {
   return (
     <>
       <div className={cx(styles.wrapper)}>
-        <Select
-          className={cx(styles.control)}
-          onChange={onChange}
-          options={options}
-          value={selectValue}
-          styles={selectStyles}
-        />
+        <div className={cx(styles.control)}>
+          <ReactTooltip
+            id={tooltipId}
+            textColor={WHITE_COLOR}
+            backgroundColor={BRAND_COLOR}
+            delayShow={TOOLTIP_DELAY}
+            multiline
+          />
+
+          <div
+            data-tip={t(
+              "pronunciations_drop_down_tooltip",
+              "Click down arrow in drop down to see more names"
+            )}
+            data-for={tooltipId}
+          >
+            <Select
+              onChange={onChange}
+              options={options}
+              value={selectValue}
+              styles={selectStyles}
+            />
+          </div>
+        </div>
         {props.loading && (
           <div>
             <Loader />
