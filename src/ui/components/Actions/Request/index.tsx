@@ -28,6 +28,7 @@ const RequestAction = (props: Props): JSX.Element => {
         textColor={WHITE_COLOR}
         backgroundColor={BRAND_COLOR}
         multiline
+        delayShow={1500}
       />
       <i
         className={styles.request_icon}
