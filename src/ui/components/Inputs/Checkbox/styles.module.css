@@ -1,0 +1,23 @@
+@value labelGray, darkerGray from "../../../styles/colors.css";
+
+.checkbox_input_field {
+  text-align: right;
+  width: 90%;
+}
+
+.checkbox_field {
+  display: flex;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  align-items: center;
+}
+
+.attributes_label {
+  color: darkerGray;
+  line-height: 10px;
+}
+
+.attributes_label.disabled {
+  color: labelGray;
+  line-height: 10px;
+}
