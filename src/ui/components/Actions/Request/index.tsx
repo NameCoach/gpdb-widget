@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from "react";
 import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import ReactTooltip from "react-tooltip";
-import { BRAND_COLOR, WHITE_COLOR } from "../../../../constants";
+import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../../constants";
 
 interface Props {
   disabled?: boolean;
@@ -28,7 +28,7 @@ const RequestAction = (props: Props): JSX.Element => {
         textColor={WHITE_COLOR}
         backgroundColor={BRAND_COLOR}
         multiline
-        delayShow={1500}
+        delayShow={TOOLTIP_DELAY}
       />
       <i
         className={styles.request_icon}
