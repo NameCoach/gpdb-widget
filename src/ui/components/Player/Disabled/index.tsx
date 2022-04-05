@@ -28,6 +28,7 @@ const DisabledPlayer = (props: Props): JSX.Element => {
         textColor={WHITE_COLOR}
         backgroundColor={BRAND_COLOR}
         multiline
+        delayShow={1500}
       />
       <i
         className={cx(styles.speakerUnavailable, "speaker-unavailable")}
