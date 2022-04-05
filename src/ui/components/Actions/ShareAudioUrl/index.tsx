@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ReactTooltip from "react-tooltip";
+import { TOOLTIP_DELAY } from "../../../../constants";
 
 const cx = classNames.bind(styles);
 
@@ -115,7 +116,7 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
         eventOff="click"
         globalEventOff="click"
         disable={showModal}
-        delayShow={1500}
+        delayShow={TOOLTIP_DELAY}
       />
       <div className={cx(styles.copy_modal)} style={getModalStyles()}>
         <div className={cx(styles.success_message)} hidden={!showSuccess}>
