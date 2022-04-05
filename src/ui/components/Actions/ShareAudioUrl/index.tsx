@@ -115,7 +115,7 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
         eventOff="click"
         globalEventOff="click"
         disable={showModal}
-        delayShow={100}
+        delayShow={1500}
       />
       <div className={cx(styles.copy_modal)} style={getModalStyles()}>
         <div className={cx(styles.success_message)} hidden={!showSuccess}>
