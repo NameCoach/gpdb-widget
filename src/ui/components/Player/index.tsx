@@ -121,6 +121,7 @@ const Player = (props: Props): JSX.Element => {
         textColor={WHITE_COLOR}
         backgroundColor={BRAND_COLOR}
         multiline
+        delayShow={1500}
       />
       {audioReady ? (
         <i
