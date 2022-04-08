@@ -11,6 +11,10 @@
   margin-bottom: 10px;
 }
 
+.tooltip {
+  left: 0 !important;
+}
+
 .hint {
   font-size: 12px;
   line-height: 15px;
