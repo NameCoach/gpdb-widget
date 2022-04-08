@@ -66,10 +66,13 @@ const FullNamesList = (props: Props): JSX.Element => {
       <div className={cx(styles.wrapper)}>
         <div className={cx(styles.control)}>
           <ReactTooltip
+            className={cx(styles.tooltip)}
             id={tooltipId}
             textColor={WHITE_COLOR}
             backgroundColor={BRAND_COLOR}
             delayShow={TOOLTIP_DELAY}
+            place="top"
+            effect="solid"
             multiline
           />
 
