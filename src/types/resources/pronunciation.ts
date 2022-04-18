@@ -8,6 +8,14 @@ export enum AudioSource {
   NameUser = "name_user",
 }
 
+export enum RelativeSource {
+  Gpdb = "gpdb",
+  RequesterSelf = "requester_self",
+  RequesterPeer = "requester_peer",
+  PeerSelf = "peer_self",
+  PeerPeer = "peer_peer",
+}
+
 export default interface Pronunciation {
   id: string;
   audioSrc: string;
@@ -17,6 +25,7 @@ export default interface Pronunciation {
   audioCreator: AudioSource;
   isHedb?: boolean;
   language?: string;
+  relativeSource?: string;
   phoneticSpelling?: string;
   userResponse?: UserResponse;
   phoneticTranscriptions?: Array<Phonetic>;
