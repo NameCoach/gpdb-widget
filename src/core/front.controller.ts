@@ -11,7 +11,9 @@ import {
   UserResponse,
   ClientPreferences,
 } from "gpdb-api-client";
-import Pronunciation, { AudioSource } from "../types/resources/pronunciation";
+import Pronunciation, {
+  RelativeSource,
+} from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
 import NamesApi from "./api/names.api";
@@ -77,17 +79,17 @@ export default class FrontController implements IFrontController {
     });
 
     return pronunciations.map((p) => {
-      const isHedb = this.isHedb(p);
+      const mappedPronunciation = pronunciationMap(p);
 
-      const nameOwnerCreated = this.nameOwnerCreated(p, owner);
-
-      const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(p, owner);
+      const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(
+        mappedPronunciation
+      );
 
       if (shouldCustomAttributesUpdate) {
         this.customAttributes = customAttributesMap(p.custom_attributes);
       }
 
-      return pronunciationMap({ ...p, nameOwnerCreated, isHedb });
+      return mappedPronunciation;
     });
   }
 
@@ -336,11 +338,11 @@ export default class FrontController implements IFrontController {
       );
       const pronunciations: Pronunciation[] = target.pronunciations
         .map((pronunciation) => {
-          const isHedb = this.isHedb(pronunciation);
+          const mappedPronunciation = pronunciationMap(pronunciation);
 
-          const nameOwnerCreated = this.nameOwnerCreated(pronunciation, owner);
-
-          const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(pronunciation, owner);
+          const shouldCustomAttributesUpdate = this.shouldCustomAttributesUpdate(
+            mappedPronunciation
+          );
 
           if (
             result[NameTypes.FullName].length === 0 &&
@@ -355,11 +357,7 @@ export default class FrontController implements IFrontController {
             if (!name.type) {
               name.type = NameTypes.FullName;
             }
-            return pronunciationMap({
-              ...pronunciation,
-              nameOwnerCreated,
-              isHedb,
-            });
+            return pronunciationMap(pronunciation);
           }
           if (!name.type) {
             TargetTypeSig.FirstName === pronunciation.target_type_sig
@@ -376,24 +374,12 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  isHedb(pronunciation): boolean {
-    return /hedb_/.test(pronunciation.id);
-  }
-
-  nameOwnerCreated(pronunciation, owner): boolean {
+  shouldCustomAttributesUpdate(pronunciation: Pronunciation): boolean {
     return (
-      pronunciation.audio_source === AudioSource.NameOwner &&
-      pronunciation.name_owner_signature === owner.signature
-    );
-  }
-
-  shouldCustomAttributesUpdate(pronunciation, owner): boolean {
-    return (
-      this.nameOwnerCreated(pronunciation, owner) &&
-      !this.isHedb(pronunciation) &&
-      owner.signature === this.userContext.signature &&
+      pronunciation.relativeSource === RelativeSource.RequesterSelf &&
+      !pronunciation.isHedb &&
       !this.permissions.can(Resources.Pronunciation, "create:name_badge") &&
-      pronunciation.custom_attributes?.length > 0
+      pronunciation.customAttributes?.length > 0
     );
   }
 }
