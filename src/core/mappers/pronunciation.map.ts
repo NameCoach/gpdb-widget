@@ -1,13 +1,19 @@
 import Pronunciation, {
   AudioSource,
+  RelativeSource,
 } from "../../types/resources/pronunciation";
 import customAttributesMap from "./custom-attributes.map";
+
+const isHedb = (id): boolean => {
+  return /hedb_/.test(id);
+};
 
 const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
   id: raw.id,
   audioSrc: raw.audio_url,
-  nameOwnerCreated: raw.nameOwnerCreated,
-  isHedb: raw.isHedb,
+  nameOwnerCreated: raw.relative_source === RelativeSource.RequesterSelf,
+  relativeSource: raw.relative_source,
+  isHedb: isHedb(raw.id),
   userCreated: raw.audio_source === AudioSource.NameUser,
   gpdbCreated: raw.audio_source === AudioSource.Gpdb,
   audioCreator: raw.audio_source,
