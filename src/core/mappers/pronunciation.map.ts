@@ -11,7 +11,9 @@ const isHedb = (id): boolean => {
 const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
   id: raw.id,
   audioSrc: raw.audio_url,
-  nameOwnerCreated: raw.relative_source === RelativeSource.RequesterSelf,
+  nameOwnerCreated:
+    raw.relative_source === RelativeSource.RequesterSelf ||
+    raw.relative_source === RelativeSource.PeerSelf,
   relativeSource: raw.relative_source,
   isHedb: isHedb(raw.id),
   userCreated: raw.audio_source === AudioSource.NameUser,
