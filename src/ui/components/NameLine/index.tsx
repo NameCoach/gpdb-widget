@@ -52,6 +52,10 @@ const NameLine = (props: Props): JSX.Element => {
         "peer_self_recording_label",
         "Owner Recording"
       ),
+      [RelativeSource.TargetSelf]: t(
+        "target_self_recording_label",
+        "Owner Recording"
+      ),
       [RelativeSource.RequesterPeer]: t(
         "requester_peer_recording_label",
         "My Recording"
