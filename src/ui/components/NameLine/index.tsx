@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import Pronunciation, {
-  RelativeSource,
-} from "../../../types/resources/pronunciation";
+import Pronunciation from "../../../types/resources/pronunciation";
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import Loader from "../Loader";
@@ -17,6 +15,7 @@ import userAgentManager from "../../../core/userAgentManager";
 import { AnalyticsEventType } from "../../..";
 import loadT from "../../hooks/LoadT";
 import StyleContext from "../../contexts/style";
+import { getLabel } from "../../helpers/nameline";
 
 const cx = classNames.bind(styles);
 
@@ -38,49 +37,19 @@ const NameLine = (props: Props): JSX.Element => {
   const t = styleContext.t || loadT(controller?.preferences?.translations);
 
   const { isDeprecated: isOld } = userAgentManager;
-  const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [autoplay, setAutoplay] = useState(false);
-
-  const getLabel = (recording): string => {
-    const labels = {
-      [RelativeSource.RequesterSelf]: t(
-        "requester_self_recording_label",
-        "Owner Recording"
-      ),
-      [RelativeSource.PeerSelf]: t(
-        "peer_self_recording_label",
-        "Owner Recording"
-      ),
-      [RelativeSource.TargetSelf]: t(
-        "target_self_recording_label",
-        "Owner Recording"
-      ),
-      [RelativeSource.RequesterPeer]: t(
-        "requester_peer_recording_label",
-        "My Recording"
-      ),
-      [RelativeSource.PeerPeer]: t(
-        "peer_peer_recording_label",
-        "Peer Recording"
-      ),
-      [RelativeSource.Gpdb]:
-        recording.language && recording.language !== "null"
-          ? recording.language
-          : t("gpdb_no_language_recording_label", "Library Recording"),
-    };
-
-    return labels[recording.relativeSource];
-  };
-
   const options = useMemo(
     () =>
       props.pronunciations.map((p, i) => ({
-        label: `${i + 1} - ${getLabel(p)}`,
+        label: `${i + 1} - ${getLabel(p, t)}`,
         value: i,
       })),
     [props.pronunciations]
   );
+
+  const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [autoplay, setAutoplay] = useState(false);
+  const [value, setValue] = useState(options[0]);
 
   const sendAnalytics = (event, index = currentIndex): PromiseLike<void> =>
     controller.sendAnalytics(
@@ -89,11 +58,14 @@ const NameLine = (props: Props): JSX.Element => {
       currentPronunciation.id
     );
 
-  const onSelect = ({ value }): void => {
-    setCurrentIndex(value);
+  const onSelect = (selectedOption): void => {
+    const index = selectedOption.value;
+
+    setValue(selectedOption);
+    setCurrentIndex(index);
     setAutoplay(true);
-    setPronunciation(props.pronunciations[value]);
-    sendAnalytics(AnalyticsEventType.Recording_select_list_change_to, value);
+    setPronunciation(props.pronunciations[index]);
+    sendAnalytics(AnalyticsEventType.Recording_select_list_change_to, index);
   };
 
   const onPlayClick = (): PromiseLike<void> =>
@@ -118,6 +90,7 @@ const NameLine = (props: Props): JSX.Element => {
 
   useEffect(() => {
     setPronunciation(props.pronunciations[0]);
+    setValue(options[0]);
   }, [props.pronunciations]);
 
   return (
@@ -142,6 +115,7 @@ const NameLine = (props: Props): JSX.Element => {
                 options={options}
                 className={styles.pronunciation__control}
                 onChange={onSelect}
+                value={value}
               />
             </div>
 
