@@ -12,6 +12,7 @@ export enum RelativeSource {
   Gpdb = "gpdb",
   RequesterSelf = "requester_self",
   RequesterPeer = "requester_peer",
+  TargetSelf = "target_self",
   PeerSelf = "peer_self",
   PeerPeer = "peer_peer",
 }
