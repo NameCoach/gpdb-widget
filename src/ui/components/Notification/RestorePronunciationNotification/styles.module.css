@@ -1,0 +1,16 @@
+@value primaryBrandColor from "../../styles/colors.css";
+
+.undo__button {
+  background-color: grey;
+  color: white;
+  cursor: pointer;
+  border: none;
+  box-sizing: border-box;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 5px 4px;
+}
+
+.undo__button:hover {
+  background-color: primaryBrandColor;
+}
