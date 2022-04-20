@@ -32,3 +32,4 @@ export const SAVE_PITCH_TIP =
 export const DEFAULT_NAME_OWNER = "outlook-app";
 
 export const TOOLTIP_DELAY = 1500;
+export const RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY = 5000;
