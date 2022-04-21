@@ -23,6 +23,7 @@ import RestorePronunciationNotification from "../Notification/RestorePronunciati
 import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
+import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -91,14 +92,17 @@ const MyInfo = (props: Props): JSX.Element => {
     setLoading(false);
   };
 
-  const onRecorderClose = async (options): Promise<void> => {
+  const onRecorderClose = async (
+    option: RecorderCloseOptions
+  ): Promise<void> => {
+    if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
+
     const pronunciationId = pronunciation?.id;
 
     await load();
     setMyInfoHintShow(true);
-    setRecorderClosed();
 
-    if (options?.recordingDeleted) {
+    if (option === RecorderCloseOptions.DELETE) {
       const notificationId = new Date().getTime();
 
       const onRestorePronunciationClick = async (): Promise<void> => {
@@ -121,6 +125,8 @@ const MyInfo = (props: Props): JSX.Element => {
           RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
       });
     }
+
+    setRecorderClosed();
   };
 
   const onCustomAttributesSaved = async (): Promise<void> => {
