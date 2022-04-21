@@ -112,6 +112,36 @@ export default class FrontController implements IFrontController {
     return [names, result];
   }
 
+  async destroy(id: string): Promise<boolean> {
+    try {
+      await this.apiClient.pronunciations.destroy({
+        id,
+        userContext: this.userContext,
+      });
+
+      return true;
+    } catch (error) {
+      console.error(error);
+
+      return false;
+    }
+  }
+
+  async restore(id: string): Promise<boolean> {
+    try {
+      await this.apiClient.pronunciations.restore({
+        id,
+        userContext: this.userContext,
+      });
+
+      return true;
+    } catch (error) {
+      console.error(error);
+
+      return false;
+    }
+  }
+
   createRecording(
     name: string,
     type: NameTypes,
@@ -374,7 +404,7 @@ export default class FrontController implements IFrontController {
     return result;
   }
 
-  shouldCustomAttributesUpdate(pronunciation: Pronunciation): boolean {
+  private shouldCustomAttributesUpdate(pronunciation: Pronunciation): boolean {
     return (
       pronunciation.relativeSource === RelativeSource.RequesterSelf &&
       !pronunciation.isHedb &&
