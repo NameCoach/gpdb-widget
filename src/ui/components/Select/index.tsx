@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Select from "react-select";
 import { BRAND_COLOR, SECONDARY_COLOR } from "../../../constants";
 
@@ -66,13 +66,16 @@ const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
 const SelectComponent = (props: Props): JSX.Element => {
   const initValue = useMemo(() => props.options[0], props.options);
 
+  const handleOnChange = (selectedValue: Option): void =>
+    props.onChange(selectedValue);
+
   return (
     <Select
       defaultValue={initValue}
       value={props.value}
       options={props.options}
       className={props.className}
-      onChange={props.onChange}
+      onChange={handleOnChange}
       isClearable={false}
       isSearchable={false}
       theme={theme}
