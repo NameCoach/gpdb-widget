@@ -1,5 +1,5 @@
 import STATES from "../states";
-import { EVENTS } from "./spec";
+import { EVENTS } from "../types/machine";
 
 const withCustomAttrsSpec = ({
   canCustomAttributesCreate,
