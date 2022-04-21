@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
 import FullNamesList, { NameOption } from "../FullNamesList";
-import Pronunciation from "../../../types/resources/pronunciation";
+import Pronunciation, {
+  RelativeSource,
+} from "../../../types/resources/pronunciation";
 import Name, { NameTypes } from "../../../types/resources/name";
 import { usePronunciations } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
@@ -17,6 +19,9 @@ import { NameOwner } from "gpdb-api-client";
 import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import StyleContext from "../../contexts/style";
+import RestorePronunciationNotification from "../Notification/RestorePronunciationNotification";
+import { useNotifications } from "../../hooks/useNotification";
+import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 
 interface Props {
   names: NameOption[];
@@ -39,11 +44,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     setRecorderClosed,
     setRecorderOpen,
   ] = useRecorderState();
+  const { setNotification } = useNotifications();
+
   const { isOpen: isRecorderOpen } = recorderState;
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
   const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
+
   const fullNamesObject = useRef([]);
   const { customFeatures } = useContext(StyleContext);
 
@@ -178,19 +186,67 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     );
   };
 
-  const onRecorderClose = async (): Promise<void> => {
+  const selfRecorderedPronunciation = useMemo((): Pronunciation => {
+    const recordings = pronunciations[recorderState.type]?.filter(
+      (item) =>
+        item.relativeSource === RelativeSource.RequesterSelf ||
+        item.relativeSource === RelativeSource.RequesterPeer
+    );
+
+    return recordings?.length > 0 ? recordings[0] : null;
+  }, [pronunciations, recorderState]);
+
+  const onRecorderClose = async (options): Promise<void> => {
+    const pronunciationId = selfRecorderedPronunciation?.id;
+    const cachedRecordingNameType = recorderState.type;
+
     await reloadName(recorderState.type);
     setRecorderClosed();
+
+    if (options?.recordingDeleted) {
+      if (pronunciations[cachedRecordingNameType].length === 1) {
+        const newNameParts = nameParts.map((item) => {
+          return {
+            ...item,
+            exist: item.type === cachedRecordingNameType ? false : item.exist,
+          };
+        });
+
+        setNameParts(newNameParts);
+      }
+
+      const notificationId = new Date().getTime();
+
+      const onRestorePronunciationClick = async (): Promise<void> => {
+        const success = await props.controller.restore(pronunciationId);
+        if (success) return await reloadName(cachedRecordingNameType);
+
+        setNotification();
+      };
+
+      setNotification({
+        id: notificationId,
+        content: (
+          <RestorePronunciationNotification
+            id={notificationId}
+            onClick={onRestorePronunciationClick}
+          />
+        ),
+        autoclose:
+          customFeatures.getValue("gw-restore-pronunciation-time") ||
+          RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
+      });
+    }
   };
 
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
 
-  const canRecordOrgPeer = (ownerSignature) =>
+  const canRecordOrgPeer = (ownerSignature: string): boolean =>
     customFeatures.canRecordOrgPeer(ownerSignature) &&
     props.permissions.canPronunciation.create;
 
-  const canUserResponse = (ownerSignature) =>
+  const canUserResponse = (ownerSignature: string): boolean =>
     customFeatures.canUserResponse(ownerSignature) &&
     props.permissions.canPronunciation.create;
 
@@ -270,6 +326,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
             type={recorderState.type}
             owner={nameOwner}
             onRecorderClose={onRecorderClose}
+            pronunciation={selfRecorderedPronunciation}
             termsAndConditions={recorderState.termsAndConditions}
           />
         )}
