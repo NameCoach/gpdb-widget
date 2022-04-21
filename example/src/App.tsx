@@ -10,7 +10,7 @@ import {
   InfoWidget,
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
-import MyInfoSection from './examples/MyInfoSection';
+import MyInfoSection, { me } from './examples/MyInfoSection';
 import Parser from './parser';
 import ScreenResizer from './dev-tools/ScreenResizer';
 import Name, { NameTypes } from "../../src/types/resources/name";
@@ -26,9 +26,14 @@ const creds = {
   accessKeyId: process.env.REACT_APP_GPDB_ACCESS_KEY_ID,
   secretAccessKey: process.env.REACT_APP_GPDB_SECRET_ACCESS_KEY
 };
-const applicationContext = { instanceSig: 'name-coach.com', typeSig: 'email_dns_name' }
-const nameOwnerContext = { signature: 'jon.snow@name-coach.com', email: 'jon.snow@name-coach.com' }
-const userContext = { email: 'jon.snow@name-coach.com', signature: 'jon.snow@name-coach.com' }
+
+const myEmail = me.owner.email;
+const mySignature = me.owner.signature;
+
+const applicationContext = { instanceSig: myEmail.split("@")[1], typeSig: 'email_dns_name' }
+const nameOwnerContext = { signature: mySignature, email: myEmail }
+const userContext = { email: myEmail, signature: mySignature }
+
 const parser = new Parser();
 
 const extensionWidgetNames: { [t in NameTypes]: Name } =
