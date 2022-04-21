@@ -6,8 +6,9 @@ export const getLabel = (recording, t): string => {
       "requester_self_recording_label",
       "Owner Recording"
     ),
-    [RelativeSource.PeerSelf]: t(
-      "peer_self_recording_label",
+    [RelativeSource.PeerSelf]: t("peer_self_recording_label", "Peer Recording"),
+    [RelativeSource.TargetSelf]: t(
+      "target_self_recording_label",
       "Owner Recording"
     ),
     [RelativeSource.RequesterPeer]: t(
