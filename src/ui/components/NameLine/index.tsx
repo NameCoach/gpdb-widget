@@ -12,10 +12,10 @@ import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
-import { AnalyticsEventType } from "../../..";
 import loadT from "../../hooks/LoadT";
 import StyleContext from "../../contexts/style";
-import { getLabel } from "../../helpers/nameline";
+import { getLabel } from "./helper-methods";
+import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 
 const cx = classNames.bind(styles);
 
