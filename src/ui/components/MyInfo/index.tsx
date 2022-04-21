@@ -19,6 +19,10 @@ import CustomAttributes from "../CustomAttributes";
 import CollapsableAction from "../Actions/Collapsable";
 import DisabledPlayer from "../Player/Disabled";
 import StyleContext from "../../contexts/style";
+import RestorePronunciationNotification from "../Notification/RestorePronunciationNotification";
+import { useNotifications } from "../../hooks/useNotification";
+import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
+import loadCustomFeatures from "../../hooks/loadCustomFatures";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -33,6 +37,8 @@ const cx = classNames.bind(styles);
 const MyInfo = (props: Props): JSX.Element => {
   if (!props.name.value.trim()) throw new Error("Name shouldn't be blank");
 
+  const { setNotification } = useNotifications();
+
   const [pronunciation, setPronunciation] = useState<Pronunciation>();
   const [loading, setLoading] = useState(true);
   const [collapsableActive, setCollapsable] = useState(false);
@@ -43,7 +49,11 @@ const MyInfo = (props: Props): JSX.Element => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const { t } = useContext(StyleContext);
+  const styleContext = useContext(StyleContext);
+  const customFeatures =
+    styleContext.customFeatures ||
+    loadCustomFeatures(props.controller?.preferences?.custom_features);
+  const t = styleContext.t;
 
   const onRecorderOpen = (): void => {
     setRecorderOpen(
@@ -81,10 +91,36 @@ const MyInfo = (props: Props): JSX.Element => {
     setLoading(false);
   };
 
-  const onRecorderClose = async (): Promise<void> => {
+  const onRecorderClose = async (options): Promise<void> => {
+    const pronunciationId = pronunciation?.id;
+
     await load();
     setMyInfoHintShow(true);
     setRecorderClosed();
+
+    if (options?.recordingDeleted) {
+      const notificationId = new Date().getTime();
+
+      const onRestorePronunciationClick = async (): Promise<void> => {
+        const success = await props.controller.restore(pronunciationId);
+        if (success) return await load();
+
+        setNotification();
+      };
+
+      setNotification({
+        id: notificationId,
+        content: (
+          <RestorePronunciationNotification
+            id={notificationId}
+            onClick={onRestorePronunciationClick}
+          />
+        ),
+        autoclose:
+          customFeatures.getValue("gw-restore-pronunciation-time") ||
+          RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
+      });
+    }
   };
 
   const onCustomAttributesSaved = async (): Promise<void> => {
@@ -221,7 +257,7 @@ const MyInfo = (props: Props): JSX.Element => {
           onRecorderClose={onRecorderClose}
           termsAndConditions={props.termsAndConditions}
           errorHandler={props.errorHandler}
-          rerecord={!!pronunciation}
+          pronunciation={pronunciation}
         />
       )}
     </>
