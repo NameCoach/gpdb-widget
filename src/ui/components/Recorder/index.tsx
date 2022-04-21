@@ -19,7 +19,7 @@ import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
-import { NameOwner } from "gpdb-api-client";
+import { NameOwner, Resources } from "gpdb-api-client";
 import ReactTooltip from "react-tooltip";
 import { BRAND_COLOR, SAVE_PITCH_TIP, WHITE_COLOR } from "../../../constants";
 import classNames from "classnames/bind";
@@ -29,6 +29,10 @@ import getSpec, { EVENTS } from "./machine/spec";
 import CustomAttributes from "../CustomAttributes";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import loadT from "../../hooks/LoadT";
+import Pronunciation, {
+  RelativeSource,
+} from "../../../types/resources/pronunciation";
+import { useNotifications } from "../../hooks/useNotification";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -39,15 +43,18 @@ const MAX_SAMPLE_RATE = 96000;
 const DEFAULT_SAMPLE_RATE = 44100;
 const MIN_SAMPLE_RATE = 22050;
 
+interface OnCloseOptions {
+  recordingDeleted?: boolean;
+}
 interface Props {
   name: string;
   type: NameTypes;
   owner?: NameOwner;
-  onRecorderClose: () => void;
+  onRecorderClose: (options?: OnCloseOptions) => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
   errorHandler?: ErrorHandler;
-  rerecord?: boolean;
+  pronunciation?: Pronunciation;
 }
 
 const cx = classNames.bind(styles);
@@ -59,14 +66,16 @@ const Recorder = ({
   type,
   termsAndConditions,
   errorHandler,
-  rerecord,
   onSaved,
+  pronunciation,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const machineSpec = useMemo(() => getSpec(controller, owner), [
     controller,
     owner,
   ]);
+
+  const { setNotification } = useNotifications();
 
   const styleContext = useContext(StyleContext);
   const customFeatures =
@@ -76,6 +85,28 @@ const Recorder = ({
   const displaySaving =
     styleContext?.displayRecorderSavingMessage ||
     machineSpec.canCustomAttributesCreate;
+
+  const canDeletePronunciation = (): boolean => {
+    const isSelf =
+      pronunciation &&
+      pronunciation.relativeSource === RelativeSource.RequesterSelf;
+
+    const isOrgPeer =
+      pronunciation &&
+      pronunciation.relativeSource === RelativeSource.RequesterPeer;
+
+    const canPronunciation = (permission): boolean =>
+      controller.permissions.can(Resources.Pronunciation, permission);
+
+    const canDeleteSelf =
+      canPronunciation("destroy") && canPronunciation("destroy:self");
+    const canDeleteOrgPeer =
+      canPronunciation("destroy") && canPronunciation("destroy:org_peer");
+
+    return (isSelf && canDeleteSelf) || (isOrgPeer && canDeleteOrgPeer);
+  };
+
+  const deletePronunciation = canDeletePronunciation();
 
   const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
 
@@ -268,6 +299,17 @@ const Recorder = ({
 
   const updateSampleRate = (val): void => setSampleRate({ value: val });
 
+  const onDeletePronunciation = async (): Promise<void> => {
+    const success = await controller.destroy(pronunciation.id);
+
+    if (success) return onRecorderClose({ recordingDeleted: true });
+
+    setNotification();
+    onRecorderClose();
+  };
+
+  const handleOnRecorderClose = (): void => onRecorderClose();
+
   return (
     <StyleContext.Provider
       value={{
@@ -279,13 +321,13 @@ const Recorder = ({
     >
       <div className={cx(styles.recorder, { old: isOld })}>
         {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
-          <Close onClick={onRecorderClose} />
+          <Close onClick={handleOnRecorderClose} />
         )}
         <div className={cx(styles.recorder__body, { old: isOld })}>
           {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
 
           {step === STATES.INIT &&
-            !rerecord &&
+            !pronunciation &&
             t(
               "recorder_init_step_hint",
               "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."
@@ -345,7 +387,7 @@ const Recorder = ({
         <div className={styles.recorder__actions}>
           {step === STATES.TERMS_AND_CONDITIONS && (
             <>
-              <button onClick={onRecorderClose}>
+              <button onClick={handleOnRecorderClose}>
                 {t("recorder_back_button", "BACK")}
               </button>
               <button onClick={onAccept}>ACCEPT</button>
@@ -354,14 +396,20 @@ const Recorder = ({
 
           {step === STATES.INIT && (
             <>
-              <button onClick={onRecorderClose}>
+              <button onClick={handleOnRecorderClose}>
                 {t("recorder_back_button", "BACK")}
               </button>
               <button onClick={onStart}>
-                {rerecord
+                {pronunciation
                   ? t("recorder_rerecord_button", "RE-RECORD")
                   : t("recorder_start_button", "START")}
               </button>
+
+              {deletePronunciation && (
+                <button onClick={onDeletePronunciation}>
+                  {t("delete_pronunciation_button", "DELETE PRONUNCIATION")}
+                </button>
+              )}
             </>
           )}
 
@@ -396,7 +444,10 @@ const Recorder = ({
           )}
           {step === STATES.RECORDED && !slider && (
             <>
-              <button className={styles.no__border} onClick={onRecorderClose}>
+              <button
+                className={styles.no__border}
+                onClick={handleOnRecorderClose}
+              >
                 CLOSE
               </button>
               <button onClick={onStart}>RERECORD</button>
