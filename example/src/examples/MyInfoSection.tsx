@@ -8,14 +8,15 @@ interface Props {
 
 const errorHandler = new ErrorHandler();
 
+export const me = {
+  value: 'Jack Green',
+  owner: {
+    signature: 'jack@name-coach.com',
+    email: 'jack@name-coach.com'
+  }
+};
+
 const MyInfoSection = (props: Props) => {
-  const me = {
-    value: 'Jack Green',
-    owner: {
-      signature: 'jack@name-coach.com',
-      email: 'jack@name-coach.com'
-    }
-  };
   const email = {
     value: 'sometest.email@gmail.com',
     owner: {
