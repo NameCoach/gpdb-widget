@@ -103,7 +103,10 @@ const Recorder = ({
     const canDeleteOrgPeer =
       canPronunciation("destroy") && canPronunciation("destroy:org_peer");
 
-    return (isSelf && canDeleteSelf) || (isOrgPeer && canDeleteOrgPeer);
+    return (
+      ((isSelf && canDeleteSelf) || (isOrgPeer && canDeleteOrgPeer)) &&
+      !pronunciation.isHedb
+    );
   };
 
   const deletePronunciation = canDeletePronunciation();
