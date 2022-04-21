@@ -22,6 +22,8 @@ import StyleContext from "../../contexts/style";
 import RestorePronunciationNotification from "../Notification/RestorePronunciationNotification";
 import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
+import { nameExist } from "./helper-methods";
+import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
 
 interface Props {
   names: NameOption[];
@@ -181,7 +183,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         .filter((n) => n.type !== NameTypes.FullName)
         .map((name) => ({
           ...name,
-          exist: name.type === type ? true : name.exist,
+          exist: nameExist(name, type, pronunciations.length),
         }))
     );
   };
@@ -196,25 +198,17 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     return recordings?.length > 0 ? recordings[0] : null;
   }, [pronunciations, recorderState]);
 
-  const onRecorderClose = async (options): Promise<void> => {
+  const onRecorderClose = async (
+    option: RecorderCloseOptions
+  ): Promise<void> => {
+    if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
+
     const pronunciationId = selfRecorderedPronunciation?.id;
     const cachedRecordingNameType = recorderState.type;
 
-    await reloadName(recorderState.type);
-    setRecorderClosed();
+    await reloadName(cachedRecordingNameType);
 
-    if (options?.recordingDeleted) {
-      if (pronunciations[cachedRecordingNameType].length === 1) {
-        const newNameParts = nameParts.map((item) => {
-          return {
-            ...item,
-            exist: item.type === cachedRecordingNameType ? false : item.exist,
-          };
-        });
-
-        setNameParts(newNameParts);
-      }
-
+    if (option === RecorderCloseOptions.DELETE) {
       const notificationId = new Date().getTime();
 
       const onRestorePronunciationClick = async (): Promise<void> => {
@@ -237,6 +231,8 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
       });
     }
+
+    setRecorderClosed();
   };
 
   const openRecorder = (name, type): void =>
