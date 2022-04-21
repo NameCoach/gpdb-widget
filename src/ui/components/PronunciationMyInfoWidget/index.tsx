@@ -13,6 +13,8 @@ import { UserPermissions } from "../../../types/permissions";
 import MyInfo from "../MyInfo";
 import loadT from "../../hooks/LoadT";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
+import { NotificationsProvider } from "../../hooks/useNotification";
+import Notification from "../Notification";
 
 interface Props {
   client: IFrontController;
@@ -122,9 +124,12 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       }}
     >
       <ControllerContext.Provider value={client}>
-        {blockPermissions[Blocks.Invalid]
-          ? NoPermissionsError()
-          : renderContainer()}
+        <NotificationsProvider>
+          {blockPermissions[Blocks.Invalid]
+            ? NoPermissionsError()
+            : renderContainer()}
+          <Notification />
+        </NotificationsProvider>
       </ControllerContext.Provider>
     </StyleContext.Provider>
   );
