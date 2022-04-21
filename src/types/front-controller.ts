@@ -41,6 +41,8 @@ export interface GpdbRequests {
   ) => PromiseLike<
     [Array<Omit<Name, "exist">>, { [t in NameTypes]: Pronunciation[] }]
   >;
+  destroy: (id: string) => Promise<boolean>;
+  restore: (id: string) => Promise<boolean>;
   createUserResponse: (
     id: string,
     type: UserResponse,
