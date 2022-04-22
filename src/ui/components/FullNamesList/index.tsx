@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useContext } from "react";
-import ReactTooltip from "react-tooltip";
+import Tooltip from "../Tooltip";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
@@ -8,7 +8,6 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
-import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../constants";
 
 export interface NameOption {
   key: string;
@@ -65,15 +64,11 @@ const FullNamesList = (props: Props): JSX.Element => {
     <>
       <div className={cx(styles.wrapper)}>
         <div className={cx(styles.control)}>
-          <ReactTooltip
+          <Tooltip
             className={cx(styles.tooltip)}
             id={tooltipId}
-            textColor={WHITE_COLOR}
-            backgroundColor={BRAND_COLOR}
-            delayShow={TOOLTIP_DELAY}
             place="top"
             effect="solid"
-            multiline
           />
 
           <div
