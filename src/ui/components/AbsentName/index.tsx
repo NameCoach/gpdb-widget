@@ -51,7 +51,7 @@ const AbsentName = (props: Props): JSX.Element => {
     } else {
       isRequested && setRequest(false);
     }
-  }, [name]);
+  }, [props.name]);
 
   const renderRequestedMessage = (): string =>
     isRequested
