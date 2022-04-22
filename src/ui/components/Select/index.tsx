@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import Select from "react-select";
 import { BRAND_COLOR, SECONDARY_COLOR } from "../../../constants";
 
