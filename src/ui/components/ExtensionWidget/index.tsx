@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useEffect, useMemo, useState } from "react";
+import React, { MouseEventHandler, useContext, useMemo, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import Container from "../Container";
