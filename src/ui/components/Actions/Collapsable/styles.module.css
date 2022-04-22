@@ -1,0 +1,15 @@
+.wrapper {
+  composes: icon-btn from "../../../styles/icons.css";
+}
+
+.minus_icon {
+  composes: minus from "../../../styles/icons.css";
+}
+
+.active {
+  composes: active from "../../../styles/icons.css";
+}
+
+.plus_icon {
+  composes: plus from "../../../styles/icons.css";
+}
