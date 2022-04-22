@@ -25,7 +25,7 @@ import { BRAND_COLOR, SAVE_PITCH_TIP, WHITE_COLOR } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
-import getSpec, { EVENTS } from "./machine/spec";
+import getSpec from "./machine/spec";
 import CustomAttributes from "../CustomAttributes";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import loadT from "../../hooks/LoadT";
@@ -33,6 +33,8 @@ import Pronunciation, {
   RelativeSource,
 } from "../../../types/resources/pronunciation";
 import { useNotifications } from "../../hooks/useNotification";
+import { EVENTS } from "./types/machine";
+import { RecorderCloseOptions } from "./types/handlersTypes";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -43,14 +45,11 @@ const MAX_SAMPLE_RATE = 96000;
 const DEFAULT_SAMPLE_RATE = 44100;
 const MIN_SAMPLE_RATE = 22050;
 
-interface OnCloseOptions {
-  recordingDeleted?: boolean;
-}
 interface Props {
   name: string;
   type: NameTypes;
   owner?: NameOwner;
-  onRecorderClose: (options?: OnCloseOptions) => void;
+  onRecorderClose: (option?: RecorderCloseOptions) => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
   errorHandler?: ErrorHandler;
@@ -305,13 +304,14 @@ const Recorder = ({
   const onDeletePronunciation = async (): Promise<void> => {
     const success = await controller.destroy(pronunciation.id);
 
-    if (success) return onRecorderClose({ recordingDeleted: true });
+    if (success) return onRecorderClose(RecorderCloseOptions.DELETE);
 
     setNotification();
-    onRecorderClose();
+    onRecorderClose(RecorderCloseOptions.CANCEL);
   };
 
-  const handleOnRecorderClose = (): void => onRecorderClose();
+  const handleOnRecorderClose = (): void =>
+    onRecorderClose(RecorderCloseOptions.CANCEL);
 
   return (
     <StyleContext.Provider
