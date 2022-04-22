@@ -1,5 +1,5 @@
 import STATES from "../states";
-import { EVENTS } from "./spec";
+import { EVENTS } from "../types/machine";
 
 const defaultSpec = ({ canCustomAttributesCreate }): { [x: string]: any } => ({
   initialState: STATES.INIT,
