@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Tooltip from "../Tooltip";
+import Tooltip from "../../Tooltip";
 
 const cx = classNames.bind(styles);
 
