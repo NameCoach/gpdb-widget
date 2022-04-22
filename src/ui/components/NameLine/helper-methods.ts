@@ -1,4 +1,4 @@
-import { RelativeSource } from "../../types/resources/pronunciation";
+import { RelativeSource } from "../../../types/resources/pronunciation";
 
 export const getLabel = (recording, t): string => {
   const labels = {
