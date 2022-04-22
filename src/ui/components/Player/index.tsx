@@ -6,7 +6,7 @@ import { AudioSource } from "../../../types/resources/pronunciation";
 import useAudioRef from "../../hooks/useAudioRef";
 import Loader from "../Loader";
 import SystemContext from "../../contexts/system";
-import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../constants";
+import Tooltip from "../Tooltip";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -116,13 +116,7 @@ const Player = (props: Props): JSX.Element => {
       })}
       onClick={play}
     >
-      <ReactTooltip
-        id={tooltipId}
-        textColor={WHITE_COLOR}
-        backgroundColor={BRAND_COLOR}
-        multiline
-        delayShow={TOOLTIP_DELAY}
-      />
+      <Tooltip id={tooltipId} />
       {audioReady ? (
         <i
           className={cx(speakerClassName)}
