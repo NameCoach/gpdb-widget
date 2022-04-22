@@ -19,12 +19,11 @@ const Checkbox = ({
   disabled,
   onUpdate,
 }: Props): JSX.Element => {
-
   const onChange = (e): void => {
     if (onUpdate) {
       const value = e.target.checked;
 
-      onUpdate({ id, value })
+      onUpdate({ id, value });
     }
   };
 
