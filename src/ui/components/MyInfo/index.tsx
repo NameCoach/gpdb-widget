@@ -140,9 +140,14 @@ const MyInfo = (props: Props): JSX.Element => {
   }, [props.name, props.controller]);
 
   const getCopyButtons = (pronunciation): CopyButton[] => {
-    const result = [{ url: pronunciation.audioSrc, text: "Audio URL" }];
+    const result = [];
 
-    if (pronunciation.nameBadgeLink)
+    const share_urls = customFeatures.getMetadata("gw-share-icon")["available_urls"];
+
+    if (share_urls.includes("defaultAudio"))
+      result.push({ url: pronunciation.audioSrc, text: "Audio URL" });
+
+    if (share_urls.includes("nameBadge"))
       result.push({ url: pronunciation.nameBadgeLink, text: "NameBadge Link" });
 
     return result;
@@ -196,7 +201,7 @@ const MyInfo = (props: Props): JSX.Element => {
             {loading && <Loader />}
 
             {!loading &&
-              props.permissions.canPronunciation.share &&
+              customFeatures.getValue("gw-share-icon") &&
               pronunciation && (
                 <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
               )}
