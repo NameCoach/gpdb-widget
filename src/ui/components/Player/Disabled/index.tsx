@@ -1,8 +1,7 @@
 import classNames from "classnames/bind";
 import React from "react";
 import styles from "../styles.module.css";
-import ReactTooltip from "react-tooltip";
-import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../../constants";
+import Tooltip from "../../Tooltip";
 
 const cx = classNames.bind(styles);
 
@@ -23,13 +22,7 @@ const DisabledPlayer = (props: Props): JSX.Element => {
         "unavailable__disabled"
       )}
     >
-      <ReactTooltip
-        id={tooltipId}
-        textColor={WHITE_COLOR}
-        backgroundColor={BRAND_COLOR}
-        multiline
-        delayShow={TOOLTIP_DELAY}
-      />
+      <Tooltip id={tooltipId} />
       <i
         className={cx(styles.speakerUnavailable, "speaker-unavailable")}
         data-tip="Pronunciations not available"
