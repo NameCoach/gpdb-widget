@@ -1,0 +1,9 @@
+.logo {
+  height: 37px;
+  width: 44px;
+  flex-shrink: 0;
+  margin-right: 10px;
+  background-image: url("logo.png");
+  background-position: center;
+  background-size: contain;
+}
