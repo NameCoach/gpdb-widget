@@ -1,8 +1,15 @@
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+} from "react";
 import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Tooltip from "../../Tooltip";
+import StyleContext from "../../../contexts/style";
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +33,9 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
 
   const buttonsRefs = useRef([]);
   const shareButton = useRef(null as HTMLImageElement);
+
+  const styleContext = useContext(StyleContext);
+  const t = styleContext.t;
 
   const getButtons = (): CopyButton[] => {
     return props.buttons.map(
@@ -103,12 +113,16 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
             className={cx("share-audio-url")}
             ref={shareButton}
             data-for={tooltipId}
-            data-tip="Copy your audio link here"
+            data-tip={t(
+              "share_audio_url_tooltip",
+              "Copy your audio link here."
+            )}
           />
         </a>
       </div>
       <Tooltip
         id={tooltipId}
+        className={cx(styles.tooltip)}
         textColor="white"
         backgroundColor="#946cc1"
         eventOff="click"
