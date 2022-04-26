@@ -95,12 +95,13 @@ const MyInfo = (props: Props): JSX.Element => {
   const onRecorderClose = async (
     option: RecorderCloseOptions
   ): Promise<void> => {
+    setMyInfoHintShow(true);
+
     if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
 
     const pronunciationId = pronunciation?.id;
 
     await load();
-    setMyInfoHintShow(true);
 
     if (option === RecorderCloseOptions.DELETE) {
       const notificationId = new Date().getTime();
