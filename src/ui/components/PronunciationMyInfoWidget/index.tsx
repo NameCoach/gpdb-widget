@@ -71,6 +71,10 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       share: canPronunciation("share"),
       createNameBadge: canPronunciation("create:name_badge"),
       indexNameBadge: canPronunciation("index:name_badge"),
+      restoreSelf:
+        canPronunciation("restore") && canPronunciation("restore:self"),
+      restoreOrgPeer:
+        canPronunciation("restore") && canPronunciation("restore:org_peer"),
     },
     canUserResponse: { create: canUserResponse("create") },
     canRecordingRequest: {
