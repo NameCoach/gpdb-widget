@@ -208,7 +208,10 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     await reloadName(cachedRecordingNameType);
 
-    if (option === RecorderCloseOptions.DELETE) {
+    if (
+      option === RecorderCloseOptions.DELETE &&
+      props.permissions.canPronunciation.restoreOrgPeer
+    ) {
       const notificationId = new Date().getTime();
 
       const onRestorePronunciationClick = async (): Promise<void> => {
