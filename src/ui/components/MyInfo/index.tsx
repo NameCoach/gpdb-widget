@@ -103,7 +103,10 @@ const MyInfo = (props: Props): JSX.Element => {
 
     await load();
 
-    if (option === RecorderCloseOptions.DELETE) {
+    if (
+      option === RecorderCloseOptions.DELETE &&
+      props.permissions.canPronunciation.restoreSelf
+    ) {
       const notificationId = new Date().getTime();
 
       const onRestorePronunciationClick = async (): Promise<void> => {
