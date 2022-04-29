@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import Pronunciation from "../../../types/resources/pronunciation";
+import Pronunciation, {
+  RelativeSource,
+} from "../../../types/resources/pronunciation";
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import Loader from "../Loader";
@@ -88,6 +90,10 @@ const NameLine = (props: Props): JSX.Element => {
     setTimeout(() => props.reload(props.type), 1500);
   };
 
+  const selfPronunciation = props.pronunciations.find(
+    (item) => item.relativeSource === RelativeSource.RequesterPeer
+  );
+
   useEffect(() => {
     setPronunciation(props.pronunciations[0]);
     setValue(options[0]);
@@ -134,6 +140,7 @@ const NameLine = (props: Props): JSX.Element => {
                   onClick={(): void =>
                     props.onRecorderClick(props.name, props.type)
                   }
+                  rerecord={!!selfPronunciation}
                 />
               )}
               {props.canUserResponse && (
