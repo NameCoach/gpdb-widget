@@ -24,6 +24,7 @@ import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
+import { ConstantOverrides, Features } from "../../customFeaturesManager";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -125,7 +126,7 @@ const MyInfo = (props: Props): JSX.Element => {
           />
         ),
         autoclose:
-          customFeatures.getValue("gw-restore-pronunciation-time") ||
+          customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
           RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
       });
     }
@@ -146,7 +147,7 @@ const MyInfo = (props: Props): JSX.Element => {
   const getCopyButtons = (pronunciation): CopyButton[] => {
     const result = [];
 
-    const share_urls = customFeatures.getMetadata("gw-share-icon")["available_urls"];
+    const share_urls = customFeatures.getMetadata(Features.Share)["available_urls"];
 
     if (share_urls.includes("defaultAudio"))
       result.push({ url: pronunciation.audioSrc, text: "Audio URL" });
@@ -205,7 +206,7 @@ const MyInfo = (props: Props): JSX.Element => {
             {loading && <Loader />}
 
             {!loading &&
-              customFeatures.getValue("gw-share-icon") &&
+              customFeatures.getValue(Features.Share) &&
               pronunciation && (
                 <ShareAudioUrlAction buttons={getCopyButtons(pronunciation)} />
               )}
