@@ -1,6 +1,31 @@
 import { Feature } from "gpdb-api-client";
+import parse from "html-react-parser";
 
 type Style = { [x: string]: string };
+
+export enum Features {
+  CanRecordOrgPeer = "can_record_org_peer",
+  CanUserResponse = "can_user_response",
+  Share = "gw-share-icon",
+  RenderHtml = "custom_html_components",
+}
+
+export enum ConstantOverrides {
+  RestorePronunciationTime = "gw-restore-pronunciation-time",
+  TooltipDelay = "tooltip-display-delay",
+}
+
+export enum StyleOverrides {
+  PronunciationNameLineMessage = "pronunciation-name-line-message",
+}
+
+export enum ExcludeRule {
+  NameOwner = "exclude_name_owner",
+}
+
+export enum HtmlComponents {
+  UnderMyInfo = "under_my_info",
+}
 
 export interface FeaturesManager {
   getStyle: (key: string) => Style;
@@ -9,6 +34,7 @@ export interface FeaturesManager {
   getMetadata: (key: string) => { [x: string]: any } | {};
   canRecordOrgPeer: (key: string) => boolean;
   canUserResponse: (key: string) => boolean;
+  renderCustomComponent: (component: string) => any;
 }
 
 export class CustomFeaturesManager implements FeaturesManager {
@@ -48,12 +74,12 @@ export class CustomFeaturesManager implements FeaturesManager {
   };
 
   canRecordOrgPeer = (ownerSignature): boolean => {
-    const customRules = this.getValue("can_record_org_peer");
+    const customRules = this.getValue(Features.CanRecordOrgPeer);
     if (!customRules) return true;
 
-    const metadata = this.getMetadata("can_record_org_peer");
+    const metadata = this.getMetadata(Features.CanRecordOrgPeer);
 
-    if (customRules.includes("exclude_name_owner")) {
+    if (customRules.includes(ExcludeRule.NameOwner)) {
       const excludeOwnerRegex = new RegExp(metadata.exclude_name_owner);
 
       return !excludeOwnerRegex.test(ownerSignature);
@@ -63,17 +89,29 @@ export class CustomFeaturesManager implements FeaturesManager {
   };
 
   canUserResponse = (ownerSignature): boolean => {
-    const customRules = this.getValue("can_user_response");
+    const customRules = this.getValue(Features.CanUserResponse);
     if (!customRules) return true;
 
-    const metadata = this.getMetadata("can_user_response");
+    const metadata = this.getMetadata(Features.CanUserResponse);
 
-    if (customRules.includes("exclude_name_owner")) {
+    if (customRules.includes(ExcludeRule.NameOwner)) {
       const excludeOwnerRegex = new RegExp(metadata.exclude_name_owner);
 
       return !excludeOwnerRegex.test(ownerSignature);
     }
 
     return true;
+  };
+
+  renderCustomComponent = (component): any => {
+    const customComponents = this.getValue(Features.RenderHtml);
+
+    if (!customComponents) return;
+
+    if (customComponents.includes(component)) {
+      const metadata = this.getMetadata(Features.RenderHtml);
+
+      return parse(metadata[component]);
+    }
   };
 }
