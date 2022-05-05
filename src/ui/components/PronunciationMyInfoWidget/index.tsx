@@ -15,6 +15,7 @@ import loadT from "../../hooks/LoadT";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import { NotificationsProvider } from "../../hooks/useNotification";
 import Notification from "../Notification";
+import { HtmlComponents } from "../../customFeaturesManager";
 
 interface Props {
   client: IFrontController;
@@ -113,6 +114,7 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
             termsAndConditions={props.termsAndConditions}
             errorHandler={props.errorHandler}
           />
+          {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}
         </>
       )}
     </div>
