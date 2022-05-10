@@ -11,6 +11,7 @@ import { NameOwner } from "gpdb-api-client";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
 import DisabledPlayer from "../Player/Disabled";
+import { StyleOverrides } from "../../customFeaturesManager";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -84,8 +85,9 @@ const AbsentName = (props: Props): JSX.Element => {
       </span>
       <span
         className={nameLineStyles.pronunciation__mid}
-        data-pronunciation-name-line-message
-        style={customFeatures.getStyle("pronunciation-name-line-message")}
+        style={customFeatures.getStyle(
+          StyleOverrides.PronunciationNameLineMessage
+        )}
       >
         {!loading && renderRequestedMessage()}
         {loading && <Loader inline sm />}
