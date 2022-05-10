@@ -24,6 +24,7 @@ import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import { nameExist } from "./helper-methods";
 import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
+import { ConstantOverrides } from "../../customFeaturesManager";
 
 interface Props {
   names: NameOption[];
@@ -230,7 +231,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           />
         ),
         autoclose:
-          customFeatures.getValue("gw-restore-pronunciation-time") ||
+          customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
           RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
       });
     }
