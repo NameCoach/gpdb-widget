@@ -1,31 +1,29 @@
-@value secondaryGray, errorColor, borderColor, primaryBrandColor, secondary from "../../styles/colors.css";
-
 .attributes__container__wrapper {
   padding: 5px 0 5px 5px;
 }
 
 .attributes__container__wrapper.bordered {
-  border: 1px solid secondaryGray;
+  border: 1px solid $colors_secondary_gray;
   border-radius: 5px;
 }
 
 .attributes__container__wrapper button {
   cursor: pointer;
-  border: 1px solid borderColor;
+  border: 1px solid $colors_border;
   box-sizing: border-box;
   border-radius: 2px;
   padding: 6px 6px;
   background: transparent;
-  color: primaryBrandColor;
+  color: $colors_darker_brand;
   font-weight: 600;
 }
 
 .attributes__container__wrapper button:hover {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .attributes__container__wrapper button:active {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .attributes__container__wrapper.active {
@@ -90,13 +88,13 @@
 .main__error__label {
   text-align: center;
   font-family: 'Montserrat', sans-serif;
-  color: errorColor;
+  color: $colors_error;
 }
 
 .attribute__error {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 13px;
-  color: errorColor;
+  color: $colors_error;
   margin: unset;
 }
