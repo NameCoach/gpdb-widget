@@ -248,7 +248,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   const canUserResponse = (ownerSignature: string): boolean =>
     customFeatures.canUserResponse(ownerSignature) &&
-    props.permissions.canPronunciation.create;
+    props.permissions.canUserResponse.create;
 
   useEffect(() => {
     loadName(props.names[0]);
