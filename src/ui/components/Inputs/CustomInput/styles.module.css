@@ -1,18 +1,16 @@
-@value darkerGray, secondaryGray, primaryBrandColor from "../../../styles/colors.css";
-
 .ca {
-  border-color: secondaryGray;
+  border-color: $colors_secondary_gray;
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 14px;
 }
 
 .ca:focus-within {
-  border-color: primaryBrandColor;
+  border-color: $colors_darker_brand;
 }
 
 .attributes_label {
-  color: darkerGray;
+  color: $colors_darker_grey;
   line-height: 10px;
 }
 
@@ -37,12 +35,12 @@ input[type=checkbox] {
 
 .input:focus {
   outline: none !important;
-  border:1px solid primaryBrandColor;
-  box-shadow: 0 0 10px primaryBrandColor;
+  border:1px solid $colors_darker_brand;
+  box-shadow: 0 0 10px $colors_darker_brand;
 }
 
 .input:hover {
-  border-color: primaryBrandColor;
+  border-color: $colors_darker_brand;
 }
 
 .field {
