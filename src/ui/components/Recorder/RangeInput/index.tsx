@@ -3,6 +3,7 @@ import { Range, getTrackBackground } from "react-range";
 
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
+import { DARKER_BRAND, SECONDARY_GRAY } from "../../../styles/variables/colors";
 
 const cx = classNames.bind(styles);
 
@@ -54,7 +55,7 @@ const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
               ...trackStyle,
               background: getTrackBackground({
                 values: values,
-                colors: [styles.primaryBrandColor, styles.secondaryGray],
+                colors: [DARKER_BRAND, SECONDARY_GRAY],
                 min: min,
                 max: max,
               }),
@@ -75,9 +76,7 @@ const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
               style={{
                 height: "5px",
                 width: "5px",
-                backgroundColor: isDragged
-                  ? styles.primaryBrandColor
-                  : styles.secondaryGray,
+                backgroundColor: isDragged ? DARKER_BRAND : SECONDARY_GRAY,
               }}
             />
           </div>

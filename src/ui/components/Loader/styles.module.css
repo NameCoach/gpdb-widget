@@ -1,17 +1,15 @@
-@value background, mainSpin, secondarySpin from "../../styles/colors.css";
-
 .loader {
   font-size: 10px;
   text-indent: -9999em;
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: mainSpin;
-  background: -moz-linear-gradient(left, mainSpin 10%, secondarySpin 42%);
-  background: -webkit-linear-gradient(left, mainSpin 10%, secondarySpin 42%);
-  background: -o-linear-gradient(left, mainSpin 10%, secondarySpin 42%);
-  background: -ms-linear-gradient(left, mainSpin 10%, secondarySpin 42%);
-  background: linear-gradient(to right, mainSpin 10%, secondarySpin 42%);
+  background: $colors_brand;
+  background: -moz-linear-gradient(left, $colors_brand 10%, $colors_secondary_gray 42%);
+  background: -webkit-linear-gradient(left, $colors_brand 10%, $colors_secondary_gray 42%);
+  background: -o-linear-gradient(left, $colors_brand 10%, $colors_secondary_gray 42%);
+  background: -ms-linear-gradient(left, $colors_brand 10%, $colors_secondary_gray 42%);
+  background: linear-gradient(to right, $colors_brand 10%, $colors_secondary_gray 42%);
   position: relative;
   -webkit-animation: load 1s infinite linear;
   animation: load 1s infinite linear;
@@ -34,7 +32,7 @@
 .loader:before {
   width: 50%;
   height: 50%;
-  background: mainSpin;
+  background: $colors_brand;
   border-radius: 100% 0 0 0;
   position: absolute;
   top: 0;
@@ -43,7 +41,7 @@
 }
 
 .loader:after {
-  background: background;
+  background: $colors_background;
   width: 75%;
   height: 75%;
   border-radius: 50%;
