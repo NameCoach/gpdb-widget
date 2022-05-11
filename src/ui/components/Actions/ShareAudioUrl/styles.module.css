@@ -1,5 +1,3 @@
-@value secondary, darkerSecondary from "../../../styles/colors.css";
-
 .share-audio-url {
   composes: share-audio-url from "../../../styles/icons.css";
 }
@@ -12,7 +10,7 @@
   position: absolute;
   z-index: 2247483647;
   border-radius: 3px;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 8px $colors_black_2;
   transition: 0.5s opacity, 0.5s visibility;
   font-family: 'Montserrat', sans-serif;
   display: flex;
@@ -20,12 +18,12 @@
   justify-content: center;
   width: 150px;
   min-height: 30px;
-  background-color: white;
+  background-color: $colors_background;
 }
 
 .copy_modal button {
   border-radius: 3px;
-  background-color: white;
+  background-color: $colors_background;
   font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   border: 0;
@@ -34,19 +32,19 @@
 }
 
 .copy_modal button:hover {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .copy_modal button:focus {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .success_message {
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   text-align: center;
-  color: darkerSecondary;
-  background-color: white;
+  color: $colors_darker_brand;
+  background-color: $colors_background;
   padding: 4px;
   font-weight: bold;
 }
