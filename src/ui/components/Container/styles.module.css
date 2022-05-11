@@ -35,13 +35,13 @@
 }
 
 .name-word--secondary {
-  color: #cccccc;
+  color: $colors_secondary_gray;
 }
 
 .divider {
   margin: 10px 0;
   border: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid $colors_black;
 }
 
 .invisible {
