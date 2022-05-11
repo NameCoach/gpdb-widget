@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
-import { BRAND_COLOR, SECONDARY_COLOR } from "../../../constants";
-
+import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 export interface Option {
   value: string | number;
   label: string;
@@ -18,9 +17,9 @@ const theme = (theme) => ({
   ...theme,
   colors: {
     ...theme.colors,
-    primary25: SECONDARY_COLOR,
-    primary: BRAND_COLOR,
-    neutral30: BRAND_COLOR,
+    primary25: _SECONDARY,
+    primary: BRAND,
+    neutral30: BRAND,
   },
 });
 

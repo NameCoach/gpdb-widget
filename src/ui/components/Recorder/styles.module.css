@@ -1,5 +1,3 @@
-@value primaryBrandColor, borderColor, secondary, errorColor from "../../styles/colors.css";
-
 .recorder {
   position: relative;
   font-size: 12px;
@@ -54,21 +52,21 @@
 
 .recorder button {
   cursor: pointer;
-  border: 1px solid borderColor;
+  border: 1px solid $colors_border;
   box-sizing: border-box;
   border-radius: 2px;
   padding: 5px 4px;
   background: transparent;
-  color: primaryBrandColor;
+  color: $colors_darker_brand;
   font-weight: 600;
 }
 
 .recorder button:hover {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .recorder button:active {
-  background-color: secondary;
+  background-color: $colors_secondary;
 }
 
 .no__border {
@@ -99,10 +97,10 @@
 
 .upload__label {
   cursor: pointer;
-  color: primaryBrandColor;
+  color: $colors_darker_brand;
   font-weight: 600;
 }
 
 .error {
-  color: errorColor;
+  color: $colors_error;
 }
