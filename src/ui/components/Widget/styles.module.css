@@ -3,15 +3,15 @@
 .widget {
   position: relative;
   padding: 27px 19px 27px 18px;
-  background-color: white;
+  background-color: $colors_background;
   border-radius: 7px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 6px $colors_black_2;
   transition: 0.5s;
   font-family: 'Montserrat', sans-serif;
 }
 
 .widget:hover {
-  box-shadow: 0px 4px 6px 1px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 6px 1px $colors_black_2;
 }
 
 .widget--extended.modal {
@@ -20,5 +20,5 @@
 }
 
 .widget--extended:hover {
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 6px $colors_black_2;
 }
