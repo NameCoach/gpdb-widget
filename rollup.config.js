@@ -6,8 +6,9 @@ import postcss from "rollup-plugin-postcss";
 import postcssUrl from "postcss-url";
 import autoprefixer from "autoprefixer";
 import image from "@rollup/plugin-image";
-
+import simplevars from "postcss-simple-vars";
 import packageJson from "./package.json";
+import variables from "./src/ui/styles/variables/all.ts";
 
 const modules = process.platform === "win32" ? { root: "." } : true;
 
@@ -32,8 +33,15 @@ export default {
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
     postcss({
+      extensions: [".css"],
       modules: modules,
-      plugins: [postcssUrl({ url: "inline" }), autoprefixer()],
+      plugins: [
+        postcssUrl({ url: "inline" }),
+        autoprefixer(),
+        simplevars({
+          variables,
+        }),
+      ],
     }),
   ],
 };
