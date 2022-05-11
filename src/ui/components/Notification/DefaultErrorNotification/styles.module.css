@@ -5,8 +5,8 @@
 }
 
 .container {
-  background-color: red;
-  color: white;
+  background-color: $colors_error;
+  color: $colors_white;
   width: 100%;
   display: flex;
   justify-content: center;

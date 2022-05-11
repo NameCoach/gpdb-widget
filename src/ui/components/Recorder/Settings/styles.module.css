@@ -1,5 +1,3 @@
-@value secondary from "../../../styles/colors.css";
-
 .settings {
   composes: icon-btn from "../../../styles/icons.css";
   background-image: url("settings.svg");
@@ -12,6 +10,6 @@
   cursor: pointer;
 }
 .settings.active {
-  background-color: secondary;
+  background-color: $colors_secondary;
   opacity: 1;
 }
