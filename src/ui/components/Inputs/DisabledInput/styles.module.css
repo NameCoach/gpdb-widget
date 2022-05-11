@@ -1,7 +1,5 @@
-@value labelGray from "../../../styles/colors.css";
-
 .label {
-  color: labelGray;
+  color: $colors_label_Gray;
   display: flex;
   margin-right: 20px;
 }
