@@ -3,8 +3,9 @@ import ControllerContext from "../../contexts/controller";
 import StyleContext from "../../contexts/style";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import ReactTooltip, { TooltipProps } from "react-tooltip";
-import { BRAND_COLOR, WHITE_COLOR, TOOLTIP_DELAY } from "../../../constants";
 import { ConstantOverrides } from "../../customFeaturesManager";
+import { BRAND, WHITE } from "../../styles/variables/colors";
+import { TOOLTIP_DELAY } from "../../../constants";
 
 const Tooltip = (props: TooltipProps): JSX.Element => {
   const controller = useContext(ControllerContext);
@@ -16,8 +17,8 @@ const Tooltip = (props: TooltipProps): JSX.Element => {
   return (
     <ReactTooltip
       {...props}
-      textColor={props.textColor || WHITE_COLOR}
-      backgroundColor={props.backgroundColor || BRAND_COLOR}
+      textColor={props.textColor || WHITE}
+      backgroundColor={props.backgroundColor || BRAND}
       delayShow={
         customFeatures.getValue(ConstantOverrides.TooltipDelay) || TOOLTIP_DELAY
       }
