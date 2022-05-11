@@ -24,20 +24,21 @@ const CustomInput = ({
   values,
   onUpdate,
 }: Props): JSX.Element => {
-
   const onChange = (e): void => {
-    const { target: { value } } = e;
+    const {
+      target: { value },
+    } = e;
 
     onUpdate({ id, value });
   };
 
-  const onSelect = ({value}): void => {
+  const onSelect = ({ value }): void => {
     onUpdate({ id, value });
   };
 
   const getOptions = () =>
     values.map((value) => {
-      return { value, label: value }
+      return { value, label: value };
     });
 
   const Dropdown = (): JSX.Element => (
@@ -70,7 +71,6 @@ const CustomInput = ({
     />
   );
 
-
   const renderInput = () => {
     switch (type) {
       case AttributePresentation.Dropdown:
@@ -97,7 +97,7 @@ const CustomInput = ({
       <p className={cx(styles.ca, styles.attributes_label)}>{label}</p>
       <div className={styles.input_field}>{renderInput()}</div>
     </div>
-  )
+  );
 };
 
 export default memo(CustomInput);
