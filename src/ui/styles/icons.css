@@ -1,5 +1,3 @@
-@value secondary from "colors.css";
-
 .icon-btn {
   cursor: pointer;
   opacity: 0.6;
@@ -34,7 +32,7 @@
 }
 
 .icon-btn.active, .icon-btn:active {
-  background-color: secondary;
+  background-color: rgba(138, 73, 212, 0.2); /* TODO: find out why post css simple var does not work here */
   opacity: 1;
 }
 
