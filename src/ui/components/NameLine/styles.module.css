@@ -33,7 +33,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 12px;
-  color: #9d9d9d;
+  color: $colors_pronunciation_mid;
   flex-direction: column;
   margin-top: auto
 }
@@ -57,13 +57,13 @@
   font-weight: normal;
   font-size: 14px;
   line-height: 26px;
-  border: 1px solid rgba(49, 49, 49, 0.3);
-  background: #FFFFFF;
+  border: 1px solid $colors_black_3;
+  background: $colors_background;
   cursor: pointer;
 }
 
 .pronunciation__select.opened {
-  border: 1px solid #8A49D5;
+  border: 1px solid $colors_darker_brand;
 }
 
 .pronunciation__select.opened::after{
@@ -73,14 +73,14 @@
 
 .pronunciation__select__value {
   width: 100%;
-  color: var(--textColor);
+  color: var(--textColor); /* ??? */
   white-space: nowrap;
   overflow: hidden !important;
   text-overflow: ellipsis;
 }
 
 .pronunciation__select::after {
-  content: var(--arrowIcon);
+  content: var(--arrowIcon); /* ??? */
   position: absolute;
   top: 50%;
   transform: rotate(0deg) translateY(-50%);
@@ -92,7 +92,7 @@
 .pronunciation__options__wrapper {
   min-width: 100%;
   width: max-content;
-  background: #FFFFFF;
+  background: $colors_background;
   position: absolute;
   top: 32px;
   padding-top: 2px;
@@ -101,7 +101,7 @@
   max-width: 220px;
   overflow-y: auto;
   box-sizing: border-box;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow); /* ??? */
   border-radius: 4px;
 }
 
@@ -114,19 +114,19 @@
   font-size: 14px;
   line-height: 16px;
   padding: 3px 6px;
-  color: var(--textColor);
+  color: var(--textColor); /* ??? */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .pronunciation__option:hover {
-  background: var(--optionHoverColor);
+  background: var(--optionHoverColor); /* ??? */
 
 }
 
 .pronunciation__option.active {
-  background: var(--secondaryColor);
+  background: var(--secondaryColor); /* ??? */
 }
 
 .pronunciation__actions {
