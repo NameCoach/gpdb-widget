@@ -153,6 +153,7 @@ const NameLine = (props: Props): JSX.Element => {
                   onClick={onUserResponse}
                 />
               )}
+              {console.log("A", currentPronunciation)}
             </div>
           </>
         )}
