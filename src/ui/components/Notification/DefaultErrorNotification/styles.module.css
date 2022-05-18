@@ -1,0 +1,19 @@
+.close_icon {
+  font-style: normal;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.container {
+  background-color: $colors_error;
+  color: $colors_white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
