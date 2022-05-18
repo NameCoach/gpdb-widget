@@ -1,7 +1,7 @@
 import * as React from "react";
 import DefaultErrorNotification from "../components/Notification/DefaultErrorNotification";
 
-interface AddNotification {
+export interface AddNotification {
   id?: number;
   content: JSX.Element;
   autoclose?: number;
