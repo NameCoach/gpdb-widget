@@ -19,22 +19,21 @@ import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
-import { NameOwner, Resources } from "gpdb-api-client";
+import { NameOwner } from "gpdb-api-client";
 import Tooltip from "../Tooltip";
 import { SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
-import getSpec from "./machine/spec";
+import getSpec from "./machine/get-spec";
 import CustomAttributes from "../CustomAttributes";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import loadT from "../../hooks/LoadT";
-import Pronunciation, {
-  RelativeSource,
-} from "../../../types/resources/pronunciation";
+import Pronunciation from "../../../types/resources/pronunciation";
 import { useNotifications } from "../../hooks/useNotification";
 import { EVENTS } from "./types/machine";
 import { RecorderCloseOptions } from "./types/handlersTypes";
+import useFeaturesManager from "../../hooks/useFeaturesManager";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -85,34 +84,14 @@ const Recorder = ({
     styleContext?.displayRecorderSavingMessage ||
     machineSpec.canCustomAttributesCreate;
 
-  const canDeletePronunciation = (): boolean => {
-    const isSelf =
-      pronunciation &&
-      pronunciation.relativeSource === RelativeSource.RequesterSelf;
-
-    const isOrgPeer =
-      pronunciation &&
-      pronunciation.relativeSource === RelativeSource.RequesterPeer;
-
-    const canPronunciation = (permission): boolean =>
-      controller.permissions.can(Resources.Pronunciation, permission);
-
-    const canDeleteSelf =
-      canPronunciation("destroy") && canPronunciation("destroy:self");
-    const canDeleteOrgPeer =
-      canPronunciation("destroy") && canPronunciation("destroy:org_peer");
-
-    return (
-      ((isSelf && canDeleteSelf) || (isOrgPeer && canDeleteOrgPeer)) &&
-      !pronunciation.isHedb
-    );
-  };
-
-  const deletePronunciation = canDeletePronunciation();
-
   const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
 
   const { isDeprecated: isOld } = userAgentManager;
+
+  const { can, show } = useFeaturesManager(
+    controller.permissions,
+    customFeatures
+  );
 
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
@@ -136,13 +115,6 @@ const Recorder = ({
 
   currentStep.current = step;
 
-  if (termsAndConditions)
-    useEffect(() => {
-      termsAndConditions.isAccepted().then((isAccepted) => {
-        isAccepted || setStep(STATES.TERMS_AND_CONDITIONS);
-      });
-    }, [termsAndConditions.isAccepted]);
-
   const sendEvent = useCallback(
     (event) => {
       const transition = machineSpec.transitions.find((t) => t.name === event);
@@ -156,7 +128,7 @@ const Recorder = ({
         setStep(transition.to);
       } else throw new Error("Inconsistent state");
     },
-    [step]
+    [machineSpec.transitions]
   );
 
   const onStop = async (): Promise<void> => {
@@ -254,23 +226,21 @@ const Recorder = ({
 
   const onCustomAttributesSaved = (): NodeJS.Timeout =>
     setTimeout(onRecorderClose, ONE_SECOND);
-
   const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
   const setSampleRateToDefault = (): void => {
     setSampleRate(defaultSampleRate);
   };
-
   const onSampleRateCancel = (): void => {
     closeSlider();
     setSampleRate(tempSampleRate);
   };
-
   const onSampleRateSave = (): void => {
     closeSlider();
     setTempSampleRate(sampleRate);
     controller.saveAudioSampleRate(sampleRate.value);
   };
+  const updateSampleRate = (val): void => setSampleRate({ value: val });
 
   const onUploaderChange = (e): void => {
     const files = e.target.files;
@@ -299,10 +269,15 @@ const Recorder = ({
     };
   };
 
-  const updateSampleRate = (val): void => setSampleRate({ value: val });
-
   const onDeletePronunciation = async (): Promise<void> => {
-    const success = await controller.destroy(pronunciation.id);
+    if (can("customDestroy", pronunciation) || !can("restore"))
+      return onRecorderClose(RecorderCloseOptions.DELETE);
+
+    const success = await controller.destroy(
+      pronunciation.id,
+      pronunciation.sourceType,
+      pronunciation.relativeSource
+    );
 
     if (success) return onRecorderClose(RecorderCloseOptions.DELETE);
 
@@ -312,6 +287,21 @@ const Recorder = ({
 
   const handleOnRecorderClose = (): void =>
     onRecorderClose(RecorderCloseOptions.CANCEL);
+
+  const showRecordButton = show(
+    "recorderRecordButton",
+    pronunciation,
+    owner?.signature
+  );
+  const showDeleteButton = can("destroyPronunciation", pronunciation);
+
+  useEffect(() => {
+    if (termsAndConditions) {
+      termsAndConditions.isAccepted().then((isAccepted) => {
+        isAccepted || setStep(STATES.TERMS_AND_CONDITIONS);
+      });
+    }
+  }, [termsAndConditions, termsAndConditions?.isAccepted]);
 
   return (
     <StyleContext.Provider
@@ -402,13 +392,16 @@ const Recorder = ({
               <button onClick={handleOnRecorderClose}>
                 {t("recorder_back_button", "BACK")}
               </button>
-              <button onClick={onStart}>
-                {pronunciation
-                  ? t("recorder_rerecord_button", "RE-RECORD")
-                  : t("recorder_start_button", "START")}
-              </button>
 
-              {deletePronunciation && (
+              {showRecordButton && (
+                <button onClick={onStart}>
+                  {pronunciation
+                    ? t("recorder_rerecord_button", "RE-RECORD")
+                    : t("recorder_start_button", "START")}
+                </button>
+              )}
+
+              {showDeleteButton && (
                 <button onClick={onDeletePronunciation}>
                   {t("delete_pronunciation_button", "DELETE PRONUNCIATION")}
                 </button>
