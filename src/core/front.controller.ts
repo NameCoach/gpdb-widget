@@ -122,8 +122,10 @@ export default class FrontController implements IFrontController {
       await this.apiClient.pronunciations.destroy({
         id,
         userContext: this.userContext,
-        source_type: sourceType,
-        relative_source: relativeSource,
+        recording_context: {
+          source_type: sourceType,
+          relative_source: relativeSource,
+        },
       });
 
       return true;
