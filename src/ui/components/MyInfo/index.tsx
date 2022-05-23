@@ -19,12 +19,13 @@ import CustomAttributes from "../CustomAttributes";
 import CollapsableAction from "../Actions/Collapsable";
 import DisabledPlayer from "../Player/Disabled";
 import StyleContext from "../../contexts/style";
-import RestorePronunciationNotification from "../Notification/RestorePronunciationNotification";
 import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
 import { ConstantOverrides, Features } from "../../customFeaturesManager";
+import useOnRecorderCloseStrategy from "../../hooks/MyInfo/useOnRecorderCloseStrategy";
+import useFeaturesManager from "../../hooks/useFeaturesManager";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -57,6 +58,11 @@ const MyInfo = (props: Props): JSX.Element => {
     loadCustomFeatures(props.controller?.preferences?.custom_features);
   const t = styleContext.t;
 
+  const { can, show } = useFeaturesManager(
+    props.controller.permissions,
+    customFeatures
+  );
+
   const onRecorderOpen = (): void => {
     setRecorderOpen(
       true,
@@ -77,7 +83,7 @@ const MyInfo = (props: Props): JSX.Element => {
     if (recorderState.isOpen) setRecorderClosed();
   };
 
-  const load = async (): Promise<void> => {
+  const load = React.useCallback(async () => {
     if (!props.permissions.canPronunciation.index) return;
 
     setLoading(true);
@@ -91,47 +97,33 @@ const MyInfo = (props: Props): JSX.Element => {
 
     setPronunciation(fullName.find((p) => p.nameOwnerCreated));
     setLoading(false);
-  };
+  }, [
+    props.controller,
+    props.name.owner,
+    props.name.value,
+    props.permissions.canPronunciation.index,
+  ]);
+
+  const run = useOnRecorderCloseStrategy({
+    controller: props.controller,
+    customFeaturesManager: customFeatures,
+    pronunciation: pronunciation,
+    autoclose:
+      customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
+      RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
+    load: load,
+    setNotification: setNotification,
+    setLoading: setLoading,
+    setRecorderClosed: setRecorderClosed,
+    setPronunciation: setPronunciation,
+  });
 
   const onRecorderClose = async (
     option: RecorderCloseOptions
   ): Promise<void> => {
     setMyInfoHintShow(true);
 
-    if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
-
-    const pronunciationId = pronunciation?.id;
-
-    await load();
-
-    if (
-      option === RecorderCloseOptions.DELETE &&
-      props.permissions.canPronunciation.restoreSelf
-    ) {
-      const notificationId = new Date().getTime();
-
-      const onRestorePronunciationClick = async (): Promise<void> => {
-        const success = await props.controller.restore(pronunciationId);
-        if (success) return await load();
-
-        setNotification();
-      };
-
-      setNotification({
-        id: notificationId,
-        content: (
-          <RestorePronunciationNotification
-            id={notificationId}
-            onClick={onRestorePronunciationClick}
-          />
-        ),
-        autoclose:
-          customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
-          RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
-      });
-    }
-
-    setRecorderClosed();
+    await run(option);
   };
 
   const onCustomAttributesSaved = async (): Promise<void> => {
@@ -139,10 +131,6 @@ const MyInfo = (props: Props): JSX.Element => {
     setMyInfoHintShow(true);
     setCollapsable(false);
   };
-
-  useEffect(() => {
-    load();
-  }, [props.name, props.controller]);
 
   const getCopyButtons = (pronunciation): CopyButton[] => {
     const result = [];
@@ -157,12 +145,6 @@ const MyInfo = (props: Props): JSX.Element => {
 
     return result;
   };
-
-  const canCreateSelfRecording = (): boolean =>
-    (props.permissions.canPronunciation.createNameBadge &&
-      props.permissions.canPronunciation.indexNameBadge &&
-      pronunciation?.isHedb) ||
-    (props.permissions.canPronunciation.create && !pronunciation?.isHedb);
 
   const displayCustomAttributes = (): boolean => {
     const customAttributesConfig = props.controller?.customAttributes;
@@ -194,7 +176,14 @@ const MyInfo = (props: Props): JSX.Element => {
     );
   };
 
-  const renderContainer = (): JSX.Element => (
+  const showRecordAction = show("selfRecorderAction", pronunciation);
+  const canCreateSelfRecording = can("createSelfRecording", pronunciation);
+
+  useEffect(() => {
+    load();
+  }, [props.name, props.controller, load]);
+
+  return (
     <>
       <div>
         <div className={cx(styles.row)}>
@@ -227,7 +216,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
             {!loading && !pronunciation && <DisabledPlayer />}
 
-            {!loading && canCreateSelfRecording() && (
+            {!loading && showRecordAction && (
               <RecordAction
                 active={recorderState.isOpen}
                 onClick={onRecorderOpen}
@@ -239,7 +228,7 @@ const MyInfo = (props: Props): JSX.Element => {
 
         {!loading &&
           !pronunciation &&
-          canCreateSelfRecording() &&
+          canCreateSelfRecording &&
           myInfoHintShow && (
             <div className={styles.unavailable_hint}>
               Your name recording is unavailable, click on the microphone icon
@@ -278,8 +267,6 @@ const MyInfo = (props: Props): JSX.Element => {
       )}
     </>
   );
-
-  return renderContainer();
 };
 
 export default MyInfo;
