@@ -116,6 +116,7 @@ const MyInfo = (props: Props): JSX.Element => {
     setLoading: setLoading,
     setRecorderClosed: setRecorderClosed,
     setPronunciation: setPronunciation,
+    setMyInfoHintShow: setMyInfoHintShow,
   });
 
   const onRecorderClose = async (

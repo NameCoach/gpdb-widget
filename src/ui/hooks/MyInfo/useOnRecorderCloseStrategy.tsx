@@ -17,9 +17,9 @@ interface Options {
   setLoading: (value: boolean) => void;
   setRecorderClosed: () => void;
   setPronunciation: (value: any) => void;
+  setMyInfoHintShow: (value: boolean) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useOnRecorderCloseStrategy = ({
   controller,
   pronunciation,
@@ -30,6 +30,7 @@ const useOnRecorderCloseStrategy = ({
   setLoading,
   setRecorderClosed,
   setPronunciation,
+  setMyInfoHintShow,
 }: Options) => {
   const { can } = useFeaturesManager(
     controller.permissions,
@@ -46,10 +47,11 @@ const useOnRecorderCloseStrategy = ({
       );
       setLoading(false);
 
-      await load();
-      if (success) return;
+      setMyInfoHintShow(true);
       setRecorderClosed();
-      setNotification();
+      await load();
+
+      if (!success) setNotification();
     }, autoclose);
 
     const onRestorePronunciationClick = async (): Promise<void> => {
@@ -61,40 +63,7 @@ const useOnRecorderCloseStrategy = ({
     const notificationId = new Date().getTime();
 
     setPronunciation(null);
-    setNotification({
-      id: notificationId,
-      content: (
-        <RestorePronunciationNotification
-          id={notificationId}
-          onClick={onRestorePronunciationClick}
-        />
-      ),
-      autoclose: autoclose,
-    });
-
-    return setRecorderClosed();
-  }, [
-    autoclose,
-    controller,
-    load,
-    pronunciation?.id,
-    pronunciation?.relativeSource,
-    pronunciation?.sourceType,
-    setLoading,
-    setNotification,
-    setPronunciation,
-    setRecorderClosed,
-  ]);
-
-  const runRestorable = React.useCallback(() => {
-    const notificationId = new Date().getTime();
-
-    const onRestorePronunciationClick = async (): Promise<void> => {
-      const success = await controller.restore(pronunciation.id);
-      if (success) return await load();
-
-      setNotification();
-    };
+    setMyInfoHintShow(true);
 
     setNotification({
       id: notificationId,
@@ -113,6 +82,55 @@ const useOnRecorderCloseStrategy = ({
     controller,
     load,
     pronunciation?.id,
+    pronunciation?.relativeSource,
+    pronunciation?.sourceType,
+    setLoading,
+    setMyInfoHintShow,
+    setNotification,
+    setPronunciation,
+    setRecorderClosed,
+  ]);
+
+  const runRestorable = React.useCallback(async () => {
+    const success = await controller.destroy(
+      pronunciation.id,
+      pronunciation.sourceType,
+      pronunciation.relativeSource
+    );
+
+    setRecorderClosed();
+    await load();
+
+    if (!success) return setNotification();
+
+    const notificationId = new Date().getTime();
+
+    const onRestorePronunciationClick = async (): Promise<void> => {
+      const success = await controller.restore(pronunciation.id);
+
+      setRecorderClosed();
+      await load();
+
+      if (!success) setNotification();
+    };
+
+    setNotification({
+      id: notificationId,
+      content: (
+        <RestorePronunciationNotification
+          id={notificationId}
+          onClick={onRestorePronunciationClick}
+        />
+      ),
+      autoclose: autoclose,
+    });
+  }, [
+    autoclose,
+    controller,
+    load,
+    pronunciation?.id,
+    pronunciation?.relativeSource,
+    pronunciation?.sourceType,
     setNotification,
     setRecorderClosed,
   ]);
@@ -122,14 +140,12 @@ const useOnRecorderCloseStrategy = ({
       if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
 
       if (option === RecorderCloseOptions.DELETE) {
-        if (can("restoreSelfPronunciation", pronunciation)) {
+        if (can("restore", pronunciation)) {
           if (can("customDestroy")) {
             return runDelayed();
           }
 
-          await load();
-
-          return runRestorable();
+          return await runRestorable();
         }
 
         return runDelayed();
