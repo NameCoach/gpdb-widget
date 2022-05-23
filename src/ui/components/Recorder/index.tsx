@@ -269,21 +269,8 @@ const Recorder = ({
     };
   };
 
-  const onDeletePronunciation = async (): Promise<void> => {
-    if (can("customDestroy", pronunciation) || !can("restore"))
-      return onRecorderClose(RecorderCloseOptions.DELETE);
-
-    const success = await controller.destroy(
-      pronunciation.id,
-      pronunciation.sourceType,
-      pronunciation.relativeSource
-    );
-
-    if (success) return onRecorderClose(RecorderCloseOptions.DELETE);
-
-    setNotification();
-    onRecorderClose(RecorderCloseOptions.CANCEL);
-  };
+  const onDeletePronunciation = async (): Promise<void> =>
+    onRecorderClose(RecorderCloseOptions.DELETE);
 
   const handleOnRecorderClose = (): void =>
     onRecorderClose(RecorderCloseOptions.CANCEL);
