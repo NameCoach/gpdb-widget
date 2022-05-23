@@ -13,6 +13,7 @@ import {
 } from "gpdb-api-client";
 import Pronunciation, {
   RelativeSource,
+  SourceType,
 } from "../types/resources/pronunciation";
 import pronunciationMap from "./mappers/pronunciation.map";
 import { AnalyticsEventType } from "../types/resources/analytics-event-type";
@@ -112,11 +113,17 @@ export default class FrontController implements IFrontController {
     return [names, result];
   }
 
-  async destroy(id: string): Promise<boolean> {
+  async destroy(
+    id: string,
+    sourceType?: SourceType,
+    relativeSource?: RelativeSource
+  ): Promise<boolean> {
     try {
       await this.apiClient.pronunciations.destroy({
         id,
         userContext: this.userContext,
+        source_type: sourceType,
+        relative_source: relativeSource,
       });
 
       return true;
