@@ -1,0 +1,14 @@
+.undo__button {
+  background-color: $colors_grey;
+  color: $colors_white;
+  cursor: pointer;
+  border: none;
+  box-sizing: border-box;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 5px 4px;
+}
+
+.undo__button:hover {
+  background-color: $colors_darker_brand;
+}
