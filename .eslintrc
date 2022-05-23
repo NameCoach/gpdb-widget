@@ -23,6 +23,9 @@
       "version": "16"
     }
   },
+  "plugins": [
+    "react-hooks"
+  ],
   "rules": {
     "@typescript-eslint/camelcase": 0,
     "no-undef": 0,
@@ -32,6 +35,8 @@
     "react/jsx-handler-names": 0,
     "react/jsx-fragments": 0,
     "react/no-unused-prop-types": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "import/export": 0
   }
 }
