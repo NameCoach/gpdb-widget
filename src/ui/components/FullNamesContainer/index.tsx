@@ -19,12 +19,12 @@ import { NameOwner } from "gpdb-api-client";
 import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import StyleContext from "../../contexts/style";
-import RestorePronunciationNotification from "../Notification/RestorePronunciationNotification";
 import { useNotifications } from "../../hooks/useNotification";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import { nameExist } from "./helper-methods";
 import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
 import { ConstantOverrides } from "../../customFeaturesManager";
+import useOnRecorderCloseStrategy from "../../hooks/FullnamesContainer/useOnRecorderCloseStrategy";
 
 interface Props {
   names: NameOption[];
@@ -199,45 +199,24 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     return recordings?.length > 0 ? recordings[0] : null;
   }, [pronunciations, recorderState]);
 
-  const onRecorderClose = async (
-    option: RecorderCloseOptions
-  ): Promise<void> => {
-    if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
+  const run = useOnRecorderCloseStrategy({
+    controller: props.controller,
+    requesterPeerPronunciation: selfRecorderedPronunciation,
+    pronunciations,
+    cachedRecordingNameType: recorderState.type,
+    customFeaturesManager: customFeatures,
+    autoclose:
+      customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
+      RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
+    reload: reloadName,
+    setNotification,
+    setLoading,
+    setRecorderClosed,
+    setPronunciations,
+  });
 
-    const pronunciationId = selfRecorderedPronunciation?.id;
-    const cachedRecordingNameType = recorderState.type;
-
-    await reloadName(cachedRecordingNameType);
-
-    if (
-      option === RecorderCloseOptions.DELETE &&
-      props.permissions.canPronunciation.restoreOrgPeer
-    ) {
-      const notificationId = new Date().getTime();
-
-      const onRestorePronunciationClick = async (): Promise<void> => {
-        const success = await props.controller.restore(pronunciationId);
-        if (success) return await reloadName(cachedRecordingNameType);
-
-        setNotification();
-      };
-
-      setNotification({
-        id: notificationId,
-        content: (
-          <RestorePronunciationNotification
-            id={notificationId}
-            onClick={onRestorePronunciationClick}
-          />
-        ),
-        autoclose:
-          customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
-          RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
-      });
-    }
-
-    setRecorderClosed();
-  };
+  const onRecorderClose = async (option: RecorderCloseOptions): Promise<void> =>
+    await run(option);
 
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
