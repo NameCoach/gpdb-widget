@@ -17,8 +17,15 @@ export enum RelativeSource {
   PeerPeer = "peer_peer",
 }
 
+export enum SourceType {
+  Hedb = "hedb",
+  Gpdb = "gpdb",
+  HedbNameBadge = "hedb_name_badge",
+}
+
 export default interface Pronunciation {
   id: string;
+  sourceType: SourceType;
   audioSrc: string;
   nameOwnerCreated?: boolean;
   userCreated?: boolean;
@@ -26,7 +33,7 @@ export default interface Pronunciation {
   audioCreator: AudioSource;
   isHedb?: boolean;
   language?: string;
-  relativeSource?: string;
+  relativeSource?: RelativeSource;
   phoneticSpelling?: string;
   userResponse?: UserResponse;
   phoneticTranscriptions?: Array<Phonetic>;
