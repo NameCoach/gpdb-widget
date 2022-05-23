@@ -1,5 +1,8 @@
 import Name, { NameTypes } from "./resources/name";
-import Pronunciation from "./resources/pronunciation";
+import Pronunciation, {
+  RelativeSource,
+  SourceType,
+} from "./resources/pronunciation";
 import {
   NameOwner,
   User,
@@ -41,7 +44,11 @@ export interface GpdbRequests {
   ) => PromiseLike<
     [Array<Omit<Name, "exist">>, { [t in NameTypes]: Pronunciation[] }]
   >;
-  destroy: (id: string) => Promise<boolean>;
+  destroy: (
+    id: string,
+    sourceType?: SourceType,
+    relativeSource?: RelativeSource
+  ) => Promise<boolean>;
   restore: (id: string) => Promise<boolean>;
   createUserResponse: (
     id: string,
