@@ -22,7 +22,6 @@ interface Options {
   setPronunciations: (value: any) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const useOnRecorderCloseStrategy = ({
   controller,
   requesterPeerPronunciation,
@@ -51,10 +50,10 @@ const useOnRecorderCloseStrategy = ({
       );
       setLoading(false);
 
-      await reload(cachedRecordingNameType);
-      if (success) return;
       setRecorderClosed();
-      setNotification();
+      await reload(cachedRecordingNameType);
+
+      if (!success) setNotification();
     }, autoclose);
 
     const onRestorePronunciationClick = async (): Promise<void> => {
@@ -87,7 +86,7 @@ const useOnRecorderCloseStrategy = ({
       autoclose: autoclose,
     });
 
-    return setRecorderClosed();
+    setRecorderClosed();
   }, [
     autoclose,
     cachedRecordingNameType,
@@ -101,7 +100,18 @@ const useOnRecorderCloseStrategy = ({
     setRecorderClosed,
   ]);
 
-  const runRestorable = React.useCallback(() => {
+  const runRestorable = React.useCallback(async () => {
+    const success = await controller.destroy(
+      requesterPeerPronunciation.id,
+      requesterPeerPronunciation.sourceType,
+      requesterPeerPronunciation.relativeSource
+    );
+
+    await reload(cachedRecordingNameType);
+    setRecorderClosed();
+
+    if (!success) return setNotification();
+
     const notificationId = new Date().getTime();
 
     const onRestorePronunciationClick = async (): Promise<void> => {
@@ -127,35 +137,31 @@ const useOnRecorderCloseStrategy = ({
     controller,
     reload,
     requesterPeerPronunciation?.id,
+    requesterPeerPronunciation?.relativeSource,
+    requesterPeerPronunciation?.sourceType,
     setNotification,
+    setRecorderClosed,
   ]);
 
   const run = React.useCallback(
     async (option: RecorderCloseOptions) => {
       if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
 
-      if (
-        option === RecorderCloseOptions.DELETE &&
-        !can("restoreOrgPeerPronunciation")
-      ) {
+      if (option === RecorderCloseOptions.DELETE) {
+        if (can("restore", requesterPeerPronunciation))
+          return await runRestorable();
+
         return runDelayed();
       }
 
       await reload(cachedRecordingNameType);
-
-      if (
-        option === RecorderCloseOptions.DELETE &&
-        can("restoreOrgPeerPronunciation")
-      ) {
-        return runRestorable();
-      }
-
       setRecorderClosed();
     },
     [
       cachedRecordingNameType,
       can,
       reload,
+      requesterPeerPronunciation,
       runDelayed,
       runRestorable,
       setRecorderClosed,
