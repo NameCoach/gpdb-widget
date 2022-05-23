@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
 import ControllerContext from "../../contexts/controller";
@@ -43,8 +43,11 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
     client?.preferences?.custom_features
   );
 
-  const canPronunciation = (permission): boolean =>
-    client.permissions.can(Resources.Pronunciation, permission);
+  const canPronunciation = useCallback(
+    (permission): boolean =>
+      client.permissions.can(Resources.Pronunciation, permission),
+    [client.permissions]
+  );
 
   const canUserResponse = (permission): boolean =>
     client.permissions.can(Resources.UserResponse, permission);
@@ -61,9 +64,10 @@ const PronunciationMyInfoWidget = (props: Props): JSX.Element => {
       [Blocks.MyInfo]: canPronunciation("index") && canPronunciation("create"),
       [Blocks.Invalid]: !canPronunciation("index"),
     }),
-    [client.permissions]
+    [canPronunciation]
   );
 
+  // TODO: refactor to get rid of later
   const permissions = {
     canPronunciation: {
       create: canPronunciation("create"),
