@@ -1,0 +1,20 @@
+.label {
+  color: $colors_label_Gray;
+  display: flex;
+  margin-right: 20px;
+}
+
+.input_wrapper {
+  display: flex;
+  text-align: right;
+}
+
+.line_wrapper {
+  width: 100%;
+  align-self: flex-start;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.5em;
+}
