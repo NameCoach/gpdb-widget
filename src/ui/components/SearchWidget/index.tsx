@@ -23,8 +23,9 @@ const SearchWidget = (props: Props): JSX.Element => {
   let inputValue = "";
   const [name, setName] = useState("");
 
-  const handleSubmit = (): void =>
-    inputValue ? setName(inputValue.trim()) : setName(name);
+  const handleSubmit = (): void => {
+    inputValue ? setName(inputValue.trim().toLowerCase()) : setName(name);
+  };
 
   const handleChange = (value: string): void => {
     setName("");
