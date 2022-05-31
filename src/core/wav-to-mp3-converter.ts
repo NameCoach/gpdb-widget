@@ -4,7 +4,7 @@ const lamejs = require("lamejs");
 
 const defaultOptions: Options = {
   channels: 1,
-  sampleRate: 44100,
+  sampleRate: 48000,
   kbps: 128,
   sampleBlockSize: 1152,
 };
