@@ -272,7 +272,7 @@ const Container = (props: Props): JSX.Element => {
         renderContainer()
       ) : (
         <div className={cx(styles.permissions)}>
-          You can't create or listen to any of libraray recordings. Please
+          You can't create or listen to any of library recordings. Please
           contact your administrator to get this fixed.
         </div>
       )}
