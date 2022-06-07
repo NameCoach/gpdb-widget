@@ -30,10 +30,10 @@ import CustomAttributes from "../CustomAttributes";
 import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import loadT from "../../hooks/LoadT";
 import Pronunciation from "../../../types/resources/pronunciation";
-import { useNotifications } from "../../hooks/useNotification";
 import { EVENTS } from "./types/machine";
 import { RecorderCloseOptions } from "./types/handlersTypes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
+import SystemContext from "../../contexts/system";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -73,9 +73,11 @@ const Recorder = ({
     owner,
   ]);
 
-  const { setNotification } = useNotifications();
-
   const styleContext = useContext(StyleContext);
+
+  const systemContext = useContext(SystemContext);
+  const logger = systemContext.logger || console;
+
   const customFeatures =
     styleContext.customFeatures ||
     loadCustomFeatures(controller?.preferences?.custom_features);
@@ -111,9 +113,11 @@ const Recorder = ({
   );
 
   const currentStep = useRef(step);
-  const recorder = useRef(null);
+  const recorder: React.MutableRefObject<RecordRTC> = useRef(null);
 
   currentStep.current = step;
+
+  const log = (message: string): void => logger.log(message, "Recorder");
 
   const sendEvent = useCallback(
     (event) => {
@@ -144,6 +148,8 @@ const Recorder = ({
     setBlob(b);
     setAudioUrl(a);
 
+    const internalRecorder = recorder.current.getInternalRecorder() as any;
+    log(`Recorder Sample Rate: ${internalRecorder.sampleRate}`);
     recorder.current.destroy();
 
     sendEvent(EVENTS.stop);
@@ -184,6 +190,19 @@ const Recorder = ({
     try {
       sendEvent(EVENTS.start);
 
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const deviceSampleRate = stream.getAudioTracks()[0].getSettings()
+        .sampleRate;
+
+      const AudioContext =
+        window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioContext();
+
+      log(`BaseAudioContext.sampleRate: ${audioCtx.sampleRate}`);
+      log(`Users device sample rate: ${deviceSampleRate}`);
+      log(`gpdb-widget pitch current sample rate: ${sampleRate.value}`);
+
       const options = {
         recorderType: RecordRTC.StereoAudioRecorder,
         mimeType: "audio/wav",
@@ -191,7 +210,6 @@ const Recorder = ({
         sampleRate: sampleRate.value,
       } as Options;
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       recorder.current = new RecordRTC(stream, options);
 
       Array.from({ length: COUNTDOWN }, (_, index) => {
