@@ -142,7 +142,6 @@ const useFeaturesManager = (
   }, []);
 
   const can = (name: string, ...rest): boolean => {
-    console.log("test 2", name);
     return context[name](...rest);
   };
 
