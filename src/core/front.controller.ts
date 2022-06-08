@@ -174,11 +174,14 @@ export default class FrontController implements IFrontController {
     nameOwner?: NameOwner
   ): PromiseLike<void> {
     const ownerSig = nameOwner?.signature || this.nameOwnerContext.signature;
+    const ownerSigType =
+      nameOwner?.signatureType || this.nameOwnerContext?.signatureType;
 
     return this.apiClient.pronunciations.userResponse({
       recordingId: id,
       userResponse: type,
       targetOwnerSig: ownerSig,
+      targetOwnerSigType: ownerSigType,
       userContext: this.userContext,
     });
   }
