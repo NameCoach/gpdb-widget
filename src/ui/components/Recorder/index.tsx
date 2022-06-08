@@ -34,6 +34,10 @@ import { EVENTS } from "./types/machine";
 import { RecorderCloseOptions } from "./types/handlersTypes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import SystemContext from "../../contexts/system";
+import { useNotifications } from "../../hooks/useNotification";
+import StateNotification, {
+  States as NotificationStates,
+} from "../Notification/StateNotification";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -94,6 +98,8 @@ const Recorder = ({
     controller.permissions,
     customFeatures
   );
+
+  const { setNotification } = useNotifications();
 
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
@@ -200,15 +206,46 @@ const Recorder = ({
       const audioCtx = new AudioContext();
 
       log(`BaseAudioContext.sampleRate: ${audioCtx.sampleRate}`);
-      log(`Users device sample rate: ${deviceSampleRate}`);
+      log(
+        `Observed sample rate from media stream: ${
+          deviceSampleRate || "not detected"
+        }`
+      );
+
       log(`gpdb-widget pitch current sample rate: ${sampleRate.value}`);
 
       const options = {
         recorderType: RecordRTC.StereoAudioRecorder,
         mimeType: "audio/wav",
         noWorker: true,
-        sampleRate: sampleRate.value,
       } as Options;
+
+      if (deviceSampleRate) {
+        if (deviceSampleRate !== sampleRate.value) {
+          setSampleRate({ value: deviceSampleRate });
+
+          log(
+            `Observed sample rate from media stream(${deviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
+          );
+
+          defaultSampleRate.value = deviceSampleRate;
+
+          log("Observed sample rate value from media stream is set as default");
+        }
+
+        if (
+          deviceSampleRate > MAX_SAMPLE_RATE ||
+          deviceSampleRate < MIN_SAMPLE_RATE
+        ) {
+          log(
+            `WARNING!!! Observed sample rate from media stream(${deviceSampleRate}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]`
+          );
+
+          options.desiredSampRate = deviceSampleRate;
+        }
+      }
+
+      if (!options.desiredSampRate) options.sampleRate = sampleRate.value;
 
       recorder.current = new RecordRTC(stream, options);
 
@@ -293,6 +330,28 @@ const Recorder = ({
   const handleOnRecorderClose = (): void =>
     onRecorderClose(RecorderCloseOptions.CANCEL);
 
+  const onOpenSliderClick = () => {
+    if (
+      sampleRate.value > MAX_SAMPLE_RATE ||
+      sampleRate.value < MIN_SAMPLE_RATE
+    ) {
+      const notificationId = new Date().getTime();
+
+      setNotification({
+        id: notificationId,
+        content: (
+          <StateNotification
+            id={notificationId}
+            state={NotificationStates.WARNING}
+            message={`Observed sample rate from media stream(${sampleRate.value}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]. Pitch settings are not accessible`}
+          />
+        ),
+      });
+    } else {
+      openSlider();
+    }
+  };
+
   const showRecordButton = show(
     "recorderRecordButton",
     pronunciation,
@@ -348,7 +407,9 @@ const Recorder = ({
           {step === STATES.RECORDED && (
             <div className={styles.inline}>
               <Player audioSrc={audioUrl} icon="playable" className="player" />
-              {showSlider && <Settings onClick={openSlider} active={slider} />}
+              {showSlider && (
+                <Settings onClick={onOpenSliderClick} active={slider} />
+              )}
             </div>
           )}
 
