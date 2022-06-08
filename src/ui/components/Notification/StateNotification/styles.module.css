@@ -1,0 +1,33 @@
+.close_icon {
+  font-style: normal;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.container {
+  background-color: $colors_error;
+  color: $colors_white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container.warning {
+  background-color: $colors_warning;
+  color: $colors_black_4;
+  padding: 10px;
+}
+
+.container.alert {
+  background-color: $colors_error;
+}
+
+.container.success {
+  background-color: $colors_success;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
