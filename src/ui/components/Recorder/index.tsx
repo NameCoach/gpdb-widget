@@ -76,7 +76,7 @@ const Recorder = ({
   const styleContext = useContext(StyleContext);
 
   const systemContext = useContext(SystemContext);
-  const logger = systemContext.logger || console;
+  const logger = systemContext?.logger || console;
 
   const customFeatures =
     styleContext.customFeatures ||
