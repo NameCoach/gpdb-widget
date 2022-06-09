@@ -7,10 +7,6 @@ export type TermsAndConditions = {
   onAccept(): Promise<void>;
 };
 
-export type ErrorHandler = {
-  capture(exception: any): void;
-};
-
 export type RecorderState = {
   isOpen: boolean;
   name: string | null;
