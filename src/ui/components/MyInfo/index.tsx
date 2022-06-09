@@ -10,7 +10,6 @@ import Player from "../Player";
 import RecordAction from "../Actions/Record";
 import useRecorderState, {
   TermsAndConditions,
-  ErrorHandler,
 } from "../../hooks/useRecorderState";
 import Recorder from "../Recorder";
 import { UserPermissions } from "../../../types/permissions";
@@ -32,7 +31,6 @@ interface Props {
   permissions: UserPermissions;
   controller: IFrontController;
   termsAndConditions?: TermsAndConditions;
-  errorHandler?: ErrorHandler;
 }
 
 const cx = classNames.bind(styles);
@@ -262,7 +260,6 @@ const MyInfo = (props: Props): JSX.Element => {
           owner={props.name.owner}
           onRecorderClose={onRecorderClose}
           termsAndConditions={props.termsAndConditions}
-          errorHandler={props.errorHandler}
           pronunciation={pronunciation}
         />
       )}
