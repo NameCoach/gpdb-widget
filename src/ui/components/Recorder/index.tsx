@@ -18,10 +18,10 @@ import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
-import { ErrorHandler, TermsAndConditions } from "../../hooks/useRecorderState";
+import { TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import Tooltip from "../Tooltip";
-import { SAVE_PITCH_TIP } from "../../../constants";
+import { DEVICES_CHANGED_MESSAGE, SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
@@ -35,9 +35,7 @@ import { RecorderCloseOptions } from "./types/handlersTypes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import SystemContext from "../../contexts/system";
 import { useNotifications } from "../../hooks/useNotification";
-import StateNotification, {
-  States as NotificationStates,
-} from "../Notification/StateNotification";
+import StateNotification, { States } from "../Notification/StateNotification";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -55,8 +53,12 @@ interface Props {
   onRecorderClose: (option?: RecorderCloseOptions) => void;
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
-  errorHandler?: ErrorHandler;
   pronunciation?: Pronunciation;
+}
+
+interface ExtendedMediaTrackSettings extends MediaTrackSettings {
+  channelCount: number;
+  latency: number;
 }
 
 const cx = classNames.bind(styles);
@@ -67,7 +69,6 @@ const Recorder = ({
   owner,
   type,
   termsAndConditions,
-  errorHandler,
   onSaved,
   pronunciation,
 }: Props): JSX.Element => {
@@ -80,7 +81,36 @@ const Recorder = ({
   const styleContext = useContext(StyleContext);
 
   const systemContext = useContext(SystemContext);
-  const logger = systemContext?.logger || console;
+  const logger = systemContext?.logger;
+  const errorHandler = systemContext?.errorHandler;
+
+  const { setNotification } = useNotifications();
+
+  useEffect(() => {
+    const handleOnDeviceChange = async (): Promise<void> => {
+      const funct = await navigator.mediaDevices.ondevicechange;
+
+      if (funct) return;
+
+      navigator.mediaDevices.ondevicechange = () => {
+        logger.log("Hardware configuration changed!", "Gpdb-widget");
+        const notificationId = new Date().getTime();
+
+        setNotification({
+          id: notificationId,
+          content: (
+            <StateNotification
+              id={notificationId}
+              state={States.WARNING}
+              message={DEVICES_CHANGED_MESSAGE}
+            />
+          ),
+        });
+      };
+    };
+
+    handleOnDeviceChange();
+  });
 
   const customFeatures =
     styleContext.customFeatures ||
@@ -98,8 +128,6 @@ const Recorder = ({
     controller.permissions,
     customFeatures
   );
-
-  const { setNotification } = useNotifications();
 
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
@@ -124,6 +152,33 @@ const Recorder = ({
   currentStep.current = step;
 
   const log = (message: string): void => logger.log(message, "Recorder");
+
+  const sliderAccessible = (): boolean =>
+    sampleRate.value <= MAX_SAMPLE_RATE && sampleRate.value >= MIN_SAMPLE_RATE;
+
+  const logRecordingDeviceInfo = async (
+    recordingDeviceSettings: ExtendedMediaTrackSettings
+  ): Promise<void> => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const recordingDeviceInfo = devices.find(
+      (element) => element.deviceId === recordingDeviceSettings.deviceId
+    );
+
+    const AudioContext =
+      window.AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AudioContext();
+    log(`BaseAudioContext.sampleRate: ${audioCtx.sampleRate}`);
+
+    log(`Recording device label: ${recordingDeviceInfo.label}`);
+
+    Object.keys(recordingDeviceSettings).forEach((key) =>
+      log(
+        `Observed ${key} from media stream: ${
+          recordingDeviceSettings[key] || "not detected"
+        }`
+      )
+    );
+  };
 
   const sendEvent = useCallback(
     (event) => {
@@ -197,19 +252,12 @@ const Recorder = ({
       sendEvent(EVENTS.start);
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recordingDeviceSettings = stream.getAudioTracks()[0].getSettings();
 
-      const deviceSampleRate = stream.getAudioTracks()[0].getSettings()
-        .sampleRate;
+      const recordingDeviceSampleRate = recordingDeviceSettings.sampleRate;
 
-      const AudioContext =
-        window.AudioContext || (window as any).webkitAudioContext;
-      const audioCtx = new AudioContext();
-
-      log(`BaseAudioContext.sampleRate: ${audioCtx.sampleRate}`);
-      log(
-        `Observed sample rate from media stream: ${
-          deviceSampleRate || "not detected"
-        }`
+      await logRecordingDeviceInfo(
+        recordingDeviceSettings as ExtendedMediaTrackSettings
       );
 
       log(`gpdb-widget pitch current sample rate: ${sampleRate.value}`);
@@ -220,28 +268,25 @@ const Recorder = ({
         noWorker: true,
       } as Options;
 
-      if (deviceSampleRate) {
-        if (deviceSampleRate !== sampleRate.value) {
-          setSampleRate({ value: deviceSampleRate });
+      if (recordingDeviceSampleRate) {
+        if (recordingDeviceSampleRate !== sampleRate.value) {
+          setSampleRate({ value: recordingDeviceSampleRate });
 
           log(
-            `Observed sample rate from media stream(${deviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
+            `Observed sample rate from media stream(${recordingDeviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
           );
 
-          defaultSampleRate.value = deviceSampleRate;
+          defaultSampleRate.value = recordingDeviceSampleRate;
 
           log("Observed sample rate value from media stream is set as default");
         }
 
-        if (
-          deviceSampleRate > MAX_SAMPLE_RATE ||
-          deviceSampleRate < MIN_SAMPLE_RATE
-        ) {
+        if (!sliderAccessible()) {
           log(
-            `WARNING!!! Observed sample rate from media stream(${deviceSampleRate}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]`
+            `WARNING!!! Observed sample rate from media stream(${recordingDeviceSampleRate}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]`
           );
 
-          options.desiredSampRate = deviceSampleRate;
+          options.desiredSampRate = recordingDeviceSampleRate;
         }
       }
 
@@ -259,7 +304,7 @@ const Recorder = ({
       });
     } catch (error) {
       setTimeout(() => sendEvent(EVENTS.fail), 0);
-      if (errorHandler) errorHandler.capture(error);
+      if (errorHandler) errorHandler(error, "recorder");
     }
   };
 
@@ -279,8 +324,7 @@ const Recorder = ({
     if (machineSpec.canCustomAttributesCreate) sendEvent(EVENTS.customAttrs);
   };
 
-  const onCustomAttributesSaved = (): NodeJS.Timeout =>
-    setTimeout(onRecorderClose, ONE_SECOND);
+  const onCustomAttributesSaved = () => setTimeout(onRecorderClose, ONE_SECOND);
   const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
   const setSampleRateToDefault = (): void => {
@@ -329,28 +373,6 @@ const Recorder = ({
 
   const handleOnRecorderClose = (): void =>
     onRecorderClose(RecorderCloseOptions.CANCEL);
-
-  const onOpenSliderClick = () => {
-    if (
-      sampleRate.value > MAX_SAMPLE_RATE ||
-      sampleRate.value < MIN_SAMPLE_RATE
-    ) {
-      const notificationId = new Date().getTime();
-
-      setNotification({
-        id: notificationId,
-        content: (
-          <StateNotification
-            id={notificationId}
-            state={NotificationStates.WARNING}
-            message={`Observed sample rate from media stream(${sampleRate.value}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]. Pitch settings are not accessible`}
-          />
-        ),
-      });
-    } else {
-      openSlider();
-    }
-  };
 
   const showRecordButton = show(
     "recorderRecordButton",
@@ -408,7 +430,15 @@ const Recorder = ({
             <div className={styles.inline}>
               <Player audioSrc={audioUrl} icon="playable" className="player" />
               {showSlider && (
-                <Settings onClick={onOpenSliderClick} active={slider} />
+                <Settings
+                  onClick={sliderAccessible() ? openSlider : null}
+                  active={slider}
+                  sampleRates={{
+                    value: sampleRate.value,
+                    minValue: MIN_SAMPLE_RATE,
+                    maxValue: MAX_SAMPLE_RATE,
+                  }}
+                />
               )}
             </div>
           )}
