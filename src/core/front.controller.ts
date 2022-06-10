@@ -68,6 +68,7 @@ export default class FrontController implements IFrontController {
     nameOwner?: NameOwner
   ): Promise<Pronunciation[]> {
     const owner = nameOwner || this.nameOwnerContext;
+    const user = this.userContext;
 
     const {
       target_result: { pronunciations },
@@ -75,8 +76,10 @@ export default class FrontController implements IFrontController {
       target: name.key,
       targetOwnerSig: owner.signature,
       targetTypeSig: NameTypesFactory[name.type],
+      target_owner_sig_type: owner?.signatureType,
       target_owner_email: owner?.email,
-      user_sig: this.userContext.signature,
+      user_sig: user.signature,
+      user_sig_type: user?.signatureType,
     });
 
     return pronunciations.map((p) => {
