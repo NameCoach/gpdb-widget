@@ -12,6 +12,7 @@ export const me = {
   value: 'Jack Green',
   owner: {
     signature: 'jack@name-coach.com',
+    signatureType: 'email',
     email: 'jack@name-coach.com'
   }
 };
