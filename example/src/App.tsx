@@ -29,10 +29,11 @@ const creds = {
 
 const myEmail = me.owner.email;
 const mySignature = me.owner.signature;
+const mySignatureType = me.owner.signatureType;
 
 const applicationContext = { instanceSig: myEmail.split("@")[1], typeSig: 'email_dns_name' }
-const nameOwnerContext = { signature: mySignature, email: myEmail }
-const userContext = { email: myEmail, signature: mySignature }
+const nameOwnerContext = { signature: mySignature, email: myEmail, signatureType: mySignatureType }
+const userContext = { email: myEmail, signature: mySignature, signatureType: mySignatureType }
 
 const parser = new Parser();
 
@@ -58,7 +59,7 @@ const App = () => {
 
   useEffect(() => {
     const load = async () => {
-      await client.loadPermissions({ user_sig: userContext.email } as permissionsLoadParams)
+      await client.loadPermissions({ user_sig: userContext.signature, user_sig_type: userContext.signatureType } as permissionsLoadParams)
       await client.loadCustomAttributesConfig();
       await client.loadClientPreferences({ user_sig: userContext.email } as preferencesLoadParams);
 
