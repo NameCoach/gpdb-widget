@@ -8,6 +8,8 @@ import {
   SearchWidget,
   ExtensionWidget,
   InfoWidget,
+  NotificationsProvider,
+  Notification,
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
 import MyInfoSection, { me } from './examples/MyInfoSection';
@@ -77,7 +79,7 @@ const App = () => {
     600
   );
 
-  const renderApp = () => (
+  const MainApp = () => (
     <div>
       <div>
         Name:
@@ -106,11 +108,11 @@ const App = () => {
     </div>
   );
 
-  const renderWrapper = () => {
+  const Wrapper = () => {
     const props = {
       name,
       parser,
-      callbackComponent: () => renderApp(),
+      callbackComponent: <MainApp/>,
       callbackAction: () => console.log("Terms accepted"),
       documentToRender:  TERMS_AND_CONDITIONS_REQUEST_RESULT.data,
       application: applicationContext,
@@ -119,14 +121,18 @@ const App = () => {
     };
 
     return (
-      <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
-        <ScreenResizer />
-        { renderWelcomeScreen ?  <InfoWidget {...props} /> : renderApp()}
-      </div>
+      <NotificationsProvider>
+        <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
+          <ScreenResizer />
+          { renderWelcomeScreen ?  <InfoWidget {...props} /> : <MainApp />}
+        </div>
+
+        <Notification/>
+      </NotificationsProvider>
     );
   };
 
-  return renderWrapper();
+  return <Wrapper />;
 }
 
 export default App;
