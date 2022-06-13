@@ -21,7 +21,7 @@ import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
 import Tooltip from "../Tooltip";
-import { DEVICES_CHANGED_MESSAGE, SAVE_PITCH_TIP } from "../../../constants";
+import { SAVE_PITCH_TIP } from "../../../constants";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
@@ -34,8 +34,6 @@ import { EVENTS } from "./types/machine";
 import { RecorderCloseOptions } from "./types/handlersTypes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import SystemContext from "../../contexts/system";
-import { useNotifications } from "../../hooks/useNotification";
-import StateNotification, { States } from "../Notification/StateNotification";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -83,34 +81,6 @@ const Recorder = ({
   const systemContext = useContext(SystemContext);
   const logger = systemContext?.logger;
   const errorHandler = systemContext?.errorHandler;
-
-  const { setNotification } = useNotifications();
-
-  useEffect(() => {
-    const handleOnDeviceChange = async (): Promise<void> => {
-      const funct = await navigator.mediaDevices.ondevicechange;
-
-      if (funct) return;
-
-      navigator.mediaDevices.ondevicechange = () => {
-        logger.log("Hardware configuration changed!", "Gpdb-widget");
-        const notificationId = new Date().getTime();
-
-        setNotification({
-          id: notificationId,
-          content: (
-            <StateNotification
-              id={notificationId}
-              state={States.WARNING}
-              message={DEVICES_CHANGED_MESSAGE}
-            />
-          ),
-        });
-      };
-    };
-
-    handleOnDeviceChange();
-  });
 
   const customFeatures =
     styleContext.customFeatures ||
