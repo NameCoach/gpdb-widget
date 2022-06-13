@@ -2666,6 +2666,11 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
+media-devices@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/media-devices/-/media-devices-0.4.0.tgz#fa294b50c589cdaf807aedd3cfd3699055ca15ad"
+  integrity sha512-aes0rHEg4Iz0PkMlLq/05ZiA0YNmnG1J+09trCnatqNRjT6iF2/5K75vZ4o3R7sq3m2tvKPphvqVaosLJE5J8Q==
+
 memoize-one@^5.0.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
