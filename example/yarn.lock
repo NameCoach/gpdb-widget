@@ -4990,10 +4990,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.1.49:
-  version "1.1.49"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.49.tgz#de224d9cf578db05ff34af660ad8e8935e5fde9d"
-  integrity sha512-7C9Aa0FICWUyUF/4wS0ZjRZvKD4qnHJ6FggiLsbFK2pO3ppOTcscsqQu/uVZJcIXJJm9ENMy1zkoJoVDLQhxfQ==
+gpdb-api-client@^1.1.54:
+  version "1.1.54"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.1.54.tgz#68cd263c046dca871b55e8d5ce156551b6341717"
+  integrity sha512-yzwAU9hg2VRyHuBPGR53r1wkGt2dO5YdUqpK4aG9yCE7Kon/9cOikNFW+8eIKKO1SzlKdrFM+0iPRrW++cQVJQ==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
@@ -6857,6 +6857,11 @@ mdn-data@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
+
+media-devices@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/media-devices/-/media-devices-0.4.0.tgz#fa294b50c589cdaf807aedd3cfd3699055ca15ad"
+  integrity sha512-aes0rHEg4Iz0PkMlLq/05ZiA0YNmnG1J+09trCnatqNRjT6iF2/5K75vZ4o3R7sq3m2tvKPphvqVaosLJE5J8Q==
 
 media-typer@0.3.0:
   version "0.3.0"
