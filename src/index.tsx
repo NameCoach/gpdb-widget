@@ -8,6 +8,7 @@ import Recorder from "./ui/components/Recorder";
 import Player from "./ui/components/Player";
 import SearchWidget from "./ui/components/SearchWidget";
 import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
+import Notification from "./ui/components/Notification";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -29,6 +30,8 @@ import SystemContext from "./ui/contexts/system";
 // HOOKS
 import loadClient from "./ui/hooks/loadClient";
 import { AnalyticsEventType } from "./types/resources/analytics-event-type";
+import { NotificationsProvider } from "./ui/hooks/useNotification";
+import addOnDeviceChangeHandler from "./ui/hooks/addOnDeviceChangeHandler";
 
 export {
   Widget,
@@ -52,4 +55,7 @@ export {
   SearchWidget,
   InfoWidget,
   AnalyticsEventType,
+  NotificationsProvider,
+  Notification,
+  addOnDeviceChangeHandler,
 };
