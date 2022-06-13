@@ -1,8 +1,5 @@
 import classNames from "classnames/bind";
-import React, { useContext } from "react";
-import ControllerContext from "../../../contexts/controller";
-import StyleContext from "../../../contexts/style";
-import loadT from "../../../hooks/LoadT";
+import React from "react";
 import { useNotifications } from "../../../hooks/useNotification";
 import styles from "./styles.module.css";
 
@@ -21,10 +18,6 @@ interface Props {
 const cx = classNames.bind(styles);
 
 const StateNotification = ({ id, state, message }: Props): JSX.Element => {
-  const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const t = styleContext.t || loadT(controller?.preferences?.translations);
-
   const { clearNotification } = useNotifications();
 
   const handleOnClose = () => clearNotification(id);
