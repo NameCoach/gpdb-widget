@@ -1,5 +1,5 @@
 import React from 'react'
-import { IFrontController, PronunciationMyInfoWidget } from 'gpdb-widget'
+import { addOnDeviceChangeHandler, IFrontController, PronunciationMyInfoWidget } from 'gpdb-widget'
 
 interface Props {
   client: IFrontController
@@ -15,6 +15,8 @@ export const me = {
 };
 
 const MyInfoSection = (props: Props) => {
+  addOnDeviceChangeHandler();
+
   const email = {
     value: 'sometest.email@gmail.com',
     owner: {
