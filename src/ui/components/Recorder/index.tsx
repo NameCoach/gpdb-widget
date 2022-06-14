@@ -123,8 +123,11 @@ const Recorder = ({
 
   const log = (message: string): void => logger.log(message, "Recorder");
 
-  const sliderAccessible = (): boolean =>
-    sampleRate.value <= MAX_SAMPLE_RATE && sampleRate.value >= MIN_SAMPLE_RATE;
+  const sliderAccessible = (value?: number): boolean => {
+    const _value = value || sampleRate.value;
+
+    return _value <= MAX_SAMPLE_RATE && _value >= MIN_SAMPLE_RATE;
+  };
 
   const logRecordingDeviceInfo = async (
     recordingDeviceSettings: ExtendedMediaTrackSettings
@@ -239,24 +242,38 @@ const Recorder = ({
       } as Options;
 
       if (recordingDeviceSampleRate) {
-        if (recordingDeviceSampleRate !== sampleRate.value) {
-          setSampleRate({ value: recordingDeviceSampleRate });
+        const _sliderAccessible = sliderAccessible(recordingDeviceSampleRate);
 
-          log(
-            `Observed sample rate from media stream(${recordingDeviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
-          );
-
-          defaultSampleRate.value = recordingDeviceSampleRate;
-
-          log("Observed sample rate value from media stream is set as default");
-        }
-
-        if (!sliderAccessible()) {
+        if (!_sliderAccessible) {
           log(
             `WARNING!!! Observed sample rate from media stream(${recordingDeviceSampleRate}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]`
           );
 
           options.desiredSampRate = recordingDeviceSampleRate;
+
+          log(
+            "Observed sample rate value from media stream is used as current sample value"
+          );
+
+          setSampleRate({ value: recordingDeviceSampleRate });
+        } else {
+          if (recordingDeviceSampleRate !== defaultSampleRate.value) {
+            log(
+              `Observed sample rate from media stream(${recordingDeviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
+            );
+
+            defaultSampleRate.value = recordingDeviceSampleRate;
+
+            log(
+              "Observed sample rate value from media stream is set as default"
+            );
+
+            setSampleRate({ value: recordingDeviceSampleRate });
+
+            log(
+              "Observed sample rate value from media stream is used as current"
+            );
+          }
         }
       }
 
