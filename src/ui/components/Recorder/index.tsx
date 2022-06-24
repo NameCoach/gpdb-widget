@@ -42,8 +42,7 @@ const TEN_SECONDS = ONE_SECOND * 10;
 
 const MAX_SAMPLE_RATE = 96000;
 const DEFAULT_SAMPLE_RATE = 48000;
-const MIN_SAMPLE_RATE = 22050;
-
+const MIN_SAMPLE_RATE = 16000;
 interface Props {
   name: string;
   type: NameTypes;
@@ -123,12 +122,6 @@ const Recorder = ({
 
   const log = (message: string): void => logger.log(message, "Recorder");
 
-  const sliderAccessible = (value?: number): boolean => {
-    const _value = value || sampleRate.value;
-
-    return _value <= MAX_SAMPLE_RATE && _value >= MIN_SAMPLE_RATE;
-  };
-
   const logRecordingDeviceInfo = async (
     recordingDeviceSettings: ExtendedMediaTrackSettings
   ): Promise<void> => {
@@ -136,11 +129,6 @@ const Recorder = ({
     const recordingDeviceInfo = devices.find(
       (element) => element.deviceId === recordingDeviceSettings.deviceId
     );
-
-    const AudioContext =
-      window.AudioContext || (window as any).webkitAudioContext;
-    const audioCtx = new AudioContext();
-    log(`BaseAudioContext.sampleRate: ${audioCtx.sampleRate}`);
 
     log(`Recording device label: ${recordingDeviceInfo.label}`);
 
@@ -224,10 +212,15 @@ const Recorder = ({
     try {
       sendEvent(EVENTS.start);
 
+      const AudioContext =
+        window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioContext();
+      const audioCtxSampleRate = audioCtx.sampleRate;
+
+      log(`BaseAudioContext.sampleRate: ${audioCtxSampleRate}`);
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recordingDeviceSettings = stream.getAudioTracks()[0].getSettings();
-
-      const recordingDeviceSampleRate = recordingDeviceSettings.sampleRate;
 
       await logRecordingDeviceInfo(
         recordingDeviceSettings as ExtendedMediaTrackSettings
@@ -235,49 +228,22 @@ const Recorder = ({
 
       log(`gpdb-widget pitch current sample rate: ${sampleRate.value}`);
 
+      if (defaultSampleRate.value !== audioCtxSampleRate) {
+        defaultSampleRate.value = audioCtxSampleRate;
+        log(
+          `AudioContext sample rate will be used as Default sample ratee`
+        );
+        setSampleRate({ value: audioCtxSampleRate });
+        log(`audio context sample rate is used as current pitch value`);
+      }
+
       const options = {
         recorderType: RecordRTC.StereoAudioRecorder,
         mimeType: "audio/wav",
         noWorker: true,
+        desiredSampRate: 16000,
+        numberOfAudioChannels: 1,
       } as Options;
-
-      if (recordingDeviceSampleRate) {
-        const _sliderAccessible = sliderAccessible(recordingDeviceSampleRate);
-
-        if (!_sliderAccessible) {
-          log(
-            `WARNING!!! Observed sample rate from media stream(${recordingDeviceSampleRate}) is out allowed pitch ranges [${MIN_SAMPLE_RATE}, ${MAX_SAMPLE_RATE}]`
-          );
-
-          options.desiredSampRate = recordingDeviceSampleRate;
-
-          log(
-            "Observed sample rate value from media stream is used as current sample value"
-          );
-
-          setSampleRate({ value: recordingDeviceSampleRate });
-        } else {
-          if (recordingDeviceSampleRate !== defaultSampleRate.value) {
-            log(
-              `Observed sample rate from media stream(${recordingDeviceSampleRate}) is not equal to default sample rate ${defaultSampleRate.value}`
-            );
-
-            defaultSampleRate.value = recordingDeviceSampleRate;
-
-            log(
-              "Observed sample rate value from media stream is set as default"
-            );
-
-            setSampleRate({ value: recordingDeviceSampleRate });
-
-            log(
-              "Observed sample rate value from media stream is used as current"
-            );
-          }
-        }
-      }
-
-      if (!options.desiredSampRate) options.sampleRate = sampleRate.value;
 
       recorder.current = new RecordRTC(stream, options);
 
@@ -325,6 +291,7 @@ const Recorder = ({
     closeSlider();
     setTempSampleRate(sampleRate);
     controller.saveAudioSampleRate(sampleRate.value);
+    log(`Pitch sample rate is saved. New value: ${sampleRate.value}`);
   };
   const updateSampleRate = (val): void => setSampleRate({ value: val });
 
@@ -416,17 +383,7 @@ const Recorder = ({
           {step === STATES.RECORDED && (
             <div className={styles.inline}>
               <Player audioSrc={audioUrl} icon="playable" className="player" />
-              {showSlider && (
-                <Settings
-                  onClick={sliderAccessible() ? openSlider : null}
-                  active={slider}
-                  sampleRates={{
-                    value: sampleRate.value,
-                    minValue: MIN_SAMPLE_RATE,
-                    maxValue: MAX_SAMPLE_RATE,
-                  }}
-                />
-              )}
+              {showSlider && <Settings onClick={openSlider} active={slider} />}
             </div>
           )}
 
