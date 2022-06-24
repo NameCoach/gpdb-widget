@@ -5,30 +5,15 @@ import Tooltip from "../../Tooltip";
 import { TOOLTIP_DELAY } from "../../../../constants";
 
 const cx = classNames.bind(styles);
-
-interface SampleRates {
-  value: number;
-  minValue: number;
-  maxValue: number;
-}
-
 interface Props {
   active: boolean;
-  onClick?: (val) => void;
-  sampleRates?: SampleRates;
+  onClick: (val) => void;
 }
 
-const Settings = ({ active, onClick, sampleRates }: Props): JSX.Element => {
+const Settings = ({ active, onClick }: Props): JSX.Element => {
   const tooltipId = Date.now().toString();
 
-  const options = onClick
-    ? { onClick }
-    : {
-        "data-for": tooltipId,
-        "data-tip": `Observed sample rate from media stream(${sampleRates.value}) is out of allowed ranges [${sampleRates.minValue}, ${sampleRates.maxValue}]. Settings are not accessible`,
-        "data-event": "click",
-        "data-event-off": "mouseout",
-      };
+  const options = { onClick };
 
   return (
     <>
