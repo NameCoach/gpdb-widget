@@ -241,8 +241,7 @@ const Recorder = ({
         recorderType: RecordRTC.StereoAudioRecorder,
         mimeType: "audio/wav",
         noWorker: true,
-        desiredSampRate: 16000,
-        numberOfAudioChannels: 1,
+        sampleRate: sampleRate.value,
       } as Options;
 
       recorder.current = new RecordRTC(stream, options);
