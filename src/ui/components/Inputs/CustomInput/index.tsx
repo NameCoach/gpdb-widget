@@ -11,6 +11,7 @@ interface Props {
   label: string;
   id: string;
   value: string;
+  metadata?: Record<string, any>;
   type: string;
   values?: string[];
   onUpdate: (any) => void;
@@ -21,9 +22,13 @@ const CustomInput = ({
   value,
   type,
   label,
+  metadata,
   values,
   onUpdate,
 }: Props): JSX.Element => {
+  const prompt = metadata?.prompt;
+  const placeholder = prompt || label;
+
   const onChange = (e): void => {
     const {
       target: { value },
@@ -36,7 +41,7 @@ const CustomInput = ({
     onUpdate({ id, value });
   };
 
-  const getOptions = () =>
+  const getOptions = (): { value: string; label: string }[] =>
     values.map((value) => {
       return { value, label: value };
     });
@@ -56,7 +61,7 @@ const CustomInput = ({
       onChange={onChange}
       className={styles.input}
       name={label}
-      placeholder={label}
+      placeholder={placeholder}
       value={value}
     />
   );
@@ -66,12 +71,12 @@ const CustomInput = ({
       onChange={onChange}
       className={styles.input}
       name={label}
-      placeholder={label}
+      placeholder={placeholder}
       value={value}
     />
   );
 
-  const renderInput = () => {
+  const renderInput = (): JSX.Element => {
     switch (type) {
       case AttributePresentation.Dropdown:
         return Dropdown();
