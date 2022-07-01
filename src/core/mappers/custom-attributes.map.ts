@@ -30,6 +30,7 @@ const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
       value: getValue(attribute),
       label: attribute.label,
       presentation: attribute.presentation,
+      metadata: attribute.metadata,
     };
 
     if (_attribute.presentation === AttributePresentation.Dropdown)
