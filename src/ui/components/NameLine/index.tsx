@@ -14,10 +14,9 @@ import NameTypesFactory from "../../../types/name-types-factory";
 import Select from "../Select";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
-import loadT from "../../hooks/LoadT";
-import StyleContext from "../../contexts/style";
 import { getLabel } from "./helper-methods";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
+import useTranslator from "../../hooks/useTranslator";
 
 const cx = classNames.bind(styles);
 
@@ -34,9 +33,8 @@ interface Props {
 }
 
 const NameLine = (props: Props): JSX.Element => {
-  const styleContext = useContext(StyleContext);
   const controller = useContext(ControllerContext);
-  const t = styleContext.t || loadT(controller?.preferences?.translations);
+  const t = useTranslator(controller);
 
   const { isDeprecated: isOld } = userAgentManager;
   const options = useMemo(
