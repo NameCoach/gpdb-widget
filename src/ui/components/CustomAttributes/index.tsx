@@ -146,6 +146,7 @@ const CustomAttributes = ({
                       <CustomInput
                         type={attribute.presentation}
                         label={attribute.label}
+                        metadata={attribute.metadata}
                         value={attribute.value as string}
                         id={attribute.id}
                         values={attribute?.values}
