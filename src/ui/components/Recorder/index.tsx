@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import RecordRTC, { Options } from "recordrtc";
+import RecordRTC, { Options as RecordRtcOptions } from "recordrtc";
 import { blobToBase64String } from "blob-util";
 import RangeInput from "./RangeInput";
 import STATES from "./states";
@@ -27,13 +27,13 @@ import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
 import getSpec from "./machine/get-spec";
 import CustomAttributes from "../CustomAttributes";
-import loadCustomFeatures from "../../hooks/loadCustomFatures";
-import loadT from "../../hooks/LoadT";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { EVENTS } from "./types/machine";
 import { RecorderCloseOptions } from "./types/handlersTypes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import SystemContext from "../../contexts/system";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useTranslator from "../../hooks/useTranslator";
 
 const COUNTDOWN = 3;
 const TIMER = 0;
@@ -70,33 +70,47 @@ const Recorder = ({
   pronunciation,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const machineSpec = useMemo(() => getSpec(controller, owner), [
-    controller,
-    owner,
-  ]);
-
   const styleContext = useContext(StyleContext);
-
   const systemContext = useContext(SystemContext);
+
+  const customFeatures = useCustomFeatures(controller, styleContext);
+  const t = useTranslator(controller, styleContext);
+
   const logger = systemContext?.logger;
+  const log = (message: string): void => logger.log(message, "Recorder");
   const errorHandler = systemContext?.errorHandler;
-
-  const customFeatures =
-    styleContext.customFeatures ||
-    loadCustomFeatures(controller?.preferences?.custom_features);
-  const t = styleContext.t || loadT(controller?.preferences?.translations);
-  const displaySaving =
-    styleContext?.displayRecorderSavingMessage ||
-    machineSpec.canCustomAttributesCreate;
-
-  const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
-
-  const { isDeprecated: isOld } = userAgentManager;
 
   const { can, show } = useFeaturesManager(
     controller.permissions,
     customFeatures
   );
+
+  const canCustomAttributesCreate = useMemo(
+    () =>
+      can(
+        "createCustomAttributes",
+        owner || controller.nameOwnerContext,
+        controller.userContext,
+        controller.customAttributes
+      ),
+    [controller, owner]
+  );
+  const showRecordButton = show(
+    "recorderRecordButton",
+    pronunciation,
+    owner?.signature
+  );
+  const showDeleteButton = can("destroyPronunciation", pronunciation);
+
+  const machineSpec = getSpec({ canCustomAttributesCreate });
+
+  const displaySaving =
+    styleContext?.displayRecorderSavingMessage ||
+    machineSpec.canCustomAttributesCreate;
+
+  const { isDeprecated: isOld } = userAgentManager;
+
+  const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
 
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
@@ -119,8 +133,6 @@ const Recorder = ({
   const recorder: React.MutableRefObject<RecordRTC> = useRef(null);
 
   currentStep.current = step;
-
-  const log = (message: string): void => logger.log(message, "Recorder");
 
   const logRecordingDeviceInfo = async (
     recordingDeviceSettings: ExtendedMediaTrackSettings
@@ -230,9 +242,7 @@ const Recorder = ({
 
       if (defaultSampleRate.value !== audioCtxSampleRate) {
         defaultSampleRate.value = audioCtxSampleRate;
-        log(
-          `AudioContext sample rate will be used as Default sample ratee`
-        );
+        log(`AudioContext sample rate will be used as Default sample ratee`);
         setSampleRate({ value: audioCtxSampleRate });
         log(`audio context sample rate is used as current pitch value`);
       }
@@ -242,7 +252,7 @@ const Recorder = ({
         mimeType: "audio/wav",
         noWorker: true,
         sampleRate: sampleRate.value,
-      } as Options;
+      } as RecordRtcOptions;
 
       recorder.current = new RecordRTC(stream, options);
 
@@ -256,7 +266,7 @@ const Recorder = ({
       });
     } catch (error) {
       setTimeout(() => sendEvent(EVENTS.fail), 0);
-      if (errorHandler) errorHandler(error, "recorder");
+      errorHandler && errorHandler(error, "recorder");
     }
   };
 
@@ -279,9 +289,7 @@ const Recorder = ({
   const onCustomAttributesSaved = () => setTimeout(onRecorderClose, ONE_SECOND);
   const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
-  const setSampleRateToDefault = (): void => {
-    setSampleRate(defaultSampleRate);
-  };
+  const onDefaultSampleRateClick = (): void => setSampleRate(defaultSampleRate);
   const onSampleRateCancel = (): void => {
     closeSlider();
     setSampleRate(tempSampleRate);
@@ -292,7 +300,7 @@ const Recorder = ({
     controller.saveAudioSampleRate(sampleRate.value);
     log(`Pitch sample rate is saved. New value: ${sampleRate.value}`);
   };
-  const updateSampleRate = (val): void => setSampleRate({ value: val });
+  const onUpdateSampleRate = (val): void => setSampleRate({ value: val });
 
   const onUploaderChange = (e): void => {
     const files = e.target.files;
@@ -326,13 +334,6 @@ const Recorder = ({
 
   const handleOnRecorderClose = (): void =>
     onRecorderClose(RecorderCloseOptions.CANCEL);
-
-  const showRecordButton = show(
-    "recorderRecordButton",
-    pronunciation,
-    owner?.signature
-  );
-  const showDeleteButton = can("destroyPronunciation", pronunciation);
 
   useEffect(() => {
     if (termsAndConditions) {
@@ -456,8 +457,8 @@ const Recorder = ({
                 max={MAX_SAMPLE_RATE}
                 min={MIN_SAMPLE_RATE}
                 values={[sampleRate.value]}
-                onChange={updateSampleRate}
-                onDefaultClicked={setSampleRateToDefault}
+                onChange={onUpdateSampleRate}
+                onDefaultClicked={onDefaultSampleRateClick}
               />
 
               <button onClick={onSampleRateCancel} className={styles.secondary}>
@@ -489,15 +490,16 @@ const Recorder = ({
           )}
         </div>
         {step === STATES.SAVED && (
-          <>
+          <div className={styles.modal__wrapper}>
             {displaySaving &&
               (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
             <Loader inline />
-          </>
+          </div>
         )}
         {step === STATES.CUSTOM_ATTRS && machineSpec.canCustomAttributesCreate && (
           <>
             <CustomAttributes
+              attributes={pronunciation?.customAttributes}
               disabled={false}
               saving
               noBorder
