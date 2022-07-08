@@ -1,151 +1,101 @@
 import IPermissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
 import { FeaturesManager as ICustomFeaturesManager } from "../customFeaturesManager";
-import { useMemo } from "react";
-import { Resources } from "gpdb-api-client";
-import Pronunciation, {
-  RelativeSource,
-} from "../../types/resources/pronunciation";
+import usePermissions from "./usePermissions";
+import { useCustomAttributesFeatures } from "../features/custom_attributes";
+import { useCreatePronunciationFeatures } from "../features/create_pronunciation";
+import { useDestroyPronunciationFeatures } from "../features/destroy_pronunciation";
+import { useRestorePronunciationFeatures } from "../features/restore_pronunciation";
+import { useUserResponseFeatures } from "../features/user_response";
+import { useRecordingRequestFeatures } from "../features/recording_request";
+import { useRecorderFeatures } from "../features/recorder";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+interface FeaturesManager {
+  readonly can: (name: string, ...rest: any[]) => boolean;
+  readonly show: (name: string, ...rest: any[]) => boolean;
+}
+
 const useFeaturesManager = (
   permissionsManager: IPermissionsManager,
   customFeaturesManager: ICustomFeaturesManager
-) => {
-  // methods start
-  const canPronunciation = (permission: string): boolean =>
-    permissionsManager.can(Resources.Pronunciation, permission);
+): FeaturesManager => {
+  const { canPronunciation, canUserResponse } = usePermissions(
+    permissionsManager
+  );
 
-  const canUserResponse = (permission): boolean =>
-    permissionsManager.can(Resources.UserResponse, permission);
+  const {
+    canCreateCustomAttributes,
+    showCustomAttributesForSelf,
+    canEditCustomAttributesForSelf,
+  } = useCustomAttributesFeatures(permissionsManager);
 
-  const canRecordNameBadge = (): boolean =>
-    canPronunciation("create:name_badge") &&
-    canPronunciation("index:name_badge");
+  const {
+    canRecordNameBadge,
+    canCreateOrgPeerRecording,
+    canCreateSelfRecording,
+  } = useCreatePronunciationFeatures(permissionsManager, customFeaturesManager);
 
-  const canCreateOrgPeerRecording = (ownerSignature: string): boolean =>
-    customFeaturesManager.canRecordOrgPeer(ownerSignature) &&
-    canPronunciation("create");
+  const {
+    customDestroy,
+    canDestroyPronunciation,
+  } = useDestroyPronunciationFeatures(
+    permissionsManager,
+    customFeaturesManager
+  );
 
-  const canCreateSelfRecording = (pronunciation: Pronunciation): boolean =>
-    (canRecordNameBadge() && pronunciation?.isHedb) ||
-    (canPronunciation("create") && !pronunciation?.isHedb);
+  const {
+    canRestoreSelfPronunciation,
+    canRestoreOrgPeerPronunciation,
+    canRestore,
+  } = useRestorePronunciationFeatures(permissionsManager);
 
-  const customDestroy = (): boolean => {
-    const customDestroyFeaturePresent = customFeaturesManager.isPresent(
-      "recordings_custom_destroy"
-    );
+  const { canCreateUserResponse } = useUserResponseFeatures(
+    permissionsManager,
+    customFeaturesManager
+  );
 
-    const selfFeatureValuePresent = !!customFeaturesManager
-      .getValue("recordings_custom_destroy")
-      ?.find((item) => item === "self");
+  const {
+    canCreateRecordingRequest,
+    canFindRecordingRequest,
+  } = useRecordingRequestFeatures(permissionsManager);
 
-    const featureMetadataKeyPresent = !!customFeaturesManager.getMetadata(
-      "self"
-    );
+  const {
+    showRecorderRecordButton,
+    showSelfRecorderAction,
+  } = useRecorderFeatures(permissionsManager, customFeaturesManager);
 
-    return (
-      customDestroyFeaturePresent &&
-      selfFeatureValuePresent &&
-      featureMetadataKeyPresent
-    );
+  const showContext = {
+    recorderRecordButton: showRecorderRecordButton,
+    selfRecorderAction: showSelfRecorderAction,
+
+    customAttributesForSelf: showCustomAttributesForSelf,
   };
 
-  const canDestroyPronunciation = (pronunciation: Pronunciation): boolean => {
-    const customDestroyFeaturePresent = customFeaturesManager.isPresent(
-      "recordings_custom_destroy"
-    );
+  const canContext = {
+    createRecordingRequest: canCreateRecordingRequest,
+    findRecordingRequest: canFindRecordingRequest,
 
-    const selfFeatureValuePresent = !!customFeaturesManager
-      .getValue("recordings_custom_destroy")
-      ?.find((item) => item === "self");
+    restoreOrgPeerPronunciation: canRestoreOrgPeerPronunciation,
+    restoreSelfPronunciation: canRestoreSelfPronunciation,
+    restore: canRestore,
 
-    const featureMetadataKeyPresent = !!customFeaturesManager.getMetadata(
-      "self"
-    );
+    createUserResponse: canCreateUserResponse,
+    userResponse: canUserResponse,
 
-    const isSelf =
-      pronunciation &&
-      pronunciation.relativeSource === RelativeSource.RequesterSelf;
+    destroyPronunciation: canDestroyPronunciation,
+    customDestroy: customDestroy,
 
-    const isOrgPeer =
-      pronunciation &&
-      pronunciation.relativeSource === RelativeSource.RequesterPeer;
+    createSelfRecording: canCreateSelfRecording,
+    createOrgPeerRecording: canCreateOrgPeerRecording,
+    recordNameBadge: canRecordNameBadge,
 
-    const canDeleteSelf =
-      canPronunciation("destroy") && canPronunciation("destroy:self");
-    const canDeleteOrgPeer =
-      canPronunciation("destroy") && canPronunciation("destroy:org_peer");
-    const canDeleteHedbAll =
-      canPronunciation("destroy") && canPronunciation("destroy:self_hedb_all");
+    pronunciation: canPronunciation,
 
-    const condition =
-      ((isSelf && canDeleteSelf) || (isOrgPeer && canDeleteOrgPeer)) &&
-      !pronunciation.isHedb;
-
-    const condition3 = isSelf && canDeleteHedbAll && pronunciation.isHedb;
-
-    const condition2 =
-      customDestroyFeaturePresent &&
-      selfFeatureValuePresent &&
-      featureMetadataKeyPresent &&
-      isSelf;
-
-    return condition || condition2 || condition3;
+    createCustomAttributes: canCreateCustomAttributes,
+    editCustomAttributesForSelf: canEditCustomAttributesForSelf,
   };
 
-  const canCreateUserResponse = (ownerSignature: string): boolean =>
-    customFeaturesManager.canUserResponse(ownerSignature) &&
-    canUserResponse("create");
-
-  const canRestoreSelfPronunciation = (): boolean =>
-    canPronunciation("restore") && canPronunciation("restore:self");
-
-  const canRestoreOrgPeerPronunciation = (): boolean =>
-    canPronunciation("restore") && canPronunciation("restore:org_peer");
-
-  const canRestore = (pronunciation: Pronunciation): boolean =>
-    (canRestoreSelfPronunciation() || canRestoreOrgPeerPronunciation()) &&
-    pronunciation?.sourceType === "gpdb";
-
-  const showSelfRecorderAction = (pronunciation: Pronunciation): boolean =>
-    canCreateSelfRecording(pronunciation) ||
-    canDestroyPronunciation(pronunciation);
-
-  const showRecorderRecordButton = (pronunciation, ownerSignature): boolean => {
-    if (pronunciation && pronunciation.isHedb && !canRecordNameBadge())
-      return false;
-
-    return (
-      canCreateSelfRecording(pronunciation) ||
-      canCreateOrgPeerRecording(ownerSignature)
-    );
-  };
-  // methods end
-
-  const context = useMemo(() => {
-    return {
-      recorderRecordButton: showRecorderRecordButton,
-      selfRecorderAction: showSelfRecorderAction,
-
-      restoreOrgPeerPronunciation: canRestoreOrgPeerPronunciation,
-      restoreSelfPronunciation: canRestoreSelfPronunciation,
-      createUserResponse: canCreateUserResponse,
-      destroyPronunciation: canDestroyPronunciation,
-      customDestroy: customDestroy,
-      createSelfRecording: canCreateSelfRecording,
-      createOrgPeerRecording: canCreateOrgPeerRecording,
-      recordNameBadge: canRecordNameBadge,
-      userResponse: canUserResponse,
-      pronunciation: canPronunciation,
-      restore: canRestore,
-    };
-  }, []);
-
-  const can = (name: string, ...rest): boolean => {
-    return context[name](...rest);
-  };
-
-  const show = can;
+  const can = (name: string, ...rest): boolean => canContext[name](...rest);
+  const show = (name: string, ...rest): boolean => showContext[name](...rest);
 
   return { can, show } as const;
 };
