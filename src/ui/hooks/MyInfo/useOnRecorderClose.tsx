@@ -4,34 +4,41 @@ import Pronunciation from "../../../types/resources/pronunciation";
 import RestorePronunciationNotification from "../../components/Notification/RestorePronunciationNotification";
 import { RecorderCloseOptions } from "../../components/Recorder/types/handlersTypes";
 import useFeaturesManager from "../useFeaturesManager";
-import { AddNotification } from "../useNotification";
-import { FeaturesManager as ICustomFeaturesManager } from "../../customFeaturesManager";
+import { useNotifications } from "../useNotification";
+import {
+  ConstantOverrides,
+  FeaturesManager as ICustomFeaturesManager,
+} from "../../customFeaturesManager";
+import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 
 interface Options {
   controller: IFrontController;
   customFeaturesManager: ICustomFeaturesManager;
   pronunciation: Pronunciation;
-  autoclose: number;
   load: () => Promise<void>;
-  setNotification: (notification?: AddNotification) => any;
   setLoading: (value: boolean) => void;
   setRecorderClosed: () => void;
   setPronunciation: (value: any) => void;
   setMyInfoHintShow: (value: boolean) => void;
 }
 
-const useOnRecorderCloseStrategy = ({
+const useOnRecorderClose = ({
   controller,
   pronunciation,
   customFeaturesManager,
-  autoclose,
   load,
-  setNotification,
   setLoading,
   setRecorderClosed,
   setPronunciation,
   setMyInfoHintShow,
-}: Options) => {
+}: Options): ((option: RecorderCloseOptions) => Promise<any>) => {
+  const autoclose =
+    customFeaturesManager.getValue(
+      ConstantOverrides.RestorePronunciationTime
+    ) || RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY;
+
+  const { setNotification } = useNotifications();
+
   const { can } = useFeaturesManager(
     controller.permissions,
     customFeaturesManager
@@ -135,8 +142,10 @@ const useOnRecorderCloseStrategy = ({
     setRecorderClosed,
   ]);
 
-  const run = React.useCallback(
+  const onClose = React.useCallback(
     async (option: RecorderCloseOptions) => {
+      setMyInfoHintShow(true);
+
       if (option === RecorderCloseOptions.CANCEL) return setRecorderClosed();
 
       if (option === RecorderCloseOptions.DELETE) {
@@ -157,7 +166,7 @@ const useOnRecorderCloseStrategy = ({
     [can, load, pronunciation, runDelayed, runRestorable, setRecorderClosed]
   );
 
-  return run;
+  return onClose;
 };
 
-export default useOnRecorderCloseStrategy;
+export default useOnRecorderClose;
