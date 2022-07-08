@@ -10,8 +10,8 @@ import { UserPermissions } from "../../../../types/permissions";
 import ControllerContext from "../../../contexts/controller";
 import { DEFAULT_NAME_OWNER } from "../../../../constants";
 import StyleContext from "../../../contexts/style";
-import loadT from "../../../hooks/LoadT";
-import loadCustomFeatures from "../../../hooks/loadCustomFatures";
+import useTranslator from "../../../hooks/useTranslator";
+import useCustomFeatures from "../../../hooks/useCustomFeatures";
 
 interface Props {
   client: IFrontController;
@@ -39,11 +39,11 @@ const Adapter = (props: Props): JSX.Element => {
 
   const client = useMemo(() => props.client, [props.client]);
 
-  const t = loadT(client?.preferences?.translations);
   const styleContext = useContext(StyleContext);
-  const customFeatures = loadCustomFeatures(
-    client?.preferences?.custom_features
-  );
+
+  const t = useTranslator(client, styleContext);
+
+  const customFeatures = useCustomFeatures(client, styleContext);
 
   const canUserResponse = (permissions): boolean =>
     client.permissions.can(Resources.UserResponse, permissions);
@@ -69,7 +69,7 @@ const Adapter = (props: Props): JSX.Element => {
       find: nameIsEmail ? canRecordingRequest("find") : false,
     },
     canCustomAttributes: {
-      save_values: false,
+      save_values: false, // this will not work for FullnamesContainer !!!???
     },
   } as UserPermissions;
 
