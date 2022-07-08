@@ -27,7 +27,7 @@ const CustomInput = ({
   onUpdate,
 }: Props): JSX.Element => {
   const prompt = metadata?.prompt;
-  const placeholder = prompt || label;
+  const placeholder = prompt;
 
   const onChange = (e): void => {
     const {
