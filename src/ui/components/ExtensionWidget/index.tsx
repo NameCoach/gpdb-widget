@@ -9,8 +9,8 @@ import Close from "../Close";
 import Loader from "../Loader";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import StyleContext from "../../contexts/style";
-import loadCustomFeatures from "../../hooks/loadCustomFatures";
-import loadT from "../../hooks/LoadT";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useTranslator from "../../hooks/useTranslator";
 
 export interface ElemStyleProps {
   width?: number | string;
@@ -36,10 +36,8 @@ const ExtensionWidget = (props: Props): JSX.Element => {
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>(props.names);
   const [loading, setLoading] = useState<boolean>(false);
   const styleContext = useContext(StyleContext);
-  const t = loadT(props.client?.preferences?.translations);
-  const customFeatures = loadCustomFeatures(
-    props.client?.preferences?.custom_features
-  );
+  const t = useTranslator(props.client, styleContext);
+  const customFeatures = useCustomFeatures(props.client, styleContext);
 
   const verifyNames = async (): Promise<void> => {
     setLoading(true);
