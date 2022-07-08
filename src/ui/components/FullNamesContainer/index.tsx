@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
@@ -14,29 +14,33 @@ import AbsentName from "../AbsentName";
 import styles from "../Container/styles.module.css";
 import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
-import { UserPermissions } from "../../../types/permissions";
 import { NameOwner } from "gpdb-api-client";
 import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
-import StyleContext from "../../contexts/style";
-import { useNotifications } from "../../hooks/useNotification";
-import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import { nameExist } from "./helper-methods";
-import { RecorderCloseOptions } from "../Recorder/types/handlersTypes";
-import { ConstantOverrides } from "../../customFeaturesManager";
-import useOnRecorderCloseStrategy from "../../hooks/FullnamesContainer/useOnRecorderCloseStrategy";
+import useFeaturesManager from "../../hooks/useFeaturesManager";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
+import { UserPermissions } from "../../../types/permissions";
+import useOnRecorderClose from "../../hooks/FullnamesContainer/useOnRecorderClose";
 
 interface Props {
   names: NameOption[];
   onSelect?: (NameOption) => void;
   termsAndConditions?: TermsAndConditions;
   controller: IFrontController;
-  permissions: UserPermissions;
+  permissions?: UserPermissions;
 }
 
 const cx = classNames.bind(styles);
 
 const FullNamesContainer = (props: Props): JSX.Element => {
+  const customFeatures = useCustomFeatures(props.controller);
+
+  const { can } = useFeaturesManager(
+    props.controller.permissions,
+    customFeatures
+  );
+
   const {
     pronunciations,
     setPronunciations,
@@ -47,16 +51,37 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     setRecorderClosed,
     setRecorderOpen,
   ] = useRecorderState();
-  const { setNotification } = useNotifications();
 
   const { isOpen: isRecorderOpen } = recorderState;
+
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
   const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
 
   const fullNamesObject = useRef([]);
-  const { customFeatures } = useContext(StyleContext);
+
+  const permissions = props.permissions;
+
+  const canComplexSearch = can("pronunciation", "search");
+  const canSearchBySig = can("pronunciation", "search_by_sig");
+  const canCreateRecordingRequest =
+    permissions?.canRecordingRequest.create || can("createRecordingRequest");
+  const canFindRecordingRequest = can("findRecordingRequest");
+
+  const canUserResponse = useMemo(
+    () =>
+      permissions?.canUserResponse?.create ||
+      can("createUserResponse", nameOwner),
+    [nameOwner, props.permissions]
+  );
+
+  const canRecordOrgPeer = useMemo(
+    () =>
+      permissions?.canPronunciation?.create ||
+      can("createOrgPeerRecording", nameOwner),
+    [nameOwner, props.permissions]
+  );
 
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
@@ -140,12 +165,9 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
     setNameOwner(name.owner);
 
-    if (
-      name.value.includes("@") &&
-      props.permissions.canPronunciation.search_by_sig
-    ) {
+    if (name.value.includes("@") && canSearchBySig) {
       await searchBySig(name);
-    } else if (props.permissions.canPronunciation.search) {
+    } else if (canComplexSearch) {
       await complexSearch(name)
         .then(() => sendAnalytics(name))
         .catch((e) => console.log(e));
@@ -199,35 +221,20 @@ const FullNamesContainer = (props: Props): JSX.Element => {
     return recordings?.length > 0 ? recordings[0] : null;
   }, [pronunciations, recorderState]);
 
-  const run = useOnRecorderCloseStrategy({
+  const onRecorderClose = useOnRecorderClose({
     controller: props.controller,
     requesterPeerPronunciation: selfRecorderedPronunciation,
     pronunciations,
     cachedRecordingNameType: recorderState.type,
     customFeaturesManager: customFeatures,
-    autoclose:
-      customFeatures.getValue(ConstantOverrides.RestorePronunciationTime) ||
-      RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY,
     reload: reloadName,
-    setNotification,
     setLoading,
     setRecorderClosed,
     setPronunciations,
   });
 
-  const onRecorderClose = async (option: RecorderCloseOptions): Promise<void> =>
-    await run(option);
-
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, props.termsAndConditions);
-
-  const canRecordOrgPeer = (ownerSignature: string): boolean =>
-    customFeatures.canRecordOrgPeer(ownerSignature) &&
-    props.permissions.canPronunciation.create;
-
-  const canUserResponse = (ownerSignature: string): boolean =>
-    customFeatures.canUserResponse(ownerSignature) &&
-    props.permissions.canUserResponse.create;
 
   useEffect(() => {
     loadName(props.names[0]);
@@ -241,9 +248,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         value={currentPronunciation}
         loading={loading}
         hideActions={
-          props.permissions.canPronunciation.search &&
-          !currentPronunciation &&
-          nameParts.length > 0
+          canComplexSearch && !currentPronunciation && nameParts.length > 0
         }
       />
 
@@ -256,7 +261,7 @@ const FullNamesContainer = (props: Props): JSX.Element => {
           />
         )}
 
-      {props.permissions.canPronunciation.search && !isRecorderOpen && (
+      {canComplexSearch && !isRecorderOpen && (
         <>
           {nameParts.map((name, index) => (
             <React.Fragment key={name.key}>
@@ -267,20 +272,16 @@ const FullNamesContainer = (props: Props): JSX.Element => {
                   type={name.type}
                   owner={nameOwner}
                   reload={reloadName}
-                  canRecord={canRecordOrgPeer(nameOwner.signature)}
+                  canRecord={canRecordOrgPeer}
                   pronunciationNameClass="ft-17"
-                  canUserResponse={canUserResponse(nameOwner.signature)}
+                  canUserResponse={canUserResponse}
                   onRecorderClick={openRecorder}
                 />
               ) : (
                 <AbsentName
-                  canRecordingRequestCreate={
-                    props.permissions.canRecordingRequest.create
-                  }
-                  canPronunciationCreate={canRecordOrgPeer(nameOwner.signature)}
-                  canRecordingRequestFind={
-                    props.permissions.canRecordingRequest.find
-                  }
+                  canRecordingRequestCreate={canCreateRecordingRequest}
+                  canPronunciationCreate={canRecordOrgPeer}
+                  canRecordingRequestFind={canFindRecordingRequest}
                   name={name.key}
                   type={name.type}
                   owner={nameOwner}
@@ -297,18 +298,16 @@ const FullNamesContainer = (props: Props): JSX.Element => {
         </>
       )}
 
-      {props.permissions.canPronunciation.search &&
-        isRecorderOpen &&
-        !loading && (
-          <Recorder
-            name={recorderState.name}
-            type={recorderState.type}
-            owner={nameOwner}
-            onRecorderClose={onRecorderClose}
-            pronunciation={selfRecorderedPronunciation}
-            termsAndConditions={recorderState.termsAndConditions}
-          />
-        )}
+      {canComplexSearch && isRecorderOpen && !loading && (
+        <Recorder
+          name={recorderState.name}
+          type={recorderState.type}
+          owner={nameOwner}
+          onRecorderClose={onRecorderClose}
+          pronunciation={selfRecorderedPronunciation}
+          termsAndConditions={recorderState.termsAndConditions}
+        />
+      )}
     </>
   );
 };

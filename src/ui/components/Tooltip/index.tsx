@@ -1,18 +1,14 @@
 import React, { useContext } from "react";
 import ControllerContext from "../../contexts/controller";
-import StyleContext from "../../contexts/style";
-import loadCustomFeatures from "../../hooks/loadCustomFatures";
 import ReactTooltip, { TooltipProps } from "react-tooltip";
 import { ConstantOverrides } from "../../customFeaturesManager";
 import { BRAND, WHITE } from "../../styles/variables/colors";
 import { TOOLTIP_DELAY } from "../../../constants";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
 
 const Tooltip = (props: TooltipProps): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const customFeatures =
-    styleContext.customFeatures ||
-    loadCustomFeatures(controller?.preferences?.custom_features);
+  const customFeatures = useCustomFeatures(controller);
 
   return (
     <ReactTooltip
