@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import ControllerContext from "../../../contexts/controller";
-import StyleContext from "../../../contexts/style";
-import loadT from "../../../hooks/LoadT";
 import { useNotifications } from "../../../hooks/useNotification";
+import useTranslator from "../../../hooks/useTranslator";
 import styles from "./styles.module.css";
 
 interface Props {
@@ -15,8 +14,7 @@ const RestorePronunciationNotification = ({
   onClick,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const styleContext = useContext(StyleContext);
-  const t = styleContext.t || loadT(controller?.preferences?.translations);
+  const t = useTranslator(controller);
 
   const { clearNotification } = useNotifications();
 
