@@ -78,6 +78,8 @@ const MyInfo = (props: Props): JSX.Element => {
     // eslint-disable-next-line
     const share_urls: Array<string> = customFeatures.getMetadata(Features.Share)["available_urls"];
 
+    if (!share_urls) return;
+
     return share_urls
       .map((item) => {
         if (item === "defaultAudio" && pronunciation.audioSrc)
