@@ -17,9 +17,8 @@ export const useDestroyPronunciationFeatures = (
   customFeaturesManager: ICustomFeaturesManager
 ): DestroyPronunciationFeatures => {
   const { canPronunciation } = usePermissions(permissions);
-  const customDestroy = (
-    customFeaturesManager: ICustomFeaturesManager
-  ): boolean => {
+
+  const customDestroy = (): boolean => {
     const customDestroyFeaturePresent = customFeaturesManager.isPresent(
       "recordings_custom_destroy"
     );
