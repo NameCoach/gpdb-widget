@@ -5,12 +5,15 @@ interface Props {
   client: IFrontController
 }
 
+const myName = "Jack Green"
+const myEmail = "jack@name-coach.com"
+
 export const me = {
-  value: 'Jack Green',
+  value: myName,
   owner: {
-    signature: 'jack@name-coach.com',
+    signature: myEmail,
     signatureType: 'email',
-    email: 'jack@name-coach.com'
+    email: myEmail,
   }
 };
 
