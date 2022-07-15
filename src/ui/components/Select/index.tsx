@@ -5,12 +5,22 @@ export interface Option {
   value: string | number;
   label: string;
 }
+
+interface CustomStyles {
+  control: object;
+  singleValue: object;
+  menu: object;
+  menuList: object;
+  valueContainer: object;
+}
+
 interface Props {
   onChange: (Option) => void;
   options: Option[];
   className?: string;
-  styles?: { control: object; singleValue: object };
+  styles?: CustomStyles;
   value?: Option;
+  filterOption?: (Option) => boolean;
 }
 
 const theme = (theme) => ({
@@ -23,7 +33,15 @@ const theme = (theme) => ({
   },
 });
 
-const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
+const customStyles = (
+  controlStyles = {
+    control: {},
+    singleValue: {},
+    menu: {},
+    menuList: {},
+    valueContainer: {},
+  }
+) => ({
   control: (provided, state) => ({
     ...provided,
     minHeight: "30px",
@@ -39,6 +57,7 @@ const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
       height: labelLength > 30 ? "45px" : "30px",
       padding: "0 6px",
       color: "black",
+      ...controlStyles.valueContainer,
     };
   },
   singleValue: (provided, state) => ({
@@ -59,6 +78,12 @@ const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
   menuList: (provided) => ({
     ...provided,
     color: "black",
+    ...controlStyles.menuList,
+  }),
+  menu: (provided) => ({
+    ...provided,
+    color: "black",
+    ...controlStyles.menu,
   }),
 });
 
@@ -79,6 +104,7 @@ const SelectComponent = (props: Props): JSX.Element => {
       isSearchable={false}
       theme={theme}
       styles={customStyles(props.styles)}
+      filterOption={props.filterOption}
     />
   );
 };
