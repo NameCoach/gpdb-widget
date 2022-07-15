@@ -1,0 +1,45 @@
+@import "./fonts/fonts.css";
+
+.input {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  border-style: solid;
+  border-radius: 10px;
+  min-height: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.container {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.row {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.m_10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+}
