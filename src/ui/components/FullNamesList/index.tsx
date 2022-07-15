@@ -2,12 +2,12 @@ import React, { useEffect, useMemo, useState, useContext } from "react";
 import Tooltip from "../Tooltip";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
-import Player from "../Player";
 import Loader from "../Loader";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
+import FullNameLine from "../FullNameLine";
 
 export interface NameOption {
   key: string;
@@ -25,11 +25,33 @@ export interface Props {
 
 const cx = classNames.bind(styles);
 const selectStyles = {
-  control: { fontWeight: "bold" },
+  control: {
+    fontWeight: 400,
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    borderRadius: "6px",
+    border: "none",
+  },
+  valueContainer: {
+    fontStyle: "normal",
+    fontWeight: 400,
+    fontSize: "14px",
+  },
   singleValue: {
     textOverflow: "initial",
     whiteSpace: "normal",
     wordBreak: "break-word",
+  },
+  menu: {
+    lineHeight: "17px",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    borderRadius: "6px",
+    border: "none",
+  },
+  menuList: {
+    fontStyle: "normal",
+    fontWeight: 400,
+    fontSize: "14px",
+    color: "#333333",
   },
 };
 
@@ -83,6 +105,7 @@ const FullNamesList = (props: Props): JSX.Element => {
               options={options}
               value={selectValue}
               styles={selectStyles}
+              filterOption={(o) => o.value !== selectValue.value}
             />
           </div>
         </div>
@@ -95,16 +118,13 @@ const FullNamesList = (props: Props): JSX.Element => {
           <span className={cx(styles.hint)}>not available</span>
         )}
         {!props.hideActions && !props.loading && props.value && (
-          <Player
-            audioSrc={props.value.audioSrc}
-            audioCreator={props.value.audioCreator}
+          <FullNameLine
+            value={props.value}
+            fullName={selectValue.label}
             autoplay={autoplay}
           />
         )}
       </div>
-      {!props.loading && props.value?.phoneticSpelling && (
-        <div className={styles.phonetic}>{props.value.phoneticSpelling}</div>
-      )}
     </>
   );
 };
