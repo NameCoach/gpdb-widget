@@ -56,7 +56,7 @@ const PronunciationMyInfoWidget = ({
     <div className={cx(styles.container)}>
       {names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
         <>
-          <div className={cx(styles.title, styles.m_20)}>
+          <div className={cx(styles.title, styles.m_10)}>
             {t("pronunciations_section_name", "Pronunciations")}
           </div>
           <FullNamesContainer
