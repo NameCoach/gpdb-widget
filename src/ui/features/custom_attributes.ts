@@ -67,11 +67,13 @@ export const useCustomAttributesFeatures = (
     const sourceIsNameBadge =
       pronunciation.sourceType === SourceType.HedbNameBadge;
     const sourceIsGpdb = pronunciation.sourceType === SourceType.Gpdb;
+    const sourceIsHedb = pronunciation.sourceType === SourceType.Hedb;
 
-    return (
-      (sourceIsNameBadge && canCreateHedbNameBadgeCustomAttributes()) ||
-      (sourceIsGpdb && canCreateGpdbCustomAttributes())
-    );
+    const canEditNameBadge =
+      sourceIsNameBadge && canCreateHedbNameBadgeCustomAttributes();
+    const canEditGpdb = sourceIsGpdb && canCreateGpdbCustomAttributes();
+
+    return (canEditNameBadge || canEditGpdb) && !sourceIsHedb;
   };
 
   const showCustomAttributesForSelf = (
