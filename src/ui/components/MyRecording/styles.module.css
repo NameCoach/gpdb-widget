@@ -13,3 +13,12 @@
 .actions {
   composes: actions from "../../styles/outlook.css";
 }
+
+.unavailable_hint {
+  position: relative;
+  font-size: 12px;
+  word-break: keep-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
