@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useState, useContext } from "react";
 import Tooltip from "../Tooltip";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
-import Loader from "../Loader";
 import styles from "./styles.module.css";
-import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
@@ -20,10 +18,9 @@ export interface Props {
   value: Pronunciation;
   loading?: boolean;
   onSelect?: (NameOption) => PromiseLike<void>;
-  hideActions?: boolean;
+  hideFullName?: boolean;
 }
 
-const cx = classNames.bind(styles);
 const selectStyles = {
   control: {
     fontWeight: 400,
@@ -84,10 +81,10 @@ const FullNamesList = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div className={cx(styles.wrapper)}>
-        <div className={cx(styles.control)}>
+      <div className={styles.wrapper}>
+        <div className={styles.control}>
           <Tooltip
-            className={cx(styles.tooltip)}
+            className={styles.tooltip}
             id={tooltipId}
             place="top"
             effect="solid"
@@ -109,19 +106,12 @@ const FullNamesList = (props: Props): JSX.Element => {
             />
           </div>
         </div>
-        {props.loading && (
-          <div>
-            <Loader />
-          </div>
-        )}
-        {!props.hideActions && !props.loading && !props.value && (
-          <span className={cx(styles.hint)}>not available</span>
-        )}
-        {!props.hideActions && !props.loading && props.value && (
+        {!props.hideFullName && selectValue && (
           <FullNameLine
-            value={props.value}
+            pronunciation={props.value}
             fullName={selectValue.label}
             autoplay={autoplay}
+            loading={props.loading}
           />
         )}
       </div>
