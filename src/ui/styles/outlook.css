@@ -14,6 +14,8 @@
 
 .container {
   font-family: 'Montserrat', sans-serif;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 .title {
@@ -21,18 +23,11 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 22px;
-  margin-left: 3%;
-  margin-right: 3%;
 }
 
 .row {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 22px;  display: flex;
+  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
 }
 
 .m_10 {
@@ -42,4 +37,16 @@
 
 .actions {
   display: flex;
+  align-items: center;
 }
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid $colors_black;
+}
+
+.invisible {
+  border-top: none;
+}
+

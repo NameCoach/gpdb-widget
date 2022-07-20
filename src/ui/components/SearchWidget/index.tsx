@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import IFrontController from "../../../types/front-controller";
-import styles from "../PronunciationMyInfoWidget/styles.module.css";
+import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import NamesListContainer from "./Adapter";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
