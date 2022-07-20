@@ -1,32 +1,53 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
 import Pronunciation from "../../../types/resources/pronunciation";
 import styles from "./styles.module.css";
 import Player from "../Player";
-import CustomAttributes from "../CustomAttributes";
+import RecordAction from "../Actions/Record";
+import DisabledPlayer from "../Player/Disabled";
+import Loader from "../Loader";
 
 export interface Props {
   fullName: string;
-  value: Pronunciation;
-  autoplay: boolean;
+  pronunciation?: Pronunciation;
+  showRecordAction?: boolean;
+  isRecorderOpen?: boolean;
+  onRecorderOpen?: MouseEventHandler;
+  autoplay?: boolean;
+  loading?: boolean;
 }
 
 const FullNameLine = (props: Props): JSX.Element => (
   <>
     <div className={styles.container}>
       <div className={styles.name_line}>{props.fullName}</div>
-      <Player
-        audioSrc={props.value.audioSrc}
-        audioCreator={props.value.audioCreator}
-        autoplay={props.autoplay}
-      />
-    </div>
-    <div className={styles.phonetic}>{props.value.phoneticSpelling}</div>
-    {props.value &&
-      props.value.customAttributes &&
-      props.value.customAttributes.length > 0 && (
-        <CustomAttributes attributes={props.value.customAttributes} disabled />
+      {props.loading && <Loader />}
+      {!props.loading && !props.isRecorderOpen && (
+        <div className={styles.actions}>
+          {props.pronunciation ? (
+            <Player
+              audioSrc={props.pronunciation.audioSrc}
+              audioCreator={props.pronunciation.audioCreator}
+              autoplay={props.autoplay}
+            />
+          ) : (
+            <DisabledPlayer />
+          )}
+          {props.showRecordAction && (
+            <RecordAction
+              active={props.isRecorderOpen}
+              onClick={props.onRecorderOpen}
+              rerecord={!!props.pronunciation}
+            />
+          )}
+        </div>
       )}
+    </div>
+    {props.pronunciation && (
+      <div className={styles.phonetic}>
+        {props.pronunciation.phoneticSpelling}
+      </div>
+    )}
   </>
 );
 
