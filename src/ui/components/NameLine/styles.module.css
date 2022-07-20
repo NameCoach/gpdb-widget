@@ -1,7 +1,6 @@
 .pronunciation {
   position: relative;
   display: flex;
-  justify-content: space-between;
 }
 
 .name_line_container {
@@ -11,9 +10,8 @@
 }
 
 .pronunciation__name {
-  flex: 0 0 36%;
+  flex: 0 0 40%;
   max-width: 75%;
-  padding-right: .75rem;
   font-size: 20px;
   font-weight: bold;
   word-wrap: break-word;
@@ -23,13 +21,21 @@
 
 .ft-17 {
   font-size: 17px;
+  display: block;
+}
+
+.pronunciation__tail {
+  position: relative;
+  display: flex;
+  flex: 0 0 60%;
+  justify-content: space-between;
 }
 
 .pronunciation__mid {
   position: relative;
   display: flex;
-  flex: 0 0 36%;
-  max-width: 36%;
+  flex: 1 0 55%;
+  max-width: 55%;
   font-size: 12px;
   font-weight: 400;
   line-height: 12px;
@@ -131,8 +137,8 @@
 
 .pronunciation__actions {
   display: flex;
-  flex: 0 0 25%;
-  max-width: 25%;
+  flex: 0 0 45%;
+  max-width: 45%;
   justify-content: flex-end;
 }
 
