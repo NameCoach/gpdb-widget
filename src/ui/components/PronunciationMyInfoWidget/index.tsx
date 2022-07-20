@@ -6,9 +6,9 @@ import StyleContext from "../../contexts/style";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
-import FullNamesContainer from "../FullNamesContainer";
+import PronunciationsBlock from "../PronunciationsBlock";
 import NoPermissionsError from "../NoPermissionsError";
-import MyInfo from "../MyInfo";
+import PersonalBlock from "../PersonalBlock";
 import { HtmlComponents } from "../../customFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import usePermissions from "../../hooks/usePermissions";
@@ -56,23 +56,19 @@ const PronunciationMyInfoWidget = ({
     <div className={cx(styles.container)}>
       {names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
         <>
-          <div className={cx(styles.title, styles.m_10)}>
-            {t("pronunciations_section_name", "Pronunciations")}
-          </div>
-          <FullNamesContainer
+          <PronunciationsBlock
             names={names}
-            termsAndConditions={termsAndConditions}
             controller={client}
+            termsAndConditions={termsAndConditions}
           />
         </>
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
         <>
-          <hr className={styles.divider} />
-          <MyInfo
-            controller={client}
+          <PersonalBlock
             name={name}
+            controller={client}
             termsAndConditions={termsAndConditions}
           />
           {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}
