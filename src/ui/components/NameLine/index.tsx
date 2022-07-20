@@ -113,7 +113,7 @@ const NameLine = (props: Props): JSX.Element => {
         {!currentPronunciation ? (
           <Loader />
         ) : (
-          <>
+          <div className={cx(styles.pronunciation__tail, "pronunciation_tail")}>
             <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
               <Select
                 options={options}
@@ -152,7 +152,7 @@ const NameLine = (props: Props): JSX.Element => {
                 />
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
 

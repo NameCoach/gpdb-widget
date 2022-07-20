@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
@@ -11,17 +11,19 @@ import Name, { NameTypes } from "../../../types/resources/name";
 import { usePronunciations } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
 import AbsentName from "../AbsentName";
-import styles from "../Container/styles.module.css";
+import CustomAttributes from "../CustomAttributes";
+import styles from "./styles.module.css";
 import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
 import { NameOwner } from "gpdb-api-client";
-import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import { nameExist } from "./helper-methods";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import { UserPermissions } from "../../../types/permissions";
-import useOnRecorderClose from "../../hooks/FullnamesContainer/useOnRecorderClose";
+import useOnRecorderClose from "../../hooks/PronunciationsBlock/useOnRecorderClose";
+import StyleContext from "../../contexts/style";
+import useTranslator from "../../hooks/useTranslator";
 
 interface Props {
   names: NameOption[];
@@ -33,8 +35,11 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const FullNamesContainer = (props: Props): JSX.Element => {
+const PronunciationsBlock = (props: Props): JSX.Element => {
   const customFeatures = useCustomFeatures(props.controller);
+  const styleContext = useContext(StyleContext);
+
+  const t = useTranslator(props.controller, styleContext);
 
   const { can } = useFeaturesManager(
     props.controller.permissions,
@@ -242,17 +247,30 @@ const FullNamesContainer = (props: Props): JSX.Element => {
 
   return (
     <>
+      <div className={cx(styles.title, styles.m_10)}>
+        {t("pronunciations_section_name", "Pronunciations")}
+      </div>
       <FullNamesList
         names={props.names}
         onSelect={onSelect}
         value={currentPronunciation}
         loading={loading}
-        hideActions={
+        hideFullName={
           canComplexSearch && !currentPronunciation && nameParts.length > 0
         }
       />
 
-      {canComplexSearch && !isRecorderOpen && (
+      {!loading &&
+        currentPronunciation &&
+        currentPronunciation.customAttributes &&
+        currentPronunciation.customAttributes.length > 0 && (
+          <CustomAttributes
+            attributes={currentPronunciation.customAttributes}
+            disabled
+          />
+        )}
+
+      {canComplexSearch && !isRecorderOpen && !currentPronunciation && (
         <>
           {nameParts.map((name, index) => (
             <React.Fragment key={name.key}>
@@ -303,4 +321,4 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   );
 };
 
-export default FullNamesContainer;
+export default PronunciationsBlock;
