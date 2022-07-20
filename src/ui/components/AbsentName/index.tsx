@@ -83,40 +83,42 @@ const AbsentName = (props: Props): JSX.Element => {
       >
         {props.name}
       </span>
-      <span
-        className={nameLineStyles.pronunciation__mid}
-        style={customFeatures.getStyle(
-          StyleOverrides.PronunciationNameLineMessage
-        )}
-      >
-        {!loading && renderRequestedMessage()}
-        {loading && <Loader inline sm />}
-      </span>
+      <div className={cx(nameLineStyles.pronunciation__tail)}>
+        <span
+          className={nameLineStyles.pronunciation__mid}
+          style={customFeatures.getStyle(
+            StyleOverrides.PronunciationNameLineMessage
+          )}
+        >
+          {!loading && renderRequestedMessage()}
+          {loading && <Loader inline sm />}
+        </span>
 
-      <div
-        className={
-          isOld
-            ? cx(nameLineStyles.pronunciation__actions, nameLineStyles.old)
-            : nameLineStyles.pronunciation__actions
-        }
-      >
-        <DisabledPlayer className={nameLineStyles.pronunciation__action} />
-        {props.canRecordingRequestCreate && (
-          <RequestAction
-            className={nameLineStyles.pronunciation__action}
-            onClick={onRequest}
-            disabled={isRequested}
-          />
-        )}
-        {props.canPronunciationCreate && (
-          <RecordAction
-            className={nameLineStyles.pronunciation__action}
-            onClick={(): void =>
-              props.onRecorderClick &&
-              props.onRecorderClick(props.name, props.type)
-            }
-          />
-        )}
+        <div
+          className={
+            isOld
+              ? cx(nameLineStyles.pronunciation__actions, nameLineStyles.old)
+              : nameLineStyles.pronunciation__actions
+          }
+        >
+          <DisabledPlayer className={nameLineStyles.pronunciation__action} />
+          {props.canRecordingRequestCreate && (
+            <RequestAction
+              className={nameLineStyles.pronunciation__action}
+              onClick={onRequest}
+              disabled={isRequested}
+            />
+          )}
+          {props.canPronunciationCreate && (
+            <RecordAction
+              className={nameLineStyles.pronunciation__action}
+              onClick={(): void =>
+                props.onRecorderClick &&
+                props.onRecorderClick(props.name, props.type)
+              }
+            />
+          )}
+        </div>
       </div>
     </div>
   );
