@@ -96,15 +96,9 @@ const App = () => {
 
       {!loading && <Widget client={client} name={name} style={style} />}
 
-      <hr className='divider'/>
-
       {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
 
-      <hr className='divider'/>
-
       {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
-
-      <hr className='divider'/>
 
       <SearchWidget client={client} />
     </div>
