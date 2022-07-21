@@ -80,6 +80,7 @@ const PronunciationMyInfoWidget = ({
   return (
     <StyleContext.Provider
       value={{
+        ...styleContext,
         displayRecorderSavingMessage:
           styleContext?.displayRecorderSavingMessage,
         customFeatures,

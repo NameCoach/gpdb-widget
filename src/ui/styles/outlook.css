@@ -16,6 +16,11 @@
   font-family: 'Montserrat', sans-serif;
   margin-left: 3%;
   margin-right: 3%;
+  color: #333333;
+}
+
+.block {
+  margin-top: 20px;
 }
 
 .title {
@@ -28,6 +33,7 @@
 .row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .m_10 {
