@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 
 import Pronunciation from "../../../types/resources/pronunciation";
-import Loader from "../Loader";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
@@ -31,48 +30,55 @@ export interface Props {
 
 const cx = classNames.bind(styles);
 
-const MyRecording = (props: Props): JSX.Element => {
+const MyRecording = ({
+  pronunciation,
+  name,
+  loading,
+  isRecorderOpen,
+  onRecorderOpen,
+  showRecordAction,
+  myInfoHintShow,
+  canCreateSelfRecording,
+}: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
 
   const customFeatures = useCustomFeatures(null, styleContext);
   const t = useTranslator(null, styleContext);
   const [canShare, copyButtons] = useRecordingShare(
-    props.loading,
-    props.pronunciation,
+    loading,
+    pronunciation,
     customFeatures
   );
 
   return (
-    <>
+    <div className={styles.block}>
       <div className={cx(styles.row)}>
         <span className={cx(styles.title, styles.m_10)}>
           {t("my_info_section_name", "My Recording")}
         </span>
         <div className={cx(styles.actions)}>
-          {!props.loading && canShare && (
+          {!loading && canShare && (
             <ShareAudioUrlAction buttons={copyButtons} />
           )}
         </div>
       </div>
-      {!props.loading && (
-        <FullNameLine
-          pronunciation={props.pronunciation}
-          fullName={props.name.value}
-          showRecordAction={props.showRecordAction}
-          isRecorderOpen={props.isRecorderOpen}
-          onRecorderOpen={props.onRecorderOpen}
-        />
-      )}
-      {!props.loading &&
-        !props.pronunciation &&
-        props.canCreateSelfRecording &&
-        props.myInfoHintShow && (
+      <FullNameLine
+        pronunciation={pronunciation}
+        fullName={name.value}
+        showRecordAction={showRecordAction}
+        isRecorderOpen={isRecorderOpen}
+        onRecorderOpen={onRecorderOpen}
+      />
+      {!loading &&
+        !pronunciation &&
+        canCreateSelfRecording &&
+        myInfoHintShow && (
           <div className={styles.unavailable_hint}>
             Your name recording is unavailable, click on the microphone icon to
             record your name
           </div>
         )}
-    </>
+    </div>
   );
 };
 

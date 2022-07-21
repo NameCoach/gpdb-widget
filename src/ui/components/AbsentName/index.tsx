@@ -12,6 +12,7 @@ import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
 import DisabledPlayer from "../Player/Disabled";
 import { StyleOverrides } from "../../customFeaturesManager";
+import useTheme from "../../hooks/useTheme";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -23,7 +24,6 @@ interface Props {
   canRecordingRequestCreate: boolean;
   canRecordingRequestFind: boolean;
   canPronunciationCreate: boolean;
-  pronunciationNameClass?: string;
 }
 
 const AbsentName = (props: Props): JSX.Element => {
@@ -32,6 +32,7 @@ const AbsentName = (props: Props): JSX.Element => {
   const [isRequested, setRequest] = useState(false);
   const [loading, setLoading] = useState(true);
   const { t, customFeatures } = useContext(StyleContext);
+  const { theme } = useTheme();
 
   const onRequest = async (): Promise<void> => {
     setLoading(true);
@@ -68,24 +69,25 @@ const AbsentName = (props: Props): JSX.Element => {
   return (
     <div
       className={cx(
-        styles.pronunciation__not_exist,
-        nameLineStyles.pronunciation
+        styles[`pronunciation__not_exist--${theme}`],
+        nameLineStyles.pronunciation,
+        nameLineStyles[`pronunciation--${theme}`]
       )}
     >
       <span
         className={cx(
           nameLineStyles.pronunciation__name,
-          nameLineStyles.name_not_exist,
-          props.pronunciationNameClass
-            ? nameLineStyles[props.pronunciationNameClass]
-            : ""
+          nameLineStyles[`name--${theme}`]
         )}
       >
         {props.name}
       </span>
       <div className={cx(nameLineStyles.pronunciation__tail)}>
         <span
-          className={nameLineStyles.pronunciation__mid}
+          className={cx(
+            nameLineStyles.pronunciation__mid,
+            nameLineStyles[`mid--${theme}`]
+          )}
           style={customFeatures.getStyle(
             StyleOverrides.PronunciationNameLineMessage
           )}
@@ -97,8 +99,15 @@ const AbsentName = (props: Props): JSX.Element => {
         <div
           className={
             isOld
-              ? cx(nameLineStyles.pronunciation__actions, nameLineStyles.old)
-              : nameLineStyles.pronunciation__actions
+              ? cx(
+                  nameLineStyles.pronunciation__actions,
+                  nameLineStyles.old,
+                  nameLineStyles[`actions--${theme}`]
+                )
+              : cx(
+                  nameLineStyles.pronunciation__actions,
+                  nameLineStyles[`actions--${theme}`]
+                )
           }
         >
           <DisabledPlayer className={nameLineStyles.pronunciation__action} />
