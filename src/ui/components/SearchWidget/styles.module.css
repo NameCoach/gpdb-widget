@@ -1,3 +1,7 @@
+.block {
+  composes: block from "../../styles/outlook.css";
+}
+
 .container {
   composes: container from "../../styles/outlook.css";
 }
