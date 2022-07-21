@@ -19,7 +19,7 @@ import loadExtensionClient from "./core/loadExtensionClient";
 // INTERFACES
 import NameParser, { NPResult } from "./types/name-parser";
 import { Configuration } from "gpdb-api-client";
-import IStyleContext from "./types/style-context";
+import IStyleContext, { Theme } from "./types/style-context";
 import ISystemContext from "./types/system-context";
 
 // CONTEXTS
@@ -45,6 +45,7 @@ export {
   FullNamesList,
   ControllerContext,
   StyleContext,
+  Theme,
   SystemContext,
   IFrontController,
   IStyleContext,
