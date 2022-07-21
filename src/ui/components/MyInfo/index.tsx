@@ -44,23 +44,21 @@ const MyInfo = (props: Props): JSX.Element => {
   };
 
   return (
-    <>
-      <div>
-        <div className={cx(styles.row)}>
-          <span className={cx(styles.title, styles.m_10)}>
-            {t("my_info_section_name", "My Info")}
-          </span>
+    <div className={styles.block}>
+      <div className={cx(styles.row)}>
+        <span className={cx(styles.title, styles.m_10)}>
+          {t("my_info_section_name", "My Info")}
+        </span>
 
-          <div className={cx(styles.actions)}>
-            {props.loading && <Loader />}
+        <div className={cx(styles.actions)}>
+          {props.loading && <Loader />}
 
-            {!props.loading && (
-              <CollapsableAction
-                active={collapsableActive}
-                onClick={onCollapsable}
-              />
-            )}
-          </div>
+          {!props.loading && (
+            <CollapsableAction
+              active={collapsableActive}
+              onClick={onCollapsable}
+            />
+          )}
         </div>
       </div>
 
@@ -74,7 +72,7 @@ const MyInfo = (props: Props): JSX.Element => {
           noBorder
         />
       )}
-    </>
+    </div>
   );
 };
 
