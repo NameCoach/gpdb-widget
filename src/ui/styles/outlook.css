@@ -1,0 +1,58 @@
+@import "./fonts/fonts.css";
+
+.input {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  border-style: solid;
+  border-radius: 10px;
+  min-height: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.container {
+  font-family: 'Montserrat', sans-serif;
+  margin-left: 3%;
+  margin-right: 3%;
+  color: #333333;
+}
+
+.block {
+  margin-top: 20px;
+}
+
+.title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.m_10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid $colors_black;
+}
+
+.invisible {
+  border-top: none;
+}
+
