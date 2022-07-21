@@ -282,7 +282,6 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
                   owner={nameOwner}
                   reload={reloadName}
                   canRecord={canRecordOrgPeer}
-                  pronunciationNameClass="ft-17"
                   canUserResponse={canUserResponse}
                   onRecorderClick={openRecorder}
                 />
@@ -294,7 +293,6 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
                   name={name.key}
                   type={name.type}
                   owner={nameOwner}
-                  pronunciationNameClass="ft-17"
                   onRecorderClick={openRecorder}
                 />
               )}
