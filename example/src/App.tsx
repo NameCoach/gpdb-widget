@@ -9,7 +9,11 @@ import {
   ExtensionWidget,
   InfoWidget,
   NotificationsProvider,
-  Notification, addOnDeviceChangeHandler, PronunciationMyInfoWidget
+  Notification,
+  StyleContext,
+  addOnDeviceChangeHandler,
+  PronunciationMyInfoWidget,
+  IStyleContext, Theme
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
 import { me, names } from "./examples/pronunciation-my-info-params";
@@ -61,6 +65,11 @@ const App = () => {
     parser
   );
 
+  const styleContext: IStyleContext = {
+    displayRecorderSavingMessage: true,
+    theme: Theme.Outlook,
+  };
+
   useEffect(() => {
     const load = async () => {
       await client.loadPermissions({ user_sig: userContext.signature, user_sig_type: userContext.signatureType } as permissionsLoadParams)
@@ -98,9 +107,10 @@ const App = () => {
 
       {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
 
-      {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
-
-      <SearchWidget client={client} />
+      <StyleContext.Provider value={styleContext}>
+        {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
+        <SearchWidget client={client} />
+      </StyleContext.Provider>
     </div>
   );
 
