@@ -37,7 +37,7 @@ const SearchWidget = (props: Props): JSX.Element => {
   };
 
   const renderContainer = (): JSX.Element => (
-    <div className={cx(styles.container)}>
+    <div className={cx(styles.container, styles.block)}>
       <Header />
 
       <div className={cx(styles.row)}>
