@@ -20,7 +20,6 @@ const useRecordingShare = (
           return { url: pronunciation.audioSrc, text: "Audio URL" };
 
         if (item === "nameBadge" && pronunciation.nameBadgeLink) {
-          console.warn("link", pronunciation.nameBadgeLink);
           return { url: pronunciation.nameBadgeLink, text: "NameBadge Link" };
         }
       })
