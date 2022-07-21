@@ -6,7 +6,7 @@ export interface Option {
   label: string;
 }
 
-interface CustomStyles {
+export interface CustomStyles {
   control: object;
   singleValue: object;
   menu: object;
