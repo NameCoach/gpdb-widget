@@ -1,7 +1,10 @@
 .pronunciation {
   position: relative;
   display: flex;
-  justify-content: space-between;
+}
+
+.pronunciation--outlook {
+  display: block;
 }
 
 .name_line_container {
@@ -11,9 +14,8 @@
 }
 
 .pronunciation__name {
-  flex: 0 0 36%;
+  flex: 0 0 40%;
   max-width: 75%;
-  padding-right: .75rem;
   font-size: 20px;
   font-weight: bold;
   word-wrap: break-word;
@@ -21,21 +23,41 @@
   margin-top: auto
 }
 
-.ft-17 {
-  font-size: 17px;
+.name--outlook {
+  font-weight: 500;
+  margin-bottom: 10px;
+  line-height: 19.5px;
+  font-size: 16px;
+}
+
+.pronunciation__tail {
+  position: relative;
+  display: flex;
+  flex: 0 0 60%;
+  justify-content: space-between;
+}
+
+.tail--outlook {
+  margin-top: 10px;
 }
 
 .pronunciation__mid {
   position: relative;
   display: flex;
-  flex: 0 0 36%;
-  max-width: 36%;
+  flex: 1 0 55%;
+  max-width: 55%;
   font-size: 12px;
   font-weight: 400;
-  line-height: 12px;
   color: $colors_pronunciation_mid;
   flex-direction: column;
   margin-top: auto
+}
+
+.mid--outlook {
+  font-size: 14px;
+  flex: 0 0 65%;
+  max-width: 65%;
+  color: $dark_grey;
 }
 
 .pronunciation__control {
@@ -131,9 +153,14 @@
 
 .pronunciation__actions {
   display: flex;
-  flex: 0 0 25%;
-  max-width: 25%;
+  flex: 0 0 45%;
+  max-width: 45%;
   justify-content: flex-end;
+}
+
+.actions--outlook {
+  flex: 0 0 30%;
+  max-width: 30%;
 }
 
 .phonetic {
