@@ -2,12 +2,11 @@ import React, { useEffect, useMemo, useState, useContext } from "react";
 import Tooltip from "../Tooltip";
 import Select, { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
-import Player from "../Player";
-import Loader from "../Loader";
 import styles from "./styles.module.css";
-import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
+import FullNameLine from "../FullNameLine";
+import useTheme from "../../hooks/useTheme";
 
 export interface NameOption {
   key: string;
@@ -20,18 +19,8 @@ export interface Props {
   value: Pronunciation;
   loading?: boolean;
   onSelect?: (NameOption) => PromiseLike<void>;
-  hideActions?: boolean;
+  hideFullName?: boolean;
 }
-
-const cx = classNames.bind(styles);
-const selectStyles = {
-  control: { fontWeight: "bold" },
-  singleValue: {
-    textOverflow: "initial",
-    whiteSpace: "normal",
-    wordBreak: "break-word",
-  },
-};
 
 const nameToOption = (name: NameOption): Option => ({
   label: name.value,
@@ -43,6 +32,7 @@ const FullNamesList = (props: Props): JSX.Element => {
   const [selectValue, setValue] = useState<Option>();
   const tooltipId = Date.now().toString();
   const { t } = useContext(StyleContext);
+  const { selectStyles, filterOption } = useTheme(FullNamesList.name);
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
@@ -62,10 +52,10 @@ const FullNamesList = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div className={cx(styles.wrapper)}>
-        <div className={cx(styles.control)}>
+      <div className={styles.wrapper}>
+        <div className={styles.control}>
           <Tooltip
-            className={cx(styles.tooltip)}
+            className={styles.tooltip}
             id={tooltipId}
             place="top"
             effect="solid"
@@ -83,28 +73,19 @@ const FullNamesList = (props: Props): JSX.Element => {
               options={options}
               value={selectValue}
               styles={selectStyles}
+              filterOption={filterOption(selectValue?.value)}
             />
           </div>
         </div>
-        {props.loading && (
-          <div>
-            <Loader />
-          </div>
-        )}
-        {!props.hideActions && !props.loading && !props.value && (
-          <span className={cx(styles.hint)}>not available</span>
-        )}
-        {!props.hideActions && !props.loading && props.value && (
-          <Player
-            audioSrc={props.value.audioSrc}
-            audioCreator={props.value.audioCreator}
+        {!props.hideFullName && selectValue && (
+          <FullNameLine
+            pronunciation={props.value}
+            fullName={selectValue.label}
             autoplay={autoplay}
+            loading={props.loading}
           />
         )}
       </div>
-      {!props.loading && props.value?.phoneticSpelling && (
-        <div className={styles.phonetic}>{props.value.phoneticSpelling}</div>
-      )}
     </>
   );
 };
