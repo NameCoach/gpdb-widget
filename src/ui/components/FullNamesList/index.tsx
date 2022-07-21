@@ -6,6 +6,7 @@ import styles from "./styles.module.css";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
+import useTheme from "../../hooks/useTheme";
 
 export interface NameOption {
   key: string;
@@ -21,37 +22,6 @@ export interface Props {
   hideFullName?: boolean;
 }
 
-const selectStyles = {
-  control: {
-    fontWeight: 400,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    borderRadius: "6px",
-    border: "none",
-  },
-  valueContainer: {
-    fontStyle: "normal",
-    fontWeight: 400,
-    fontSize: "14px",
-  },
-  singleValue: {
-    textOverflow: "initial",
-    whiteSpace: "normal",
-    wordBreak: "break-word",
-  },
-  menu: {
-    lineHeight: "17px",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    borderRadius: "6px",
-    border: "none",
-  },
-  menuList: {
-    fontStyle: "normal",
-    fontWeight: 400,
-    fontSize: "14px",
-    color: "#333333",
-  },
-};
-
 const nameToOption = (name: NameOption): Option => ({
   label: name.value,
   value: name.key,
@@ -62,6 +32,7 @@ const FullNamesList = (props: Props): JSX.Element => {
   const [selectValue, setValue] = useState<Option>();
   const tooltipId = Date.now().toString();
   const { t } = useContext(StyleContext);
+  const { selectStyles, filterOption } = useTheme(FullNamesList.name);
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
@@ -102,7 +73,7 @@ const FullNamesList = (props: Props): JSX.Element => {
               options={options}
               value={selectValue}
               styles={selectStyles}
-              filterOption={(o) => o.value !== selectValue.value}
+              filterOption={filterOption(selectValue?.value)}
             />
           </div>
         </div>
