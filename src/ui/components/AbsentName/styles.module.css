@@ -1,7 +1,4 @@
-.pronunciation__not_exist {
+.pronunciation__not_exist--default {
   color: $colors_pronunciation_mid;
 }
 
-.name__not_exist {
-  color: $colors_secondary_gray;
-}
