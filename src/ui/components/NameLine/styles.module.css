@@ -54,10 +54,10 @@
 }
 
 .mid--outlook {
-  font-size: 14px;
+  font-size: 12px;
   flex: 0 0 65%;
   max-width: 65%;
-  color: $dark_grey;
+  color: $colors_dark_grey;
 }
 
 .pronunciation__control {
