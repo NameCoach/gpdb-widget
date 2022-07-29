@@ -1,0 +1,4 @@
+.tooltip_button {
+  composes: tooltip_button from "../../../ModalTooltip/styles.module.css";
+  min-width: 144px;
+}
