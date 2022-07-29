@@ -6,10 +6,8 @@ import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
-import ShareAudioUrlAction from "../Actions/ShareAudioUrl";
-import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useTranslator from "../../hooks/useTranslator";
-import useRecordingShare from "../../hooks/useRecordingShare";
+import ShareRecording from "../Actions/ShareRecording";
 
 export interface NameOption {
   key: string;
@@ -41,14 +39,7 @@ const MyRecording = ({
   canCreateSelfRecording,
 }: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
-
-  const customFeatures = useCustomFeatures(null, styleContext);
   const t = useTranslator(null, styleContext);
-  const [canShare, copyButtons] = useRecordingShare(
-    loading,
-    pronunciation,
-    customFeatures
-  );
 
   return (
     <div className={styles.block}>
@@ -57,9 +48,7 @@ const MyRecording = ({
           {t("my_info_section_name", "My Recording")}
         </span>
         <div className={cx(styles.actions)}>
-          {!loading && canShare && (
-            <ShareAudioUrlAction buttons={copyButtons} />
-          )}
+          <ShareRecording loading={loading} pronunciation={pronunciation} />
         </div>
       </div>
       <FullNameLine
