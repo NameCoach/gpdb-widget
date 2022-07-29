@@ -1,11 +1,16 @@
 import Pronunciation from "../../types/resources/pronunciation";
 import { Features, FeaturesManager } from "../customFeaturesManager";
 
+export interface ShareButton {
+  text: string;
+  url: string;
+}
+
 const useRecordingShare = (
   loading: boolean,
   pronunciation: Pronunciation,
   customFeatures: FeaturesManager
-): any => {
+): [boolean, ShareButton[]] => {
   if (loading || !pronunciation) return [false, null];
 
   const getCopyButtons = () => {
@@ -20,7 +25,7 @@ const useRecordingShare = (
           return { url: pronunciation.audioSrc, text: "Audio URL" };
 
         if (item === "nameBadge" && pronunciation.nameBadgeLink) {
-          return { url: pronunciation.nameBadgeLink, text: "NameBadge Link" };
+          return { url: pronunciation.nameBadgeLink, text: "My NameBadge URL" };
         }
       })
       .filter((item) => item);
@@ -33,7 +38,7 @@ const useRecordingShare = (
     pronunciation &&
     copyButtons?.length > 0;
 
-  return [canShare, copyButtons] as const;
+  return [canShare, copyButtons as ShareButton[]];
 };
 
 export default useRecordingShare;
