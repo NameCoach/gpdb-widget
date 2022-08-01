@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  min-height: 30px;
 }
 
 .name_line {
@@ -10,6 +11,7 @@
   display: flex;
   align-items: center;
   word-break: break-all;
+  max-width: 85%;
 }
 
 .actions {
