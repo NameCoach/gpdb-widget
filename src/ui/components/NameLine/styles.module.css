@@ -55,14 +55,10 @@
 
 .mid--outlook {
   font-size: 12px;
+  line-height: 20px;
   flex: 0 0 65%;
   max-width: 65%;
   color: $colors_dark_grey;
-}
-
-.pronunciation__control {
-  width: 100%;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .pronunciation__select {
@@ -176,4 +172,8 @@
   display: flex;
   align-items: center;
   flex: 0;
+}
+
+.hidden {
+  display: none;
 }
