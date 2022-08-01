@@ -13,6 +13,7 @@ import StyleContext from "../../contexts/style";
 import DisabledPlayer from "../Player/Disabled";
 import { StyleOverrides } from "../../customFeaturesManager";
 import useTheme from "../../hooks/useTheme";
+import { Theme } from "../../../types/style-context";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -24,6 +25,7 @@ interface Props {
   canRecordingRequestCreate: boolean;
   canRecordingRequestFind: boolean;
   canPronunciationCreate: boolean;
+  isRecorderOpen?: boolean;
 }
 
 const AbsentName = (props: Props): JSX.Element => {
@@ -71,7 +73,8 @@ const AbsentName = (props: Props): JSX.Element => {
       className={cx(
         styles[`pronunciation__not_exist--${theme}`],
         nameLineStyles.pronunciation,
-        nameLineStyles[`pronunciation--${theme}`]
+        nameLineStyles[`pronunciation--${theme}`],
+        { hidden: theme === Theme.Outlook ? false : props.isRecorderOpen }
       )}
     >
       <span
@@ -82,7 +85,12 @@ const AbsentName = (props: Props): JSX.Element => {
       >
         {props.name}
       </span>
-      <div className={cx(nameLineStyles.pronunciation__tail)}>
+      <div
+        className={cx(
+          nameLineStyles.pronunciation__tail,
+          props.isRecorderOpen && nameLineStyles.hidden
+        )}
+      >
         <span
           className={cx(
             nameLineStyles.pronunciation__mid,

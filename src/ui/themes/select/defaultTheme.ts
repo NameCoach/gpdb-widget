@@ -2,7 +2,10 @@ import { SelectTheme } from "./index";
 
 export default {
   FullNamesList: {
-    control: { fontWeight: "bold" },
+    control: {
+      fontWeight: "bold",
+      boxShadow: null,
+    },
     singleValue: {
       textOverflow: "initial",
       whiteSpace: "normal",
