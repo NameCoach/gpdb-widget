@@ -18,6 +18,7 @@ import { getLabel } from "./helper-methods";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import useTranslator from "../../hooks/useTranslator";
 import useTheme from "../../hooks/useTheme";
+import { Theme } from "../../../types/style-context";
 
 const cx = classNames.bind(styles);
 
@@ -30,6 +31,7 @@ interface Props {
   canUserResponse: boolean;
   reload: (type: NameTypes) => void;
   onRecorderClick: (name, type) => void;
+  isRecorderOpen?: boolean;
 }
 
 const NameLine = (props: Props): JSX.Element => {
@@ -100,7 +102,11 @@ const NameLine = (props: Props): JSX.Element => {
   }, [props.pronunciations]);
 
   return (
-    <div className={cx(styles.pronunciation, "name_line_container")}>
+    <div
+      className={cx(styles.pronunciation, "name_line_container", {
+        hidden: theme === Theme.Outlook ? false : props.isRecorderOpen,
+      })}
+    >
       <div
         className={cx(
           styles.pronunciation,
@@ -125,7 +131,8 @@ const NameLine = (props: Props): JSX.Element => {
             className={cx(
               styles.pronunciation__tail,
               "pronunciation_tail",
-              `tail--${theme}`
+              `tail--${theme}`,
+              { hidden: props.isRecorderOpen }
             )}
           >
             <div
@@ -137,7 +144,7 @@ const NameLine = (props: Props): JSX.Element => {
             >
               <Select
                 options={options}
-                className={styles.pronunciation__control}
+                className={theme}
                 onChange={onSelect}
                 value={value}
                 styles={selectStyles}
