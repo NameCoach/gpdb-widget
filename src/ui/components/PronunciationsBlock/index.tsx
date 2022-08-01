@@ -57,7 +57,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const { isOpen: isRecorderOpen } = recorderState;
+  const { isOpen: isRecorderOpen, type: recorderNameType } = recorderState;
 
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
@@ -270,7 +270,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
           />
         )}
 
-      {canComplexSearch && !isRecorderOpen && !currentPronunciation && (
+      {canComplexSearch && !currentPronunciation && (
         <>
           {nameParts.map((name, index) => (
             <React.Fragment key={name.key}>
@@ -283,17 +283,34 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
                   reload={reloadName}
                   canRecord={canRecordOrgPeer}
                   canUserResponse={canUserResponse}
+                  isRecorderOpen={
+                    isRecorderOpen && recorderNameType === name.type
+                  }
                   onRecorderClick={openRecorder}
                 />
               ) : (
                 <AbsentName
-                  canRecordingRequestCreate={canCreateRecordingRequest}
-                  canPronunciationCreate={canRecordOrgPeer}
-                  canRecordingRequestFind={canFindRecordingRequest}
                   name={name.key}
                   type={name.type}
                   owner={nameOwner}
+                  canRecordingRequestCreate={canCreateRecordingRequest}
+                  canPronunciationCreate={canRecordOrgPeer}
+                  canRecordingRequestFind={canFindRecordingRequest}
+                  isRecorderOpen={
+                    isRecorderOpen && recorderNameType === name.type
+                  }
                   onRecorderClick={openRecorder}
+                />
+              )}
+
+              {isRecorderOpen && !loading && recorderNameType === name.type && (
+                <Recorder
+                  name={recorderState.name}
+                  type={recorderState.type}
+                  owner={nameOwner}
+                  onRecorderClose={onRecorderClose}
+                  pronunciation={selfRecorderedPronunciation}
+                  termsAndConditions={recorderState.termsAndConditions}
                 />
               )}
 
@@ -303,17 +320,6 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
             </React.Fragment>
           ))}
         </>
-      )}
-
-      {canComplexSearch && isRecorderOpen && !loading && (
-        <Recorder
-          name={recorderState.name}
-          type={recorderState.type}
-          owner={nameOwner}
-          onRecorderClose={onRecorderClose}
-          pronunciation={selfRecorderedPronunciation}
-          termsAndConditions={recorderState.termsAndConditions}
-        />
       )}
     </>
   );
