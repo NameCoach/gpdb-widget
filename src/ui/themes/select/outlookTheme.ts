@@ -6,7 +6,6 @@ const styles = {
     fontWeight: 400,
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
     borderRadius: "6px",
-    border: "none",
   },
   valueContainer: {
     fontStyle: "normal",
@@ -26,7 +25,16 @@ const styles = {
     color: DARK_GREY,
   },
   singleValue: {
-    lineHeight: "18px",
+    lineHeight: "17px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  option: {
+    lineHeight: "15px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 };
 
