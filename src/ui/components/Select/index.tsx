@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
 import { BRAND, _SECONDARY } from "../../styles/variables/colors";
+import { Theme } from "../../../types/style-context";
 export interface Option {
   value: string | number;
   label: string;
@@ -11,6 +12,7 @@ export interface CustomStyles {
   singleValue: object;
   menu: object;
   menuList: object;
+  option: object;
   valueContainer: object;
 }
 
@@ -33,28 +35,30 @@ const theme = (theme) => ({
   },
 });
 
-const customStyles = (
+const customStyles = (theme) => (
   controlStyles = {
     control: {},
     singleValue: {},
     menu: {},
     menuList: {},
     valueContainer: {},
+    option: {},
   }
 ) => ({
   control: (provided, state) => ({
     ...provided,
     minHeight: "30px",
-    boxShadow: null,
+    borderColor:
+      !state.isFocused && theme === Theme.Outlook
+        ? "transparent"
+        : provided.borderColor,
     ...controlStyles.control,
   }),
   valueContainer: (provided, state) => {
-    const value = state.getValue()[0];
-    const labelLength = value?.label?.length || 30;
     return {
       ...provided,
       minHeight: "30px",
-      height: labelLength > 30 ? "45px" : "30px",
+      height: "30px",
       padding: "0 6px",
       color: "black",
       ...controlStyles.valueContainer,
@@ -85,6 +89,11 @@ const customStyles = (
     color: "black",
     ...controlStyles.menu,
   }),
+  option: (provided) => ({
+    ...provided,
+    lineHeight: "15px",
+    ...controlStyles.option,
+  }),
 });
 
 const SelectComponent = (props: Props): JSX.Element => {
@@ -103,7 +112,7 @@ const SelectComponent = (props: Props): JSX.Element => {
       isClearable={false}
       isSearchable={false}
       theme={theme}
-      styles={customStyles(props.styles)}
+      styles={customStyles(props.className)(props.styles)}
       filterOption={props.filterOption}
     />
   );
