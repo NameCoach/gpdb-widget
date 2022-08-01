@@ -32,7 +32,7 @@ const FullNamesList = (props: Props): JSX.Element => {
   const [selectValue, setValue] = useState<Option>();
   const tooltipId = Date.now().toString();
   const { t } = useContext(StyleContext);
-  const { selectStyles, filterOption } = useTheme(FullNamesList.name);
+  const { theme, selectStyles, filterOption } = useTheme(FullNamesList.name);
 
   const options = useMemo(() => props.names.map(nameToOption), [props.names]);
 
@@ -72,6 +72,7 @@ const FullNamesList = (props: Props): JSX.Element => {
               onChange={onChange}
               options={options}
               value={selectValue}
+              className={theme}
               styles={selectStyles}
               filterOption={filterOption(selectValue?.value)}
             />
