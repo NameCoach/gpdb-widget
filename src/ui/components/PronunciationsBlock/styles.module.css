@@ -10,6 +10,3 @@
   composes: divider from "../../styles/outlook.css";
 }
 
-.invisible {
-  composes: invisible from "../../styles/outlook.css";
-}
