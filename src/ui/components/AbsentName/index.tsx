@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
-import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import RequestAction from "../Actions/Request";
 import RecordAction from "../Actions/Record";
@@ -15,7 +14,7 @@ import { StyleOverrides } from "../../customFeaturesManager";
 import useTheme from "../../hooks/useTheme";
 import { Theme } from "../../../types/style-context";
 
-const cx = classNames.bind([styles, nameLineStyles]);
+const cx = classNames.bind(nameLineStyles);
 
 interface Props {
   name: string;
@@ -71,70 +70,85 @@ const AbsentName = (props: Props): JSX.Element => {
   return (
     <div
       className={cx(
-        styles[`pronunciation__not_exist--${theme}`],
         nameLineStyles.pronunciation,
-        nameLineStyles[`pronunciation--${theme}`],
+        nameLineStyles.name_line_container,
+        isOld && nameLineStyles.pronunciation__old,
         { hidden: theme === Theme.Outlook ? false : props.isRecorderOpen }
       )}
     >
-      <span
-        className={cx(
-          nameLineStyles.pronunciation__name,
-          nameLineStyles[`name--${theme}`]
-        )}
-      >
-        {props.name}
-      </span>
       <div
         className={cx(
-          nameLineStyles.pronunciation__tail,
-          props.isRecorderOpen && nameLineStyles.hidden
+          nameLineStyles.pronunciation,
+          nameLineStyles[`pronunciation--${theme}`]
         )}
       >
-        <span
-          className={cx(
-            nameLineStyles.pronunciation__mid,
-            nameLineStyles[`mid--${theme}`]
-          )}
-          style={customFeatures.getStyle(
-            StyleOverrides.PronunciationNameLineMessage
-          )}
-        >
-          {!loading && renderRequestedMessage()}
-          {loading && <Loader inline sm />}
-        </span>
-
         <div
-          className={
-            isOld
-              ? cx(
-                  nameLineStyles.pronunciation__actions,
-                  nameLineStyles.old,
-                  nameLineStyles[`actions--${theme}`]
-                )
-              : cx(
-                  nameLineStyles.pronunciation__actions,
-                  nameLineStyles[`actions--${theme}`]
-                )
-          }
+          className={cx(
+            nameLineStyles.name__wrapper,
+            nameLineStyles[`wrapper--${theme}`]
+          )}
         >
-          <DisabledPlayer className={nameLineStyles.pronunciation__action} />
-          {props.canRecordingRequestCreate && (
-            <RequestAction
-              className={nameLineStyles.pronunciation__action}
-              onClick={onRequest}
-              disabled={isRequested}
-            />
+          <span
+            className={cx(
+              nameLineStyles.pronunciation__name,
+              nameLineStyles[`name--${theme}`]
+            )}
+          >
+            {props.name}
+          </span>
+        </div>
+        <div
+          className={cx(
+            nameLineStyles.pronunciation__tail,
+            nameLineStyles[`tail--${theme}`],
+            props.isRecorderOpen && nameLineStyles.hidden
           )}
-          {props.canPronunciationCreate && (
-            <RecordAction
-              className={nameLineStyles.pronunciation__action}
-              onClick={(): void =>
-                props.onRecorderClick &&
-                props.onRecorderClick(props.name, props.type)
-              }
-            />
-          )}
+        >
+          <div
+            className={cx(
+              nameLineStyles.pronunciation__mid,
+              nameLineStyles[`mid--${theme}`]
+            )}
+            style={customFeatures.getStyle(
+              StyleOverrides.PronunciationNameLineMessage
+            )}
+          >
+            {!loading && renderRequestedMessage()}
+            {loading && <Loader inline sm />}
+          </div>
+
+          <div
+            className={
+              isOld
+                ? cx(
+                    nameLineStyles.pronunciation__actions,
+                    nameLineStyles.old,
+                    nameLineStyles[`actions--${theme}`]
+                  )
+                : cx(
+                    nameLineStyles.pronunciation__actions,
+                    nameLineStyles[`actions--${theme}`]
+                  )
+            }
+          >
+            <DisabledPlayer className={nameLineStyles.pronunciation__action} />
+            {props.canRecordingRequestCreate && (
+              <RequestAction
+                className={nameLineStyles.pronunciation__action}
+                onClick={onRequest}
+                disabled={isRequested}
+              />
+            )}
+            {props.canPronunciationCreate && (
+              <RecordAction
+                className={nameLineStyles.pronunciation__action}
+                onClick={(): void =>
+                  props.onRecorderClick &&
+                  props.onRecorderClick(props.name, props.type)
+                }
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
