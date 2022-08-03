@@ -103,45 +103,29 @@ const NameLine = (props: Props): JSX.Element => {
 
   return (
     <div
-      className={cx(styles.pronunciation, "name_line_container", {
-        hidden: theme === Theme.Outlook ? false : props.isRecorderOpen,
-      })}
+      className={cx(
+        styles.pronunciation,
+        styles.name_line_container,
+        isOld && `name--line--old--${theme}`,
+        {
+          hidden: theme === Theme.Outlook ? false : props.isRecorderOpen,
+        }
+      )}
     >
-      <div
-        className={cx(
-          styles.pronunciation,
-          "pronunciation_container",
-          `pronunciation--${theme}`
-        )}
-      >
-        <span
-          className={cx(
-            styles.pronunciation__name,
-            "pronunciation_name",
-            `name--${theme}`
-          )}
-        >
-          {props.name}
-        </span>
-
-        {!currentPronunciation ? (
-          <Loader />
-        ) : (
+      <div className={cx(styles.pronunciation, `pronunciation--${theme}`)}>
+        <div className={cx(styles.name__wrapper, `wrapper--${theme}`)}>
+          <span className={cx(styles.pronunciation__name, `name--${theme}`)}>
+            {props.name}
+          </span>
+          {!currentPronunciation && <Loader />}
+        </div>
+        {currentPronunciation && (
           <div
-            className={cx(
-              styles.pronunciation__tail,
-              "pronunciation_tail",
-              `tail--${theme}`,
-              { hidden: props.isRecorderOpen }
-            )}
+            className={cx(styles.pronunciation__tail, `tail--${theme}`, {
+              hidden: props.isRecorderOpen,
+            })}
           >
-            <div
-              className={cx(
-                styles.pronunciation__mid,
-                "pronunciation_mid",
-                `mid--${theme}`
-              )}
-            >
+            <div className={cx(styles.pronunciation__mid, `mid--${theme}`)}>
               <Select
                 options={options}
                 className={theme}
