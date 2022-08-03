@@ -314,9 +314,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
                 />
               )}
 
-              {index === 0 && (
-                <hr className={cx(styles.divider, styles.invisible)} />
-              )}
+              {index === 0 && <hr className={cx(styles.divider)} />}
             </React.Fragment>
           ))}
         </>

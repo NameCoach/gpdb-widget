@@ -21,6 +21,7 @@
 .unavailable_hint {
   position: relative;
   font-size: 12px;
+  margin-top: 10px;
   word-break: keep-all;
   text-overflow: ellipsis;
   overflow: hidden;
