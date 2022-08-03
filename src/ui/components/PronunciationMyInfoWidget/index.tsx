@@ -55,13 +55,11 @@ const PronunciationMyInfoWidget = ({
   const renderContainer = (): JSX.Element => (
     <div className={cx(styles.container)}>
       {names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
-        <>
-          <PronunciationsBlock
-            names={names}
-            controller={client}
-            termsAndConditions={termsAndConditions}
-          />
-        </>
+        <PronunciationsBlock
+          names={names}
+          controller={client}
+          termsAndConditions={termsAndConditions}
+        />
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
