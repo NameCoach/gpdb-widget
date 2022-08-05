@@ -1,8 +1,13 @@
 .wrapper {
-  display: block !important;
+  display: flex;
+  flex: 0;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .control {
+  flex: 0 0 80%;
+  margin-right: 2%;
   margin-bottom: 10px;
 }
 
@@ -20,7 +25,9 @@
 }
 
 .title {
-  composes: title from "../../styles/outlook.css";
+  font-weight: bold;
+  line-height: 16px;
+  font-size: 18px;
 }
 
 .divider {
