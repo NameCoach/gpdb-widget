@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import useRecorderState, {
   TermsAndConditions,
@@ -11,19 +11,17 @@ import Name, { NameTypes } from "../../../types/resources/name";
 import { usePronunciations } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
 import AbsentName from "../AbsentName";
-import CustomAttributes from "../CustomAttributes";
-import styles from "./styles.module.css";
+import styles from "../Container/styles.module.css";
 import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
 import { NameOwner } from "gpdb-api-client";
+import CustomAttributes from "../CustomAttributes";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import { nameExist } from "./helper-methods";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import { UserPermissions } from "../../../types/permissions";
-import useOnRecorderClose from "../../hooks/PronunciationsBlock/useOnRecorderClose";
-import StyleContext from "../../contexts/style";
-import useTranslator from "../../hooks/useTranslator";
+import useOnRecorderClose from "../../hooks/FullnamesContainer/useOnRecorderClose";
 
 interface Props {
   names: NameOption[];
@@ -35,11 +33,8 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const PronunciationsBlock = (props: Props): JSX.Element => {
+const FullNamesContainer = (props: Props): JSX.Element => {
   const customFeatures = useCustomFeatures(props.controller);
-  const styleContext = useContext(StyleContext);
-
-  const t = useTranslator(props.controller, styleContext);
 
   const { can } = useFeaturesManager(
     props.controller.permissions,
@@ -57,7 +52,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     setRecorderOpen,
   ] = useRecorderState();
 
-  const { isOpen: isRecorderOpen, type: recorderNameType } = recorderState;
+  const { isOpen: isRecorderOpen } = recorderState;
 
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
@@ -247,21 +242,17 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div className={cx(styles.title, styles.m_10)}>
-        {t("pronunciations_section_name", "Pronunciations")}
-      </div>
       <FullNamesList
         names={props.names}
         onSelect={onSelect}
         value={currentPronunciation}
         loading={loading}
-        hideFullName={
+        hideActions={
           canComplexSearch && !currentPronunciation && nameParts.length > 0
         }
       />
 
-      {!loading &&
-        currentPronunciation &&
+      {currentPronunciation &&
         currentPronunciation.customAttributes &&
         currentPronunciation.customAttributes.length > 0 && (
           <CustomAttributes
@@ -270,7 +261,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
           />
         )}
 
-      {canComplexSearch && !currentPronunciation && (
+      {canComplexSearch && !isRecorderOpen && (
         <>
           {nameParts.map((name, index) => (
             <React.Fragment key={name.key}>
@@ -282,45 +273,43 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
                   owner={nameOwner}
                   reload={reloadName}
                   canRecord={canRecordOrgPeer}
+                  pronunciationNameClass="ft-17"
                   canUserResponse={canUserResponse}
-                  isRecorderOpen={
-                    isRecorderOpen && recorderNameType === name.type
-                  }
                   onRecorderClick={openRecorder}
                 />
               ) : (
                 <AbsentName
-                  name={name.key}
-                  type={name.type}
-                  owner={nameOwner}
                   canRecordingRequestCreate={canCreateRecordingRequest}
                   canPronunciationCreate={canRecordOrgPeer}
                   canRecordingRequestFind={canFindRecordingRequest}
-                  isRecorderOpen={
-                    isRecorderOpen && recorderNameType === name.type
-                  }
+                  name={name.key}
+                  type={name.type}
+                  owner={nameOwner}
+                  pronunciationNameClass="ft-17"
                   onRecorderClick={openRecorder}
                 />
               )}
 
-              {isRecorderOpen && !loading && recorderNameType === name.type && (
-                <Recorder
-                  name={recorderState.name}
-                  type={recorderState.type}
-                  owner={nameOwner}
-                  onRecorderClose={onRecorderClose}
-                  pronunciation={selfRecorderedPronunciation}
-                  termsAndConditions={recorderState.termsAndConditions}
-                />
+              {index === 0 && (
+                <hr className={cx(styles.divider, styles.invisible)} />
               )}
-
-              {index === 0 && <hr className={cx(styles.divider)} />}
             </React.Fragment>
           ))}
         </>
+      )}
+
+      {canComplexSearch && isRecorderOpen && !loading && (
+        <Recorder
+          name={recorderState.name}
+          type={recorderState.type}
+          owner={nameOwner}
+          onRecorderClose={onRecorderClose}
+          pronunciation={selfRecorderedPronunciation}
+          termsAndConditions={recorderState.termsAndConditions}
+        />
       )}
     </>
   );
 };
 
-export default PronunciationsBlock;
+export default FullNamesContainer;
