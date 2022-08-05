@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { SEARCH_BOX_TIP } from "../../../../constants";
-import styles from "../styles.module.css";
+import styles from "../../PronunciationMyInfoWidget/styles.module.css";
 import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
