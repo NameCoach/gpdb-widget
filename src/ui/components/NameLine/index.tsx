@@ -17,8 +17,6 @@ import userAgentManager from "../../../core/userAgentManager";
 import { getLabel } from "./helper-methods";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import useTranslator from "../../hooks/useTranslator";
-import useTheme from "../../hooks/useTheme";
-import { Theme } from "../../../types/style-context";
 
 const cx = classNames.bind(styles);
 
@@ -29,15 +27,13 @@ interface Props {
   owner?: NameOwner;
   canRecord: boolean;
   canUserResponse: boolean;
+  pronunciationNameClass?: string;
   reload: (type: NameTypes) => void;
   onRecorderClick: (name, type) => void;
-  isRecorderOpen?: boolean;
 }
 
 const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-
-  const { theme, selectStyles, filterOption } = useTheme(NameLine.name);
   const t = useTranslator(controller);
 
   const { isDeprecated: isOld } = userAgentManager;
@@ -102,47 +98,32 @@ const NameLine = (props: Props): JSX.Element => {
   }, [props.pronunciations]);
 
   return (
-    <div
-      className={cx(
-        styles.pronunciation,
-        styles.name_line_container,
-        isOld && `name--line--old--${theme}`,
-        {
-          hidden: theme === Theme.Outlook ? false : props.isRecorderOpen,
-        }
-      )}
-    >
-      <div className={cx(styles.pronunciation, `pronunciation--${theme}`)}>
-        <div className={cx(styles.name__wrapper, `wrapper--${theme}`)}>
-          <span className={cx(styles.pronunciation__name, `name--${theme}`)}>
-            {props.name}
-          </span>
-          {!currentPronunciation && <Loader />}
-        </div>
-        {currentPronunciation && (
-          <div
-            className={cx(styles.pronunciation__tail, `tail--${theme}`, {
-              hidden: props.isRecorderOpen,
-            })}
-          >
-            <div className={cx(styles.pronunciation__mid, `mid--${theme}`)}>
+    <div className={cx(styles.pronunciation, "name_line_container")}>
+      <div className={cx(styles.pronunciation, "pronunciation_container")}>
+        <span
+          className={cx(
+            styles.pronunciation__name,
+            "pronunciation_name",
+            props.pronunciationNameClass
+          )}
+        >
+          {props.name}
+        </span>
+
+        {!currentPronunciation ? (
+          <Loader />
+        ) : (
+          <>
+            <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
               <Select
                 options={options}
-                className={theme}
+                className={styles.pronunciation__control}
                 onChange={onSelect}
                 value={value}
-                styles={selectStyles}
-                filterOption={filterOption(value.value)}
               />
             </div>
 
-            <div
-              className={cx(
-                styles.pronunciation__actions,
-                { old: isOld },
-                `actions--${theme}`
-              )}
-            >
+            <div className={cx(styles.pronunciation__actions, { old: isOld })}>
               <Player
                 className={styles.pronunciation__action}
                 audioSrc={currentPronunciation.audioSrc}
@@ -171,7 +152,7 @@ const NameLine = (props: Props): JSX.Element => {
                 />
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
 

@@ -13,7 +13,7 @@ i18n
       },
     },
     fallbackLng: "en",
-    debug: false,
+    debug: true,
     ns: ["translations"],
     defaultNS: "translations",
     keySeparator: false,

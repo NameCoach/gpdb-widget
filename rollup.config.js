@@ -10,16 +10,7 @@ import simplevars from "postcss-simple-vars";
 import packageJson from "./package.json";
 import variables from "./src/ui/styles/variables/all.ts";
 
-const modules =
-  process.platform === "win32"
-    ? { root: "." }
-    : {
-        generateScopedName: `[name]__[local]___[hash:base64:5]__[${(
-          Math.random() + 1
-        )
-          .toString(36)
-          .substring(7)}]`,
-      };
+const modules = process.platform === "win32" ? { root: "." } : true;
 
 export default {
   input: "src/index.tsx",
