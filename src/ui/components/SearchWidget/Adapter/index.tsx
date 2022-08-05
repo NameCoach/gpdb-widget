@@ -3,7 +3,7 @@ import IFrontController from "../../../../types/front-controller";
 import { NameOption } from "../../FullNamesList";
 import { TermsAndConditions } from "../../../hooks/useRecorderState";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
-import PronunciationsBlock from "../../PronunciationsBlock";
+import FullNamesContainer from "../../FullNamesContainer";
 import SingleNameContainer from "../SingleNameContainer";
 import NoPermissionsError from "../../NoPermissionsError";
 import { UserPermissions } from "../../../../types/permissions";
@@ -77,7 +77,7 @@ const Adapter = (props: Props): JSX.Element => {
     <div>
       {isFullName && names.length !== 0 && (
         <>
-          <PronunciationsBlock
+          <FullNamesContainer
             names={names}
             termsAndConditions={props.termsAndConditions}
             permissions={permissions}
