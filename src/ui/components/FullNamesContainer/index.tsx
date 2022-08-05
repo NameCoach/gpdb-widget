@@ -72,14 +72,14 @@ const FullNamesContainer = (props: Props): JSX.Element => {
   const canUserResponse = useMemo(
     () =>
       permissions?.canUserResponse?.create ||
-      can("createUserResponse", nameOwner),
+      can("createUserResponse", nameOwner.signature),
     [nameOwner, props.permissions]
   );
 
   const canRecordOrgPeer = useMemo(
     () =>
       permissions?.canPronunciation?.create ||
-      can("createOrgPeerRecording", nameOwner),
+      can("createOrgPeerRecording", nameOwner.signature),
     [nameOwner, props.permissions]
   );
 
