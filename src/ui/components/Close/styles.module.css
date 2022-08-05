@@ -10,21 +10,3 @@
   background-position: center;
   background-size: contain;
 }
-
-.modal {
-  top: -9px;
-  right: -9px;
-  height: 20px;
-  width: 20px;
-  opacity: 1 !important;
-  background-image: url("close-brand.svg");
-}
-
-.modal:hover {
-  background-image: url("brand-hover.svg");
-
-}
-
-.modal.active, .modal:active {
-  background-color: transparent !important;
-}

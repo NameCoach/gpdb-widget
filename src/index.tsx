@@ -9,7 +9,6 @@ import Player from "./ui/components/Player";
 import SearchWidget from "./ui/components/SearchWidget";
 import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
 import Notification from "./ui/components/Notification";
-import ModalTooltip from "./ui/components/ModalTooltip";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -20,9 +19,8 @@ import loadExtensionClient from "./core/loadExtensionClient";
 // INTERFACES
 import NameParser, { NPResult } from "./types/name-parser";
 import { Configuration } from "gpdb-api-client";
-import IStyleContext, { Theme } from "./types/style-context";
+import IStyleContext from "./types/style-context";
 import ISystemContext from "./types/system-context";
-import ITooltipAction from "./ui/components/ModalTooltip";
 
 // CONTEXTS
 import ControllerContext from "./ui/contexts/controller";
@@ -47,7 +45,6 @@ export {
   FullNamesList,
   ControllerContext,
   StyleContext,
-  Theme,
   SystemContext,
   IFrontController,
   IStyleContext,
@@ -61,6 +58,4 @@ export {
   NotificationsProvider,
   Notification,
   addOnDeviceChangeHandler,
-  ModalTooltip,
-  ITooltipAction
 };
