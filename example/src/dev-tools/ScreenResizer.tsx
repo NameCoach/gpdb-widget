@@ -25,7 +25,7 @@ const ScreenResizer = () => {
     const _value = parseInt(value);
     setCurrentChangeValue(_value);
   };
-
+  
   return (
     <div style={{ display: "flex", margin: "0 30% 20px"}}>
       <input
