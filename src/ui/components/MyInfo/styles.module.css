@@ -1,19 +1,27 @@
-.block {
-  composes: block from "../../styles/outlook.css";
-}
-
 .row {
-  composes: row from "../../styles/outlook.css";
+    composes: row from "../PronunciationMyInfoWidget/styles.module.css";
 }
-
-.m_10 {
-  composes: m_10 from "../../styles/outlook.css";
-}
-
 .title {
-  composes: title from "../../styles/outlook.css";
+    composes: title from "../PronunciationMyInfoWidget/styles.module.css";
+}
+.m_10 {
+    composes: m_10 from "../PronunciationMyInfoWidget/styles.module.css";
+}
+
+.phonetic {
+    composes: phonetic from "../../styles/phonetic.css";
+    margin-top: -15px;
 }
 
 .actions {
-  composes: actions from "../../styles/outlook.css";
+    composes: actions from "../PronunciationMyInfoWidget/styles.module.css";
+}
+
+.unavailable_hint {
+    position: relative;
+    font-size: 12px;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: -10px;
 }
