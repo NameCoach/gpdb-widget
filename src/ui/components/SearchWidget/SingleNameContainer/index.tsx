@@ -84,6 +84,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 reload={(): Promise<void> => loadName(props.name)}
                 canRecord={props.permissions.canPronunciation.create}
                 canUserResponse={props.permissions.canUserResponse.create}
+                pronunciationNameClass="ft-17"
                 onRecorderClick={openRecorder}
               />
             ) : (
@@ -100,6 +101,7 @@ const SingleNameContainer = (props: Props): JSX.Element => {
                 name={name.key}
                 type={name.type}
                 owner={props.name.owner}
+                pronunciationNameClass="ft-17"
                 onRecorderClick={openRecorder}
               />
             )}
