@@ -1,28 +1,16 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
 import { BRAND, _SECONDARY } from "../../styles/variables/colors";
-import { Theme } from "../../../types/style-context";
 export interface Option {
   value: string | number;
   label: string;
 }
-
-export interface CustomStyles {
-  control: object;
-  singleValue: object;
-  menu: object;
-  menuList: object;
-  option: object;
-  valueContainer: object;
-}
-
 interface Props {
   onChange: (Option) => void;
   options: Option[];
   className?: string;
-  styles?: CustomStyles;
+  styles?: { control: object; singleValue: object };
   value?: Option;
-  filterOption?: (Option) => boolean;
 }
 
 const theme = (theme) => ({
@@ -35,33 +23,22 @@ const theme = (theme) => ({
   },
 });
 
-const customStyles = (theme) => (
-  controlStyles = {
-    control: {},
-    singleValue: {},
-    menu: {},
-    menuList: {},
-    valueContainer: {},
-    option: {},
-  }
-) => ({
+const customStyles = (controlStyles = { control: {}, singleValue: {} }) => ({
   control: (provided, state) => ({
     ...provided,
     minHeight: "30px",
-    borderColor:
-      !state.isFocused && theme === Theme.Outlook
-        ? "transparent"
-        : provided.borderColor,
+    boxShadow: null,
     ...controlStyles.control,
   }),
   valueContainer: (provided, state) => {
+    const value = state.getValue()[0];
+    const labelLength = value?.label?.length || 30;
     return {
       ...provided,
       minHeight: "30px",
-      height: "30px",
+      height: labelLength > 30 ? "45px" : "30px",
       padding: "0 6px",
       color: "black",
-      ...controlStyles.valueContainer,
     };
   },
   singleValue: (provided, state) => ({
@@ -82,17 +59,6 @@ const customStyles = (theme) => (
   menuList: (provided) => ({
     ...provided,
     color: "black",
-    ...controlStyles.menuList,
-  }),
-  menu: (provided) => ({
-    ...provided,
-    color: "black",
-    ...controlStyles.menu,
-  }),
-  option: (provided) => ({
-    ...provided,
-    lineHeight: "15px",
-    ...controlStyles.option,
   }),
 });
 
@@ -112,8 +78,7 @@ const SelectComponent = (props: Props): JSX.Element => {
       isClearable={false}
       isSearchable={false}
       theme={theme}
-      styles={customStyles(props.className)(props.styles)}
-      filterOption={props.filterOption}
+      styles={customStyles(props.styles)}
     />
   );
 };
