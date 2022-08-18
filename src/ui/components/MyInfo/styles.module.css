@@ -1,0 +1,19 @@
+.block {
+  composes: block from "../../styles/outlook.css";
+}
+
+.row {
+  composes: row from "../../styles/outlook.css";
+}
+
+.m_10 {
+  composes: m_10 from "../../styles/outlook.css";
+}
+
+.title {
+  composes: title from "../../styles/outlook.css";
+}
+
+.actions {
+  composes: actions from "../../styles/outlook.css";
+}
