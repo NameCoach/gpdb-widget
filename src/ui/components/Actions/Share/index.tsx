@@ -9,10 +9,8 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const ShareAction = (props: Props): JSX.Element => (
-  <div
-    className={cx(props.className, styles.wrapper, { active: props.active })}
-  >
+const ShareAction = ({ active, className }: Props): JSX.Element => (
+  <div className={cx(className, styles.wrapper, { active: active })}>
     <i className={cx("share-audio-url")} />
   </div>
 );

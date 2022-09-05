@@ -7,7 +7,7 @@ import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
 import useTranslator from "../../hooks/useTranslator";
-import ShareRecording from "../Actions/ShareRecording";
+import ShareRecording from "../ShareRecording";
 
 export interface NameOption {
   key: string;
@@ -41,6 +41,11 @@ const MyRecording = ({
   const styleContext = useContext(StyleContext);
   const t = useTranslator(null, styleContext);
 
+  const unavailableHint = t(
+    "unavailable_hint",
+    "Your name recording is unavailable, click on the microphone icon to record your name"
+  );
+
   return (
     <div className={styles.block}>
       <div className={cx(styles.row)}>
@@ -62,10 +67,7 @@ const MyRecording = ({
         !pronunciation &&
         canCreateSelfRecording &&
         myInfoHintShow && (
-          <div className={styles.unavailable_hint}>
-            Your name recording is unavailable, click on the microphone icon to
-            record your name
-          </div>
+          <div className={styles.unavailable_hint}>{unavailableHint}</div>
         )}
     </div>
   );

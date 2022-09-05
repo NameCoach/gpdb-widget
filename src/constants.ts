@@ -28,8 +28,8 @@ export const TOOLTIP_DELAY = 1000;
 export const RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY = 5000;
 
 // ModalTooltip
-export const TOOLTIP_SHOW_DELAY = 1;
-export const TOOLTIP_HIDE_DELAY = 1;
+export const TOOLTIP_SHOW_DELAY = 350;
+export const TOOLTIP_HIDE_DELAY = 350;
 export const TOOLTIP_MARGIN = 7;
 export const TOOLTIP_AUTOCLOSE_DELAY = 1000;
 

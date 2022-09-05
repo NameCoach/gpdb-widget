@@ -1,23 +1,15 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Close from "../Close";
-import { TOOLTIP_HIDE_DELAY, TOOLTIP_MARGIN, TOOLTIP_SHOW_DELAY } from "../../../constants";
-
-export enum PresentationMode {
-  Left = "left",
-  Right = "right",
-}
-
-export enum TooltipActionType {
-  Button = "tooltip_button",
-  Link = "tooltip_link",
-}
-interface ITooltipAction {
-  actionType: TooltipActionType;
-  onClick?: (value: any) => void;
-}
+import {
+  TOOLTIP_HIDE_DELAY,
+  TOOLTIP_MARGIN,
+  TOOLTIP_SHOW_DELAY,
+} from "../../../constants";
+import { PresentationMode } from "../../../types/modal-tooltip";
+import Children, { Child } from "../../../types/children-prop";
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +17,7 @@ interface Props {
   title: string;
   id: string;
   base?: JSX.Element | null;
-  children?: ReactElement<ITooltipAction>[] | null;
+  children?: Children;
   mode?: PresentationMode;
   closable?: boolean;
   delayShow?: number;
@@ -33,6 +25,8 @@ interface Props {
   showOnClick?: boolean;
   hideOnLeave?: boolean;
   isActive?: boolean;
+  tipStyle?: React.CSSProperties;
+  closeOnChildClick?: boolean;
 }
 
 const ModalTooltip = ({
@@ -47,26 +41,39 @@ const ModalTooltip = ({
   delayHide = TOOLTIP_HIDE_DELAY,
   showOnClick = false,
   hideOnLeave = false,
+  tipStyle,
+  closeOnChildClick = true,
 }: Props): JSX.Element => {
   let showTimeout;
   let hideTimeout;
+
   const [active, setActive] = useState<boolean>(isActive);
 
-  const delayedHide = (delayHide) => {
+  const hideWithDelay = (delayHide: number): void => {
     hideTimeout = setTimeout(() => setActive(false), delayHide);
   };
 
-  const showTip = (e) => {
+  const hideTip = (e): void => {
     e.stopPropagation();
-    showTimeout = setTimeout(() => setActive(true), delayShow);
+    delayHide ? hideWithDelay(delayHide) : setActive(false);
   };
 
-  const hideTip = (e) => {
+  const toogleActiveDelayed = (e): void => {
+    if (showOnClick === false) return;
+
     e.stopPropagation();
-    delayHide ? delayedHide(delayHide) : setActive(false);
+    showTimeout = setTimeout(() => setActive(!active), delayShow);
   };
 
-  const getTipStyle = () => {
+  const onMouseLeave = (e): void => {
+    if (hideOnLeave === false) return;
+
+    hideTip(e);
+  };
+
+  const getTipStyle = (): React.CSSProperties => {
+    if (tipStyle) return tipStyle;
+
     const node = document.getElementById(id);
 
     if (!node) return {};
@@ -84,9 +91,17 @@ const ModalTooltip = ({
     };
   };
 
+  const childOnClick = (child: Child) => (): void => {
+    const { onClick: _onClick } = child?.props || {};
+    _onClick && _onClick();
+
+    if (closeOnChildClick === true) hideWithDelay(delayHide);
+  };
+
   useEffect(() => {
     setActive(isActive);
-    return () => {
+
+    return (): void => {
       clearInterval(showTimeout);
       clearInterval(hideTimeout);
     };
@@ -97,20 +112,18 @@ const ModalTooltip = ({
       {active && (
         <div className={cx("tooltip_tip", "top", mode)} style={getTipStyle()}>
           {closable && <Close className="modal" onClick={hideTip} />}
+
           <div className={styles.title}>{title}</div>
+
           {children &&
             React.Children.map(children, (child) =>
-              React.cloneElement(child as ReactElement<ITooltipAction>, {
-                onClick: delayedHide,
+              React.cloneElement(child, {
+                onClick: childOnClick(child),
               })
             )}
         </div>
       )}
-      <div
-        id={id}
-        onClick={showOnClick ? showTip : null}
-        onMouseLeave={hideOnLeave ? hideTip : null}
-      >
+      <div id={id} onClick={toogleActiveDelayed} onMouseLeave={onMouseLeave}>
         {base &&
           React.cloneElement(base, {
             active,

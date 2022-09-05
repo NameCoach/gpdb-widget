@@ -24,7 +24,7 @@
   white-space: nowrap;
   border-color: $colors_dark_grey;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-
+  text-align: center;
 }
 
 .tooltip_tip::before {
