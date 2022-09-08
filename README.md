@@ -39,6 +39,8 @@ const Example = () => {
 
 ## Development
 
+Supported node version is >=12, but currently in CI we use 14.17.1 so this version is preferred
+
 1. Install dependencies:
    ```bash
       yarn install
