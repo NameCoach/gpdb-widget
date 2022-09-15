@@ -1,6 +1,7 @@
 import { Feature } from "gpdb-api-client";
 import parse from "html-react-parser";
 
+// TODO: clean this mess. NAM-1071 
 type Style = { [x: string]: string };
 
 export enum Features {
