@@ -1,0 +1,5 @@
+@import "../../styles/fonts/fonts.css";
+
+.container {
+  composes: container from "../../styles/outlook.css";
+}
