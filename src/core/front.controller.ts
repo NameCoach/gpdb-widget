@@ -42,6 +42,13 @@ export default class FrontController implements IFrontController {
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
+  isUserOwnsName(
+    nameOwnerSignature?: string
+  ): boolean {
+    const ownerSignature = nameOwnerSignature || this.nameOwnerContext.signature;
+    return ownerSignature === this.userContext.signature
+  }
+
   async complexSearch(
     names: Array<Name>,
     nameOwner?: NameOwner,
