@@ -20,11 +20,11 @@ export const useCreatePronunciationFeatures = (
 
   const canCreateOrgPeerRecording = (ownerSignature: string): boolean =>
     customFeaturesManager.canRecordOrgPeer(ownerSignature) &&
-    canPronunciation("create");
+    canPronunciation("create") && canPronunciation("index");
 
   const canCreateSelfRecording = (pronunciation: Pronunciation): boolean =>
-    (canRecordNameBadge() && pronunciation?.isHedb) ||
-    (canPronunciation("create") && !pronunciation?.isHedb);
+    (canRecordNameBadge() && canPronunciation("index") && pronunciation?.isHedb) ||
+    (canPronunciation("create") && canPronunciation("index") && !pronunciation?.isHedb);
 
   return {
     canRecordNameBadge,
