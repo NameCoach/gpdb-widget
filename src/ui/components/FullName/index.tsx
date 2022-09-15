@@ -45,13 +45,9 @@ const FullName = (props: Props): JSX.Element => {
   const onRecord = (): void =>
     props.onRecorderClick(props.name, NameTypes.FullName);
 
-  const canCreatePronunciation = useMemo(() => {
-    return !(!props.canPronunciationCreate || pronunciation?.isHedb);
-  }, [pronunciation?.isHedb]);
-
   useEffect(() => {
     setPronunciation(props.pronunciations?.[0]);
-  }, [props.pronunciations]);
+  }, [props.pronunciations, props.canPronunciationCreate]);
 
   return (
     <div className={styles.head__container}>
@@ -73,7 +69,7 @@ const FullName = (props: Props): JSX.Element => {
               className={nameLineStyles.pronunciation__action}
             />
           )}
-          {canCreatePronunciation && (
+          {props.canPronunciationCreate && (
             <RecordAction
               className={nameLineStyles.pronunciation__action}
               onClick={onRecord}
