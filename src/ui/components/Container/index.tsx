@@ -21,6 +21,8 @@ import { Resources } from "gpdb-api-client/build/main/types/repositories/permiss
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
 import CustomAttributes from "../CustomAttributes";
+import useFeaturesManager from "../../hooks/useFeaturesManager";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -37,6 +39,13 @@ const Container = (props: Props): JSX.Element => {
   const [firstName, setFirstName] = useState(props.names.firstName as Name);
   const [lastName, setLastName] = useState(props.names.lastName as Name);
   const [fullName, setFullName] = useState(props.names.fullName as Name);
+
+  const customFeatures = useCustomFeatures(controller);
+
+  const { can } = useFeaturesManager(
+    controller.permissions,
+    customFeatures
+  );
 
   const [
     recorderState,
@@ -64,12 +73,25 @@ const Container = (props: Props): JSX.Element => {
     return controller.permissions.can(Resources.UserResponse, "create");
   }, [controller.permissions]);
 
-  const canPronunciationCreate = useMemo(() => {
-    return (
-      controller.permissions.can(Resources.Pronunciation, "create") &&
-      controller.permissions.can(Resources.Pronunciation, "index")
-    );
-  }, [controller.permissions]);
+  const canRecordOrgPeer = useMemo(
+    () =>
+      can("createOrgPeerRecording", controller.nameOwnerContext.signature),
+    [controller.nameOwnerContext.signature, controller.permissions]
+  );
+
+  const canCreateFullName = useMemo(
+    () => {
+      if (controller.isUserOwnsName())
+      return can("createSelfRecording", pronunciations.fullName);
+
+      // TODO: make that a named attribute of pronunciations object? INT-164
+    if (pronunciations.fullName[0]?.nameOwnerCreated)
+      return false;
+
+      return canRecordOrgPeer;
+    },
+    [controller.nameOwnerContext, controller.permissions, pronunciations.fullName[0]]
+  );
 
   const canPronunciationSearch = useMemo(() => {
     return controller.permissions.can(Resources.Pronunciation, "search");
@@ -177,7 +199,7 @@ const Container = (props: Props): JSX.Element => {
         <FullName
           name={fullName.key}
           pronunciations={pronunciations.fullName}
-          canPronunciationCreate={canPronunciationCreate}
+          canPronunciationCreate={canCreateFullName}
           reload={reloadName}
           onRecorderClick={openRecorder}
         >
@@ -226,7 +248,7 @@ const Container = (props: Props): JSX.Element => {
               canRecordingRequestCreate={canRecordingRequestCreate}
               canRecordingRequestFind={canRecordingRequestFind}
               canUserResponse={canUserResponse}
-              canPronunciationCreate={canPronunciationCreate}
+              canPronunciationCreate={canRecordOrgPeer}
               openRecorder={openRecorder}
               reloadName={reloadName}
               name={firstName}
@@ -243,7 +265,7 @@ const Container = (props: Props): JSX.Element => {
                     canRecordingRequestCreate={canRecordingRequestCreate}
                     canRecordingRequestFind={canRecordingRequestFind}
                     canUserResponse={canUserResponse}
-                    canPronunciationCreate={canPronunciationCreate}
+                    canPronunciationCreate={canRecordOrgPeer}
                     openRecorder={openRecorder}
                     reloadName={reloadName}
                     name={name}
