@@ -25,6 +25,12 @@ export interface PublicAttributes {
   nameParser: NameParser;
 }
 
+export interface PublicHelpers {
+  isUserOwnsName: (
+    nameOwnerSignature?: string
+  ) => boolean
+}
+
 export interface GpdbRequests {
   permissions: PermissionsManager;
   customAttributes: CustomAttributeObject[];
@@ -102,6 +108,7 @@ export interface SettingsRequests {
 }
 
 type IFrontController = PublicAttributes &
+PublicHelpers &
   GpdbRequests &
   CustomAttributesRequests &
   NamesServiceRequests &
