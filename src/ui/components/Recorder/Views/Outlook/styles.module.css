@@ -1,12 +1,5 @@
 .recorder {
   position: relative;
-  font-size: 12px;
-  line-height: 2.5em;
-  min-height: 90px;
-}
-
-.recorder.outlook {
-  margin-top: 12px !important;
 
   font-size: inherit !important;
   line-height: inherit !important;
@@ -20,18 +13,15 @@
   background: white;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
+
+  margin-top: 12px;
 }
 
 .recorder__body {
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: center;
-  font-size: 13px;
-  line-height: 22px;
-}
 
-.recorder__body.outlook {
   flex: inherit !important;
 
   font-style: normal;
@@ -40,6 +30,8 @@
   line-height: 20px !important;
   text-align: center;
   color: #333333;
+
+  letter-spacing: 1px;
 }
 
 .old {
@@ -62,22 +54,12 @@
   justify-content: center;
 }
 
-.recorder__actions.outlook button {
+.recorder__actions button {
   margin: auto 5px;
   margin-top: 0px;
 }
 
-.recorder__actions button {
-  margin-top: 10px;
-  margin-left: 10px;
-}
-
 .recorder__countdown {
-  margin-top: 5px;
-  font-size: 22px;
-}
-
-.recorder__countdown.outlook {
   font-style: normal;
   font-weight: 500;
   font-size: 18px !important;
@@ -86,12 +68,6 @@
 }
 
 .recorder__timer {
-  font-weight: 500;
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.recorder__timer.outlook {
   opacity: 1 !important;
 
   font-style: normal;
@@ -136,7 +112,7 @@
 }
 
 .btn {
-  composes: btn from "../../styles/outlook.css" !important;
+  composes: btn from "../../../../styles/outlook.css" !important;
 }
 
 .btn.red {
@@ -144,7 +120,7 @@
 }
 
 .btn.purple {
-  background-color: #6B419B;
+  background-color: #7C4BB4;
 }
 
 .btn.outline {
@@ -158,13 +134,21 @@
 }
 
 .flex_column_centered {
-  composes: flex_column_centered from "../../styles/outlook.css";
+  composes: flex_column_centered from "../../../../styles/outlook.css";
 }
 
 .flex_row {
-  composes: flex_row from "../../styles/outlook.css";
+  composes: flex_row from "../../../../styles/outlook.css";
 }
 
 .gap_h_20 {
   height:  20px;
+}
+
+.recorder_init_step_hint {
+  width: 280px;
+}
+
+.slider_hint {
+  composes: recorder_init_step_hint;
 }

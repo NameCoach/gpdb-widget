@@ -1,7 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
-import Pronunciation from "../../../types/resources/pronunciation";
+import Pronunciation, {
+  RelativeSource,
+} from "../../../types/resources/pronunciation";
 import { NameTypes } from "../../../types/resources/name";
 import useRecorderState, {
   TermsAndConditions,
@@ -123,6 +125,7 @@ const PersonalBlock = (props: Props): JSX.Element => {
           onRecorderClose={onRecorderClose}
           termsAndConditions={props.termsAndConditions}
           pronunciation={pronunciation}
+          relativeSource={RelativeSource.RequesterSelf}
         />
       )}
       {showMyInfo && (

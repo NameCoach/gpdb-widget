@@ -21,6 +21,7 @@ const COLORS = {
   colors_success: "green",
   colors_warning: "yellow",
   colors_grey: "grey",
+  colors_grey_2: "#666666",
   colors_label_Gray: "rgb(121 121 121)",
   colors_secondary_gray: SECONDARY_GRAY,
   colors_border: "rgba(121, 121, 121, 0.6)",
@@ -29,6 +30,8 @@ const COLORS = {
   colors_secondary: SECONDARY,
   colors_white: WHITE,
   colors_dark_grey: DARK_GREY,
+  colors_red: "#C82D4A",
+  colors_purple: "#6B419B",
 };
 
 export default COLORS;

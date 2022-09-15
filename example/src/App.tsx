@@ -129,7 +129,7 @@ const App = () => {
 
     return (
       <NotificationsProvider>
-        <div style={{ margin: "50px auto 0 auto", width: "310px" }}>
+        <div style={{ margin: "50px auto 0 auto", width: "320px" }}>
           <ScreenResizer />
           { renderWelcomeScreen ?  <InfoWidget {...props} /> : <MainApp />}
         </div>

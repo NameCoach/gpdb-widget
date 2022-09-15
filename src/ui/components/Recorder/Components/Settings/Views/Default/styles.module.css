@@ -1,5 +1,5 @@
 .settings {
-  composes: icon-btn from "../../../styles/icons.css";
+  composes: icon-btn from "../../../../../../styles/icons.css";
   background-image: url("settings.svg");
   width: 30px;
   height: 30px;
@@ -9,6 +9,7 @@
   background-position: center;
   cursor: pointer;
 }
+
 .settings.active {
   background-color: $colors_secondary;
   opacity: 1;

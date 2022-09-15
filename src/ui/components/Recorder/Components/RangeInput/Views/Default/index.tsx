@@ -1,37 +1,30 @@
-import React from "react";
-import { Range, getTrackBackground } from "react-range";
-
-import styles from "./styles.module.css";
 import classNames from "classnames/bind";
-import { DARKER_BRAND, SECONDARY_GRAY } from "../../../styles/variables/colors";
+import React from "react";
+import { Range } from "react-range";
+import {
+  DARKER_BRAND,
+  SECONDARY_GRAY,
+} from "../../../../../../styles/variables/colors";
+import { STEP } from "../../constants";
+import { THUMB_STYLE } from "../../styles";
+import Track from "../../Track";
+import { RangeInputProps } from "../../types";
+import styles from "./styles.module.css";
 
 const cx = classNames.bind(styles);
 
-const STEP = 0.1;
-
-const thumbStyle = {
-  height: "15px",
-  width: "15px",
-  borderRadius: "2px",
-  backgroundColor: "#FFF",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  boxShadow: "0px 2px 2px #AAA",
-};
-
-const trackStyle = {
-  height: "5px",
-  width: "100%",
-  borderRadius: "3px",
-  alignSelf: "center",
-};
-
-const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
+const DefaultView = ({
+  min,
+  max,
+  values,
+  onChange,
+  onDefaultClicked,
+}: RangeInputProps): JSX.Element => {
   return (
     <div className={styles.pitch}>
       <div className={styles.slider__label_container}>
         <div className={styles.slider__label}>Adjust recording audio pitch</div>
+
         <div
           className={styles.slider__default_pitch_value}
           onClick={onDefaultClicked}
@@ -42,34 +35,20 @@ const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
 
       <div className={cx(styles.slider__hint, { left: true })}>Low</div>
       <div className={cx(styles.slider__hint, { right: true })}>High</div>
+
       <Range
         values={values}
         step={STEP}
         min={min}
         max={max}
         onChange={onChange}
-        renderTrack={({ props, children }) => (
-          <div
-            ref={props.ref}
-            style={{
-              ...trackStyle,
-              background: getTrackBackground({
-                values: values,
-                colors: [DARKER_BRAND, SECONDARY_GRAY],
-                min: min,
-                max: max,
-              }),
-            }}
-          >
-            {children}
-          </div>
-        )}
+        renderTrack={Track(values, min, max)}
         renderThumb={({ props, isDragged }) => (
           <div
             {...props}
             style={{
               ...props.style,
-              ...thumbStyle,
+              ...THUMB_STYLE,
             }}
           >
             <div
@@ -86,4 +65,4 @@ const RangeInput = ({ min, max, values, onChange, onDefaultClicked }) => {
   );
 };
 
-export default RangeInput;
+export default DefaultView;

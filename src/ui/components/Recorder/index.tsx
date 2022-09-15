@@ -8,41 +8,35 @@ import React, {
 } from "react";
 import RecordRTC, { Options as RecordRtcOptions } from "recordrtc";
 import { blobToBase64String } from "blob-util";
-import RangeInput from "./RangeInput";
 import STATES from "./states";
-import Player from "../Player";
-import Close from "../Close";
-import Settings from "./Settings";
 import { NameTypes } from "../../../types/resources/name";
-import styles from "./styles.module.css";
 import ControllerContext from "../../contexts/controller";
-import Loader from "../Loader";
 import useSliderState from "../../hooks/useSliderState";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import { NameOwner } from "gpdb-api-client";
-import Tooltip from "../Tooltip";
-import { SAVE_PITCH_TIP } from "../../../constants";
-import classNames from "classnames/bind";
-import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
 import getSpec from "./machine/get-spec";
-import CustomAttributes from "../CustomAttributes";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { EVENTS } from "./types/machine";
-import { RecorderCloseOptions } from "./types/handlersTypes";
+import { RecorderCloseOptions } from "./types/handlers-types";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import SystemContext from "../../contexts/system";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useTranslator from "../../hooks/useTranslator";
-
-const COUNTDOWN = 3;
-const TIMER = 0;
-const ONE_SECOND = 1000;
-const TEN_SECONDS = ONE_SECOND * 10;
-
-const MAX_SAMPLE_RATE = 96000;
-const DEFAULT_SAMPLE_RATE = 48000;
-const MIN_SAMPLE_RATE = 16000;
+import useTheme from "../../hooks/useTheme";
+import { Theme } from "../../../types/style-context";
+import View from "./Views";
+import {
+  COUNTDOWN,
+  DEFAULT_SAMPLE_RATE,
+  MAX_ALLOWED_FILE_SIZE,
+  ONE_SECOND,
+  TEN_SECONDS,
+  TIMER,
+} from "./constants";
+import { InboundRelativeSource } from "./types/inbound-relative-source";
+import { SampleRate } from "./types/sample-rate";
+import { logRecordingDeviceInfo } from "../../../core/utils/log-recording-device-info";
 interface Props {
   name: string;
   type: NameTypes;
@@ -51,14 +45,8 @@ interface Props {
   onSaved?: (blob?: Blob) => void;
   termsAndConditions?: TermsAndConditions;
   pronunciation?: Pronunciation;
+  relativeSource?: InboundRelativeSource;
 }
-
-interface ExtendedMediaTrackSettings extends MediaTrackSettings {
-  channelCount: number;
-  latency: number;
-}
-
-const cx = classNames.bind(styles);
 
 const Recorder = ({
   onRecorderClose,
@@ -68,17 +56,23 @@ const Recorder = ({
   termsAndConditions,
   onSaved,
   pronunciation,
+  relativeSource,
 }: Props): JSX.Element => {
+  // CONTEXTS
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
   const systemContext = useContext(SystemContext);
 
-  const customFeatures = useCustomFeatures(controller, styleContext);
-  const t = useTranslator(controller, styleContext);
-
+  // MONITORING
   const logger = systemContext?.logger;
   const log = (message: string): void => logger.log(message, "Recorder");
   const errorHandler = systemContext?.errorHandler;
+
+  // CUSTOM HOOKS
+  const customFeatures = useCustomFeatures(controller, styleContext);
+  const t = useTranslator(controller, styleContext);
+  const { theme } = useTheme();
+  const [slider, openSlider, closeSlider] = useSliderState();
 
   const { can, show } = useFeaturesManager(
     controller.permissions,
@@ -102,29 +96,32 @@ const Recorder = ({
   );
   const showDeleteButton = can("destroyPronunciation", pronunciation);
 
-  const machineSpec = getSpec({ canCustomAttributesCreate });
+  const themeIsDefault = useMemo(() => theme === Theme.Default || !theme, [
+    theme,
+  ]);
+
+  const machineSpec = useMemo(
+    () => getSpec({ canCustomAttributesCreate, themeIsDefault }),
+    [canCustomAttributesCreate, theme]
+  );
 
   const displaySaving =
     styleContext?.displayRecorderSavingMessage ||
     machineSpec.canCustomAttributesCreate;
 
-  const { isDeprecated: isOld } = userAgentManager;
-
   const defaultSampleRate = { value: DEFAULT_SAMPLE_RATE };
 
+  // HOOKS
   const [step, setStep] = useState(machineSpec.initialState);
   const [timer, setTimer] = useState(TIMER);
   const [countdown, setCountdown] = useState<number>(COUNTDOWN);
   const [blob, setBlob] = useState<Blob>();
   const [audioUrl, setAudioUrl] = useState<string>();
   const [showSlider, setShowSlider] = useState<boolean>(true);
-  const [slider, openSlider, closeSlider] = useSliderState();
   const [timeoutId, setTimeoutId] = useState(null);
   const [fileSizeError, setFileSizeError] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
-  const [sampleRate, setSampleRate] = useState<{ value: number }>(
-    defaultSampleRate
-  );
+  const [sampleRate, setSampleRate] = useState<SampleRate>(defaultSampleRate);
   const [tempSampleRate, setTempSampleRate] = useState<{ value: number }>(
     defaultSampleRate
   );
@@ -134,25 +131,7 @@ const Recorder = ({
 
   currentStep.current = step;
 
-  const logRecordingDeviceInfo = async (
-    recordingDeviceSettings: ExtendedMediaTrackSettings
-  ): Promise<void> => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const recordingDeviceInfo = devices.find(
-      (element) => element.deviceId === recordingDeviceSettings.deviceId
-    );
-
-    log(`Recording device label: ${recordingDeviceInfo.label}`);
-
-    Object.keys(recordingDeviceSettings).forEach((key) =>
-      log(
-        `Observed ${key} from media stream: ${
-          recordingDeviceSettings[key] || "not detected"
-        }`
-      )
-    );
-  };
-
+  // INNER FUNCTIONS
   const sendEvent = useCallback(
     (event) => {
       const transition = machineSpec.transitions.find((t) => t.name === event);
@@ -162,9 +141,10 @@ const Recorder = ({
       if (
         transition.from.includes(currentStep.current) ||
         transition.from === "*"
-      ) {
-        setStep(transition.to);
-      } else throw new Error("Inconsistent state");
+      )
+        return setStep(transition.to);
+
+      throw new Error("Inconsistent state");
     },
     [machineSpec.transitions]
   );
@@ -176,11 +156,11 @@ const Recorder = ({
       );
     await stopRecording();
 
-    const b = recorder.current.getBlob();
-    const a = URL.createObjectURL(b);
+    const blob = recorder.current.getBlob();
+    const _audioUrl = URL.createObjectURL(blob);
 
-    setBlob(b);
-    setAudioUrl(a);
+    setBlob(blob);
+    setAudioUrl(_audioUrl);
 
     const internalRecorder = recorder.current.getInternalRecorder() as any;
     log(`Recorder Sample Rate: ${internalRecorder.sampleRate}`);
@@ -213,7 +193,7 @@ const Recorder = ({
     delayTimer();
   };
 
-  const onAccept = async (): Promise<void> => {
+  const onTermsAndConditionsAccept = async (): Promise<void> => {
     sendEvent(EVENTS.accept);
     termsAndConditions.onAccept();
   };
@@ -232,17 +212,14 @@ const Recorder = ({
       log(`BaseAudioContext.sampleRate: ${audioCtxSampleRate}`);
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recordingDeviceSettings = stream.getAudioTracks()[0].getSettings();
 
-      await logRecordingDeviceInfo(
-        recordingDeviceSettings as ExtendedMediaTrackSettings
-      );
+      await logRecordingDeviceInfo(stream, log);
 
       log(`gpdb-widget pitch current sample rate: ${sampleRate.value}`);
 
       if (defaultSampleRate.value !== audioCtxSampleRate) {
         defaultSampleRate.value = audioCtxSampleRate;
-        log(`AudioContext sample rate will be used as Default sample ratee`);
+        log(`AudioContext sample rate will be used as Default sample rate`);
         setSampleRate({ value: audioCtxSampleRate });
         log(`audio context sample rate is used as current pitch value`);
       }
@@ -282,13 +259,16 @@ const Recorder = ({
 
     if (onSaved) onSaved(blob);
 
-    if (!machineSpec.canCustomAttributesCreate) onRecorderClose();
-    if (machineSpec.canCustomAttributesCreate) sendEvent(EVENTS.customAttrs);
+    if (machineSpec.canCustomAttributesCreate === true && themeIsDefault)
+      return sendEvent(EVENTS.customAttrs);
+
+    onRecorderClose();
   };
 
   const onCustomAttributesSaved = () => setTimeout(onRecorderClose, ONE_SECOND);
   const onCustomAttributesBack = (): void => sendEvent(EVENTS.stop);
 
+  // SAMPLE RATE
   const onDefaultSampleRateClick = (): void => setSampleRate(defaultSampleRate);
   const onSampleRateCancel = (): void => {
     closeSlider();
@@ -300,28 +280,25 @@ const Recorder = ({
     controller.saveAudioSampleRate(sampleRate.value);
     log(`Pitch sample rate is saved. New value: ${sampleRate.value}`);
   };
-  const onUpdateSampleRate = (val): void => setSampleRate({ value: val });
+  const onUpdateSampleRate = (val: number): void =>
+    setSampleRate({ value: val });
 
+  // UPLOADER
   const onUploaderChange = (e): void => {
     const files = e.target.files;
 
     if (!files || files.length === 0) return;
 
-    // 5MB
-    if (files[0].size > 5242880) {
-      setFileSizeError(true);
-
-      return;
-    }
+    if (files[0].size > MAX_ALLOWED_FILE_SIZE) return setFileSizeError(true);
 
     const fileReader = new FileReader();
     fileReader.readAsArrayBuffer(files[0]);
     fileReader.onload = (e): void => {
-      const b = new Blob([e.target.result]);
-      const a = URL.createObjectURL(b);
+      const blob = new Blob([e.target.result]);
+      const _audioUrl = URL.createObjectURL(blob);
 
-      setBlob(b);
-      setAudioUrl(a);
+      setBlob(blob);
+      setAudioUrl(_audioUrl);
       setShowSlider(false);
       setFileSizeError(false);
 
@@ -350,167 +327,53 @@ const Recorder = ({
           styleContext?.displayRecorderSavingMessage,
         customFeatures,
         t,
+        theme,
       }}
     >
-      <div className={cx(styles.recorder, { old: isOld })}>
-        {[STATES.STARTED, STATES.RECORD, STATES.FAILED].includes(step) && (
-          <Close onClick={handleOnRecorderClose} />
-        )}
-        <div className={cx(styles.recorder__body, { old: isOld })}>
-          {step === STATES.TERMS_AND_CONDITIONS && termsAndConditions.component}
-
-          {step === STATES.INIT &&
-            !pronunciation &&
-            t(
-              "recorder_init_step_hint",
-              "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button."
-            )}
-
-          {step === STATES.STARTED && (
-            <>
-              <span className="flex-1">Recording starts in</span>
-              <div className={styles.recorder__countdown}>{countdown}</div>
-            </>
-          )}
-
-          {step === STATES.RECORD && (
-            <>
-              <span className="flex-1">Pronounce your name</span>
-              <div className={styles.recorder__timer}>00:0{timer} - 00:10</div>
-            </>
-          )}
-
-          {step === STATES.RECORDED && (
-            <div className={styles.inline}>
-              <Player audioSrc={audioUrl} icon="playable" className="player" />
-              {showSlider && <Settings onClick={openSlider} active={slider} />}
-            </div>
-          )}
-
-          {step === STATES.FAILED && (
-            <>
-              <span>Allow microphone and try again, please.</span>
-              <div className={cx(styles.uploader, { old: isOld })}>
-                <div className={styles.uploader__message}>
-                  If you are having trouble with your microphone, please upload
-                  an mp3 file.
-                </div>
-                <div className={styles.uploader__action}>
-                  <label
-                    htmlFor="pronunciation-upload"
-                    className={styles.upload__label}
-                  >
-                    Upload
-                  </label>
-                  <input
-                    type="file"
-                    id="pronunciation-upload"
-                    name="recording"
-                    accept=".mp3"
-                    onChange={onUploaderChange}
-                  />
-                </div>
-              </div>
-              {fileSizeError && (
-                <div className={styles.error}>File max size is 5 MB</div>
-              )}
-            </>
-          )}
-        </div>
-        <div className={styles.recorder__actions}>
-          {step === STATES.TERMS_AND_CONDITIONS && (
-            <>
-              <button onClick={handleOnRecorderClose}>
-                {t("recorder_back_button", "BACK")}
-              </button>
-              <button onClick={onAccept}>ACCEPT</button>
-            </>
-          )}
-
-          {step === STATES.INIT && (
-            <>
-              <button onClick={handleOnRecorderClose}>
-                {t("recorder_back_button", "BACK")}
-              </button>
-
-              {showRecordButton && (
-                <button onClick={onStart}>
-                  {pronunciation
-                    ? t("recorder_rerecord_button", "RE-RECORD")
-                    : t("recorder_start_button", "START")}
-                </button>
-              )}
-
-              {showDeleteButton && (
-                <button onClick={onDeletePronunciation}>
-                  {t("delete_pronunciation_button", "DELETE PRONUNCIATION")}
-                </button>
-              )}
-            </>
-          )}
-
-          {step === STATES.RECORD && <button onClick={onStop}>STOP</button>}
-
-          {step === STATES.RECORDED && slider && (
-            <>
-              <RangeInput
-                max={MAX_SAMPLE_RATE}
-                min={MIN_SAMPLE_RATE}
-                values={[sampleRate.value]}
-                onChange={onUpdateSampleRate}
-                onDefaultClicked={onDefaultSampleRateClick}
-              />
-
-              <button onClick={onSampleRateCancel} className={styles.secondary}>
-                BACK
-              </button>
-
-              <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-                SAVE PITCH
-              </button>
-
-              <Tooltip
-                uuid="save_pitch_tooltip_id"
-                multiline
-                eventOff="mouseout"
-              />
-            </>
-          )}
-          {step === STATES.RECORDED && !slider && (
-            <>
-              <button
-                className={styles.no__border}
-                onClick={handleOnRecorderClose}
-              >
-                CLOSE
-              </button>
-              <button onClick={onStart}>RERECORD</button>
-              <button onClick={onSave}>SAVE PRONUNCIATION</button>
-            </>
-          )}
-        </div>
-        {step === STATES.SAVED && (
-          <div className={styles.modal__wrapper}>
-            {displaySaving &&
-              (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
-            <Loader inline />
-          </div>
-        )}
-        {step === STATES.CUSTOM_ATTRS && machineSpec.canCustomAttributesCreate && (
-          <>
-            <CustomAttributes
-              attributes={pronunciation?.customAttributes}
-              disabled={false}
-              saving
-              noBorder
-              owner={owner}
-              onCustomAttributesSaved={onCustomAttributesSaved}
-              onBack={onCustomAttributesBack}
-              onRecorderClose={onRecorderClose}
-            />
-          </>
-        )}
-      </div>
+      <View
+        recorderProps={{
+          step,
+          countdown,
+          timer,
+          onStart,
+          onStop,
+          onSave,
+          handleOnRecorderClose,
+          displaySaving,
+          saving,
+          showDeleteButton,
+          showRecordButton,
+          audioUrl,
+          machineSpec,
+          onRecorderClose,
+        }}
+        termsAndConditionsProps={{
+          termsAndConditions,
+          onTermsAndConditionsAccept,
+        }}
+        sliderProps={{
+          slider,
+          openSlider,
+          showSlider,
+          closeSlider,
+        }}
+        sampleRateProps={{
+          onDefaultSampleRateClick,
+          onSampleRateCancel,
+          onSampleRateSave,
+          onUpdateSampleRate,
+          sampleRate,
+        }}
+        uploaderProps={{ onUploaderChange, fileSizeError }}
+        customAttributesProps={{
+          onCustomAttributesBack,
+          onCustomAttributesSaved,
+        }}
+        owner={owner}
+        pronunciation={pronunciation}
+        onDeletePronunciation={onDeletePronunciation}
+        relativeSource={relativeSource}
+      />
     </StyleContext.Provider>
   );
 };

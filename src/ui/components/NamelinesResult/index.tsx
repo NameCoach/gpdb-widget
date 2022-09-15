@@ -160,6 +160,7 @@ const NameLinesResult = ({
               onRecorderClose={onRecorderClose}
               pronunciation={selfRecorderedPronunciation}
               termsAndConditions={recorderState.termsAndConditions}
+              relativeSource={RelativeSource.RequesterPeer}
             />
           )}
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import IFrontController from "../../../types/front-controller";
 import Pronunciation from "../../../types/resources/pronunciation";
 import RestorePronunciationNotification from "../../components/Notification/RestorePronunciationNotification";
-import { RecorderCloseOptions } from "../../components/Recorder/types/handlersTypes";
+import { RecorderCloseOptions } from "../../components/Recorder/types/handlers-types";
 import useFeaturesManager from "../useFeaturesManager";
 import { useNotifications } from "../useNotification";
 import {
@@ -39,10 +39,13 @@ const useOnRecorderClose = ({
   const systemContext = React.useContext(SystemContext);
   const errorHandler = systemContext?.errorHandler;
 
-  const autoclose =
-    customFeaturesManager.getValue(
-      ConstantOverrides.RestorePronunciationTime
-    ) || RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY;
+  const autoclose = React.useMemo(() => {
+    return (
+      customFeaturesManager.getValue(
+        ConstantOverrides.RestorePronunciationTime
+      ) || RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY
+    );
+  }, [customFeaturesManager, controller.preferences]);
 
   const { setNotification } = useNotifications();
 
