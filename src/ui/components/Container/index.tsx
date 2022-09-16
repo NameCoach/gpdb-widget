@@ -81,8 +81,8 @@ const Container = (props: Props): JSX.Element => {
 
   const canCreateFullName = useMemo(
     () => {
-      if (controller.isUserOwnsName())
-      return can("createSelfRecording", pronunciations.fullName);
+    if (controller.isUserOwnsName())
+      return can("createSelfRecording", pronunciations.fullName[0]);
 
       // TODO: make that a named attribute of pronunciations object? INT-164
     if (pronunciations.fullName[0]?.nameOwnerCreated)
