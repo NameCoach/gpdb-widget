@@ -12,16 +12,10 @@ import userAgentManager from "../../../../../core/userAgentManager";
 import StyleContext from "../../../../contexts/style";
 import useTranslator from "../../../../hooks/useTranslator";
 import FailedStateContainer from "../../Components/FailedStateContainer";
-import {
-  DEFAULT_RECORDER_INIT_STEP_HINT,
-  MAX_SAMPLE_RATE,
-  MIN_SAMPLE_RATE,
-} from "../../constants";
+import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../constants";
 import { OutlookViewProps } from "../../types/views";
-import { getRecordStateTitleText } from "../../../../../core/utils/get-record-state-title-text";
-
-const DEFAULT_RECORDER_SLIDER_HINT =
-  "Your browser may cause pitch issues while recording. Try adjusting the pitch slider below, then re-record with the new pitch setting.";
+import { RelativeSource } from "../../../../../types/resources/pronunciation";
+import { InboundRelativeSource } from "../../types/inbound-relative-source";
 
 const cx = classNames.bind(styles);
 
@@ -57,16 +51,23 @@ const OutlookView = ({
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
 
-  const t = useTranslator(controller, styleContext);
+  const { t } = useTranslator(controller, styleContext);
 
   const { isDeprecated: isOld } = userAgentManager;
 
+  const getRecordStateTitleText = (
+    relativeSource: InboundRelativeSource,
+    name?: string
+  ): string => {
+    if (name) return `${t("recorder_pronounce")} ${name}`;
+
+    if (relativeSource === RelativeSource.RequesterSelf)
+      return t("recorder_pronounce_your_name");
+
+    return t("recorder_record_step_recording");
+  };
+
   const statesRecordTitleText = getRecordStateTitleText(relativeSource);
-  const recorderInitStepHint = t(
-    "recorder_init_step_hint",
-    DEFAULT_RECORDER_INIT_STEP_HINT
-  );
-  const sliderHint = t("recorder_slider_hint", DEFAULT_RECORDER_SLIDER_HINT);
 
   const onSliderRerecord = async (): Promise<void> => {
     onSampleRateSave();
@@ -94,7 +95,9 @@ const OutlookView = ({
 
         {step === STATES.STARTED && (
           <>
-            <span className="flex-1">Recording starts in...</span>
+            <span className="flex-1">
+              {t("recorder_started_step_starts_in")}
+            </span>
             <div className={cx(styles.recorder__countdown)}>{countdown}</div>
           </>
         )}
@@ -111,7 +114,7 @@ const OutlookView = ({
         {step === STATES.INIT && !pronunciation && (
           <>
             <div className={styles.recorder_init_step_hint}>
-              {recorderInitStepHint}
+              {t("recorder_init_step_hint")}
             </div>
 
             <div className={styles.gap_h_20} />
@@ -132,7 +135,9 @@ const OutlookView = ({
 
             {slider && (
               <>
-                <div className={styles.slider_hint}>{sliderHint}</div>
+                <div className={styles.slider_hint}>
+                  {t("recorder_slider_hint")}
+                </div>
 
                 <RangeInput
                   max={MAX_SAMPLE_RATE}
@@ -161,9 +166,11 @@ const OutlookView = ({
         {step === STATES.TERMS_AND_CONDITIONS && (
           <>
             <button onClick={handleOnRecorderClose}>
-              {t("recorder_back_button", "BACK")}
+              {t("recorder_back_button_outlook")}
             </button>
-            <button onClick={onTermsAndConditionsAccept}>ACCEPT</button>
+            <button onClick={onTermsAndConditionsAccept}>
+              {t("recorder_accept_terms_and_conditions_outlook")}
+            </button>
           </>
         )}
 
@@ -176,7 +183,7 @@ const OutlookView = ({
                 })}
                 onClick={onDeletePronunciation}
               >
-                {t("delete_pronunciation_button", "Delete Recording")}
+                {t("recorder_delete_pronunciation_button_outlook")}
               </button>
 
               <div className={styles.gap_h_20} />
@@ -188,7 +195,7 @@ const OutlookView = ({
               <div className={styles.gap_h_20} />
 
               <button className={cx("btn", { red: true })} onClick={onStart}>
-                Re-record
+                {t("recorder_rerecord_button_outlook")}
               </button>
             </>
           )}
@@ -209,21 +216,21 @@ const OutlookView = ({
                   className={cx("btn", { outline: true })}
                   onClick={handleOnRecorderClose}
                 >
-                  {t("recorder_cancel_button", "Cancel")}
+                  {t("recorder_cancel_button_outlook")}
                 </button>
               )}
 
             {step === STATES.INIT && showRecordButton && (
               <button className={cx("btn", { purple: true })} onClick={onStart}>
                 {pronunciation
-                  ? t("recorder_rerecord_button", "Re-record")
-                  : t("recorder_start_button", "Start")}
+                  ? t("recorder_rerecord_button_outlook")
+                  : t("recorder_start_button_outlook")}
               </button>
             )}
 
             {step === STATES.RECORD && (
               <button className={cx("btn", { purple: true })} onClick={onStop}>
-                Stop
+                {t("recorder_record_step_stop_button_outlook")}
               </button>
             )}
 
@@ -234,7 +241,7 @@ const OutlookView = ({
                     className={cx("btn", { purple: true })}
                     onClick={onSave}
                   >
-                    Save Pronunciation
+                    {t("recorder_save_pronunciation_button_outlook")}
                   </button>
                 )}
 
@@ -244,14 +251,14 @@ const OutlookView = ({
                       className={cx("btn", { outline: true })}
                       onClick={onSliderCancel}
                     >
-                      {t("recorder_cancel_button", "Cancel")}
+                      {t("recorder_cancel_button_outlook")}
                     </button>
 
                     <button
                       className={cx("btn", { purple: true })}
                       onClick={onSliderRerecord}
                     >
-                      {t("recorder_rerecord_button", "Re-record")}
+                      {t("recorder_rerecord_button_outlook")}
                     </button>
                   </>
                 )}
@@ -273,7 +280,9 @@ const OutlookView = ({
       {step === STATES.SAVED && (
         <div className={styles.modal__wrapper}>
           {displaySaving &&
-            (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
+            (saving
+              ? t("recorder_saving_pronunciation")
+              : t("recorder_pronunciation_saved"))}
           <Loader inline />
         </div>
       )}

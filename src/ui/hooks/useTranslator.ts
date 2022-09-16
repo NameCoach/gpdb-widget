@@ -2,14 +2,20 @@ import { TFunction } from "i18next";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
+import SupportedLanguages from "../../translations/supported-languages";
 import IFrontController from "../../types/front-controller";
 import IStyleContext from "../../types/style-context";
 import StyleContext from "../contexts/style";
 
+interface HookReturn {
+  t: TFunction;
+  setLanguage: (language: SupportedLanguages) => void;
+}
+
 const useTranslator = (
   controller: IFrontController,
   styleContext?: IStyleContext
-): TFunction => {
+): HookReturn => {
   const _styleContext = styleContext || useContext(StyleContext);
 
   const loadT = (translations = {}): TFunction => {
@@ -26,9 +32,13 @@ const useTranslator = (
     return t;
   };
 
+  const setLanguage = (language: SupportedLanguages): void => {
+    i18n.changeLanguage(language);
+  };
+
   const t = _styleContext?.t || loadT(controller?.preferences?.translations);
 
-  return t;
+  return { t, setLanguage };
 };
 
 export default useTranslator;

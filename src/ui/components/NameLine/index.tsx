@@ -38,7 +38,7 @@ const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
 
   const { theme, selectStyles, filterOption } = useTheme(NameLine.name);
-  const t = useTranslator(controller);
+  const { t } = useTranslator(controller);
 
   const { isDeprecated: isOld } = userAgentManager;
   const options = useMemo(

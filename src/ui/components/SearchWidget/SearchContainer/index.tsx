@@ -36,7 +36,7 @@ const replaceSplitter = (string: string): string => {
 
 const SearchContainer = (props: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(props.controller, styleContext);
+  const { t } = useTranslator(props.controller, styleContext);
 
   const title = t("search_widget_name", "Search");
 

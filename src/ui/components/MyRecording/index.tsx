@@ -39,7 +39,7 @@ const MyRecording = ({
   canCreateSelfRecording,
 }: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(null, styleContext);
+  const { t } = useTranslator(null, styleContext);
 
   const unavailableHint = t(
     "unavailable_hint",

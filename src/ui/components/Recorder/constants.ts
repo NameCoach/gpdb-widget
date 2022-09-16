@@ -8,6 +8,3 @@ export const DEFAULT_SAMPLE_RATE = 48000;
 export const MIN_SAMPLE_RATE = 16000;
 
 export const MAX_ALLOWED_FILE_SIZE = 5242880; // 5MB
-
-export const DEFAULT_RECORDER_INIT_STEP_HINT =
-  "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button.";

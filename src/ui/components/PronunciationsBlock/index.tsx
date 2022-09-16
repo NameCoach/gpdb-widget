@@ -31,7 +31,7 @@ const cx = classNames.bind(styles);
 
 const PronunciationsBlock = (props: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(props.controller, styleContext);
+  const { t } = useTranslator(props.controller, styleContext);
 
   const customFeatures = useCustomFeatures(props.controller);
 
