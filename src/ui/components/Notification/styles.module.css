@@ -1,0 +1,12 @@
+.notification__container {
+  position: absolute;
+  bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  right: 0;
+  left: 0;
+  text-align: center;
+  margin: auto;
+}
