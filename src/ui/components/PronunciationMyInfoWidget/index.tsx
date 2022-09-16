@@ -38,7 +38,7 @@ const PronunciationMyInfoWidget = ({
   if (!name.value.trim()) throw new Error("Name shouldn't be blank");
 
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(client, styleContext);
+  const { t } = useTranslator(client, styleContext);
   const customFeatures = useCustomFeatures(client, styleContext);
 
   const { canPronunciation } = usePermissions(client.permissions);

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
+import useTranslator from "../../../../hooks/useTranslator";
+import ControllerContext from "../../../../contexts/controller";
 
 const cx = classNames.bind(styles);
 
@@ -19,20 +21,23 @@ const FailedStateContainer = ({
   onUploaderChange,
   isOld,
 }: Props): JSX.Element => {
+  const controller = useContext(ControllerContext);
+
+  const { t } = useTranslator(controller);
+
   return (
     <>
-      <span>Allow microphone and try again, please.</span>
+      <span>{t("recorder_allow_microphone_and_try_again")}</span>
       <div className={cx(styles.uploader, { old: isOld })}>
         <div className={styles.uploader__message}>
-          If you are having trouble with your microphone, please upload an mp3
-          file.
+          {t("recorder_uploader_message")}
         </div>
         <div className={styles.uploader__action}>
           <label
             htmlFor="pronunciation-upload"
             className={styles.upload__label}
           >
-            Upload
+            {t("recorder_uploader_button")}
           </label>
           <input
             type="file"
@@ -44,7 +49,9 @@ const FailedStateContainer = ({
         </div>
       </div>
       {errors?.fileSizeError && (
-        <div className={styles.error}>File max size is 5 MB</div>
+        <div className={styles.error}>
+          {t("recorder_uploader_file_max_size")}
+        </div>
       )}
     </>
   );

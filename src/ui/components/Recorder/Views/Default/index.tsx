@@ -15,11 +15,7 @@ import StyleContext from "../../../../contexts/style";
 import CustomAttributes from "../../../CustomAttributes";
 import useTranslator from "../../../../hooks/useTranslator";
 import FailedStateContainer from "../../Components/FailedStateContainer";
-import {
-  DEFAULT_RECORDER_INIT_STEP_HINT,
-  MAX_SAMPLE_RATE,
-  MIN_SAMPLE_RATE,
-} from "../../constants";
+import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../constants";
 import { DefaultViewProps } from "../../types/views";
 
 const cx = classNames.bind(styles);
@@ -60,14 +56,9 @@ const DefaultView = ({
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
 
-  const t = useTranslator(controller, styleContext);
+  const { t } = useTranslator(controller, styleContext);
 
   const { isDeprecated: isOld } = userAgentManager;
-
-  const recorderInitStepHint = t(
-    "recorder_init_step_hint",
-    DEFAULT_RECORDER_INIT_STEP_HINT
-  );
 
   return (
     <div
@@ -89,14 +80,18 @@ const DefaultView = ({
 
         {step === STATES.STARTED && (
           <>
-            <span className="flex-1">Recording starts in...</span>
+            <span className="flex-1">
+              {t("recorder_started_step_starts_in")}.
+            </span>
             <div className={cx(styles.recorder__countdown)}>{countdown}</div>
           </>
         )}
 
         {step === STATES.RECORD && (
           <>
-            <span className="flex-1">Recording...</span>
+            <span className="flex-1">
+              {t("recorder_record_step_recording")}
+            </span>
             <div className={cx(styles.recorder__timer)}>
               00:0{timer} - 00:10
             </div>
@@ -105,7 +100,7 @@ const DefaultView = ({
 
         {/* DEFAULT FLOW */}
 
-        {step === STATES.INIT && !pronunciation && recorderInitStepHint}
+        {step === STATES.INIT && !pronunciation && t("recorder_init_step_hint")}
 
         {step === STATES.RECORDED && (
           <div className={styles.inline}>
@@ -130,35 +125,41 @@ const DefaultView = ({
         {step === STATES.TERMS_AND_CONDITIONS && (
           <>
             <button onClick={handleOnRecorderClose}>
-              {t("recorder_back_button", "BACK")}
+              {t("recorder_back_button_default")}
             </button>
-            <button onClick={onTermsAndConditionsAccept}>ACCEPT</button>
+            <button onClick={onTermsAndConditionsAccept}>
+              {t("recorder_accept_terms_and_conditions_default")}
+            </button>
           </>
         )}
 
         {step === STATES.INIT && (
           <>
             <button onClick={handleOnRecorderClose}>
-              {t("recorder_back_button", "BACK")}
+              {t("recorder_back_button_default")}
             </button>
 
             {showRecordButton && (
               <button onClick={onStart}>
                 {pronunciation
-                  ? t("recorder_rerecord_button", "RE-RECORD")
-                  : t("recorder_start_button", "START")}
+                  ? t("recorder_rerecord_button_default")
+                  : t("recorder_start_button_default")}
               </button>
             )}
 
             {showDeleteButton && (
               <button onClick={onDeletePronunciation}>
-                {t("delete_pronunciation_button", "DELETE PRONUNCIATION")}
+                {t("recorder_delete_pronunciation_button_default")}
               </button>
             )}
           </>
         )}
 
-        {step === STATES.RECORD && <button onClick={onStop}>STOP</button>}
+        {step === STATES.RECORD && (
+          <button onClick={onStop}>
+            {t("recorder_record_step_stop_button_default")}
+          </button>
+        )}
 
         {step === STATES.RECORDED && (
           <>
@@ -176,11 +177,11 @@ const DefaultView = ({
                   onClick={onSampleRateCancel}
                   className={styles.secondary}
                 >
-                  BACK
+                  {t("recorder_back_button_default")}
                 </button>
 
                 <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-                  SAVE PITCH
+                  {t("recorder_save_pitch_button")}
                 </button>
 
                 <Tooltip
@@ -197,10 +198,14 @@ const DefaultView = ({
                   className={styles.no__border}
                   onClick={handleOnRecorderClose}
                 >
-                  CLOSE
+                  {t("recorder_close_button_default")}
                 </button>
-                <button onClick={onStart}>RERECORD</button>
-                <button onClick={onSave}>SAVE PRONUNCIATION</button>
+                <button onClick={onStart}>
+                  {t("recorder_rerecord_button_default")}
+                </button>
+                <button onClick={onSave}>
+                  {t("recorder_save_pronunciation_button_default")}
+                </button>
               </>
             )}
           </>
@@ -212,7 +217,9 @@ const DefaultView = ({
       {step === STATES.SAVED && (
         <div className={styles.modal__wrapper}>
           {displaySaving &&
-            (saving ? "Saving your pronunciation" : "Pronunciation saved!")}
+            (saving
+              ? t("recorder_saving_pronunciation")
+              : t("recorder_pronunciation_saved"))}
           <Loader inline />
         </div>
       )}

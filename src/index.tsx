@@ -13,9 +13,11 @@ import ModalTooltip from "./ui/components/ModalTooltip";
 import HelpAction from "./ui/components/Actions/Help";
 import ModalTooltipOption from "./ui/components/ModalTooltip/Option";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import ChangeableText from "./ui/components/ModalTooltip/ChangableText";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
+import { AnalyticsEventType } from "./types/resources/analytics-event-type";
 
 // LOADER
 import loadExtensionClient from "./core/loadExtensionClient";
@@ -35,10 +37,11 @@ import SystemContext from "./ui/contexts/system";
 
 // HOOKS
 import loadClient from "./ui/hooks/loadClient";
-import { AnalyticsEventType } from "./types/resources/analytics-event-type";
 import { NotificationsProvider } from "./ui/hooks/useNotification";
 import addOnDeviceChangeHandler from "./ui/hooks/addOnDeviceChangeHandler";
-import ChangeableText from "./ui/components/ModalTooltip/ChangableText";
+import useTranslator from "./ui/hooks/useTranslator";
+
+import SupportedLanguages from "./translations/supported-languages";
 
 export {
   Widget,
@@ -74,4 +77,6 @@ export {
   CopyToClipboard,
   ChangeableText,
   TooltipActionType,
+  useTranslator,
+  SupportedLanguages,
 };

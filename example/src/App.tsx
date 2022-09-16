@@ -23,6 +23,7 @@ import Name, { NameTypes } from "../../src/types/resources/name";
 import { TERMS_AND_CONDITIONS_REQUEST_RESULT } from './examples/constants';
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import LanguageSetter from './dev-tools/LanguageSetter';
 
 const style = {
   margin: '50px auto 0 auto',
@@ -131,6 +132,7 @@ const App = () => {
       <NotificationsProvider>
         <div style={{ margin: "50px auto 0 auto", width: "320px" }}>
           <ScreenResizer />
+          <LanguageSetter />
           { renderWelcomeScreen ?  <InfoWidget {...props} /> : <MainApp />}
         </div>
 

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Range } from "react-range";
+import ControllerContext from "../../../../../../contexts/controller";
+import useTranslator from "../../../../../../hooks/useTranslator";
 import { STEP } from "../../constants";
 import { OTLOOK_THUMB_STYLE } from "../../styles";
 import Track from "../../Track";
@@ -13,6 +15,10 @@ const OutlookView = ({
   onChange,
   onDefaultClicked,
 }: RangeInputProps): JSX.Element => {
+  const controller = useContext(ControllerContext);
+
+  const { t } = useTranslator(controller);
+
   return (
     <div className={styles.pitch}>
       <Range
@@ -34,11 +40,11 @@ const OutlookView = ({
       />
 
       <div className={styles.flex_row}>
-        <div className={styles.label}>Low</div>
+        <div className={styles.label}>{t("recorder_range_input_low")}</div>
         <div className={styles.btn__link} onClick={onDefaultClicked}>
-          Default
+          {t("recorder_range_input_default")}
         </div>
-        <div className={styles.label}>High</div>
+        <div className={styles.label}>{t("recorder_range_input_high")}</div>
       </div>
     </div>
   );

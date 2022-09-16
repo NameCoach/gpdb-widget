@@ -19,7 +19,7 @@ const SearchWidget = (props: Props): JSX.Element => {
 
   const styleContext = useContext(StyleContext);
 
-  const t = useTranslator(client, styleContext);
+  const { t } = useTranslator(client, styleContext);
 
   const customFeatures = useCustomFeatures(client, styleContext);
 

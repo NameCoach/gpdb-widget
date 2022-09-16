@@ -14,7 +14,7 @@ const RestorePronunciationNotification = ({
   onClick,
 }: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const t = useTranslator(controller);
+  const { t } = useTranslator(controller);
 
   const { clearNotification } = useNotifications();
 

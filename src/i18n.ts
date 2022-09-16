@@ -2,6 +2,7 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import localTranslations from "../src/translations/load";
+import SupportedLanguages from "./translations/supported-languages";
 
 i18n
   .use(LanguageDetector)
@@ -9,10 +10,13 @@ i18n
   .init({
     resources: {
       en: {
-        translations: { ...localTranslations("en") },
+        translations: { ...localTranslations(SupportedLanguages.EN) },
+      },
+      fr: {
+        translations: { ...localTranslations(SupportedLanguages.FR) },
       },
     },
-    fallbackLng: "en",
+    fallbackLng: SupportedLanguages.EN,
     debug: false,
     ns: ["translations"],
     defaultNS: "translations",

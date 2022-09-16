@@ -70,7 +70,7 @@ const Recorder = ({
 
   // CUSTOM HOOKS
   const customFeatures = useCustomFeatures(controller, styleContext);
-  const t = useTranslator(controller, styleContext);
+  const { t } = useTranslator(controller, styleContext);
   const { theme } = useTheme();
   const [slider, openSlider, closeSlider] = useSliderState();
 

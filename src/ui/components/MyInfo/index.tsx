@@ -28,7 +28,7 @@ const MyInfo = (props: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
 
   const customFeatures = useCustomFeatures(props.controller, styleContext);
-  const t = useTranslator(props.controller, styleContext);
+  const { t } = useTranslator(props.controller, styleContext);
 
   const { can } = useFeaturesManager(
     props.controller.permissions,

@@ -9,6 +9,7 @@ import image from "@rollup/plugin-image";
 import simplevars from "postcss-simple-vars";
 import packageJson from "./package.json";
 import variables from "./src/ui/styles/variables/all.ts";
+import json from "@rollup/plugin-json";
 
 const modules =
   process.platform === "win32"
@@ -52,5 +53,6 @@ export default {
         }),
       ],
     }),
+    json(),
   ],
 };
