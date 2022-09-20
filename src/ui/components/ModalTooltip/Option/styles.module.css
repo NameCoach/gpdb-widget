@@ -1,0 +1,5 @@
+.tooltip_button {
+    composes: tooltip_button from "../styles.module.css";
+    min-width: 144px;
+    cursor: pointer;
+}
