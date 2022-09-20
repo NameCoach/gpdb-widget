@@ -1,0 +1,7 @@
+.m_10 {
+  composes: m_10 from "../../styles/outlook.css";
+}
+
+.title {
+  composes: title from "../../styles/outlook.css";
+}

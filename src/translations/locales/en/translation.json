@@ -1,0 +1,42 @@
+{
+    "recorder_init_step_hint": "To make your own recording, click ‘Start’ and wait for the 3 second countdown. Then say the name you’re recording and click the ‘Stop’ recording button.",
+    "recorder_slider_hint": "Your browser may cause pitch issues while recording. Try adjusting the pitch slider below, then re-record with the new pitch setting.",
+    "recorder_allow_microphone_and_try_again": "Allow microphone and try again, please.",
+
+    "recorder_uploader_message": "If you are having trouble with your microphone, please upload an mp3 file.",
+    "recorder_uploader_button": "Upload",
+    "recorder_uploader_file_max_size": "File max size is 5 MB",
+
+    "recorder_range_input_adjust_audio_pitch": "Adjust recording audio pitch",
+    "recorder_range_input_default": "Default",
+    "recorder_range_input_low": "Low",
+    "recorder_range_input_high": "High",
+
+    "recorder_settings_open": "Having trouble with pitch?",
+
+    "recorder_back_button_default": "BACK",
+    "recorder_delete_pronunciation_button_default": "DELETE PRONUNCIATION",
+    "recorder_rerecord_button_default": "RE-RECORD",
+    "recorder_start_button_default": "START",
+    "recorder_record_step_stop_button_default": "STOP",
+    "recorder_close_button_default": "CLOSE",
+    "recorder_save_pronunciation_button_default": "SAVE PRONUNCIATION",
+    "recorder_accept_terms_and_conditions_default": "ACCEPT",
+    "recorder_save_pitch_button": "SAVE PITCH",
+
+    "recorder_back_button_outlook": "Back",
+    "recorder_delete_pronunciation_button_outlook": "Delete Recording",
+    "recorder_cancel_button_outlook": "Cancel",
+    "recorder_rerecord_button_outlook": "Re-record",
+    "recorder_start_button_outlook": "Start",
+    "recorder_accept_terms_and_conditions_outlook": "Accept",
+    "recorder_record_step_stop_button_outlook": "Stop",
+    "recorder_save_pronunciation_button_outlook": "Save Pronunciation",
+
+    "recorder_started_step_starts_in": "Recording starts in..",
+    "recorder_record_step_recording": "Recording...",
+    "recorder_saving_pronunciation": "Saving your pronunciation",
+    "recorder_pronunciation_saved": "Pronunciation saved!",
+    "recorder_pronounce": "Pronounce",
+    "recorder_pronounce_your_name": "Pronounce your name"
+}

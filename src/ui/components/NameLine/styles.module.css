@@ -1,0 +1,200 @@
+.name_line_container {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.name--line--old--outlook {
+  min-height: 60px;
+}
+
+.name--line--old--default {
+  min-height: 30px;
+}
+
+
+.pronunciation {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pronunciation--outlook {
+  flex-direction: column;
+}
+
+.name__wrapper {
+  display: contents;
+}
+
+.wrapper--outlook {
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+
+.pronunciation__name {
+  flex: 0 0 40%;
+  font-size: 20px;
+  font-weight: bold;
+  word-wrap: break-word;
+  overflow: hidden;
+  margin-top: auto
+}
+
+.name--outlook {
+  font-weight: 500;
+  font-size: 16px;
+  flex: 0 0 80%;
+}
+
+.pronunciation__tail {
+  position: relative;
+  display: flex;
+  flex: 0 0 60%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tail--outlook {
+  margin-top: 10px;
+}
+
+.pronunciation__mid {
+  position: relative;
+  display: flex;
+  flex: 1 0 55%;
+  max-width: 55%;
+  font-size: 12px;
+  font-weight: 400;
+  color: $colors_pronunciation_mid;
+  flex-direction: column;
+  margin-top: auto
+}
+
+.mid--outlook {
+  font-size: 12px;
+  line-height: 20px;
+  max-width: 100%;
+  flex: auto;
+  color: $colors_dark_grey;
+  width: 100%;
+  margin-right: 11px;
+}
+
+.pronunciation__select {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  padding-right: 20px;
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 26px;
+  border: 1px solid $colors_black_3;
+  background: $colors_background;
+  cursor: pointer;
+}
+
+.pronunciation__select.opened {
+  border: 1px solid $colors_darker_brand;
+}
+
+.pronunciation__select.opened::after{
+  transform: rotate(180deg) translateY(50%);
+  transition: transform .2s ease;
+}
+
+.pronunciation__select__value {
+  width: 100%;
+  color: var(--textColor); /* ??? */
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.pronunciation__select::after {
+  content: var(--arrowIcon); /* ??? */
+  position: absolute;
+  top: 50%;
+  transform: rotate(0deg) translateY(-50%);
+  right: 7px;
+  line-height: 0;
+  transition: transform .2s ease;
+}
+
+.pronunciation__options__wrapper {
+  min-width: 100%;
+  width: max-content;
+  background: $colors_background;
+  position: absolute;
+  top: 32px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  z-index: 2247483646;
+  max-width: 220px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: var(--shadow); /* ??? */
+  border-radius: 4px;
+}
+
+.pronunciation__options__list {
+  width: 100%;
+  cursor: pointer;
+}
+
+.pronunciation__option {
+  font-size: 14px;
+  line-height: 16px;
+  padding: 3px 6px;
+  color: var(--textColor); /* ??? */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pronunciation__option:hover {
+  background: var(--optionHoverColor); /* ??? */
+
+}
+
+.pronunciation__option.active {
+  background: var(--secondaryColor); /* ??? */
+}
+
+.pronunciation__actions {
+  display: flex;
+  flex: 0 0 45%;
+  max-width: 45%;
+  justify-content: flex-end;
+}
+
+.actions--outlook {
+  flex: auto;
+  max-width: 30%;
+}
+
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+}
+
+.old {
+  justify-content: space-around;
+  padding-right: 0.75rem;
+}
+
+.pronunciation__action {
+  display: flex;
+  align-items: center;
+  flex: 0;
+}
+
+.hidden {
+  display: none;
+}
