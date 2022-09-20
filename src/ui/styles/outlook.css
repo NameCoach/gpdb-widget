@@ -52,7 +52,6 @@
 }
 
 /*#region BUTTONS*/
-
 .btn {
   border-radius: 5px !important;
   border: none !important;
@@ -66,12 +65,10 @@
   height: 29px;
   cursor: pointer;
 
-  /*font-family: 'Montserrat';*/
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 17px;
-  /*letter-spacing: 0.5px;*/
 }
 
 .btn.purple {
@@ -103,7 +100,6 @@
 
   cursor: pointer;
 }
-
 /*#endregion BUTTONS*/
 
 .flex_column_centered {

@@ -12,6 +12,7 @@ import {
 import { NameTypes } from "../../../types/resources/name";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
 import SystemContext from "../../contexts/system";
+import getDeleteNotificationTag from "../../../core/utils/get-delete-notification-tag";
 
 interface Options {
   controller: IFrontController;
@@ -54,6 +55,20 @@ const useOnRecorderClose = ({
     customFeaturesManager
   );
 
+  const notificationTag = React.useMemo(() => {
+    return getDeleteNotificationTag(cachedRecordingNameType);
+  }, [cachedRecordingNameType]);
+
+  const throwErrorNotification = () =>
+    setNotification({ tag: notificationTag });
+
+  const throwSuccessNotification = (onClick) =>
+    setNotification({
+      content: <RestorePronunciationNotification onClick={onClick} />,
+      tag: notificationTag,
+      autoclose: autoclose,
+    });
+
   const runDelayed = React.useCallback(() => {
     try {
       const delayedDestroy = setTimeout(async () => {
@@ -68,7 +83,7 @@ const useOnRecorderClose = ({
         setRecorderClosed();
         await reload(cachedRecordingNameType);
 
-        if (!success) setNotification();
+        if (!success) throwErrorNotification();
       }, autoclose);
 
       const onRestorePronunciationClick = async (): Promise<void> => {
@@ -76,8 +91,6 @@ const useOnRecorderClose = ({
         setRecorderClosed();
         await reload(cachedRecordingNameType);
       };
-
-      const notificationId = new Date().getTime();
 
       const withoutCurrent = pronunciations[cachedRecordingNameType].filter(
         (n) => ![requesterPeerPronunciation].includes(n)
@@ -90,22 +103,13 @@ const useOnRecorderClose = ({
 
       setPronunciations(newPronunciations);
 
-      setNotification({
-        id: notificationId,
-        content: (
-          <RestorePronunciationNotification
-            id={notificationId}
-            onClick={onRestorePronunciationClick}
-          />
-        ),
-        autoclose: autoclose,
-      });
+      throwSuccessNotification(onRestorePronunciationClick);
 
       setRecorderClosed();
     } catch (error) {
       errorHandler && errorHandler(error, "FullnamesContainer/DelayedDestroy");
 
-      setNotification();
+      throwErrorNotification();
     }
   }, [
     autoclose,
@@ -131,32 +135,21 @@ const useOnRecorderClose = ({
       await reload(cachedRecordingNameType);
       setRecorderClosed();
 
-      if (!success) return setNotification();
-
-      const notificationId = new Date().getTime();
+      if (!success) return throwErrorNotification();
 
       const onRestorePronunciationClick = async (): Promise<void> => {
         const success = await controller.restore(requesterPeerPronunciation.id);
         if (success) return await reload(cachedRecordingNameType);
 
-        setNotification();
+        throwErrorNotification();
       };
 
-      setNotification({
-        id: notificationId,
-        content: (
-          <RestorePronunciationNotification
-            id={notificationId}
-            onClick={onRestorePronunciationClick}
-          />
-        ),
-        autoclose: autoclose,
-      });
+      throwSuccessNotification(onRestorePronunciationClick);
     } catch (error) {
       errorHandler &&
         errorHandler(error, "FullnamesContainer/RestorableDestroy");
 
-      setNotification();
+      throwErrorNotification();
     }
   }, [
     autoclose,
