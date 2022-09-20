@@ -14,7 +14,7 @@ import Children, { Child } from "../../../types/children-prop";
 const cx = classNames.bind(styles);
 
 interface Props {
-  title: string;
+  title?: string;
   id: string;
   base?: JSX.Element | null;
   children?: Children;
@@ -112,9 +112,7 @@ const ModalTooltip = ({
       {active && (
         <div className={cx("tooltip_tip", "top", mode)} style={getTipStyle()}>
           {closable && <Close className="modal" onClick={hideTip} />}
-
-          <div className={styles.title}>{title}</div>
-
+          {title && <div className={styles.title}>{title}</div>}
           {children &&
             React.Children.map(children, (child) =>
               React.cloneElement(child, {

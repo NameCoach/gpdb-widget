@@ -7,6 +7,11 @@ import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
 import useTranslator from "../../hooks/useTranslator";
+import ModalTooltip from "../ModalTooltip";
+import Notification from "../Notification";
+import { NotificationTags } from "../../../types/notifications";
+import { useNotifications } from "../../hooks/useNotification";
+import { PresentationMode } from "../../../types/modal-tooltip";
 import ShareRecording from "../ShareRecording";
 
 export interface NameOption {
@@ -28,6 +33,12 @@ export interface Props {
 
 const cx = classNames.bind(styles);
 
+const MODAL_TOOLTIP_STYLE: React.CSSProperties = {
+  position: "relative",
+  inset: "auto auto 7px 5px",
+  marginTop: "15px",
+};
+
 const MyRecording = ({
   pronunciation,
   name,
@@ -40,6 +51,10 @@ const MyRecording = ({
 }: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
   const { t } = useTranslator(null, styleContext);
+  const { notificationsByTag } = useNotifications();
+
+  const showNotifications =
+    notificationsByTag(NotificationTags.DELETE_SELF).length > 0;
 
   const unavailableHint = t(
     "unavailable_hint",
@@ -56,6 +71,18 @@ const MyRecording = ({
           <ShareRecording loading={loading} pronunciation={pronunciation} />
         </div>
       </div>
+
+      <ModalTooltip
+        id="fullname_tooltip"
+        showOnClick={false}
+        closable
+        isActive={showNotifications}
+        mode={PresentationMode.Left}
+        tipStyle={MODAL_TOOLTIP_STYLE}
+      >
+        <Notification tag={NotificationTags.DELETE_SELF} />
+      </ModalTooltip>
+
       <FullNameLine
         pronunciation={pronunciation}
         fullName={name.value}

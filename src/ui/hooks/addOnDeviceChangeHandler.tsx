@@ -12,20 +12,17 @@ export default function addOnDeviceChangeHandler(): void {
   const logger = systemContext.logger;
   const { setNotification } = useNotifications();
 
-  async function handleOnDeviceChange() {
+  async function handleOnDeviceChange(): Promise<void> {
     const funct = MediaDevices.ondevicechange;
 
     if (funct) return;
 
     MediaDevices.ondevicechange = function (): void {
       logger.log("Hardware configuration changed!", "Gpdb-widget");
-      const notificationId = new Date().getTime();
 
       setNotification({
-        id: notificationId,
         content: (
           <StateNotification
-            id={notificationId}
             state={States.WARNING}
             message={DEVICES_CHANGED_MESSAGE}
           />
