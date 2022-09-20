@@ -15,7 +15,7 @@ const useTheme = (
 ): UseThemeReturn => {
   const _styleContext = styleContext || useContext(StyleContext);
 
-  const theme = _styleContext.theme || Theme.Default;
+  const theme = _styleContext?.theme || Theme.Default;
   const selectStyles = SelectThemes[theme];
   const forComponent = selectStyles[component] || {};
 

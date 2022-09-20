@@ -19,6 +19,12 @@ import useCustomFeatures from "../../hooks/useCustomFeatures";
 import { UserPermissions } from "../../../types/permissions";
 import useOnRecorderClose from "../../hooks/PronunciationsBlock/useOnRecorderClose";
 import checkIfNameExist from "../../../core/utils/check-if-name-exists";
+import ModalTooltip from "../ModalTooltip";
+import { PresentationMode } from "../../../types/modal-tooltip";
+import { useNotifications } from "../../hooks/useNotification";
+import getDeleteNotificationTag from "../../../core/utils/get-delete-notification-tag";
+import { NotificationTags } from "../../../types/notifications";
+import Notification from "../Notification";
 
 type UseNamePartsReturn = {
   nameParts: Name[];
@@ -38,6 +44,12 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
+const MODAL_TOOLTIP_STYLE: React.CSSProperties = {
+  position: "relative",
+  inset: "auto auto 7px 5px",
+  marginTop: "8px",
+};
+
 const NameLinesResult = ({
   nameOwner,
   controller,
@@ -49,6 +61,7 @@ const NameLinesResult = ({
   useNameParts,
 }: Props): JSX.Element => {
   const customFeatures = useCustomFeatures(controller);
+  const { notificationsByTag } = useNotifications();
 
   const { can } = useFeaturesManager(
     controller.permissions,
@@ -123,10 +136,27 @@ const NameLinesResult = ({
   const openRecorder = (name, type): void =>
     setRecorderOpen(true, name, type, termsAndConditions);
 
+  const showNotifications = (tag: NotificationTags): boolean => {
+    const notifications = notificationsByTag(tag);
+
+    return notifications.length > 0;
+  };
+
   return (
     <>
       {nameParts.map((name, index) => (
         <React.Fragment key={name.key}>
+          <ModalTooltip
+            id={`pronunciations_block_${index}`}
+            showOnClick={false}
+            closable
+            isActive={showNotifications(getDeleteNotificationTag(name.type))}
+            mode={PresentationMode.Left}
+            tipStyle={MODAL_TOOLTIP_STYLE}
+          >
+            <Notification tag={getDeleteNotificationTag(name.type)} />
+          </ModalTooltip>
+
           {name.exist ? (
             <NameLine
               pronunciations={pronunciations[name.type]}
