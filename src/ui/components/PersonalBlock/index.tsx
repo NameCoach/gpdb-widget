@@ -8,7 +8,6 @@ import { NameTypes } from "../../../types/resources/name";
 import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
-import Recorder from "../Recorder";
 
 import StyleContext from "../../contexts/style";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
@@ -16,6 +15,7 @@ import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
 import MyInfo from "../MyInfo";
+import NewRecorder from "../NewRecorder";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -118,7 +118,7 @@ const PersonalBlock = (props: Props): JSX.Element => {
         myInfoHintShow={myInfoHintShow}
       />
       {recorderState.isOpen && (
-        <Recorder
+        <NewRecorder
           name={props.name.value}
           type={NameTypes.FullName}
           owner={props.name.owner}
