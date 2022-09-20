@@ -11,7 +11,6 @@ import { UsePronunciationsReturn } from "../../hooks/pronunciations";
 import NameLine from "../NameLine";
 import AbsentName from "../AbsentName";
 import styles from "./styles.module.css";
-import Recorder from "../Recorder";
 import IFrontController from "../../../types/front-controller";
 import { NameOwner } from "gpdb-api-client";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
@@ -25,6 +24,7 @@ import { useNotifications } from "../../hooks/useNotification";
 import getDeleteNotificationTag from "../../../core/utils/get-delete-notification-tag";
 import { NotificationTags } from "../../../types/notifications";
 import Notification from "../Notification";
+import NewRecorder from "../NewRecorder";
 
 type UseNamePartsReturn = {
   nameParts: Name[];
@@ -183,7 +183,7 @@ const NameLinesResult = ({
           )}
 
           {isRecorderOpen && !loading && recorderNameType === name.type && (
-            <Recorder
+            <NewRecorder
               name={recorderState.name}
               type={recorderState.type}
               owner={nameOwner}
