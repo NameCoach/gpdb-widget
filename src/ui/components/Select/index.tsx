@@ -23,6 +23,10 @@ interface Props {
   styles?: CustomStyles;
   value?: Option;
   filterOption?: (Option) => boolean;
+  disabled?: boolean;
+  theme?: Theme;
+  placeholder?: string;
+  notFirstSelected?: boolean;
 }
 
 const theme = (theme) => ({
@@ -45,15 +49,23 @@ const customStyles = (theme) => (
     option: {},
   }
 ) => ({
-  control: (provided, state) => ({
-    ...provided,
-    minHeight: "30px",
-    borderColor:
-      !state.isFocused && theme === Theme.Outlook
-        ? "transparent"
-        : provided.borderColor,
-    ...controlStyles.control,
-  }),
+  control: (provided, state) => {
+    const res = {
+      ...provided,
+      minHeight: "30px",
+      borderColor: provided.borderColor,
+      '&:hover': {
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.15)",
+      },
+      ...controlStyles.control,
+    }
+
+    if (!state.isFocused) {
+      res['&:hover'].borderColor = 'transparent';
+      res.borderColor = 'transparent'
+    }
+    return res;
+  },
   valueContainer: (provided, state) => {
     return {
       ...provided,
@@ -97,14 +109,15 @@ const customStyles = (theme) => (
 });
 
 const SelectComponent = (props: Props): JSX.Element => {
-  const initValue = useMemo(() => props.options[0], props.options);
+  const firstSelectedOption = useMemo(() => props.options[0], props.options);
 
   const handleOnChange = (selectedValue: Option): void =>
     props.onChange(selectedValue);
 
   return (
     <Select
-      defaultValue={initValue}
+      defaultValue={props.notFirstSelected ? null : firstSelectedOption}
+      placeholder={props.placeholder}
       value={props.value}
       options={props.options}
       className={props.className}
@@ -112,8 +125,9 @@ const SelectComponent = (props: Props): JSX.Element => {
       isClearable={false}
       isSearchable={false}
       theme={theme}
-      styles={customStyles(props.className)(props.styles)}
+      styles={customStyles(props.theme)(props.styles)}
       filterOption={props.filterOption}
+      disabled={props.disabled}
     />
   );
 };

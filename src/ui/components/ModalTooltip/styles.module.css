@@ -7,9 +7,13 @@
   display: inline-block;
   position: relative;
   align-self: center;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
 }
 
-.tooltip_tip {
+.tooltip_tip{
   display: flex;
   flex-direction: column;
   position: absolute;
