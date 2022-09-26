@@ -163,10 +163,6 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     return loadName({ ...name, owner });
   };
 
-  useEffect(() => {
-    loadName(props.names[0]);
-  }, [props.names]);
-
   return (
     <>
       <div className={cx(styles.title, styles.m_10)}>
