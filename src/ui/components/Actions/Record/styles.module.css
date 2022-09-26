@@ -11,5 +11,5 @@
 }
 
 .mic_rerecord_icon {
-  composes: edit-mic from "../../../styles/icons.css";
+  composes: edit_icon from "../../../styles/icons.css";
 }

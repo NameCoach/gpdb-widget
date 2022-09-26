@@ -6,6 +6,7 @@ interface Props {
   revertAfterChange?: boolean;
   revertDelay?: number;
   onClick?: () => void;
+  className?: string;
 }
 
 const DEFAULT_REVERT_DELAY = 1000;

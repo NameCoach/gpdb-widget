@@ -38,7 +38,6 @@ const FullNamesList = ({
 
   useEffect(() => {
     setAutoplay(false);
-    setValue(nameToOption(names[0]));
   }, [names]);
 
   return (
@@ -46,9 +45,8 @@ const FullNamesList = ({
       <div className={styles.wrapper}>
         <NamesList
           names={names}
-          setAutoPlay={setAutoplay}
+          setAutoplay={setAutoplay}
           value={value}
-          selectValue={selectValue}
           setValue={setValue}
           onSelect={onSelect}
         />
