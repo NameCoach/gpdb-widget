@@ -131,7 +131,6 @@ const PersonalBlock = (props: Props): JSX.Element => {
       {showMyInfo && (
         <MyInfo
           name={props.name}
-          controller={props.controller}
           pronunciation={pronunciation}
           onCustomAttributesSaved={onCustomAttributesSaved}
           loading={loading}

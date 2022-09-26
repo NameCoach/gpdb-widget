@@ -1,0 +1,100 @@
+.attributes__container__wrapper {
+  padding: 5px 0 5px 5px;
+}
+
+.attributes__container__wrapper.bordered {
+  border: 1px solid $colors_secondary_gray;
+  border-radius: 5px;
+}
+
+.attributes__container__wrapper button {
+  cursor: pointer;
+  border: 1px solid $colors_border;
+  box-sizing: border-box;
+  border-radius: 2px;
+  padding: 6px 6px;
+  background: transparent;
+  color: $colors_darker_brand;
+  font-weight: 600;
+}
+
+.attributes__container__wrapper button:hover {
+  background-color: $colors_secondary;
+}
+
+.attributes__container__wrapper button:active {
+  background-color: $colors_secondary;
+}
+
+.attributes__container__wrapper.active {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.attributes__wrapper.active {
+  flex: 0 100%;
+  max-width: 100%;
+}
+
+.attributes__wrapper.active.narrow {
+  flex: 0 90%;
+  max-width: 90%;
+}
+
+.attributes__actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.attributes__actions button {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.scroll {
+  max-height: 90px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 10px 10px;
+}
+
+.scroll.high {
+  max-height: 200px;
+}
+
+.scroll.disabled {
+  overflow-x: hidden;
+  padding: 5px 10px;
+  min-height: 30px;
+  max-height: 100px;
+}
+
+.modal__wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 2.5em;
+}
+
+.main__error__label {
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  color: $colors_error;
+}
+
+.attribute__error {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: $colors_error;
+  margin: unset;
+}

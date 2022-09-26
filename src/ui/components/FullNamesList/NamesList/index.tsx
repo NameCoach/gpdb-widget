@@ -17,8 +17,8 @@ export interface Props {
   names: NameOption[];
   value: Pronunciation;
   onSelect?: (NameOption) => PromiseLike<void>;
-  setAutoPlay: React.Dispatch<React.SetStateAction<boolean>>;
-  selectValue: Option;
+  setAutoplay: React.Dispatch<React.SetStateAction<boolean>>;
+  selectValue?: Option;
   setValue: React.Dispatch<React.SetStateAction<Option>>;
 }
 
@@ -27,30 +27,28 @@ const nameToOption = (name: NameOption): Option => ({
   value: name.key,
 });
 
-const NamesList = (props: Props): JSX.Element => {
-  const setAutoplay = props.setAutoPlay;
-  const setValue = props.setValue;
-  const selectValue = props.selectValue;
+const NamesList = ({
+  names,
+  selectValue,
+  setAutoplay,
+  setValue,
+  onSelect,
+}: Props): JSX.Element => {
   const tooltipId = Date.now().toString();
 
   const { t } = useContext(StyleContext);
   const { theme, selectStyles, filterOption } = useTheme(NamesList.name);
 
-  const options = useMemo(() => props.names.map(nameToOption), [props.names]);
+  const options = useMemo(() => names.map(nameToOption), [names]);
 
   const onChange = async (name): Promise<void> => {
     const _name: NameOption = { key: name.value, value: name.label };
     setValue(nameToOption(_name));
 
-    if (props.onSelect) await props.onSelect(_name);
+    if (onSelect) await onSelect(_name);
 
     setAutoplay(true);
   };
-
-  useEffect(() => {
-    setAutoplay(false);
-    setValue(nameToOption(props.names[0]));
-  }, [props.names]);
 
   return (
     <>
@@ -66,17 +64,21 @@ const NamesList = (props: Props): JSX.Element => {
           <div
             data-tip={t(
               "pronunciations_drop_down_tooltip",
-              "Click down arrow in drop down to see more names"
+              "Click on the drop down to see more names"
             )}
             data-for={tooltipId}
           >
             <Select
               onChange={onChange}
               options={options}
-              value={selectValue}
-              className={theme}
+              theme={theme}
               styles={selectStyles}
               filterOption={filterOption(selectValue?.value)}
+              placeholder={t(
+                "pronunciations_drop_down_placeholder",
+                "Select a recepient"
+              )}
+              notFirstSelected
             />
           </div>
         </div>
