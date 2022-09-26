@@ -128,7 +128,7 @@ const NameLine = (props: Props): JSX.Element => {
             <div className={cx(styles.pronunciation__mid, `mid--${theme}`)}>
               <Select
                 options={options}
-                className={theme}
+                theme={theme}
                 onChange={onSelect}
                 value={value}
                 styles={selectStyles}

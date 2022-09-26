@@ -1,20 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Loader from "../Loader";
-import CustomAttributes from "../CustomAttributes";
-import CollapsableAction from "../Actions/Collapsable";
+import CustomAttributes from "../Outlook/CustomAttributes";
 import StyleContext from "../../contexts/style";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useTranslator from "../../hooks/useTranslator";
 import Pronunciation from "../../../types/resources/pronunciation";
+import ControllerContext from "../../../../src/ui/contexts/controller";
+import IStyleContext from "../../../types/style-context";
+import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
+import { CustomAttributeObject } from "../../../core/mappers/custom-attributes.map";
 
 interface Props {
   name: Omit<NameOption, "key">;
-  controller: IFrontController;
   pronunciation: Pronunciation;
   onCustomAttributesSaved: () => void;
   loading: boolean;
@@ -22,56 +24,135 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const MyInfo = (props: Props): JSX.Element => {
-  if (!props?.name?.value?.trim()) throw new Error("Name shouldn't be blank");
+const MyInfo = ({
+  name,
+  pronunciation,
+  onCustomAttributesSaved,
+}: Props): JSX.Element => {
+  if (!name?.value?.trim()) throw new Error("Name shouldn't be blank");
 
-  const styleContext = useContext(StyleContext);
+  const [data, setData] = useState<CustomAttributeObject[]>([]);
+  const [inEdit, setInEdit] = useState<boolean>(false);
+  const styleContext = useContext<IStyleContext>(StyleContext);
+  const controller = useContext<IFrontController>(ControllerContext);
+  const customFeatures = useCustomFeatures(controller, styleContext);
+  const { t } = useTranslator(controller, styleContext);
+  const { can } = useFeaturesManager(controller.permissions, customFeatures);
+  const customAttributes = pronunciation?.customAttributes;
+  const customAttrsPresent = customAttributes?.length > 0;
+  const customAttrsRef = useRef<Record<string, any>>([]);
+  const [requestErrors, setRequestErrors] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const customFeatures = useCustomFeatures(props.controller, styleContext);
-  const { t } = useTranslator(props.controller, styleContext);
-
-  const { can } = useFeaturesManager(
-    props.controller.permissions,
-    customFeatures
-  );
-
-  const [collapsableActive, setCollapsable] = useState(false);
-
+  // TODO: work around it
   const customAttributesDisabled = !can("editCustomAttributesForSelf");
+  // TODO: 👆
 
-  const onCollapsable = (): void => {
-    setCollapsable((value) => !value);
+  const resetAttributes = () => {
+    setData(controller.customAttributes);
   };
+  
+  useEffect(() => {
+    const attributesArray =
+      Array.isArray(customAttributes) && customAttributes.length > 0
+        ? customAttributes
+        : controller.customAttributes;
+
+    setData(attributesArray as CustomAttributeObject[]);
+  }, []);
+
+  const saveMyInfo = async (): Promise<void> => {
+    const data = customAttrsRef.current.data;
+    setLoading(true);
+
+    const values = data.reduce((prev, current) => {
+      prev[current.id] = current.value;
+      return prev;
+    }, {});
+
+    const res = await controller.saveCustomAttributes(values, name.owner);
+
+    if (res.hasErrors) {
+      setRequestErrors(res.errors.custom_attributes_values);
+      setLoading(false);
+      return;
+    };
+    
+    onCustomAttributesSaved();
+    setLoading(false);
+    setInEdit(false);
+  };
+
+  const closeEdit = () => {
+    setInEdit(false);
+    setRequestErrors([]);
+    debugger;
+    resetAttributes();
+  }
 
   return (
     <div className={styles.block}>
       <div className={cx(styles.row)}>
-        <span className={cx(styles.title, styles.m_10)}>
-          {t("my_info_section_name", "My Info")}
-        </span>
-
-        <div className={cx(styles.actions)}>
-          {props.loading && <Loader />}
-
-          {!props.loading && (
-            <CollapsableAction
-              active={collapsableActive}
-              onClick={onCollapsable}
-            />
-          )}
+        <div>
+          <span className={styles.title}>
+            {t("my_info_section_name", "My Info")}
+          </span>
         </div>
+
+        <div className={styles.actions}>
+          {(() => {
+            if (loading) return (
+              <Loader inline sm />
+            );
+
+            if (inEdit) return (
+              <>
+                <button
+                  className={styles.icon_btn}
+                  onClick={closeEdit}
+                >
+                  <i className={styles.close_icon} />
+                </button>
+                <button className={styles.icon_btn} onClick={saveMyInfo}>
+                  <i className={styles.save_icon} />
+                </button>
+              </>
+            );
+            else return (
+              <button
+                className={styles.icon_btn}
+                onClick={(): void => setInEdit(true)}
+              >
+                <i className={styles.edit_icon} />
+              </button>
+            );
+          })()}
+        </div>
+
+        {/* <div className={cx(styles.actions)}>{loading && <Loader />}</div> */}
       </div>
 
-      {!props.loading && collapsableActive && (
-        <CustomAttributes
-          attributes={props.pronunciation?.customAttributes}
-          owner={props.name.owner}
-          disabled={customAttributesDisabled}
-          onCustomAttributesSaved={props.onCustomAttributesSaved}
-          onBack={onCollapsable}
-          noBorder
-        />
-      )}
+      {(() =>{
+        if (inEdit) return (
+          <CustomAttributes
+            disabled={!inEdit}
+            errors={requestErrors}
+            data={data}
+            setData={setData}
+            ref={customAttrsRef}
+          />
+        ); else {
+          if (customAttrsPresent) return (
+            <CustomAttributesInspector data={data} />
+          ); else return (
+            <div className={styles.tip_container}>
+              <p className={styles.tip_text}>
+                {t("my_info_empty_tip", 'Edit "My Info" to add new information')}
+              </p>
+            </div>
+          );
+        };
+      })()}
     </div>
   );
 };
