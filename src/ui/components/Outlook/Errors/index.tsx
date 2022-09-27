@@ -1,15 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { PresentationMode as TooltipPresentation } from "../../../../../src/types/modal-tooltip";
-import ModalTooltip from "../../ModalTooltip";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import Close from "../../../../../src/ui/components/Close";
+import capitalizeString from "../../../../core/utils/capitalize-string";
 
 const cx = classNames.bind(styles);
-
-const capitalizeString = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
 
 interface ErrorsProps {
   id: string;
