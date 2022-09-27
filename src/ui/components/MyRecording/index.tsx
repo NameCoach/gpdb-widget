@@ -90,12 +90,6 @@ const MyRecording = ({
         isRecorderOpen={isRecorderOpen}
         onRecorderOpen={onRecorderOpen}
       />
-      {!loading &&
-        !pronunciation &&
-        canCreateSelfRecording &&
-        myInfoHintShow && (
-          <div className={styles.unavailable_hint}>{unavailableHint}</div>
-        )}
     </div>
   );
 };
