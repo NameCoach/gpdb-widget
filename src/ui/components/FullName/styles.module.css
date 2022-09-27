@@ -1,0 +1,50 @@
+.head {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.head__prompt {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.head__names {
+  display: inline-block;
+  word-wrap: break-word;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.head__names > span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+  margin-top: -5px;
+}
+
+.head__container {
+  width: 100%;
+}
+
+.head__actions {
+  display: inline-flex;
+  width: 28.7%;
+  justify-content: flex-end;
+}
+
+.old {
+  justify-content: space-around;
+  padding-right: 0.75rem;
+}
+.head__recorder {
+  float: left;
+  margin-bottom: 5px;
+}
