@@ -11,7 +11,9 @@ const BooleanInspector = ({ label, value }) => {
         <p className={cx(styles.label)}>{label}</p>
       </div>
       <div className={cx(styles.row, styles.row_justify_end)}>
-          <p className={cx(styles.value)}>{String(!!value)}</p>
+          <div className={cx(styles.icon_container)}>
+            <i className={cx(!!value ? styles.check : styles.cross)} />
+          </div>
       </div>
     </div>
   );
