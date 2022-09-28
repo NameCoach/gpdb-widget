@@ -14,6 +14,7 @@ import ControllerContext from "../../../../src/ui/contexts/controller";
 import IStyleContext from "../../../types/style-context";
 import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import { CustomAttributeObject } from "../../../core/mappers/custom-attributes.map";
+import { cloneDeep } from "lodash";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -30,17 +31,17 @@ const MyInfo = ({
   onCustomAttributesSaved,
 }: Props): JSX.Element => {
   if (!name?.value?.trim()) throw new Error("Name shouldn't be blank");
-
-  const [data, setData] = useState<CustomAttributeObject[]>([]);
+  
   const [inEdit, setInEdit] = useState<boolean>(false);
-  const styleContext = useContext<IStyleContext>(StyleContext);
   const controller = useContext<IFrontController>(ControllerContext);
+  const [data, setData] = useState<CustomAttributeObject[]>(cloneDeep(pronunciation?.customAttributes) || []);
+  const config = cloneDeep(controller.customAttributes);
+  const styleContext = useContext<IStyleContext>(StyleContext);
   const customFeatures = useCustomFeatures(controller, styleContext);
   const { t } = useTranslator(controller, styleContext);
   const { can } = useFeaturesManager(controller.permissions, customFeatures);
-  const customAttributes = pronunciation?.customAttributes;
-  const customAttrsPresent = customAttributes?.length > 0;
-  const customAttrsRef = useRef<Record<string, any>>([]);
+  const customAttrsPresent = data?.length > 0;
+  const customAttrsRef = useRef<Record<string, any>>({});
   const [requestErrors, setRequestErrors] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -49,17 +50,13 @@ const MyInfo = ({
   // TODO: 👆
 
   const resetAttributes = () => {
-    setData(controller.customAttributes);
+    console.log({pronunciation});
+    console.log({controller});
   };
   
   useEffect(() => {
-    const attributesArray =
-      Array.isArray(customAttributes) && customAttributes.length > 0
-        ? customAttributes
-        : controller.customAttributes;
-
-    setData(attributesArray as CustomAttributeObject[]);
-  }, []);
+    setData(cloneDeep(pronunciation?.customAttributes) as CustomAttributeObject[]);
+  }, [pronunciation]);
 
   const saveMyInfo = async (): Promise<void> => {
     const data = customAttrsRef.current.data;
@@ -86,7 +83,6 @@ const MyInfo = ({
   const closeEdit = () => {
     setInEdit(false);
     setRequestErrors([]);
-    debugger;
     resetAttributes();
   }
 
@@ -137,8 +133,7 @@ const MyInfo = ({
           <CustomAttributes
             disabled={!inEdit}
             errors={requestErrors}
-            data={data}
-            setData={setData}
+            data={data.length > 0 ? data : config}
             ref={customAttrsRef}
           />
         ); else {
