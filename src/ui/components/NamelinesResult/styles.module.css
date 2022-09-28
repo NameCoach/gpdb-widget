@@ -1,0 +1,4 @@
+.divider {
+    composes: divider from "../../styles/outlook.css";
+  }
+  

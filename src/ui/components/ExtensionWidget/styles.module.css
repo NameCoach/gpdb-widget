@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+.widget {
+  position: relative;
+  padding: 27px 19px 27px 18px;
+  background-color: $colors_background;
+  border-radius: 7px;
+  box-shadow: 0px 4px 6px $colors_black_2;
+  transition: 0.5s;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.widget:hover {
+  box-shadow: 0px 4px 6px 1px $colors_black_2;
+}
+
+.widget--extended.modal {
+  max-width: 520px;
+  min-width: 520px;
+}
+
+.widget--extended:hover {
+  box-shadow: 0px 4px 6px $colors_black_2;
+}

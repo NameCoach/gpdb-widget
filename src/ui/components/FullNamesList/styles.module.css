@@ -1,0 +1,36 @@
+.wrapper {
+  display: block !important;
+}
+
+.control {
+  margin-bottom: 10px;
+}
+
+.tooltip {
+  left: 0 !important;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.m_20 {
+  margin: 20px 0;
+}
+
+.title {
+  composes: title from "../../styles/outlook.css";
+}
+
+.divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid $colors_black;
+}
+
+.phonetic {
+  composes: phonetic from "../../styles/phonetic.css";
+  margin-top: -5px;
+  margin-left: 10px;
+}
