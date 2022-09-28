@@ -1,7 +1,7 @@
 import React, {
   memo,
-  useContext,
   useImperativeHandle,
+  useState,
 } from "react";
 import classNames from "classnames/bind";
 
@@ -13,18 +13,21 @@ import Select from "../Inputs/Select";
 import Textbox from "../Inputs/Textbox";
 import { CustomAttributesProps } from "../Inputs/types";
 import Errors from "../Errors";
+import { CustomAttributeObject } from "../../../../core/mappers/custom-attributes.map";
+import { cloneDeep } from "lodash";
 
 const cx = classNames.bind(styles);
 
 const CustomAttributes = (
-  { disabled, errors, data, setData }: CustomAttributesProps,
+  { disabled, errors, data }: CustomAttributesProps,
   ref
 ): JSX.Element => {
   // Allow parent component to receive custom attributes data from above
-  useImperativeHandle(ref, () => ({ data }), [data]);
+  const [_data, setData] = useState<CustomAttributeObject[]>(cloneDeep(data));
+  useImperativeHandle(ref, () => ({ data: _data }), [_data]);
 
   const setAttributeValue = (id: string, value: string | boolean): void => {
-    const newData = [...data];
+    const newData = [..._data];
     newData.find((attr) => attr.id === id).value = value;
     setData(newData);
   };
@@ -56,7 +59,7 @@ const CustomAttributes = (
 
   return (
     <div>
-      {data.map(
+      {_data.map(
         ({ presentation, id, value, values, label, metadata }, index) => {
           const Component = ComponentPresentationMapper[presentation];
           const updateHandler = HandlerPresentationMapper[presentation](id);
