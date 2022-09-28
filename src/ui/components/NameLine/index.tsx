@@ -19,6 +19,7 @@ import { AnalyticsEventType } from "../../../types/resources/analytics-event-typ
 import useTranslator from "../../hooks/useTranslator";
 import useTheme from "../../hooks/useTheme";
 import { Theme } from "../../../types/style-context";
+import capitalizeString from "../../../core/utils/capitalize-string";
 
 const cx = classNames.bind(styles);
 
@@ -115,7 +116,7 @@ const NameLine = (props: Props): JSX.Element => {
       <div className={cx(styles.pronunciation, `pronunciation--${theme}`)}>
         <div className={cx(styles.name__wrapper, `wrapper--${theme}`)}>
           <span className={cx(styles.pronunciation__name, `name--${theme}`)}>
-            {props.name}
+            {capitalizeString(props.name)}
           </span>
           {!currentPronunciation && <Loader />}
         </div>

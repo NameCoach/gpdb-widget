@@ -13,6 +13,7 @@ import DisabledPlayer from "../Player/Disabled";
 import { StyleOverrides } from "../../customFeaturesManager";
 import useTheme from "../../hooks/useTheme";
 import { Theme } from "../../../types/style-context";
+import capitalizeString from "../../../core/utils/capitalize-string";
 
 const cx = classNames.bind(nameLineStyles);
 
@@ -94,7 +95,7 @@ const AbsentName = (props: Props): JSX.Element => {
               nameLineStyles[`name--${theme}`]
             )}
           >
-            {props.name}
+            {capitalizeString(props.name)}
           </span>
         </div>
         <div

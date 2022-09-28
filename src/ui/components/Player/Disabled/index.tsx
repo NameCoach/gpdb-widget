@@ -17,8 +17,7 @@ const DisabledPlayer = (props: Props): JSX.Element => {
       aria-label="Disabled player"
       className={cx(
         props.className,
-        styles.player,
-        "player",
+        "disabled_player",
         "unavailable__disabled"
       )}
     >
