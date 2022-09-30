@@ -40,7 +40,7 @@ const MyInfo = ({
   const customFeatures = useCustomFeatures(controller, styleContext);
   const { t } = useTranslator(controller, styleContext);
   const { can } = useFeaturesManager(controller.permissions, customFeatures);
-  const customAttrsPresent = data?.length > 0;
+  const customAttrsPresent = data?.length > 0 && data.some(e => e.value && String(e.value).length !== 0);
   const customAttrsRef = useRef<Record<string, any>>({});
   const [requestErrors, setRequestErrors] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
