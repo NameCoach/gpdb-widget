@@ -18,12 +18,12 @@ const Textarea = ({
 
   return (
     <div className={cx(styles.textarea_container, styles.column)}>
-      <div className={styles.row}>
-        <div className={styles.label_container}>
-          <p className={styles.label}>{label}</p>
+      <div className={cx(styles.row)}>
+        <div className={cx(styles.label_container)}>
+          <p className={cx(styles.label)}>{label}</p>
         </div>
       </div>
-      <div className={styles.row}>
+      <div className={cx(styles.row)}>
         <textarea
           id={id}
           rows={4}
