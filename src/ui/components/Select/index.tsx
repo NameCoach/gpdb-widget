@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
-import { BRAND, _SECONDARY } from "../../styles/variables/colors";
+import COLORS, { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
 export interface Option {
   value: string | number;
@@ -106,6 +106,11 @@ const customStyles = (theme) => (
     lineHeight: "15px",
     ...controlStyles.option,
   }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: COLORS.colors_light_grey,
+    ...controlStyles.option,
+  })
 });
 
 const SelectComponent = (props: Props): JSX.Element => {

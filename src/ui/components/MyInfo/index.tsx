@@ -87,7 +87,7 @@ const MyInfo = ({
   }
 
   return (
-    <div className={styles.block}>
+    <div className={cx(styles.block, styles.column)}>
       <div className={cx(styles.row)}>
         <div>
           <span className={styles.title}>
@@ -127,27 +127,28 @@ const MyInfo = ({
 
         {/* <div className={cx(styles.actions)}>{loading && <Loader />}</div> */}
       </div>
-
-      {(() =>{
-        if (inEdit) return (
-          <CustomAttributes
-            disabled={!inEdit}
-            errors={requestErrors}
-            data={data.length > 0 ? data : config}
-            ref={customAttrsRef}
-          />
-        ); else {
-          if (customAttrsPresent) return (
-            <CustomAttributesInspector data={data} />
-          ); else return (
-            <div className={styles.tip_container}>
-              <p className={styles.tip_text}>
-                {t("my_info_empty_tip", 'Edit "My Info" to add new information')}
-              </p>
-            </div>
-          );
-        };
-      })()}
+      <div className={cx(styles.row)}>
+        {(() =>{
+          if (inEdit) return (
+            <CustomAttributes
+              disabled={!inEdit}
+              errors={requestErrors}
+              data={data.length > 0 ? data : config}
+              ref={customAttrsRef}
+            />
+          ); else {
+            if (customAttrsPresent) return (
+              <CustomAttributesInspector data={data} />
+            ); else return (
+              <div className={styles.tip_container}>
+                <p className={styles.tip_text}>
+                  {t("my_info_empty_tip", 'Edit "My Info" to add new information')}
+                </p>
+              </div>
+            );
+          };
+        })()}
+      </div>
     </div>
   );
 };

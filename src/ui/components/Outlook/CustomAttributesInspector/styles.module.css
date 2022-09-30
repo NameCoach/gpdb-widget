@@ -1,5 +1,5 @@
 .inspector_container {
-  margin: 6px 0;
+  margin: 3px 0;
 }
 
 .column {
@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+  width: 100%;
 }
 
 .row {
@@ -26,17 +27,15 @@
 }
 
 .label {
-  font-family: 'Montserrat';
   font-size: 14px;
   font-weight: 500;
-  margin: 6px 0;
+  margin: 3px 0;
 }
 
 .value {
-  font-family: 'Montserrat';
   font-size: 14px;
   font-weight: 400;
-  margin: 6px 0;
+  margin: 3px 0;
   width: auto;
   width: 100%;
   overflow-y: auto;
@@ -52,7 +51,7 @@ div.inspector_container.row > div.row > p.value {
 .icon_container {
   border: none;
   padding: 0;
-  margin: 4px;
+  margin: 2px 6px;
   background-color: transparent;
   opacity: 1;
 }
@@ -63,7 +62,6 @@ div.inspector_container.row > div.row > p.value {
   display: block;
   background-repeat: no-repeat;
   background-position: center;
-  padding: 4px;
 }
 
 .check {

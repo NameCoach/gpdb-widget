@@ -3,19 +3,19 @@
 }
 
 .attributes__container__wrapper.bordered {
-  border: 1px solid $colors_secondary_gray;
   border-radius: 5px;
+  border: 1px solid $colors_secondary_gray;
 }
 
 .attributes__container__wrapper button {
   cursor: pointer;
-  border: 1px solid $colors_border;
   box-sizing: border-box;
   border-radius: 2px;
-  padding: 6px 6px;
+  padding: 3px 3px;
   background: transparent;
-  color: $colors_darker_brand;
   font-weight: 600;
+  border: 1px solid $colors_border;
+  color: $colors_darker_brand;
 }
 
 .attributes__container__wrapper button:hover {
@@ -87,14 +87,20 @@
 
 .main__error__label {
   text-align: center;
-  font-family: "Montserrat", sans-serif;
   color: $colors_error;
 }
 
 .attribute__error {
-  font-family: "Montserrat", sans-serif;
   font-weight: 400;
   font-size: 13px;
-  color: $colors_error;
   margin: unset;
+  color: $colors_error;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 }

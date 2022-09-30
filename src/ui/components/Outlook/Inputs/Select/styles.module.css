@@ -1,5 +1,5 @@
 .select_container {
-  margin: 6px 0;
+  margin: 3px 0;
 }
 
 .column {
@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+  width: 100%;
 }
 
 .row {
@@ -23,11 +24,11 @@
 }
 
 .label {
-  font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-size: 14px;
   font-weight: 500;
   margin: 0;
+  color: $colors_dark_grey;
 }
 
 .select_input_container {
