@@ -1,5 +1,5 @@
 import { SelectTheme } from "./index";
-import { DARK_GREY } from "../../styles/variables/colors";
+import COLORS from "../../styles/variables/colors";
 
 const styles = {
   control: {
@@ -11,6 +11,7 @@ const styles = {
     fontStyle: "normal",
     fontWeight: 400,
     fontSize: "14px",
+    color: COLORS.colors_dark_grey,
   },
   menu: {
     lineHeight: "17px",
@@ -22,7 +23,7 @@ const styles = {
     fontStyle: "normal",
     fontWeight: 400,
     fontSize: "14px",
-    color: DARK_GREY,
+    color: COLORS.colors_dark_grey,
   },
   singleValue: {
     lineHeight: "17px",
@@ -35,6 +36,7 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    color: COLORS.colors_dark_grey,
   },
 };
 

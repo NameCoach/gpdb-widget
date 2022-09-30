@@ -58,7 +58,7 @@ const CustomAttributes = (
   };
 
   return (
-    <div>
+    <div className={cx(styles.column)}>
       {_data.map(
         ({ presentation, id, value, values, label, metadata }, index) => {
           const Component = ComponentPresentationMapper[presentation];
