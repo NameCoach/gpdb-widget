@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 import { NameOwner } from "gpdb-api-client";
 import FullNameLine from "../FullNameLine";
 import NamesList from "./NamesList";
-import CustomAttributes from "../CustomAttributes";
+import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 
 export interface NameOption {
   key: string;
@@ -64,7 +64,7 @@ const FullNamesList = ({
         value &&
         value.customAttributes &&
         value.customAttributes.length > 0 && (
-          <CustomAttributes attributes={value.customAttributes} disabled />
+          <CustomAttributesInspector data={value.customAttributes}/>
         )}
     </>
   );
