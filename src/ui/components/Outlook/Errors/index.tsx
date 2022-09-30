@@ -11,12 +11,6 @@ interface ErrorsProps {
   messages: string[];
 }
 
-const tooltipStyle: React.CSSProperties = {
-  position: "relative",
-  inset: "auto auto 7px 5px",
-  marginTop: "15px",
-};
-
 const Errors = ({ id, messages }: ErrorsProps) => {
   const [shown, setShown] = useState<boolean>(messages?.length > 0);
 
@@ -25,12 +19,12 @@ const Errors = ({ id, messages }: ErrorsProps) => {
   }, [messages]);
 
   return (
-    <>
+    <div className={cx(styles.row)}>
       {shown && (
         <div id={id} className={styles.container}>
           <div className={styles.messages}>
             {messages?.map((message, index) => (
-              <p className={"something"} key={index}>
+              <p key={index}>
                 {capitalizeString(message)}
               </p>
             ))}
@@ -38,7 +32,7 @@ const Errors = ({ id, messages }: ErrorsProps) => {
           <Close className="modal" onClick={() => setShown(false)} />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

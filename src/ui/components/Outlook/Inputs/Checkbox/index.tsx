@@ -19,7 +19,7 @@ const Checkbox = ({
           {label}
         </label>
       </div>
-      <div className={styles.row}>
+      <div className={cx(styles.row, styles.justify_right)}>
         <button 
           className={styles.icon_btn}
           onClick={() => onUpdate(!value)}
