@@ -12,7 +12,6 @@
   border-radius: 3px;
   box-shadow: 0 6px 8px $colors_black_2;
   transition: 0.5s opacity, 0.5s visibility;
-  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,7 +23,6 @@
 .copy_modal button {
   border-radius: 3px;
   background-color: $colors_background;
-  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   border: 0;
   margin: 2px;
@@ -40,7 +38,6 @@
 }
 
 .success_message {
-  font-family: 'Montserrat', sans-serif;
   font-size: 13px;
   text-align: center;
   color: $colors_darker_brand;

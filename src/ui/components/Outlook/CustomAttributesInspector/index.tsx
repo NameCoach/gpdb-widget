@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 
 const CustomAttributesInspector = ({ data }: { data: CustomAttributeObject[] }) => {
   return (
-    <div>
+    <div className={cx(styles.column)}>
       {data.map(({ presentation, value, label }, index) => {
         let Component = Inspector;
 
