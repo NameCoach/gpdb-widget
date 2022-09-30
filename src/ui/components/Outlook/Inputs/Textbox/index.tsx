@@ -30,7 +30,7 @@ const Textbox = ({
           onChange={_onUpdate}
           className={cx(styles.input, {has_errors: hasErrors})}
           name={label}
-          placeholder={metadata.placeholder}
+          placeholder={metadata?.placeholder}
           value={String(value)}
           disabled={disabled}
         />
