@@ -1,0 +1,30 @@
+.uploader {
+  position: relative;
+  display: flex;
+  margin-top: 20px;
+}
+
+.uploader input[type="file"] {
+  display: none;
+}
+
+.uploader__message {
+  display: flex;
+  max-width: 80%;
+  width: 80%;
+}
+
+.uploader__action {
+  display: flex;
+  align-items: flex-end;
+}
+
+.upload__label {
+  cursor: pointer;
+  color: $colors_darker_brand;
+  font-weight: 600;
+}
+
+.error {
+  color: $colors_error;
+}
