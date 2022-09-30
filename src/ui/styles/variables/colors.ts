@@ -4,6 +4,7 @@ export const DARK_GREY = "#333333";
 export const BRAND = "#946cc1";
 export const DARKER_BRAND = "#7C4BB4";
 export const SECONDARY_GRAY = "#cccccc";
+export const LIGHT_GREY = "#999999";
 export const WHITE = "white";
 
 const COLORS = {
@@ -30,6 +31,7 @@ const COLORS = {
   colors_secondary: SECONDARY,
   colors_white: WHITE,
   colors_dark_grey: DARK_GREY,
+  colors_light_grey: LIGHT_GREY,
   colors_red: "#C82D4A",
   colors_purple: "#6B419B",
 };

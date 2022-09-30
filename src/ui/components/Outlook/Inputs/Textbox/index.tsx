@@ -19,12 +19,12 @@ const Textbox = ({
 
   return (
     <div className={cx(styles.textbox_container, styles.column)}>
-      <div className={styles.row}>
-        <div className={styles.label_container}>
-          <p className={styles.label}>{label}</p>
+      <div className={cx(styles.row)}>
+        <div className={cx(styles.label_container)}>
+          <p className={cx(styles.label)}>{label}</p>
         </div>
       </div>
-      <div className={styles.row}>
+      <div className={cx(styles.row)}>
         <input
           id={id}
           onChange={_onUpdate}
