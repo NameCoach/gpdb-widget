@@ -1,0 +1,77 @@
+.inspector_container {
+  margin: 6px 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.row_justify_end {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.label {
+  font-family: 'Montserrat';
+  font-size: 14px;
+  font-weight: 500;
+  margin: 6px 0;
+}
+
+.value {
+  font-family: 'Montserrat';
+  font-size: 14px;
+  font-weight: 400;
+  margin: 6px 0;
+  width: auto;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 120px;
+  overflow-wrap: break-word;
+  color: $colors_dark_grey;
+}
+
+div.inspector_container.row > div.row > p.value {
+  text-align: right;
+}
+
+.icon_container {
+  border: none;
+  padding: 0;
+  margin: 4px;
+  background-color: transparent;
+  opacity: 1;
+}
+
+.icon_container i {
+  width: 20px;
+  height: 20px;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 4px;
+}
+
+.check {
+  background-size: 18px;
+  background-image: url("./check.svg");
+}
+
+.cross {
+  background-size: 15px;
+  background-image: url("./cross.svg");
+}
