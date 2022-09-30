@@ -64,7 +64,7 @@ const NamesList = ({
           <div
             data-tip={t(
               "pronunciations_drop_down_tooltip",
-              "Click on the drop down to see more names"
+              "Click to see more names"
             )}
             data-for={tooltipId}
           >
