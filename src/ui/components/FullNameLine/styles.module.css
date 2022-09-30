@@ -7,11 +7,13 @@
 
 .name_line {
   font-size: 16px;
+  font-weight: 500;
   line-height: 20px;
   display: flex;
   align-items: center;
   word-break: break-all;
   max-width: 85%;
+  color: $colors_dark_grey;
 }
 
 .actions {

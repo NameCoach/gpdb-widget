@@ -3,11 +3,10 @@
 .widget {
   position: relative;
   padding: 27px 19px 27px 18px;
-  background-color: $colors_background;
   border-radius: 7px;
-  box-shadow: 0px 4px 6px $colors_black_2;
   transition: 0.5s;
-  font-family: 'Montserrat', sans-serif;
+  background-color: $colors_background;
+  box-shadow: 0px 4px 6px $colors_black_2;
 }
 
 .widget:hover {
