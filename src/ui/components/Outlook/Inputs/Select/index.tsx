@@ -29,7 +29,6 @@ const Select = ({
 }: CustomAttributesInputsProps): JSX.Element => {
   const options = values.map(value => ({ value, label: value }));
   const selectValue = { value: String(value), label: String(value) };
-  const defaultValue = options[0];
 
   const _styles = {
     control: (provided, state) => { 
@@ -108,6 +107,10 @@ const Select = ({
       overflow: "hidden",
       textOverflow: "ellipsis",
     }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: COLORS.colors_light_grey,
+    })
   };
 
   return (
@@ -115,7 +118,7 @@ const Select = ({
       <div className={cx(styles.row, styles.label_container)}>
         <p className={cx(styles.label)}>{label}</p>
       </div>
-      <div className={styles.row}>
+      <div className={cx(styles.row)}>
         <_Select
           id={id}
           onChange={onUpdate}

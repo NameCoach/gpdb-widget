@@ -1,19 +1,24 @@
 .checkbox_container {
-  margin: 6px 0;
+  margin: 3px 0;
 }
 
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+}
+
+.row.justify_right {
+  justify-content: flex-end;
 }
 
 .label {
-  font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   margin: 0;
+  color: $colors_dark_grey;
 }
 
 .checked_icon {
@@ -27,6 +32,7 @@
 .icon_btn {
   composes: icon-btn from "../../../../styles/icons.css";
 }
+
 .checkbox_container .icon_btn:active {
   background-color: $colors_background;
 }

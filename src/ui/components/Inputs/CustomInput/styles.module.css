@@ -1,8 +1,7 @@
 .ca {
-  border-color: $colors_secondary_gray;
-  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 14px;
+  border-color: $colors_secondary_gray;
 }
 
 .ca:focus-within {
@@ -10,8 +9,8 @@
 }
 
 .attributes_label {
-  color: $colors_darker_grey;
   line-height: 10px;
+  color: $colors_darker_grey;
 }
 
 .input_field {
