@@ -65,11 +65,11 @@
   display: flex;
   flex: 1 0 55%;
   max-width: 55%;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  color: $colors_pronunciation_mid;
   flex-direction: column;
-  margin-top: auto
+  margin-top: auto;
+  color: $colors_dark_grey;
 }
 
 .mid--outlook {
