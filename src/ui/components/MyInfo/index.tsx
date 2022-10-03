@@ -134,7 +134,7 @@ const MyInfo = ({
             <CustomAttributes
               disabled={!inEdit}
               errors={requestErrors}
-              data={data.length > 0 ? data : config}
+              data={data?.length > 0 ? data : config}
               ref={customAttrsRef}
             />
           ); else {
