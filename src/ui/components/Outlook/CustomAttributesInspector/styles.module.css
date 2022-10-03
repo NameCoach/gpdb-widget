@@ -30,6 +30,7 @@
   font-size: 14px;
   font-weight: 500;
   margin: 3px 0;
+  color: $colors_dark_grey;
 }
 
 .value {
