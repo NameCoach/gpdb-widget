@@ -18,6 +18,7 @@ const styles = {
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
     borderRadius: "6px",
     border: "none",
+    color: COLORS.colors_dark_grey,
   },
   menuList: {
     fontStyle: "normal",
@@ -27,6 +28,7 @@ const styles = {
   },
   singleValue: {
     lineHeight: "17px",
+    fontSize: "14px",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -38,6 +40,9 @@ const styles = {
     textOverflow: "ellipsis",
     color: COLORS.colors_dark_grey,
   },
+  placeholder: {
+    fontSize: "14px",
+  }
 };
 
 export default {
