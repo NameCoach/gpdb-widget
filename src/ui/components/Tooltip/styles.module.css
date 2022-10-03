@@ -4,3 +4,7 @@
   font-size: 14px !important;
   margin-left: -50px;
 }
+
+.hidden {
+  display: none !important;
+}
