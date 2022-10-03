@@ -76,6 +76,7 @@ const MyInfo = ({
     };
     
     onCustomAttributesSaved();
+    setRequestErrors([]);
     setLoading(false);
     setInEdit(false);
   };

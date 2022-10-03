@@ -27,7 +27,6 @@ const COLORS = {
   colors_secondary_gray: SECONDARY_GRAY,
   colors_border: "rgba(121, 121, 121, 0.6)",
   colors_pronunciation_select_border: "rgba(49, 49, 49, 0.3)",
-  colors_pronunciation_mid: "#9d9d9d",
   colors_secondary: SECONDARY,
   colors_white: WHITE,
   colors_dark_grey: DARK_GREY,
