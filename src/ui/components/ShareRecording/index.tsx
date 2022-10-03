@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PresentationMode } from "../../../types/modal-tooltip";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { TooltipActionType } from "../../../types/tooltip-action";
@@ -10,6 +10,9 @@ import ChangeableText from "../ModalTooltip/ChangableText";
 import ModalTooltipOption from "../ModalTooltip/Option";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ShareAction from "../Actions/Share";
+import Tooltip from "../Tooltip";
+import useTranslator from "../../hooks/useTranslator";
+import ReactTooltip from "react-tooltip";
 
 interface Props {
   loading: boolean;
@@ -17,7 +20,12 @@ interface Props {
 }
 
 const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
+  const tooltipId = Date.now().toString();
+  const [showHintTooltip, setShowHintTooltip] = useState(true)
+
   const styleContext = useContext(StyleContext);
+  const { t } = useTranslator(null, styleContext);
+
   const customFeatures = useCustomFeatures(null, styleContext);
   const [canShare, copyButtons] = useRecordingShare(
     loading,
@@ -25,16 +33,36 @@ const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
     customFeatures
   );
 
+  useEffect(() => {
+  }, [showHintTooltip]);
+
   return (
     <>
       {canShare && (
-        <ModalTooltip
+        <>
+              <Tooltip
+                id={tooltipId}
+                place="top"
+                effect="solid"
+                hidden={!showHintTooltip}
+              />
+    
+              <div
+                data-tip={t(
+                  "share_tooltip",
+                  "Copy your audio link here"
+                )}
+                data-for={tooltipId}
+              >
+                <ModalTooltip
           title="Share"
           id="share_recording"
           base={<ShareAction />}
           showOnClick
           closable
           mode={PresentationMode.Right}
+          onShowCb={() => {setShowHintTooltip(false); ReactTooltip.hide();}}
+          onHideCb={()=> setShowHintTooltip(true)}
         >
           {copyButtons.map((button, index) => (
             <ModalTooltipOption
@@ -47,6 +75,8 @@ const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
             </ModalTooltipOption>
           ))}
         </ModalTooltip>
+        </div>
+        </>
       )}
     </>
   );
