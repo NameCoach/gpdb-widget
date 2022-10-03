@@ -47,6 +47,7 @@ const customStyles = (theme) => (
     menuList: {},
     valueContainer: {},
     option: {},
+    placeholder: {},
   }
 ) => ({
   control: (provided, state) => {
