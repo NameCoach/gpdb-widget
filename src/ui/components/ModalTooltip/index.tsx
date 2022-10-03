@@ -27,6 +27,8 @@ interface Props {
   isActive?: boolean;
   tipStyle?: React.CSSProperties;
   closeOnChildClick?: boolean;
+  onShowCb?: () => void | null;
+  onHideCb?: () => void | null;
 }
 
 const ModalTooltip = ({
@@ -41,6 +43,8 @@ const ModalTooltip = ({
   delayHide = TOOLTIP_HIDE_DELAY,
   showOnClick = false,
   hideOnLeave = false,
+  onShowCb = null,
+  onHideCb = null,
   tipStyle,
   closeOnChildClick = true,
 }: Props): JSX.Element => {
@@ -50,12 +54,21 @@ const ModalTooltip = ({
   const [active, setActive] = useState<boolean>(isActive);
 
   const hideWithDelay = (delayHide: number): void => {
-    hideTimeout = setTimeout(() => setActive(false), delayHide);
+    hideTimeout = setTimeout(() =>{
+      setActive(false);
+      onHideCb && onHideCb(); 
+    } , delayHide);
+
   };
 
   const hideTip = (e): void => {
     e.stopPropagation();
-    delayHide ? hideWithDelay(delayHide) : setActive(false);
+
+    if(delayHide)
+      return hideWithDelay(delayHide);
+
+    setActive(false);
+    onHideCb && onHideCb(); 
   };
 
   const toogleActiveDelayed = (e): void => {
@@ -63,6 +76,7 @@ const ModalTooltip = ({
 
     e.stopPropagation();
     showTimeout = setTimeout(() => setActive(!active), delayShow);
+    onShowCb && onShowCb(); 
   };
 
   const onMouseLeave = (e): void => {
