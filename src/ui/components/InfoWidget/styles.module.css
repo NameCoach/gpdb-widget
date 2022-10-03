@@ -53,6 +53,8 @@
   font-size: 18px;
   font-weight: 700;
   margin: 0;
+  width: 100%;
+  text-align: center;
   color: $colors_dark_grey;
 }
 
