@@ -45,6 +45,7 @@
   transition: box-shadow 0.3s ease-in-out;
   border: 1px solid transparent;
   background-color: $colors_background;
+  color: $colors_dark_grey;
 }
 
 .input:hover {
