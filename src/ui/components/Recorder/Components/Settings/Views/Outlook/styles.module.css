@@ -1,0 +1,4 @@
+.btn__link {
+  composes: btn__link from "../../../../../../styles/outlook.css";
+}
+  
