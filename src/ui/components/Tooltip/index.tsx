@@ -10,8 +10,14 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
+ interface NCProps {
+  hidden?: boolean
+ }
 
-const Tooltip = (props: TooltipProps): JSX.Element => {
+export type NCTooltipProps = TooltipProps & NCProps
+
+
+const Tooltip = (props: NCTooltipProps): JSX.Element => {
   const controller = useContext(ControllerContext);
   const customFeatures = useCustomFeatures(controller);
 
@@ -23,7 +29,7 @@ const Tooltip = (props: TooltipProps): JSX.Element => {
       delayShow={
         customFeatures.getValue(ConstantOverrides.TooltipDelay) || TOOLTIP_DELAY
       }
-      className={cx(styles.tooltip)}
+      className={cx(styles.tooltip, {"hidden": props.hidden})}
       multiline
     />
   );
