@@ -1,0 +1,68 @@
+.block {
+  margin-top: 20px;
+}
+
+.column {
+  flex-direction: column;
+  display: flex;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+
+.title {
+  composes: title from "../../styles/outlook.css";
+  margin: 10px 0;
+}
+
+.actions {
+  composes: actions from "../../styles/outlook.css";
+}
+
+.icon_btn {
+  composes: icon-btn from "../../styles/icons.css";
+}
+
+.edit_icon {
+  composes: edit_icon from "../../styles/icons.css";
+}
+.close_icon {
+  composes: close_icon from "../../styles/icons.css";
+}
+.save_icon {
+  composes: save_icon from "../../styles/icons.css";
+}
+.edit_icon:focus, .close_icon:focus, .save_icon:focus { border: none }
+.edit_icon:hover, .close_icon:hover, .save_icon:hover { border: none }
+.edit_icon, .close_icon, .save_icon { border: none }
+
+
+.tip_text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #333333;
+  text-align: center;
+  overflow-wrap: break-word;
+  width: 90%;
+  margin: 10px 0;
+}
+
+.tip_text_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tip_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
