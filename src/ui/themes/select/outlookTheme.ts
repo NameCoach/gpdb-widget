@@ -42,6 +42,7 @@ const styles = {
   },
   placeholder: {
     fontSize: "14px",
+    color: COLORS.colors_light_grey,
   }
 };
 
