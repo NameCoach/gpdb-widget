@@ -14,6 +14,7 @@ export interface CustomStyles {
   menuList: object;
   option: object;
   valueContainer: object;
+  placeholder: object;
 }
 
 interface Props {
@@ -109,8 +110,7 @@ const customStyles = (theme) => (
   }),
   placeholder: (provided) => ({
     ...provided,
-    color: COLORS.colors_light_grey,
-    ...controlStyles.option,
+    ...controlStyles.placeholder,
   })
 });
 
