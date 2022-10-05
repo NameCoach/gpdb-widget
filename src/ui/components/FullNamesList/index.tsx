@@ -48,6 +48,7 @@ const FullNamesList = ({
           setAutoplay={setAutoplay}
           value={value}
           setValue={setValue}
+          selectValue={selectValue}
           onSelect={onSelect}
         />
         {!hideFullName && selectValue && (
