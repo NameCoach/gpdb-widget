@@ -76,7 +76,7 @@ const NamesList = ({
               filterOption={filterOption(selectValue?.value)}
               placeholder={t(
                 "pronunciations_drop_down_placeholder",
-                "Select a recepient"
+                "Select a recipient"
               )}
               notFirstSelected
             />
