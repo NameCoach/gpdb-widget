@@ -41,5 +41,8 @@
     "recorder_pronounce_your_name": "Pronounce your name",
 
     "my_info_empty_tip": "Edit \"My Info\" to add new information",
-    "pronunciations_drop_down_tooltip": "Click to see more names"
+    "pronunciations_drop_down_tooltip": "Click to see more names",
+    "pronunciations_drop_down_placeholder": "Select a recipient",
+    "share_button_name_badge": "NameBadge",
+    "share_button_audio_url": "Audio URL"
 }
