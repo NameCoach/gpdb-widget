@@ -27,8 +27,8 @@ const Select = ({
   onUpdate,
   hasErrors,
 }: CustomAttributesInputsProps): JSX.Element => {
-  const options = values.map(value => ({ value, label: value }));
-  const selectValue = { value: String(value), label: String(value) };
+  const options = values?.map(value => ({ value, label: value }));
+  const selectValue = value && String(value).length > 0 && { value: String(value), label: String(value) };
 
   const _styles = {
     control: (provided, state) => { 
@@ -112,7 +112,6 @@ const Select = ({
       color: COLORS.colors_light_grey,
     })
   };
-
   return (
     <div className={cx(styles.select_container, styles.column)}>
       <div className={cx(styles.row, styles.label_container)}>
@@ -131,6 +130,7 @@ const Select = ({
           className={styles.select_input_container}
           styles={_styles}
           theme={_theme}
+          placeholder={metadata?.placeholder}
         />
       </div>
     </div>
