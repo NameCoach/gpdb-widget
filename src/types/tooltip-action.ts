@@ -1,4 +1,5 @@
 export enum TooltipActionType {
+  InlineButton = "inline_button",
   Button = "tooltip_button",
   Link = "tooltip_link",
 }
