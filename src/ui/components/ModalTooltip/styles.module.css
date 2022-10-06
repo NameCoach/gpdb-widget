@@ -81,3 +81,15 @@
   margin: 2px;
   color: $colors_dark_grey;
 }
+
+.column_actions {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.inline_actions {
+  display: flex;
+  flex-direction: row;
+}
+
