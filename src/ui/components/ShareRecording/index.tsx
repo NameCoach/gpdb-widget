@@ -49,7 +49,7 @@ const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
     
               <div
                 data-tip={t(
-                  "share_tooltip",
+                  "share_audio_url_tooltip",
                   "Copy your audio link here"
                 )}
                 data-for={tooltipId}
