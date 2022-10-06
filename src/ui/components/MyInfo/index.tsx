@@ -45,9 +45,11 @@ const MyInfo = ({
   const [requestErrors, setRequestErrors] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // TODO: work around it
-  const customAttributesDisabled = !can("editCustomAttributesForSelf");
-  // TODO: 👆
+  // Probably, won't need this after https://name-coach.atlassian.net/browse/INT-241
+  const customAttributesDisabled = !can(
+    "editCustomAttributesForSelf",
+    pronunciation,
+    );
 
   const resetAttributes = () => {
     console.log({pronunciation});
@@ -92,7 +94,7 @@ const MyInfo = ({
       <div className={cx(styles.row)}>
         <div>
           <span className={styles.title}>
-            {t("my_info_section_name", "My Info")}
+            {t("my_info_section_custom_attributes", "My Info")}
           </span>
         </div>
 
@@ -116,6 +118,7 @@ const MyInfo = ({
               </>
             );
             else return (
+              !customAttributesDisabled &&
               <button
                 className={styles.icon_btn}
                 onClick={(): void => setInEdit(true)}
