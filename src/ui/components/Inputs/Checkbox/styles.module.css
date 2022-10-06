@@ -1,0 +1,20 @@
+.checkbox_input_field {
+  text-align: right;
+  width: 90%;
+}
+
+.checkbox_field {
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+}
+
+.attributes_label {
+  color: $colors_darker_grey;
+  line-height: 10px;
+}
+
+.attributes_label.disabled {
+  color: $colors_label_Gray;
+  line-height: 10px;
+}
