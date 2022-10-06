@@ -22,10 +22,10 @@ const useRecordingShare = (
     return share_urls
       .map((item) => {
         if (item === "defaultAudio" && pronunciation.audioSrc)
-          return { url: pronunciation.audioSrc, text: "Audio URL" };
+          return { url: pronunciation.audioSrc, text: "Audio" };
 
         if (item === "nameBadge" && pronunciation.nameBadgeLink) {
-          return { url: pronunciation.nameBadgeLink, text: "My NameBadge URL" };
+          return { url: pronunciation.nameBadgeLink, text: "My NameBadge" };
         }
       })
       .filter((item) => item);
