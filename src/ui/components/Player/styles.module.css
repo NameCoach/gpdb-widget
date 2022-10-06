@@ -1,0 +1,59 @@
+.player {
+  composes: icon-btn from "../../styles/icons.css";
+}
+
+.player__active {
+  composes: active from "../../styles/icons.css";
+}
+
+.speaker {
+  composes: speaker from "../../styles/icons.css";
+}
+
+.speaker-unavailable {
+  composes: speaker-unavailable from "../../styles/icons.css";
+}
+
+.speaker-gpdb {
+  composes: speaker-gpdb from "../../styles/icons.css";
+}
+
+.speaker-name-owner {
+  composes: speaker-name-owner from "../../styles/icons.css";
+}
+
+.speaker-user {
+  composes: speaker-user from "../../styles/icons.css";
+}
+
+.playable {
+  composes: playable from "../../styles/icons.css";
+}
+
+.player__disabled {
+  composes: disabled from "../../styles/icons.css";
+}
+
+.unavailable__disabled {
+  composes: disabled-hoverable from "../../styles/icons.css";
+}
+
+.disabled_player {
+  cursor: default;
+  opacity: 0.6;
+  border-radius: 2px;
+  transition: 0.3s ease-in-out opacity, background-color, background-image;
+  border: none;
+  padding: 0;
+  margin: 4px;
+  background-color: transparent;
+}
+
+.disabled_player i {
+  width: 24px;
+  height: 24px;
+  display: block;
+  background-repeat: no-repeat;
+  /* background-size: 70%; */
+  background-position: center;
+}
