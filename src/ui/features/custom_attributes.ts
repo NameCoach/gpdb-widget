@@ -48,6 +48,16 @@ export const useCustomAttributesFeatures = (
     []
   );
 
+  // Attention! these policies don't exist, and can change in https://name-coach.atlassian.net/browse/INT-241
+  const canCreatePrivateHedbCustomAttributes = useCallback(
+    (): boolean =>
+      canCustomAttributes("save_values:hedb_private") &&
+      canCustomAttributes("retrieve_config:hedb_private") &&
+      canPronunciation("index:hedb_custom_attributes") &&
+      !canPronunciation("create:name_badge"),
+    []
+  );
+
   const canCreateCustomAttributes = (
     nameOwner,
     userContext,
@@ -56,7 +66,8 @@ export const useCustomAttributesFeatures = (
     nameOwner.signature === userContext.signature &&
     customAttributesConfig?.length > 0 &&
     (canCreateGpdbCustomAttributes() ||
-      canCreateHedbNameBadgeCustomAttributes());
+      canCreateHedbNameBadgeCustomAttributes() ||
+      canCreatePrivateHedbCustomAttributes());
 
   const canEditCustomAttributesForSelf = (
     pronunciation: Pronunciation
@@ -64,26 +75,32 @@ export const useCustomAttributesFeatures = (
     if (!pronunciation)
       return (
         canCreateGpdbCustomAttributes() ||
-        canCreateHedbNameBadgeCustomAttributes()
+        canCreateHedbNameBadgeCustomAttributes() ||
+        canCreatePrivateHedbCustomAttributes()
       );
 
-    const sourceIsNameBadge =
-      pronunciation.sourceType === SourceType.HedbNameBadge;
-    const sourceIsGpdb = pronunciation.sourceType === SourceType.Gpdb;
-    const sourceIsHedb = pronunciation.sourceType === SourceType.Hedb;
+      const canEdit = {
+        [SourceType.HedbNameBadge]: canCreateHedbNameBadgeCustomAttributes(),
+        [SourceType.Gpdb]: canCreateGpdbCustomAttributes(),
+        [SourceType.Hedb]: canCreatePrivateHedbCustomAttributes()
 
-    const canEditNameBadge =
-      sourceIsNameBadge && canCreateHedbNameBadgeCustomAttributes();
-    const canEditGpdb = sourceIsGpdb && canCreateGpdbCustomAttributes();
+      }
 
-    return (canEditNameBadge || canEditGpdb) && !sourceIsHedb;
+    return canEdit[pronunciation.sourceType];
   };
 
   const showCustomAttributesForSelf = (
     pronunciation: Pronunciation,
     customAttributesConfig: any
   ): boolean => {
-    const dataPresent =
+
+      // reverse this to previous version after https://name-coach.atlassian.net/browse/INT-241
+    const dataPresent = 
+    pronunciation && 
+    pronunciation.customAttributes &&
+    pronunciation.customAttributes.length > 0 &&
+    pronunciation.sourceType === SourceType.Hedb ?
+    pronunciation.customAttributes.some(ca => ca.value) : 
       pronunciation &&
       pronunciation.customAttributes &&
       pronunciation.customAttributes.length > 0;
