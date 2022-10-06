@@ -27,6 +27,7 @@ interface Props {
   isActive?: boolean;
   tipStyle?: React.CSSProperties;
   closeOnChildClick?: boolean;
+  actionsClassName?: string;
   onShowCb?: () => void | null;
   onHideCb?: () => void | null;
 }
@@ -47,6 +48,7 @@ const ModalTooltip = ({
   onHideCb = null,
   tipStyle,
   closeOnChildClick = true,
+  actionsClassName= "column_actions"
 }: Props): JSX.Element => {
   let showTimeout;
   let hideTimeout;
@@ -128,11 +130,14 @@ const ModalTooltip = ({
           {closable && <Close className="modal" onClick={hideTip} />}
           {title && <div className={styles.title}>{title}</div>}
           {children &&
-            React.Children.map(children, (child) =>
-              React.cloneElement(child, {
-                onClick: childOnClick(child),
-              })
-            )}
+            <div className={cx(actionsClassName)}>
+              {React.Children.map(children, (child) =>(
+                React.cloneElement(child, {
+                  onClick: childOnClick(child),
+                })
+              ))}
+            </div>
+            }
         </div>
       )}
       <div id={id} onClick={toogleActiveDelayed} onMouseLeave={onMouseLeave}>

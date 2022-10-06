@@ -1,5 +1,5 @@
 const myName = process.env.REACT_APP_MY_NAME || "Jack Green";
-const myEmail = process.env.REACT_APP_MY_EMAIL || "jack@name-coach.com";
+const myEmail = process.env.REACT_APP_MY_EMAIL || "jack@namech.com";
 
 export const me = {
   value: myName,
