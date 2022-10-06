@@ -60,6 +60,7 @@ const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
           base={<ShareAction />}
           showOnClick
           closable
+          actionsClassName="inline_actions"
           mode={PresentationMode.Right}
           onShowCb={() => {setShowHintTooltip(false); ReactTooltip.hide();}}
           onHideCb={()=> setShowHintTooltip(true)}
@@ -67,7 +68,7 @@ const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
           {copyButtons.map((button, index) => (
             <ModalTooltipOption
               key={index}
-              actionType={TooltipActionType.Button}
+              actionType={TooltipActionType.InlineButton}
             >
               <CopyToClipboard text={button.url} key={button.text} debug="true">
                 <ChangeableText initialText={button.text} newText="Copied!" />
