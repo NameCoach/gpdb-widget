@@ -13,6 +13,13 @@ const DisabledPlayer = (props: Props): JSX.Element => {
   const tooltipId = Date.now().toString();
 
   return (
+    <>
+    <Tooltip 
+      className={styles.tooltip}
+      id={tooltipId}
+      place="top"
+      effect="solid"
+    />
     <div
       aria-label="Disabled player"
       className={cx(
@@ -21,7 +28,6 @@ const DisabledPlayer = (props: Props): JSX.Element => {
         "unavailable__disabled"
       )}
     >
-      <Tooltip id={tooltipId} />
       <i
         className={cx(styles.speakerUnavailable, "speaker-unavailable")}
         data-tip="Pronunciations not available"
@@ -29,6 +35,7 @@ const DisabledPlayer = (props: Props): JSX.Element => {
         data-tip-disable={false}
       />
     </div>
+    </>
   );
 };
 
