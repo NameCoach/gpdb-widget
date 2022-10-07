@@ -25,6 +25,7 @@ import getDeleteNotificationTag from "../../../core/utils/get-delete-notificatio
 import { NotificationTags } from "../../../types/notifications";
 import Notification from "../Notification";
 import NewRecorder from "../NewRecorder";
+import useTranslator from "../../hooks/useTranslator";
 
 type UseNamePartsReturn = {
   nameParts: Name[];
@@ -68,6 +69,8 @@ const NameLinesResult = ({
     customFeatures,
     permissions
   );
+
+  const { t } = useTranslator(controller);
 
   const {
     pronunciations,
@@ -197,6 +200,11 @@ const NameLinesResult = ({
           {index === 0 && <hr className={cx(styles.divider)} />}
         </React.Fragment>
       ))}
+      {nameParts.length === 0 && (
+        <div className={cx(styles.no_result)}>
+         {t("no_result_found", "No result found")}
+        </div>
+      )}
     </>
   );
 };
