@@ -38,7 +38,7 @@ interface Props {
 const NameLine = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
 
-  const { theme, selectStyles, filterOption } = useTheme(NameLine.name);
+  const { theme, selectStyles, filterOption } = useTheme("NameLine");
   const { t } = useTranslator(controller);
 
   const { isDeprecated: isOld } = userAgentManager;

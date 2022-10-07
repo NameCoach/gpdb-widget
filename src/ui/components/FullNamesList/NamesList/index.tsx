@@ -37,7 +37,7 @@ const NamesList = ({
   const tooltipId = Date.now().toString();
 
   const { t } = useContext(StyleContext);
-  const { theme, selectStyles, filterOption } = useTheme(NamesList.name);
+  const { theme, selectStyles, filterOption } = useTheme("NamesList");
 
   const options = useMemo(() => names.map(nameToOption), [names]);
 
