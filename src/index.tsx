@@ -5,6 +5,8 @@ import PronunciationMyInfoWidget from "./ui/components/PronunciationMyInfoWidget
 import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
 import Recorder from "./ui/components/Recorder";
+import PersonalBlock from "./ui/components/PersonalBlock";
+import PronunciationsBlock from "./ui/components/PronunciationsBlock";
 import Player from "./ui/components/Player";
 import SearchWidget from "./ui/components/SearchWidget";
 import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
@@ -47,6 +49,8 @@ export {
   Widget,
   ExtensionWidget,
   PronunciationMyInfoWidget,
+  PersonalBlock,
+  PronunciationsBlock,
   Recorder,
   Player,
   loadClient,
