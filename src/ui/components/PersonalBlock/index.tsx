@@ -9,6 +9,8 @@ import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
 
+import styles from "./styles.module.css";
+
 import StyleContext from "../../contexts/style";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
@@ -106,7 +108,7 @@ const PersonalBlock = (props: Props): JSX.Element => {
   }, [props.name, props.controller, load]);
 
   return (
-    <>
+    <div className={styles.container}>
       <MyRecording
         pronunciation={pronunciation}
         name={props.name}
@@ -136,7 +138,7 @@ const PersonalBlock = (props: Props): JSX.Element => {
           loading={loading}
         />
       )}
-    </>
+    </div>
   );
 };
 
