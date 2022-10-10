@@ -92,9 +92,9 @@ const NameLinesResult = ({
 
   const canFindRecordingRequest = can("findRecordingRequest");
 
-  const canUserResponse = can("createUserResponse", nameOwner.signature);
+  const canUserResponse = can("createUserResponse", nameOwner?.signature);
 
-  const canRecordOrgPeer = can("createOrgPeerRecording", nameOwner.signature);
+  const canRecordOrgPeer = can("createOrgPeerRecording", nameOwner?.signature);
 
   const reloadName = async (type: NameTypes): Promise<void> => {
     const pronunciations = await controller.simpleSearch(
@@ -200,7 +200,7 @@ const NameLinesResult = ({
           {index === 0 && <hr className={cx(styles.divider)} />}
         </React.Fragment>
       ))}
-      {nameParts.length === 0 && (
+      {nameParts.length === 0 && nameOwner?.signature && !loading && (
         <div className={cx(styles.no_result)}>
          {t("no_result_found", "No result found")}
         </div>
