@@ -164,7 +164,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
   };
 
   return (
-    <>
+    <div className={styles.container}>
       <div className={cx(styles.title, styles.m_10)}>
         {t("pronunciations_section_name", "Pronunciations")}
       </div>
@@ -197,7 +197,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
           permissions={props.permissions}
         />
       )}
-    </>
+    </div>
   );
 };
 
