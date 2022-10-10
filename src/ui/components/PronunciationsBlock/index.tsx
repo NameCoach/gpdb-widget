@@ -50,7 +50,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
   const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
-  const [nameOwner, setNameOwner] = useState<NameOwner>(props.names[0].owner);
+  const [nameOwner, setNameOwner] = useState<NameOwner>(null);
 
   const fullNamesObject = useRef([]);
 
