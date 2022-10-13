@@ -140,12 +140,12 @@ const NameLine = (props: Props): JSX.Element => {
             <div
               className={cx(
                 styles.pronunciation__actions,
-                { old: isOld },
+                { old_actions: isOld },
                 `actions--${theme}`
               )}
             >
               <Player
-                className={styles.pronunciation__action}
+                className={cx(styles.pronunciation__action, { old_action: isOld })}
                 audioSrc={currentPronunciation.audioSrc}
                 audioCreator={currentPronunciation.audioCreator}
                 autoplay={autoplay}
@@ -154,7 +154,7 @@ const NameLine = (props: Props): JSX.Element => {
 
               {props.canRecord && (
                 <RecordAction
-                  className={styles.pronunciation__action}
+                className={cx(styles.pronunciation__action, { old_action: isOld })}
                   onClick={(): void =>
                     props.onRecorderClick(props.name, props.type)
                   }
@@ -163,7 +163,7 @@ const NameLine = (props: Props): JSX.Element => {
               )}
               {props.canUserResponse && (
                 <UserResponseAction
-                  className={styles.pronunciation__action}
+                className={cx(styles.pronunciation__action, { old_action: isOld })}
                   active={
                     currentPronunciation?.userResponse?.response ===
                     UserResponse.Save
