@@ -119,30 +119,23 @@ const AbsentName = (props: Props): JSX.Element => {
           </div>
 
           <div
-            className={
-              isOld
-                ? cx(
+            className={cx(
                     nameLineStyles.pronunciation__actions,
-                    nameLineStyles.old,
+                    { old_actions: isOld },
                     nameLineStyles[`actions--${theme}`]
-                  )
-                : cx(
-                    nameLineStyles.pronunciation__actions,
-                    nameLineStyles[`actions--${theme}`]
-                  )
-            }
+                  )}
           >
-            <DisabledPlayer className={nameLineStyles.pronunciation__action} />
+            <DisabledPlayer  className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })} />
             {props.canRecordingRequestCreate && (
               <RequestAction
-                className={nameLineStyles.pronunciation__action}
+                className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })}
                 onClick={onRequest}
                 disabled={isRequested}
               />
             )}
             {props.canPronunciationCreate && (
               <RecordAction
-                className={nameLineStyles.pronunciation__action}
+                className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })}
                 onClick={(): void =>
                   props.onRecorderClick &&
                   props.onRecorderClick(props.name, props.type)
