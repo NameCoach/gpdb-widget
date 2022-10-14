@@ -46,7 +46,7 @@ const testName2 = {
   }
 }
 const widgetTest = {
-  value: 'widget test',
+  value: 'widget fhofgihofg',
   owner: {
     signature: 'jon.snow@name-coach.com',
     email: 'jon.snow@name-coach.com'

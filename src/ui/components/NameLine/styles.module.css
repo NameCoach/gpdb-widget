@@ -175,6 +175,11 @@
   justify-content: flex-end;
 }
 
+.old_actions {
+  flex-shrink: 0 !important;
+  max-width: 35% !important;
+}
+
 .actions--outlook {
   flex: auto;
   max-width: 30%;
@@ -184,15 +189,14 @@
   composes: phonetic from "../../styles/phonetic.css";
 }
 
-.old {
-  justify-content: space-around;
-  padding-right: 0.75rem;
-}
-
 .pronunciation__action {
   display: flex;
   align-items: center;
   flex: 0;
+}
+
+.old_action {
+  flex-basis: auto;
 }
 
 .hidden {
