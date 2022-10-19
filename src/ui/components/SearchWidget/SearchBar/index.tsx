@@ -4,6 +4,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { MIN_INPUT_SYMBOLS_TO_SUGGEST } from "../../../../constants";
 import IFrontController from "../../../../types/front-controller";
 import IconButtons from "../../../kit/IconButtons";
+import useTranslator from "../../../hooks/useTranslator";
 import styles from "./styles.module.css";
 
 const cx = classNames.bind(styles);
@@ -25,6 +26,8 @@ const SearchBar = ({
   onInputChange,
   controller,
 }: Props): JSX.Element => {
+  const { t } = useTranslator(controller);
+
   const [input, setInput] = useState("");
 
   const [renderSuggestions, setRenderSuggestions] = useState(false);
@@ -56,7 +59,7 @@ const SearchBar = ({
     }
   }, GET_SUGGESTIONS_DELAY);
 
-  const handleChange = (value) => {
+  const handleChange = ({ target: { value } }) => {
     onInputChange();
     setInput(value);
 
@@ -85,10 +88,11 @@ const SearchBar = ({
         <input
           aria-label="Search input field"
           className={cx(styles.input)}
+          placeholder={t("search_widget_input_placeholder")}
           type="text"
           required
           value={input}
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={handleChange}
           onKeyPress={handleKeyPressed}
         />
 
