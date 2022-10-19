@@ -46,5 +46,6 @@
     "share_button_name_badge": "NameBadge",
     "share_button_audio_url": "Audio URL",
 
-    "tooltip_request_recording_tip": "Request recording"
+    "tooltip_request_recording_tip": "Request recording",
+    "search_widget_input_placeholder": "Name or Email"
 }
