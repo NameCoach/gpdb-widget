@@ -11,7 +11,6 @@ const views = {
 };
 
 const Actions = ({ ...props }: Props): JSX.Element => {
-  console.warn("saved", props.saved);
   const { theme } = useTheme();
 
   return <>{views[theme](props)}</>;
