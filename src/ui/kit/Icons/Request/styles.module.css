@@ -1,0 +1,10 @@
+.main {
+    color: #6A6A6A;
+    opacity: 1;
+    height: 20px;
+    width: 22px;
+}
+
+.main:hover {
+    opacity: 0.7;
+}
