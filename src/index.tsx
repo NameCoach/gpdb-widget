@@ -12,10 +12,11 @@ import SearchWidget from "./ui/components/SearchWidget";
 import InfoWidget from "./ui/components/InfoWidget/InfoWidget";
 import Notification from "./ui/components/Notification";
 import ModalTooltip from "./ui/components/ModalTooltip";
-import HelpAction from "./ui/components/Actions/Help";
 import ModalTooltipOption from "./ui/components/ModalTooltip/Option";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ChangeableText from "./ui/components/ModalTooltip/ChangableText";
+import IconButtons from "./ui/kit/IconButtons";
+import Icons from "./ui/kit/Icons";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -75,7 +76,8 @@ export {
   addOnDeviceChangeHandler,
   ModalTooltip,
   ITooltipAction,
-  HelpAction,
+  IconButtons,
+  Icons,
   ModalTooltipPresentationMode,
   ModalTooltipOption,
   CopyToClipboard,
