@@ -10,7 +10,7 @@ import { UserPermissions } from "../../../types/permissions";
 import StyleContext from "../../contexts/style";
 import useTranslator from "../../hooks/useTranslator";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
-import useFeaturesManager from "../../hooks/useFeaturesManager";
+import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
 import { usePronunciations } from "../../hooks/pronunciations";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Name, { NameTypes } from "../../../types/resources/name";
@@ -35,7 +35,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
 
   const customFeatures = useCustomFeatures(props.controller);
 
-  const { can } = useFeaturesManager(
+  const { can, show } = useFeaturesManager(
     props.controller.permissions,
     customFeatures,
     props.permissions
@@ -164,40 +164,44 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={cx(styles.title, styles.m_10)}>
-        {t("pronunciations_section_name", "Pronunciations")}
-      </div>
+    <>
+      {show(ShowComponents.PronunciationsBlock) && (
+        <div className={styles.container}>
+          <div className={cx(styles.title, styles.m_10)}>
+            {t("pronunciations_section_name", "Pronunciations")}
+          </div>
 
-      <FullNamesList
-        names={props.names}
-        onSelect={onSelect}
-        value={currentPronunciation}
-        loading={loading}
-        hideFullName={
-          canComplexSearch && !currentPronunciation && nameParts.length > 0
-        }
-      />
+          <FullNamesList
+            names={props.names}
+            onSelect={onSelect}
+            value={currentPronunciation}
+            loading={loading}
+            hideFullName={
+              canComplexSearch && !currentPronunciation && nameParts.length > 0
+            }
+          />
 
-      {canComplexSearch && !currentPronunciation && (
-        <NameLinesResult
-          controller={props.controller}
-          nameOwner={nameOwner}
-          loading={loading}
-          setLoading={setLoading}
-          usePronunciations={{
-            pronunciations,
-            setPronunciations,
-            updatePronunciationsByType,
-          }}
-          useNameParts={{
-            nameParts,
-            setNameParts,
-          }}
-          permissions={props.permissions}
-        />
+          {canComplexSearch && !currentPronunciation && (
+            <NameLinesResult
+              controller={props.controller}
+              nameOwner={nameOwner}
+              loading={loading}
+              setLoading={setLoading}
+              usePronunciations={{
+                pronunciations,
+                setPronunciations,
+                updatePronunciationsByType,
+              }}
+              useNameParts={{
+                nameParts,
+                setNameParts,
+              }}
+              permissions={props.permissions}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
