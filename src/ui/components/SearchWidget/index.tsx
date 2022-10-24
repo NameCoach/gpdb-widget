@@ -3,6 +3,7 @@ import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import StyleContext from "../../contexts/style";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
 import usePermissions from "../../hooks/usePermissions";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import useTranslator from "../../hooks/useTranslator";
@@ -26,31 +27,39 @@ const SearchWidget = (props: Props): JSX.Element => {
   const { canPronunciation } = usePermissions(client.permissions);
 
   const canPerfromBasicSearch = canPronunciation("index");
-  const canUseSearchWidget = canPronunciation("search-widget");
+
+  const { show } = useFeaturesManager(
+    client.permissions,
+    customFeatures
+  );
 
   return (
-    <StyleContext.Provider
-      value={{
-        ...styleContext,
-        displayRecorderSavingMessage:
-          styleContext?.displayRecorderSavingMessage,
-        customFeatures,
-        t,
-      }}
-    >
-      <ControllerContext.Provider value={client}>
-        {canUseSearchWidget && canPerfromBasicSearch && (
-          <SearchContainer
-            controller={client}
-            termsAndConditions={props.termsAndConditions}
-          />
-        )}
-
-        {canUseSearchWidget && !canPerfromBasicSearch && <NoPermissionsError />}
-
-        {!canUseSearchWidget && <></>}
-      </ControllerContext.Provider>
-    </StyleContext.Provider>
+    <>
+      {show(ShowComponents.SearchWidget) && (
+        <StyleContext.Provider
+          value={{
+            ...styleContext,
+            displayRecorderSavingMessage:
+              styleContext?.displayRecorderSavingMessage,
+            customFeatures,
+            t,
+          }}
+        >
+          <ControllerContext.Provider value={client}>
+            <>
+              {canPerfromBasicSearch ? (
+                <SearchContainer
+                  controller={client}
+                  termsAndConditions={props.termsAndConditions}
+                />
+              ) : (
+                <NoPermissionsError />
+              )}
+            </>
+          </ControllerContext.Provider>
+        </StyleContext.Provider>
+      )}
+    </>
   );
 };
 
