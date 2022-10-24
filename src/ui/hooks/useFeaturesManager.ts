@@ -9,10 +9,20 @@ import { useUserResponseFeatures } from "../features/user_response";
 import { useRecordingRequestFeatures } from "../features/recording_request";
 import { useRecorderFeatures } from "../features/recorder";
 import { UserPermissions } from "../../types/permissions";
+import { useShowWidgetBlocks } from "../features/widget_blocks";
 
 interface FeaturesManager {
   readonly can: (name: string, ...rest: any[]) => boolean;
   readonly show: (name: string, ...rest: any[]) => boolean;
+}
+
+export enum ShowComponents {
+  RecorderRecordButton = "recorderRecordButton",
+  SelfRecorderAction = "selfRecorderAction",
+  CustomAttributesForSelf = "customAttributesForSelf",
+  PronunciationsBlock = "showPronunciationsBlock",
+  PersonalBlock = "showPersonalBlock",
+  SearchWidget = "showSearchWidget",
 }
 
 const useFeaturesManager = (
@@ -76,11 +86,23 @@ const useFeaturesManager = (
     enforcedPermissions
   );
 
-  const showContext = {
-    recorderRecordButton: showRecorderRecordButton,
-    selfRecorderAction: showSelfRecorderAction,
+  const {
+    showPronunciationsBlock,
+    showPersonalBlock,
+    showSearchWidget,
+  } = useShowWidgetBlocks(
+    permissionsManager,
+    customFeaturesManager,
+    enforcedPermissions,
+  )
 
-    customAttributesForSelf: showCustomAttributesForSelf,
+  const showContext = {
+    [ShowComponents.RecorderRecordButton]: showRecorderRecordButton,
+    [ShowComponents.SelfRecorderAction]: showSelfRecorderAction,
+    [ShowComponents.CustomAttributesForSelf]: showCustomAttributesForSelf,
+    [ShowComponents.PronunciationsBlock]: showPronunciationsBlock,
+    [ShowComponents.PersonalBlock]: showPersonalBlock,
+    [ShowComponents.SearchWidget]: showSearchWidget
   };
 
   const canContext = {
