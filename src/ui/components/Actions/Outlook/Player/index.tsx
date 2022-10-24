@@ -1,11 +1,9 @@
 import React from "react";
-import styles from "./styles.module.css";
-import classNames from "classnames/bind";
-import { AudioSource } from "../../../types/resources/pronunciation";
-import Loader from "../Loader";
-import Tooltip from "../Tooltip";
-import useSpeakerAttrs from "../../hooks/useSpeakerAttrs";
-import usePlayer from "../../hooks/usePlayer";
+import Loader from "../../../Loader";
+import Tooltip from "../../../Tooltip";
+import useSpeakerAttrs from "../../../../hooks/useSpeakerAttrs";
+import usePlayer from "../../../../hooks/usePlayer";
+import { AudioSource } from "../../../../../types/resources/pronunciation";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -17,18 +15,16 @@ interface Props {
   tooltipId?: string;
 }
 
-const cx = classNames.bind(styles);
 let currentAudio;
 
 const Player = ({
   autoplay,
   audioSrc,
   audioCreator,
-  className,
   onClick,
   tooltipId = Date.now().toString(),
 }: Props): JSX.Element => {
-  const { speakerClassName, speakerTip } = useSpeakerAttrs(audioCreator);
+  const { speakerTip, SpeakerComponent } = useSpeakerAttrs(audioCreator);
 
   const { isPlaying, play, audioReady } = usePlayer({
     autoplay,
@@ -39,23 +35,20 @@ const Player = ({
   });
 
   return (
-    <div
-      className={cx(styles.player, className, {
-        player__active: isPlaying,
-      })}
-      onClick={play}
-    >
+    <>
       <Tooltip id={tooltipId} />
+
       {audioReady ? (
-        <i
-          className={cx(speakerClassName)}
+        <SpeakerComponent
+          onClick={play}
+          iconOptions={{ playing: isPlaying }}
           data-tip={speakerTip}
           data-for={tooltipId}
         />
       ) : (
         <Loader inline sm />
       )}
-    </div>
+    </>
   );
 };
 
