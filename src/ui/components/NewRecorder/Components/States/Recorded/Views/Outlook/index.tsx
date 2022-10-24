@@ -3,13 +3,13 @@ import React, { useContext } from "react";
 import userAgentManager from "../../../../../../../../core/userAgentManager";
 import ControllerContext from "../../../../../../../contexts/controller";
 import useTranslator from "../../../../../../../hooks/useTranslator";
-import Player from "../../../../../../Player";
 import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../../../../constants";
 import RangeInput from "../../../../RangeInput";
 import Settings from "../../../../Settings";
 import { StateProps } from "../../types";
 
 import styles from "../../../../../styles/outlook/styles.module.css";
+import Player from "../../../../../../Actions/Outlook/Player";
 
 const cx = classNames.bind(styles);
 

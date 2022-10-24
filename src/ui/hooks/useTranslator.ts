@@ -3,8 +3,7 @@ import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import SupportedLanguages from "../../translations/supported-languages";
-import IFrontController from "../../types/front-controller";
-import IStyleContext from "../../types/style-context";
+import ControllerContext from "../contexts/controller";
 import StyleContext from "../contexts/style";
 
 interface HookReturn {
@@ -13,11 +12,9 @@ interface HookReturn {
 }
 
 const useTranslator = (
-  controller: IFrontController,
-  styleContext?: IStyleContext
+  controller = useContext(ControllerContext),
+  styleContext = useContext(StyleContext)
 ): HookReturn => {
-  const _styleContext = styleContext || useContext(StyleContext);
-
   const loadT = (translations = {}): TFunction => {
     const { t, i18n: i18next } = useTranslation("translations", { i18n });
 
@@ -36,7 +33,7 @@ const useTranslator = (
     i18n.changeLanguage(language);
   };
 
-  const t = _styleContext?.t || loadT(controller?.preferences?.translations);
+  const t = styleContext?.t || loadT(controller?.preferences?.translations);
 
   return { t, setLanguage };
 };
