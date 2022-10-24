@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Select from "react-select";
-import COLORS, { BRAND, _SECONDARY } from "../../styles/variables/colors";
+import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
 export interface Option {
   value: string | number;
@@ -56,15 +56,15 @@ const customStyles = (theme) => (
       ...provided,
       minHeight: "30px",
       borderColor: provided.borderColor,
-      '&:hover': {
+      "&:hover": {
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.15)",
       },
       ...controlStyles.control,
-    }
+    };
 
     if (!state.isFocused) {
-      res['&:hover'].borderColor = 'transparent';
-      res.borderColor = 'transparent'
+      res["&:hover"].borderColor = "transparent";
+      res.borderColor = "transparent";
     }
     return res;
   },
@@ -111,7 +111,7 @@ const customStyles = (theme) => (
   placeholder: (provided) => ({
     ...provided,
     ...controlStyles.placeholder,
-  })
+  }),
 });
 
 const SelectComponent = (props: Props): JSX.Element => {

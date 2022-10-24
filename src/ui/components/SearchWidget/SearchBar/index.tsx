@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { MIN_INPUT_SYMBOLS_TO_SUGGEST } from "../../../../constants";
 import IFrontController from "../../../../types/front-controller";
+import IconButtons from "../../../kit/IconButtons";
 import styles from "./styles.module.css";
 
 const cx = classNames.bind(styles);
@@ -91,13 +92,10 @@ const SearchBar = ({
           onKeyPress={handleKeyPressed}
         />
 
-        <div
-          aria-label="Search button"
-          className={cx(styles.player)}
+        <IconButtons.Search
           onClick={handleSubmit}
-        >
-          <i className={cx(styles.search)} />
-        </div>
+          className={styles.search_button_icon}
+        />
       </div>
 
       <div className={cx(styles.row, styles.suggestions_block)}>

@@ -1,8 +1,4 @@
-import React, {
-  memo,
-  useImperativeHandle,
-  useState,
-} from "react";
+import React, { memo, useImperativeHandle, useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./styles.module.css";
@@ -63,11 +59,16 @@ const CustomAttributes = (
         ({ presentation, id, value, values, label, metadata }, index) => {
           const Component = ComponentPresentationMapper[presentation];
           const updateHandler = HandlerPresentationMapper[presentation](id);
-          const attributeErrors = errors.find(e => Object.keys(e).includes(id))?.[id]?.find(e => Object.keys(e).includes('value'))?.value;
-          
+          const attributeErrors = errors
+            .find((e) => Object.keys(e).includes(id))
+            ?.[id]?.find((e) => Object.keys(e).includes("value"))?.value;
+
           return (
             <React.Fragment key={index}>
-              <Errors id={`custom_attr_error_${id}`} messages={attributeErrors}/>
+              <Errors
+                id={`custom_attr_error_${id}`}
+                messages={attributeErrors}
+              />
               <Component
                 id={`custom_attr_${id}`}
                 value={value}
