@@ -75,3 +75,7 @@
 .suggestion_line:hover {
   background-color: $colors_secondary_gray;
 }
+
+.search_button_icon {
+  margin-left: -22px;
+}
