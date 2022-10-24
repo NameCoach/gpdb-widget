@@ -1,19 +1,17 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
 import nameLineStyles from "../NameLine/styles.module.css";
-import RequestAction from "../Actions/Request";
-import RecordAction from "../Actions/Record";
-import ControllerContext from "../../contexts/controller";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
 import userAgentManager from "../../../core/userAgentManager";
 import StyleContext from "../../contexts/style";
-import DisabledPlayer from "../Player/Disabled";
 import { StyleOverrides } from "../../customFeaturesManager";
 import useTheme from "../../hooks/useTheme";
 import { Theme } from "../../../types/style-context";
 import capitalizeString from "../../../core/utils/capitalize-string";
+import Actions from "./Actions";
+import useRecordingRequest from "../../hooks/useRecordingRequest";
 
 const cx = classNames.bind(nameLineStyles);
 
@@ -28,45 +26,34 @@ interface Props {
   isRecorderOpen?: boolean;
 }
 
-const AbsentName = (props: Props): JSX.Element => {
-  const controller = useContext(ControllerContext);
+const AbsentName = ({
+  name,
+  type,
+  owner,
+  onRecorderClick,
+  canPronunciationCreate,
+  canRecordingRequestCreate,
+  canRecordingRequestFind,
+  isRecorderOpen,
+}: Props): JSX.Element => {
   const { isDeprecated: isOld } = userAgentManager;
-  const [isRequested, setRequest] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const { t, customFeatures } = useContext(StyleContext);
+  const { customFeatures } = useContext(StyleContext);
   const { theme } = useTheme();
 
-  const onRequest = async (): Promise<void> => {
-    setLoading(true);
-    await controller.requestRecording(props.name, props.type, props.owner);
-    setRequest(true);
-    setLoading(false);
-  };
+  const {
+    loading,
+    requestedMessage,
+    isRequested,
+    onRequest,
+  } = useRecordingRequest({
+    name,
+    type,
+    owner,
+    canRecordingRequestFind,
+  });
 
-  const checkIfRequested = useCallback(async (): Promise<void> => {
-    if (props.canRecordingRequestFind) {
-      const result = await controller.findRecordingRequest(
-        props.name,
-        props.type,
-        props.owner
-      );
-
-      setRequest(result);
-    } else {
-      isRequested && setRequest(false);
-    }
-  }, [props.name]);
-
-  const renderRequestedMessage = (): string =>
-    isRequested
-      ? "Pronunciation Request Pending"
-      : t("pronunciations_not_available", "Pronunciations not Available");
-
-  useEffect(() => {
-    checkIfRequested()
-      .then(() => setLoading(false))
-      .catch((e) => console.log(e));
-  }, []);
+  const onRecordClick = (): void =>
+    onRecorderClick && onRecorderClick(name, type);
 
   return (
     <div
@@ -74,7 +61,7 @@ const AbsentName = (props: Props): JSX.Element => {
         nameLineStyles.pronunciation,
         nameLineStyles.name_line_container,
         isOld && nameLineStyles.pronunciation__old,
-        { hidden: theme === Theme.Outlook ? false : props.isRecorderOpen }
+        { hidden: theme === Theme.Outlook ? false : isRecorderOpen }
       )}
     >
       <div
@@ -95,14 +82,14 @@ const AbsentName = (props: Props): JSX.Element => {
               nameLineStyles[`name--${theme}`]
             )}
           >
-            {capitalizeString(props.name)}
+            {capitalizeString(name)}
           </span>
         </div>
         <div
           className={cx(
             nameLineStyles.pronunciation__tail,
             nameLineStyles[`tail--${theme}`],
-            props.isRecorderOpen && nameLineStyles.hidden
+            isRecorderOpen && nameLineStyles.hidden
           )}
         >
           <div
@@ -114,35 +101,17 @@ const AbsentName = (props: Props): JSX.Element => {
               StyleOverrides.PronunciationNameLineMessage
             )}
           >
-            {!loading && renderRequestedMessage()}
+            {!loading && requestedMessage}
             {loading && <Loader inline sm />}
           </div>
 
-          <div
-            className={cx(
-                    nameLineStyles.pronunciation__actions,
-                    { old_actions: isOld },
-                    nameLineStyles[`actions--${theme}`]
-                  )}
-          >
-            <DisabledPlayer  className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })} />
-            {props.canRecordingRequestCreate && (
-              <RequestAction
-                className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })}
-                onClick={onRequest}
-                disabled={isRequested}
-              />
-            )}
-            {props.canPronunciationCreate && (
-              <RecordAction
-                className={cx(nameLineStyles.pronunciation__action, { old_action: isOld })}
-                onClick={(): void =>
-                  props.onRecorderClick &&
-                  props.onRecorderClick(props.name, props.type)
-                }
-              />
-            )}
-          </div>
+          <Actions
+            onRecordClick={onRecordClick}
+            onRequest={onRequest}
+            showRecordAction={canPronunciationCreate}
+            showRequestAction={canRecordingRequestCreate}
+            disableRequestAction={isRequested}
+          />
         </div>
       </div>
     </div>
