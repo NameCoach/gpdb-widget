@@ -12,7 +12,7 @@ import useRecorderState, {
 import styles from "./styles.module.css";
 
 import StyleContext from "../../contexts/style";
-import useFeaturesManager from "../../hooks/useFeaturesManager";
+import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
@@ -108,37 +108,41 @@ const PersonalBlock = (props: Props): JSX.Element => {
   }, [props.name, props.controller, load]);
 
   return (
-    <div className={styles.container}>
-      <MyRecording
-        pronunciation={pronunciation}
-        name={props.name}
-        loading={loading}
-        isRecorderOpen={recorderState.isOpen}
-        onRecorderOpen={onRecorderOpen}
-        showRecordAction={showRecordAction}
-        canCreateSelfRecording={canCreateSelfRecording}
-        myInfoHintShow={myInfoHintShow}
-      />
-      {recorderState.isOpen && (
-        <NewRecorder
-          name={props.name.value}
-          type={NameTypes.FullName}
-          owner={props.name.owner}
-          onRecorderClose={onRecorderClose}
-          termsAndConditions={props.termsAndConditions}
-          pronunciation={pronunciation}
-          relativeSource={RelativeSource.RequesterSelf}
-        />
+    <>
+      {show(ShowComponents.PersonalBlock) && (
+        <div className={styles.container}>
+          <MyRecording
+            pronunciation={pronunciation}
+            name={props.name}
+            loading={loading}
+            isRecorderOpen={recorderState.isOpen}
+            onRecorderOpen={onRecorderOpen}
+            showRecordAction={showRecordAction}
+            canCreateSelfRecording={canCreateSelfRecording}
+            myInfoHintShow={myInfoHintShow}
+          />
+          {recorderState.isOpen && (
+            <NewRecorder
+              name={props.name.value}
+              type={NameTypes.FullName}
+              owner={props.name.owner}
+              onRecorderClose={onRecorderClose}
+              termsAndConditions={props.termsAndConditions}
+              pronunciation={pronunciation}
+              relativeSource={RelativeSource.RequesterSelf}
+            />
+          )}
+          {showMyInfo && (
+            <MyInfo
+              name={props.name}
+              pronunciation={pronunciation}
+              onCustomAttributesSaved={onCustomAttributesSaved}
+              loading={loading}
+            />
+          )}
+        </div>
       )}
-      {showMyInfo && (
-        <MyInfo
-          name={props.name}
-          pronunciation={pronunciation}
-          onCustomAttributesSaved={onCustomAttributesSaved}
-          loading={loading}
-        />
-      )}
-    </div>
+    </>
   );
 };
 
