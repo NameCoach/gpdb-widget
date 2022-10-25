@@ -1,6 +1,5 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import WavToMp3Converter from "../../core/wav-to-mp3-converter";
-import IWavToMp3Converter from "../../types/wav-to-mp3-converter";
 import userAgentManager from "../../core/userAgentManager";
 
 type HookResult = {
@@ -10,13 +9,11 @@ type HookResult = {
 
 export default function useAudioRef(
   audioSrc: string,
-  converter?: IWavToMp3Converter
+  converter = new WavToMp3Converter()
 ): HookResult {
   const { isDeprecated: isOld } = userAgentManager;
   const isBlob = audioSrc.includes("blob");
   const isMp3Source = audioSrc.includes(".mp3");
-
-  const _converter = converter || new WavToMp3Converter();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioReady, setAudioReady] = useState(false);
@@ -30,10 +27,10 @@ export default function useAudioRef(
         const result = await fetch(audioSrc);
         const blob = await result.blob();
 
-        _converter.init(blob);
-        await _converter.convert();
+        converter.init(blob);
+        await converter.convert();
 
-        audioRef.current = new Audio(_converter.mp3BlobUrl);
+        audioRef.current = new Audio(converter.mp3BlobUrl);
         setAudioReady(true);
       } catch (e) {
         console.log(e);

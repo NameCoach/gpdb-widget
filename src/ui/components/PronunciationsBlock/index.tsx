@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import classNames from "classnames/bind";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import FullNamesList, { NameOption } from "../FullNamesList";
