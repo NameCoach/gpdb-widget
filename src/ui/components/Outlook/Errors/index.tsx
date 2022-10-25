@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
-import Close from "../../../../../src/ui/components/Close";
 import capitalizeString from "../../../../core/utils/capitalize-string";
+import IconButtons from "../../../kit/IconButtons";
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +14,8 @@ interface ErrorsProps {
 const Errors = ({ id, messages }: ErrorsProps) => {
   const [shown, setShown] = useState<boolean>(messages?.length > 0);
 
+  const onClose = () => setShown(false);
+
   useEffect(() => {
     setShown(messages?.length > 0);
   }, [messages]);
@@ -24,12 +26,11 @@ const Errors = ({ id, messages }: ErrorsProps) => {
         <div id={id} className={styles.container}>
           <div className={styles.messages}>
             {messages?.map((message, index) => (
-              <p key={index}>
-                {capitalizeString(message)}
-              </p>
+              <p key={index}>{capitalizeString(message)}</p>
             ))}
           </div>
-          <Close className="modal" onClick={() => setShown(false)} />
+
+          <IconButtons.CloseTooltip onClick={onClose} />
         </div>
       )}
     </div>

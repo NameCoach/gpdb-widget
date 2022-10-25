@@ -44,5 +44,7 @@
     "pronunciations_drop_down_tooltip": "Click to see more names",
     "pronunciations_drop_down_placeholder": "Select a recipient",
     "share_button_name_badge": "NameBadge",
-    "share_button_audio_url": "Audio URL"
+    "share_button_audio_url": "Audio URL",
+
+    "tooltip_request_recording_tip": "Request recording"
 }
