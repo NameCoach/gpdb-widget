@@ -11,7 +11,7 @@ import { RecorderCloseOptions } from "./types/handlers-types";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { InboundRelativeSource } from "./types/inbound-relative-source";
-import CurrentStep from "./Components/CurrentState";
+import CurrentState from "./Components/CurrentState";
 import defaultStyles from "./styles/default/styles.module.css";
 import outlookStyles from "./styles/outlook/styles.module.css";
 import classNames from "classnames/bind";
@@ -82,7 +82,7 @@ const NewRecorder = ({
             old: isOld,
           })}
         >
-          <CurrentStep />
+          <CurrentState />
         </div>
       </RecorderProvider>
     </StyleContext.Provider>
