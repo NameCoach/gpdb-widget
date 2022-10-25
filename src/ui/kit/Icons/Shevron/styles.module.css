@@ -1,0 +1,13 @@
+.main {
+    transform: none;
+    transition: transform 150ms ease;
+};
+
+
+main:hover {
+    /* do not remove this */
+}
+
+.main.up {
+    transform: rotate(180deg) !important;
+}
