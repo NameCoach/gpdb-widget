@@ -16,7 +16,12 @@ export interface CheckBoxIconProps extends IconBasicProps {
   error?: boolean;
 }
 
+export interface ShevronIconProps extends IconBasicProps {
+  up?: boolean;
+}
+
 export type IconProps = IconBasicProps &
   PlayableIconProps &
   SavedIconProps &
-  CheckBoxIconProps;
+  CheckBoxIconProps &
+  ShevronIconProps;

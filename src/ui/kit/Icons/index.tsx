@@ -15,13 +15,14 @@ import SpeakerNoRecordingIcon from "./SpeakerNoRecording";
 import SpeakerOwnerIcon from "./SpeakerOwner";
 import SpeakerPeerIcon from "./SpeakerPeer";
 import CloseTooltipIcon from "./CloseTooltip";
+import CheckBoxIcon from "./CheckBox";
+import ShevronIcon from "./Shevron";
 import {
   CheckBoxIconProps,
   IconProps,
   PlayableIconProps,
   SavedIconProps,
 } from "./types";
-import CheckBoxIcon from "./CheckBox";
 
 const Icons = {
   Bookmark: (props: SavedIconProps): React.ReactElement<SavedIconProps> => (
@@ -59,6 +60,9 @@ const Icons = {
   ),
   Share: (props: IconProps): React.ReactElement<IconProps> => (
     <ShareIcon {...props} />
+  ),
+  Shevron: (props: IconProps): React.ReactElement<IconProps> => (
+    <ShevronIcon {...props} />
   ),
   Speaker: (
     props: PlayableIconProps
