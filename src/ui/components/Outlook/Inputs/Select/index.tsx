@@ -3,7 +3,10 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { CustomAttributesInputsProps } from "../types";
 import COLORS, { _SECONDARY } from "../../../../styles/variables/colors";
-import _Select from "react-select";
+import ReactSelect from "react-select";
+import useTheme from "../../../../hooks/useTheme";
+import { Theme } from "../../../../../types/style-context";
+import DropdownIndicator from "../../../Select/DropdownIndicator";
 
 const cx = classNames.bind(styles);
 
@@ -27,11 +30,14 @@ const Select = ({
   onUpdate,
   hasErrors,
 }: CustomAttributesInputsProps): JSX.Element => {
-  const options = values?.map(value => ({ value, label: value }));
-  const selectValue = value && String(value).length > 0 && { value: String(value), label: String(value) };
+  const { theme: appTheme } = useTheme();
+
+  const options = values?.map((value) => ({ value, label: value }));
+  const selectValue = value &&
+    String(value).length > 0 && { value: String(value), label: String(value) };
 
   const _styles = {
-    control: (provided, state) => { 
+    control: (provided, state) => {
       const res = {
         ...provided,
         minHeight: "30px",
@@ -39,21 +45,21 @@ const Select = ({
         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
         borderRadius: "6px",
         backgroundColor: COLORS.colors_background,
-        borderColor: 'transparent',
+        borderColor: "transparent",
         transition: "box-shadow 0.3s ease-in-out",
-        '&:hover': {
+        "&:hover": {
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.15)",
-          borderColor: 'transparent',
+          borderColor: "transparent",
         },
       };
       if (hasErrors) {
         res.borderColor = COLORS.colors_red;
-        res['&:hover'].borderColor = COLORS.colors_red;
-      };
+        res["&:hover"].borderColor = COLORS.colors_red;
+      }
       if (state.isFocused) {
         res.borderColor = provided.borderColor;
-        res['&:hover'].borderColor = provided.borderColor;
-      };
+        res["&:hover"].borderColor = provided.borderColor;
+      }
       return res;
     },
     valueContainer: (provided, state) => ({
@@ -110,15 +116,19 @@ const Select = ({
     placeholder: (provided) => ({
       ...provided,
       color: COLORS.colors_light_grey,
-    })
+    }),
   };
+
+  const outlookProps =
+    appTheme === Theme.Outlook ? { components: { DropdownIndicator } } : {};
+
   return (
     <div className={cx(styles.select_container, styles.column)}>
       <div className={cx(styles.row, styles.label_container)}>
         <p className={cx(styles.label)}>{label}</p>
       </div>
       <div className={cx(styles.row)}>
-        <_Select
+        <ReactSelect
           id={id}
           onChange={onUpdate}
           value={selectValue}
@@ -131,6 +141,7 @@ const Select = ({
           styles={_styles}
           theme={_theme}
           placeholder={metadata?.placeholder}
+          {...outlookProps}
         />
       </div>
     </div>
