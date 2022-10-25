@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
-import Close from "../Close";
 import {
   TOOLTIP_HIDE_DELAY,
   TOOLTIP_MARGIN,
@@ -10,6 +9,7 @@ import {
 } from "../../../constants";
 import { PresentationMode } from "../../../types/modal-tooltip";
 import Children, { Child } from "../../../types/children-prop";
+import IconButtons from "../../kit/IconButtons";
 
 const cx = classNames.bind(styles);
 
@@ -48,7 +48,7 @@ const ModalTooltip = ({
   onHideCb = null,
   tipStyle,
   closeOnChildClick = true,
-  actionsClassName= "column_actions"
+  actionsClassName = "column_actions",
 }: Props): JSX.Element => {
   let showTimeout;
   let hideTimeout;
@@ -56,21 +56,19 @@ const ModalTooltip = ({
   const [active, setActive] = useState<boolean>(isActive);
 
   const hideWithDelay = (delayHide: number): void => {
-    hideTimeout = setTimeout(() =>{
+    hideTimeout = setTimeout(() => {
       setActive(false);
-      onHideCb && onHideCb(); 
-    } , delayHide);
-
+      onHideCb && onHideCb();
+    }, delayHide);
   };
 
   const hideTip = (e): void => {
     e.stopPropagation();
 
-    if(delayHide)
-      return hideWithDelay(delayHide);
+    if (delayHide) return hideWithDelay(delayHide);
 
     setActive(false);
-    onHideCb && onHideCb(); 
+    onHideCb && onHideCb();
   };
 
   const toogleActiveDelayed = (e): void => {
@@ -78,7 +76,7 @@ const ModalTooltip = ({
 
     e.stopPropagation();
     showTimeout = setTimeout(() => setActive(!active), delayShow);
-    onShowCb && onShowCb(); 
+    onShowCb && onShowCb();
   };
 
   const onMouseLeave = (e): void => {
@@ -127,17 +125,19 @@ const ModalTooltip = ({
     <div className={cx(styles.modal_wrapper)}>
       {active && (
         <div className={cx("tooltip_tip", "top", mode)} style={getTipStyle()}>
-          {closable && <Close className="modal" onClick={hideTip} />}
+          {closable && <IconButtons.CloseTooltip onClick={hideTip} />}
+
           {title && <div className={styles.title}>{title}</div>}
-          {children &&
+
+          {children && (
             <div className={cx(actionsClassName)}>
-              {React.Children.map(children, (child) =>(
+              {React.Children.map(children, (child) =>
                 React.cloneElement(child, {
                   onClick: childOnClick(child),
                 })
-              ))}
+              )}
             </div>
-            }
+          )}
         </div>
       )}
       <div id={id} onClick={toogleActiveDelayed} onMouseLeave={onMouseLeave}>

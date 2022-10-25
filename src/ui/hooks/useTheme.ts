@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import StyleContext from "../contexts/style";
-import IStyleContext, { Theme } from "../../types/style-context";
+import { Theme } from "../../types/style-context";
 import SelectThemes from "../themes/select";
 
 type UseThemeReturn = {
@@ -11,11 +11,9 @@ type UseThemeReturn = {
 
 const useTheme = (
   component?: string,
-  styleContext?: IStyleContext
+  styleContext = useContext(StyleContext)
 ): UseThemeReturn => {
-  const _styleContext = styleContext || useContext(StyleContext);
-
-  const theme = _styleContext?.theme || Theme.Default;
+  const theme = styleContext?.theme || Theme.Default;
   const selectStyles = SelectThemes[theme];
   const forComponent = selectStyles[component] || {};
 
