@@ -6,6 +6,7 @@ import Player from "../Player";
 import RecordAction from "../Actions/Record";
 import DisabledPlayer from "../Player/Disabled";
 import Loader from "../Loader";
+import Actions from "./Actions";
 
 export interface Props {
   fullName: string;
@@ -17,36 +18,32 @@ export interface Props {
   loading?: boolean;
 }
 
-const FullNameLine = (props: Props): JSX.Element => (
+const FullNameLine = ({
+  fullName,
+  pronunciation,
+  showRecordAction,
+  isRecorderOpen,
+  onRecorderOpen,
+  autoplay,
+  loading,
+}: Props): JSX.Element => (
   <>
     <div className={styles.container}>
-      <div className={styles.name_line}>{props.fullName}</div>
-      {props.loading && <Loader />}
-      {!props.loading && !props.isRecorderOpen && (
-        <div className={styles.actions}>
-          {props.pronunciation ? (
-            <Player
-              audioSrc={props.pronunciation.audioSrc}
-              audioCreator={props.pronunciation.audioCreator}
-              autoplay={props.autoplay}
-            />
-          ) : (
-            <DisabledPlayer />
-          )}
-          {props.showRecordAction && (
-            <RecordAction
-              active={props.isRecorderOpen}
-              onClick={props.onRecorderOpen}
-              rerecord={!!props.pronunciation}
-            />
-          )}
-        </div>
+      <div className={styles.name_line}>{fullName}</div>
+      {loading && <Loader />}
+      {!loading && !isRecorderOpen && (
+        <Actions
+          pronunciation={pronunciation}
+          autoplay={autoplay}
+          showRecordAction={showRecordAction}
+          isRecorderOpen={isRecorderOpen}
+          onRecorderOpen={onRecorderOpen}
+        />
       )}
     </div>
-    {props.pronunciation && (
-      <div className={styles.phonetic}>
-        {props.pronunciation.phoneticSpelling}
-      </div>
+
+    {pronunciation?.phoneticSpelling && (
+      <div className={styles.phonetic}>{pronunciation.phoneticSpelling}</div>
     )}
   </>
 );
