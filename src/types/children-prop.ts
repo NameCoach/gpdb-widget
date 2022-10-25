@@ -1,8 +1,10 @@
-import { ReactElement } from "react";
-import ITooltipAction from "./tooltip-action";
+import { JSXElementConstructor, ReactElement } from "react";
 
-export type Child = ReactElement<ITooltipAction> | null;
+export type Child = ReactElement<
+  any,
+  string | JSXElementConstructor<any>
+> | null;
 
-type Children = Child | Child[] | null;
+type Children = Child[] | Child;
 
 export default Children;
