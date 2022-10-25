@@ -16,7 +16,11 @@ const ActionsPanel = (props: Props) => {
       ? fragment.props.children
       : props.children;
 
-    const childrenAreArray = Array.isArray(children);
+    const childrenTypeIsArray = Array.isArray(children);
+
+    const childrenAreArray = childrenTypeIsArray
+      ? children.filter((e) => e).length > 1
+      : false;
 
     return { childrenAreArray, children };
   })();
