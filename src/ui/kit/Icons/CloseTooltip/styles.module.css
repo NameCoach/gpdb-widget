@@ -1,0 +1,12 @@
+.main {
+    height: 18px !important;
+    width: 18px !important;
+    color: #6B419B;
+    fill: #FFFFFF;
+}
+  
+.main:hover {
+    opacity: 1;
+    color: #FFFFFF;
+    fill: #6B419B;
+}

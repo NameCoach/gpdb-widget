@@ -10,6 +10,7 @@ import simplevars from "postcss-simple-vars";
 import packageJson from "./package.json";
 import variables from "./src/ui/styles/variables/all.ts";
 import json from "@rollup/plugin-json";
+import svgr from "@svgr/rollup";
 
 const modules =
   process.platform === "win32"
@@ -42,6 +43,7 @@ export default {
     commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
+    svgr(),
     postcss({
       extensions: [".css"],
       modules: modules,
