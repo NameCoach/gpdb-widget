@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import Select from "react-select";
 import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
+import useTheme from "../../hooks/useTheme";
+import DropdownIndicator from "./DropdownIndicator";
 export interface Option {
   value: string | number;
   label: string;
@@ -115,10 +117,18 @@ const customStyles = (theme) => (
 });
 
 const SelectComponent = (props: Props): JSX.Element => {
+  const { theme: appTheme } = useTheme();
   const firstSelectedOption = useMemo(() => props.options[0], props.options);
 
   const handleOnChange = (selectedValue: Option): void =>
     props.onChange(selectedValue);
+
+  const outlookProps =
+    appTheme === Theme.Outlook
+      ? {
+          components: { DropdownIndicator },
+        }
+      : {};
 
   return (
     <Select
@@ -134,6 +144,7 @@ const SelectComponent = (props: Props): JSX.Element => {
       styles={customStyles(props.theme)(props.styles)}
       filterOption={props.filterOption}
       disabled={props.disabled}
+      {...outlookProps}
     />
   );
 };
