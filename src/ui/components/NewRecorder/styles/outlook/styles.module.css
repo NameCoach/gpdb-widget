@@ -146,7 +146,7 @@
 }
 
 .recorder_init_step_hint {
-  width: 280px;
+  width: fit-content;
 }
 
 .slider_hint {
