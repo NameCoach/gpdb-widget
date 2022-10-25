@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import IFrontController from "../../types/front-controller";
-import IStyleContext from "../../types/style-context";
 import StyleContext from "../contexts/style";
 import {
   CustomFeaturesManager,
@@ -9,7 +8,7 @@ import {
 
 const useCustomFeatures = (
   controller: IFrontController,
-  styleContext?: IStyleContext
+  styleContext = useContext(StyleContext)
 ): FeaturesManager => {
   const loadCustomFeatures = (): CustomFeaturesManager => {
     const controllerCustomFeatures = controller?.preferences?.custom_features;
@@ -23,9 +22,7 @@ const useCustomFeatures = (
     return new CustomFeaturesManager(controllerCustomFeatures);
   };
 
-  const _styleContext = styleContext || useContext(StyleContext);
-
-  const customFeatures = _styleContext?.customFeatures || loadCustomFeatures();
+  const customFeatures = styleContext?.customFeatures || loadCustomFeatures();
 
   return customFeatures;
 };
