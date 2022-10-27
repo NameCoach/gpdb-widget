@@ -202,7 +202,7 @@ const NameLinesResult = ({
       ))}
       {nameParts.length === 0 && nameOwner?.signature && !loading && (
         <div className={cx(styles.no_result)}>
-         {t("no_result_found", "No result found")}
+          {t("no_result_found", "No result found")}
         </div>
       )}
     </>

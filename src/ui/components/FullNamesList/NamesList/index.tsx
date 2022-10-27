@@ -34,7 +34,7 @@ const NamesList = ({
   setValue,
   onSelect,
 }: Props): JSX.Element => {
-  const tooltipId = Date.now().toString();
+  const tooltipId = Date.now().toString() + NamesList.name;
 
   const { t } = useContext(StyleContext);
   const { theme, selectStyles, filterOption } = useTheme("NamesList");

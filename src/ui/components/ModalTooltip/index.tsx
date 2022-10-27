@@ -12,7 +12,7 @@ import Children, { Child } from "../../../types/children-prop";
 import IconButtons from "../../kit/IconButtons";
 
 const cx = classNames.bind(styles);
-
+const ACTIONS_CLASS_NAME = "column_actions";
 interface Props {
   title?: string;
   id: string;
@@ -48,7 +48,7 @@ const ModalTooltip = ({
   onHideCb = null,
   tipStyle,
   closeOnChildClick = true,
-  actionsClassName = "column_actions",
+  actionsClassName = ACTIONS_CLASS_NAME,
 }: Props): JSX.Element => {
   let showTimeout;
   let hideTimeout;
