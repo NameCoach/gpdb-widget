@@ -202,3 +202,7 @@
 .hidden {
   display: none;
 }
+
+.custom_attributes {
+  margin-top: 13px;
+}
