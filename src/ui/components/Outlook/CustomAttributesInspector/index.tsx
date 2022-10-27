@@ -8,7 +8,11 @@ import BooleanInspector from "./boolean_inspector";
 
 const cx = classNames.bind(styles);
 
-const CustomAttributesInspector = ({ data }: { data: CustomAttributeObject[] }) => {
+interface Props {
+  data: CustomAttributeObject[];
+}
+
+const CustomAttributesInspector = ({ data }: Props) => {
   return (
     <div className={cx(styles.column)}>
       {data.map(({ presentation, value, label }, index) => {
