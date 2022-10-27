@@ -147,8 +147,6 @@ const NameLine = ({
               />
             </div>
 
-            {console.log(currentPronunciation)}
-            {console.log(currentPronunciation?.userResponse)}
             <Actions
               onUserResponse={onUserResponse}
               autoplay={autoplay}
