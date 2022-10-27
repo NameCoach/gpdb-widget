@@ -15,26 +15,24 @@ export interface NameOption {
 
 export interface Props {
   names: NameOption[];
-  value: Pronunciation;
+  pronunciation: Pronunciation;
   loading?: boolean;
   onSelect?: (NameOption) => PromiseLike<void>;
   hideFullName?: boolean;
 }
 
-const nameToOption = (name: NameOption): Option => ({
-  label: name.value,
-  value: name.key,
-});
-
 const FullNamesList = ({
   names,
-  value,
+  pronunciation,
   loading,
   onSelect,
   hideFullName,
 }: Props): JSX.Element => {
   const [autoplay, setAutoplay] = useState<boolean>(false);
   const [selectValue, setValue] = useState<Option>();
+
+  const customAttributesDataPresent =
+    pronunciation?.customAttributes?.length > 0;
 
   useEffect(() => {
     setAutoplay(false);
@@ -46,14 +44,14 @@ const FullNamesList = ({
         <NamesList
           names={names}
           setAutoplay={setAutoplay}
-          value={value}
+          value={pronunciation}
           setValue={setValue}
           selectValue={selectValue}
           onSelect={onSelect}
         />
         {!hideFullName && selectValue && (
           <FullNameLine
-            pronunciation={value}
+            pronunciation={pronunciation}
             fullName={selectValue.label}
             autoplay={autoplay}
             loading={loading}
@@ -61,12 +59,9 @@ const FullNamesList = ({
         )}
       </div>
 
-      {!loading &&
-        value &&
-        value.customAttributes &&
-        value.customAttributes.length > 0 && (
-          <CustomAttributesInspector data={value.customAttributes}/>
-        )}
+      {!loading && customAttributesDataPresent && (
+        <CustomAttributesInspector data={pronunciation.customAttributes} />
+      )}
     </>
   );
 };
