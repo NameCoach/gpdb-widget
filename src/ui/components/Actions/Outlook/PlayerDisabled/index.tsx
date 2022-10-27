@@ -8,7 +8,7 @@ interface Props {
 }
 
 const PlayerDisabled = ({
-  tooltipId = Date.now().toString(),
+  tooltipId = Date.now().toString() + PlayerDisabled.name,
 }: Props): JSX.Element => {
   return (
     <>
