@@ -23,7 +23,7 @@ interface Props {
 }
 
 const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
-  const tooltipId = Date.now().toString();
+  const tooltipId = Date.now().toString() + ShareRecording.name;
   const [showHintTooltip, setShowHintTooltip] = useState(true);
 
   const { theme } = useTheme();
