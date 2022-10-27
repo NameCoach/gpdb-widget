@@ -174,7 +174,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
           <FullNamesList
             names={props.names}
             onSelect={onSelect}
-            value={currentPronunciation}
+            pronunciation={currentPronunciation}
             loading={loading}
             hideFullName={
               canComplexSearch && !currentPronunciation && nameParts.length > 0
