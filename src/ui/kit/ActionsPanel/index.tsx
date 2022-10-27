@@ -12,7 +12,7 @@ const ActionsPanel = (props: Props) => {
     const fragment = props.children as ReactElement;
     const childrenAreFragment = fragment.type === React.Fragment;
 
-    const children = childrenAreFragment
+    let children = childrenAreFragment
       ? fragment.props.children
       : props.children;
 
@@ -21,6 +21,8 @@ const ActionsPanel = (props: Props) => {
     const childrenAreArray = childrenTypeIsArray
       ? children.filter((e) => e).length > 1
       : false;
+
+    if (childrenAreArray) children = children.filter((child) => child);
 
     return { childrenAreArray, children };
   })();
