@@ -6,7 +6,7 @@ interface Props {
   onClick: MouseEventHandler;
 }
 
-const UserResponseAction = ({ saved, onClick }: Props) => (
+const UserResponseAction = ({ saved, onClick }: Props): JSX.Element => (
   <IconButtons.Bookmark iconOptions={{ saved }} onClick={onClick} />
 );
 
