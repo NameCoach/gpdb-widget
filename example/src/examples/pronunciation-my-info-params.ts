@@ -45,6 +45,13 @@ const testName2 = {
     email: 'robertdowney@gmail.com'
   }
 }
+const testFullname = {
+  value: 'John Wayne',
+  owner: {
+    signature: 'johnwaynethecrusher@gmail.com',
+    email: 'johnwaynethecrusher@gmail.com'
+  }
+}
 const widgetTest = {
   value: 'widget fhofgihofgkkcc',
   owner: {
@@ -59,5 +66,6 @@ export const names = [
   { key: 'key2', ...longEmailWithComplexDomain },
   { key: 'key3', ...testName1 },
   { key: 'key4', ...testName2 },
+  { key: 'key5', ...testFullname },
   { key: "widget",  ...widgetTest },
 ]
