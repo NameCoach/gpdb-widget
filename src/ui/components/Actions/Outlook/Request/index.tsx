@@ -10,7 +10,7 @@ interface Props {
 }
 
 const RequestAction = ({
-  tooltipId = Date.now().toString(),
+  tooltipId = Date.now().toString() + RequestAction.name,
   disabled,
   onClick,
 }: Props): JSX.Element => {
