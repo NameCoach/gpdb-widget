@@ -22,7 +22,7 @@ const Player = ({
   audioSrc,
   audioCreator,
   onClick,
-  tooltipId = Date.now().toString(),
+  tooltipId = Date.now().toString() + Player.name,
 }: Props): JSX.Element => {
   const { speakerTip, SpeakerComponent } = useSpeakerAttrs(audioCreator);
 
