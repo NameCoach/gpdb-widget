@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useState } from "react";
+import React, { memo } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
 
