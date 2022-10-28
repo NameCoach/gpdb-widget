@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useContext } from "react";
+import React, { useMemo, useContext } from "react";
 import Tooltip from "../../Tooltip";
 import Select, { Option } from "../../Select";
 import Pronunciation from "../../../../types/resources/pronunciation";
@@ -37,7 +37,7 @@ const NamesList = ({
   const tooltipId = Date.now().toString() + NamesList.name;
 
   const { t } = useContext(StyleContext);
-  const { theme, selectStyles, filterOption } = useTheme("NamesList");
+  const { theme, selectStyles, filterOption } = useTheme(NamesList.name);
 
   const options = useMemo(() => names.map(nameToOption), [names]);
 
@@ -50,40 +50,31 @@ const NamesList = ({
     setAutoplay(true);
   };
 
-  return (
-    <>
-      <div className={styles.wrapper}>
-        <div className={styles.control}>
-          <Tooltip
-            className={styles.tooltip}
-            id={tooltipId}
-            place="top"
-            effect="solid"
-          />
+  const selectControlCustomProps = {
+    "data-for": tooltipId,
+    "data-tip": t("pronunciations_drop_down_tooltip"),
+  };
 
-          <div
-            data-tip={t(
-              "pronunciations_drop_down_tooltip",
-              "Click to see more names"
-            )}
-            data-for={tooltipId}
-          >
-            <Select
-              onChange={onChange}
-              options={options}
-              theme={theme}
-              styles={selectStyles}
-              filterOption={filterOption(selectValue?.value)}
-              placeholder={t(
-                "pronunciations_drop_down_placeholder",
-                "Select a recipient"
-              )}
-              notFirstSelected
-            />
-          </div>
-        </div>
-      </div>
-    </>
+  return (
+    <div className={styles.control}>
+      <Tooltip
+        className={styles.tooltip}
+        id={tooltipId}
+        place="top"
+        effect="solid"
+      />
+
+      <Select
+        controlCustomProps={selectControlCustomProps}
+        onChange={onChange}
+        options={options}
+        theme={theme}
+        styles={selectStyles}
+        filterOption={filterOption(selectValue?.value)}
+        placeholder={t("pronunciations_drop_down_placeholder")}
+        notFirstSelected
+      />
+    </div>
   );
 };
 
