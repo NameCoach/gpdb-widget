@@ -4,6 +4,7 @@ import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
 import useTheme from "../../hooks/useTheme";
 import DropdownIndicator from "./DropdownIndicator";
+import Control, { CustomProps as ControlCustomProps } from "./Control";
 export interface Option {
   value: string | number;
   label: string;
@@ -20,6 +21,7 @@ export interface CustomStyles {
 }
 
 interface Props {
+  controlCustomProps?: ControlCustomProps;
   onChange: (Option) => void;
   options: Option[];
   className?: string;
@@ -57,6 +59,7 @@ const customStyles = (theme) => (
     const res = {
       ...provided,
       minHeight: "30px",
+      cursor: "pointer",
       borderColor: provided.borderColor,
       "&:hover": {
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.15)",
@@ -103,11 +106,13 @@ const customStyles = (theme) => (
   menu: (provided) => ({
     ...provided,
     color: "black",
+    cursor: "pointer",
     ...controlStyles.menu,
   }),
   option: (provided) => ({
     ...provided,
     lineHeight: "15px",
+    cursor: "pointer",
     ...controlStyles.option,
   }),
   placeholder: (provided) => ({
@@ -126,7 +131,10 @@ const SelectComponent = (props: Props): JSX.Element => {
   const outlookProps =
     appTheme === Theme.Outlook
       ? {
-          components: { DropdownIndicator },
+          components: {
+            DropdownIndicator,
+            Control: Control(props.controlCustomProps),
+          },
         }
       : {};
 
