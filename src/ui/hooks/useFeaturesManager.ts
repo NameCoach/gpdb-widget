@@ -93,8 +93,8 @@ const useFeaturesManager = (
   } = useShowWidgetBlocks(
     permissionsManager,
     customFeaturesManager,
-    enforcedPermissions,
-  )
+    enforcedPermissions
+  );
 
   const showContext = {
     [ShowComponents.RecorderRecordButton]: showRecorderRecordButton,
@@ -102,9 +102,10 @@ const useFeaturesManager = (
     [ShowComponents.CustomAttributesForSelf]: showCustomAttributesForSelf,
     [ShowComponents.PronunciationsBlock]: showPronunciationsBlock,
     [ShowComponents.PersonalBlock]: showPersonalBlock,
-    [ShowComponents.SearchWidget]: showSearchWidget
+    [ShowComponents.SearchWidget]: showSearchWidget,
   };
 
+  // TODO: refactor this mess
   const canContext = {
     createRecordingRequest: canCreateRecordingRequest,
     findRecordingRequest: canFindRecordingRequest,
