@@ -79,7 +79,8 @@ const AbsentName = ({
           <span
             className={cx(
               nameLineStyles.pronunciation__name,
-              nameLineStyles[`name--${theme}`]
+              nameLineStyles[`name--${theme}`],
+              nameLineStyles[`pronunciations__name_absent--${theme}`]
             )}
           >
             {capitalizeString(name)}
