@@ -47,7 +47,7 @@ export default class FrontController implements IFrontController {
     nameOwnerSignature?: string
   ): boolean {
     const ownerSignature = nameOwnerSignature || this.nameOwnerContext.signature;
-    return ownerSignature === this.userContext.signature
+    return ownerSignature === this.userContext.signature;
   }
 
   async complexSearch(
