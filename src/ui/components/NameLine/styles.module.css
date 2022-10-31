@@ -42,6 +42,10 @@
   margin-top: auto
 }
 
+.pronunciations__name_absent--default {
+  color: $colors_secondary_gray;
+}
+
 .name--outlook {
   font-weight: 500;
   font-size: 16px;
