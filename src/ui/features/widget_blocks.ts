@@ -13,7 +13,7 @@ export enum MetadataKeys {
 }
 
 export enum Blocks {
-  Pronunciation = "pronunciation",
+  Pronunciation = "pronunciations",
   Personal = "personal",
   SearchWidget = "search"
 }
