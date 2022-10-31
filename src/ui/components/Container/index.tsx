@@ -20,9 +20,13 @@ import useRecorderState, {
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
-import CustomAttributes from "../CustomAttributes";
 import useFeaturesManager from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
+import MyInfo from "../MyInfo";
+import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
+import { NameOption } from "../FullNamesList";
+import StyleContext from "../../contexts/style";
+import { Theme } from "../../../types/style-context";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -33,12 +37,13 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const Container = (props: Props): JSX.Element => {
+const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [loading, setLoading] = useState(true);
-  const [firstName, setFirstName] = useState(props.names.firstName as Name);
-  const [lastName, setLastName] = useState(props.names.lastName as Name);
-  const [fullName, setFullName] = useState(props.names.fullName as Name);
+  const [fullNameOption, setFullNameOption] = useState<NameOption>({value: names.fullName.key, key: names.fullName.key})
+  const [firstName, setFirstName] = useState(names.firstName as Name);
+  const [lastName, setLastName] = useState(names.lastName as Name);
+  const [fullName, setFullName] = useState(names.fullName as Name);
 
   const customFeatures = useCustomFeatures(controller);
 
@@ -102,10 +107,11 @@ const Container = (props: Props): JSX.Element => {
     if (type === NameTypes.FirstName) setFirstName({ ...firstName, exist: true });
     if (type === NameTypes.LastName) setLastName({ ...lastName, exist: true });
     if (type === NameTypes.FullName) setFullName({ ...fullName, exist: true });
+    setFullNameOption({value: names.fullName.key, key: names.fullName.key})
   };
 
   const simpleSearch = async (type: NameTypes): Promise<void> => {
-    const simpleSearchResult = await controller.simpleSearch(props.names[type]);
+    const simpleSearchResult = await controller.simpleSearch(names[type]);
     updatePronunciationsByType(type, simpleSearchResult);
 
     if (simpleSearchResult.length > 0) setNameExistByType(type);
@@ -114,7 +120,7 @@ const Container = (props: Props): JSX.Element => {
   const reloadName = async (type: NameTypes): Promise<void> => {
     if (type === NameTypes.LastName || type === NameTypes.FirstName)
       return await simpleSearch(type);
-    else return await props.verifyNames();
+    else return await verifyNames();
   };
 
   const onRecorderClose = async (): Promise<void> => {
@@ -125,10 +131,10 @@ const Container = (props: Props): JSX.Element => {
   };
 
   const openRecorder = (name, type): void =>
-    setRecorderOpen(true, name, type, props.termsAndConditions);
+    setRecorderOpen(true, name, type, termsAndConditions);
 
   const resetNameExist = (type, complexSearchResult, stateCb): void => {
-    const stateName = props.names[type];
+    const stateName = names[type];
 
     const refreshedExist = complexSearchResult[type].length > 0;
 
@@ -141,7 +147,7 @@ const Container = (props: Props): JSX.Element => {
   };
 
   const complexSearch = useCallback(async () => {
-    const existedNames = Object.values(props.names).filter((n) => n.exist);
+    const existedNames = Object.values(names).filter((n) => n.exist);
 
     if (existedNames.length === 0) return;
 
@@ -157,7 +163,7 @@ const Container = (props: Props): JSX.Element => {
   const sendAnalytics = (): PromiseLike<void> =>
     controller.sendAnalytics(
       AnalyticsEventType.Available,
-      Object.values(props.names)
+      Object.values(names)
     );
 
   useEffect(() => {
@@ -179,7 +185,7 @@ const Container = (props: Props): JSX.Element => {
   const renderSingleNameHeader = (): JSX.Element => (
     <>
       <div className={cx("head-line")}>
-        {!props.hideLogo && <Logo />}
+        {!hideLogo && <Logo />}
         <div className={styles.head}>
           <div className={styles.head__names}>
             <span className={cx({ "name-word--secondary": !firstName.exist })}>
@@ -191,11 +197,10 @@ const Container = (props: Props): JSX.Element => {
       <hr className={styles.divider} />
     </>
   );
-
   const renderFullNameHeader = (): JSX.Element => (
     <>
       <div className={cx("head-line")}>
-        {!props.hideLogo && <Logo />}
+        {!hideLogo && <Logo />}
         <FullName
           name={fullName.key}
           pronunciations={pronunciations.fullName}
@@ -224,16 +229,20 @@ const Container = (props: Props): JSX.Element => {
       {!pronunciations.fullName?.[0]?.nameOwnerCreated && (
         <hr className={styles.divider} />
       )}
-      {!isRecorderOpen &&
-        pronunciations.fullName[0] &&
-        pronunciations.fullName[0].customAttributes &&
-        pronunciations.fullName[0].customAttributes.length > 0 && (
+      {!isRecorderOpen && pronunciations.fullName?.[0]?.nameOwnerCreated && (
           <>
-            <CustomAttributes
-              attributes={pronunciations.fullName[0].customAttributes}
-              disabled
-              noBorder
-            />
+            {controller.isUserOwnsName() ? (
+              <MyInfo
+                name={fullNameOption}
+                pronunciation={pronunciations.fullName[0]}
+                onCustomAttributesSaved={() => reloadName(fullName.type)}
+                loading={loading}
+              />
+            ) : (
+              <CustomAttributesInspector
+                data={pronunciations.fullName[0].customAttributes}                
+              />
+            )}
           </>
         )}
       {loading && <Loader inline />}
@@ -283,12 +292,14 @@ const Container = (props: Props): JSX.Element => {
     <>
       {isSingleName ? renderSingleNameHeader() : renderFullNameHeader()}
       {isRecorderOpen && !loading && (
-        <Recorder
-          name={recorderState.name}
-          type={recorderState.type}
-          onRecorderClose={onRecorderClose}
-          termsAndConditions={recorderState.termsAndConditions}
-        />
+        <StyleContext.Provider value={{displayRecorderSavingMessage: true, theme: Theme.Outlook}}>
+          <Recorder
+            name={recorderState.name}
+            type={recorderState.type}
+            onRecorderClose={onRecorderClose}
+            termsAndConditions={recorderState.termsAndConditions}
+          />
+        </StyleContext.Provider>
       )}
       {canPronunciationSearch ? (
         renderContainer()
