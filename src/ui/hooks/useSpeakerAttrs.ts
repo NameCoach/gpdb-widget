@@ -6,7 +6,7 @@ import { IconButtonProps } from "../kit/types";
 enum SpeakerCssClasses {
   Default = "speaker",
   Gpdb = "speaker-gpdb",
-  User = "user",
+  User = "speaker-user",
   NameOwner = "speaker-name-owner",
 }
 
