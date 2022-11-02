@@ -9,7 +9,7 @@ interface Props {
   closeEdit: () => void;
   saveMyInfo: () => void;
   openEdit: () => void;
-  customAttributesDisabled: boolean;
+  canEditCustomAttributes: boolean;
 }
 const Actions = ({
   loading,
@@ -17,7 +17,7 @@ const Actions = ({
   closeEdit,
   saveMyInfo,
   openEdit,
-  customAttributesDisabled,
+  canEditCustomAttributes,
 }: Props): JSX.Element => {
   return (
     <ActionsPanel>
@@ -31,10 +31,8 @@ const Actions = ({
               <IconButtons.Save onClick={saveMyInfo} />
             </>
           );
-        else
-          return (
-            !customAttributesDisabled && <IconButtons.Edit onClick={openEdit} />
-          );
+        else if (canEditCustomAttributes)
+          return <IconButtons.Edit onClick={openEdit} />;
       })()}
     </ActionsPanel>
   );

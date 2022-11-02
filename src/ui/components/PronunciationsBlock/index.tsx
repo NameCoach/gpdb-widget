@@ -10,7 +10,7 @@ import { UserPermissions } from "../../../types/permissions";
 import StyleContext from "../../contexts/style";
 import useTranslator from "../../hooks/useTranslator";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
-import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
+import useFeaturesManager, { CanComponents, ShowComponents } from "../../hooks/useFeaturesManager";
 import { usePronunciations } from "../../hooks/pronunciations";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Name, { NameTypes } from "../../../types/resources/name";
@@ -56,8 +56,8 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
 
   const nameParser = props.controller.nameParser;
 
-  const canComplexSearch = can("pronunciation", "search");
-  const canSearchBySig = can("pronunciation", "search_by_sig");
+  const canComplexSearch = can(CanComponents.Pronunciation, "search");
+  const canSearchBySig = can(CanComponents.Pronunciation, "search_by_sig");
 
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
