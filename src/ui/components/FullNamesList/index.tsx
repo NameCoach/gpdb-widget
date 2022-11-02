@@ -60,7 +60,10 @@ const FullNamesList = ({
       </div>
 
       {!loading && customAttributesDataPresent && (
-        <CustomAttributesInspector data={pronunciation.customAttributes} />
+        <CustomAttributesInspector 
+          data={pronunciation.customAttributes}
+          pronunciation={pronunciation} 
+        />
       )}
     </>
   );

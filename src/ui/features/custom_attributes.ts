@@ -89,6 +89,9 @@ export const useCustomAttributesFeatures = (
     return canEdit[pronunciation.sourceType];
   };
 
+  // #TODO: rework this, cause it mixes data and policies
+  // rendering based on data existence should be performed in components
+  // and aint have anything to do with policies and features
   const showCustomAttributesForSelf = (
     pronunciation: Pronunciation,
     customAttributesConfig: any
