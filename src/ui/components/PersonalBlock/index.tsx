@@ -91,12 +91,6 @@ const PersonalBlock = (props: Props): JSX.Element => {
     setMyInfoHintShow: setMyInfoHintShow,
   });
 
-  const showMyInfo = show(
-    "customAttributesForSelf",
-    pronunciation,
-    props.controller.customAttributes
-  );
-
   const onCustomAttributesSaved = async (): Promise<void> => {
     await load();
     setMyInfoHintShow(true);
@@ -132,14 +126,12 @@ const PersonalBlock = (props: Props): JSX.Element => {
               relativeSource={RelativeSource.RequesterSelf}
             />
           )}
-          {showMyInfo && (
-            <MyInfo
-              name={props.name}
-              pronunciation={pronunciation}
-              onCustomAttributesSaved={onCustomAttributesSaved}
-              loading={loading}
-            />
-          )}
+          <MyInfo
+            name={props.name}
+            pronunciation={pronunciation}
+            onCustomAttributesSaved={onCustomAttributesSaved}
+            loading={loading}
+          />
         </div>
       )}
     </>
