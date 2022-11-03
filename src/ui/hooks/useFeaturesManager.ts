@@ -1,5 +1,5 @@
-import I_permissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
-import { FeaturesManager as I_customFeaturesManager } from "../_customFeaturesManager";
+import IPermissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
+import { FeaturesManager as ICustomFeaturesManager } from "../customFeaturesManager";
 import usePermissions from "./usePermissions";
 import { useCustomAttributesFeatures } from "../features/custom_attributes";
 import { useCreatePronunciationFeatures } from "../features/create_pronunciation";
@@ -11,7 +11,7 @@ import { useRecorderFeatures } from "../features/recorder";
 import { UserPermissions } from "../../types/permissions";
 import { useShowWidgetBlocks } from "../features/widget_blocks";
 import ControllerContext from "../contexts/controller";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import IStyleContext from "../../types/style-context";
 import StyleContext from "../contexts/style";
 import IFrontController from "../../types/front-controller";
@@ -50,8 +50,8 @@ export enum CanComponents {
 }
 
 const useFeaturesManager = (
-  permissionsManager?: I_permissionsManager,
-  customFeaturesManager?: I_customFeaturesManager,
+  permissionsManager?: IPermissionsManager,
+  customFeaturesManager?: ICustomFeaturesManager,
   enforcedPermissions?: UserPermissions
 ): FeaturesManager => {
   const controller = useContext<IFrontController>(ControllerContext);
