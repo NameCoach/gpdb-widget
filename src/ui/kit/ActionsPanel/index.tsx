@@ -35,10 +35,10 @@ const ActionsPanel = (props: Props) => {
             if (index === length - 1) return child;
 
             return (
-              <>
+              <React.Fragment key={index}>
                 {child}
                 <Gap box={10} />
-              </>
+              </React.Fragment>
             );
           })}
 
