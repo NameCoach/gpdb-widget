@@ -20,8 +20,7 @@ import useRecorderState, {
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
-import useFeaturesManager from "../../hooks/useFeaturesManager";
-import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useFeaturesManager, { CanComponents } from "../../hooks/useFeaturesManager";
 import MyInfo from "../MyInfo";
 import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import { NameOption } from "../FullNamesList";
@@ -45,12 +44,7 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
   const [lastName, setLastName] = useState(names.lastName as Name);
   const [fullName, setFullName] = useState(names.fullName as Name);
 
-  const customFeatures = useCustomFeatures(controller);
-
-  const { can } = useFeaturesManager(
-    controller.permissions,
-    customFeatures
-  );
+  const { can } = useFeaturesManager();
 
   const [
     recorderState,
@@ -63,6 +57,7 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
     setPronunciations,
     updatePronunciationsByType,
   } = usePronunciations();
+  const fullNamePronunciation = pronunciations.fullName[0];
 
   const { isOpen: isRecorderOpen } = recorderState;
 
@@ -80,22 +75,22 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
 
   const canRecordOrgPeer = useMemo(
     () =>
-      can("createOrgPeerRecording", controller.nameOwnerContext.signature),
+      can(CanComponents.CreateOrgPeerRecording, controller.nameOwnerContext.signature),
     [controller.nameOwnerContext.signature, controller.permissions]
   );
 
   const canCreateFullName = useMemo(
     () => {
     if (controller.isUserOwnsName())
-      return can("createSelfRecording", pronunciations.fullName[0]);
+      return can(CanComponents.CreateSelfRecording, fullNamePronunciation);
 
       // TODO: make that a named attribute of pronunciations object? INT-164
-    if (pronunciations.fullName[0]?.nameOwnerCreated)
+    if (fullNamePronunciation?.nameOwnerCreated)
       return false;
 
       return canRecordOrgPeer;
     },
-    [controller.nameOwnerContext, controller.permissions, pronunciations.fullName[0]]
+    [controller.nameOwnerContext, controller.permissions, fullNamePronunciation]
   );
 
   const canPronunciationSearch = useMemo(() => {
@@ -230,21 +225,22 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
         <hr className={styles.divider} />
       )}
       {!isRecorderOpen && pronunciations.fullName?.[0]?.nameOwnerCreated && (
-          <>
-            {controller.isUserOwnsName() ? (
-              <MyInfo
-                name={fullNameOption}
-                pronunciation={pronunciations.fullName[0]}
-                onCustomAttributesSaved={() => reloadName(fullName.type)}
-                loading={loading}
-              />
-            ) : (
-              <CustomAttributesInspector
-                data={pronunciations.fullName[0].customAttributes}                
-              />
-            )}
-          </>
-        )}
+        <>
+          {controller.isUserOwnsName() ? (
+            <MyInfo
+              name={fullNameOption}
+              pronunciation={fullNamePronunciation}
+              onCustomAttributesSaved={() => reloadName(fullName.type)}
+              loading={loading}
+            />
+          ) : (
+            <CustomAttributesInspector
+              data={fullNamePronunciation.customAttributes}
+              pronunciation={fullNamePronunciation}
+            />
+          )}
+        </>
+      )}
       {loading && <Loader inline />}
     </>
   );
