@@ -11,16 +11,15 @@ import packageJson from "./package.json";
 import variables from "./src/ui/styles/variables/all.ts";
 import json from "@rollup/plugin-json";
 import svgr from "@svgr/rollup";
+import md5 from "md5";
 
 const modules =
   process.platform === "win32"
     ? { root: "." }
     : {
-        generateScopedName: `[name]__[local]___[hash:base64:5]__[${(
-          Math.random() + 1
-        )
-          .toString(36)
-          .substring(7)}]`,
+        generateScopedName: `[name]__[local]___[hash:base64:5]__[${md5(
+          Date.now()
+        )}]`,
       };
 
 export default {
