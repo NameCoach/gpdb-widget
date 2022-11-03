@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import IFrontController from "../../../types/front-controller";
 import { NameOption } from "../FullNamesList";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import CustomAttributes from "../Outlook/CustomAttributes";
 import StyleContext from "../../contexts/style";
-import useFeaturesManager from "../../hooks/useFeaturesManager";
+import useFeaturesManager, { CanComponents } from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useTranslator from "../../hooks/useTranslator";
 import Pronunciation from "../../../types/resources/pronunciation";
@@ -32,11 +32,14 @@ const MyInfo = ({
   if (!name?.value?.trim()) throw new Error("Name shouldn't be blank");
 
   const controller = useContext<IFrontController>(ControllerContext);
-
   const styleContext = useContext<IStyleContext>(StyleContext);
-  const customFeatures = useCustomFeatures(controller, styleContext);
   const { t } = useTranslator(controller, styleContext);
-  const { can } = useFeaturesManager(controller.permissions, customFeatures);
+  const { can } = useFeaturesManager();
+
+  // TODO: Has to be revised after https://name-coach.atlassian.net/browse/INT-241
+  const canEditCustomAttributes = useMemo(() => {
+    return can(CanComponents.EditCustomAttributesForSelf, pronunciation);
+  }, [controller.permissions, pronunciation]);
 
   const {
     loading,
@@ -56,55 +59,58 @@ const MyInfo = ({
     saveCallback: onCustomAttributesSaved,
   });
 
-  // Probably, won't need this after https://name-coach.atlassian.net/browse/INT-241
-  const customAttributesDisabled = !can(
-    "editCustomAttributesForSelf",
-    pronunciation
-  );
-
   return (
-    <div className={cx(styles.block, styles.column)}>
-      <div className={cx(styles.row)}>
-        <div>
-          <span className={styles.title}>
-            {t("my_info_section_custom_attributes")}
-          </span>
+    <>
+      {canEditCustomAttributes && (
+        <div className={cx(styles.block, styles.column)}>
+          <div className={cx(styles.row)}>
+            <div>
+              <span className={styles.title}>
+                {t("my_info_section_custom_attributes")}
+              </span>
+            </div>
+
+            <Actions
+              loading={loading}
+              inEdit={inEdit}
+              closeEdit={exitEditMode}
+              saveMyInfo={saveCustomAttributes}
+              openEdit={enterEditMode}
+              canEditCustomAttributes={canEditCustomAttributes}
+            />
+          </div>
+
+          <div className={cx(styles.row)}>
+            {((): JSX.Element => {
+              if (inEdit)
+                return (
+                  <CustomAttributes
+                    disabled={!inEdit}
+                    errors={errors}
+                    data={data?.length > 0 ? data : config}
+                    ref={customAttrsRef}
+                  />
+                );
+              else {
+                if (customAttrsPresent)
+                  return <CustomAttributesInspector
+                    data={data}
+                    pronunciation={pronunciation}
+                  />;
+                else
+                  return (
+                    <div className={styles.tip_container}>
+                      <p className={styles.tip_text}>
+                        {t("my_info_empty_tip")}
+                      </p>
+                    </div>
+                  );
+              }
+            })()}
+          </div>
         </div>
-
-        <Actions
-          loading={loading}
-          inEdit={inEdit}
-          closeEdit={exitEditMode}
-          saveMyInfo={saveCustomAttributes}
-          openEdit={enterEditMode}
-          customAttributesDisabled={customAttributesDisabled}
-        />
-      </div>
-
-      <div className={cx(styles.row)}>
-        {((): JSX.Element => {
-          if (inEdit)
-            return (
-              <CustomAttributes
-                disabled={!inEdit}
-                errors={errors}
-                data={data?.length > 0 ? data : config}
-                ref={customAttrsRef}
-              />
-            );
-          else {
-            if (customAttrsPresent)
-              return <CustomAttributesInspector data={data} />;
-            else
-              return (
-                <div className={styles.tip_container}>
-                  <p className={styles.tip_text}>{t("my_info_empty_tip")}</p>
-                </div>
-              );
-          }
-        })()}
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
