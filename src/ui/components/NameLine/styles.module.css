@@ -77,8 +77,8 @@
 }
 
 .mid--outlook {
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 17px;
   max-width: none;
   flex: auto;
   color: $colors_dark_grey;
