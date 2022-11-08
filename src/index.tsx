@@ -46,6 +46,8 @@ import useTranslator from "./ui/hooks/useTranslator";
 
 import SupportedLanguages from "./translations/supported-languages";
 
+import UserAgentManager from "./core/userAgentManager";
+
 export {
   Widget,
   ExtensionWidget,
@@ -85,4 +87,5 @@ export {
   TooltipActionType,
   useTranslator,
   SupportedLanguages,
+  UserAgentManager,
 };
