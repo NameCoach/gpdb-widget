@@ -78,6 +78,7 @@
     "gh-pages": "^2.2.0",
     "gpdb-api-client": "^1.1.54",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "postcss": "^8.2.10",
     "postcss-modules-values": "^4.0.0",
     "postcss-simple-vars": "^6.0.3",
