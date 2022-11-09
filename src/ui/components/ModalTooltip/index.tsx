@@ -158,9 +158,10 @@ const ModalTooltip = ({
         id={id}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
-        className={cx(styles.base_component_wrapper, baseWrapperStyle, {
+        className={cx(styles.base_component_wrapper, {
           closable,
         })}
+        style={baseWrapperStyle}
       >
         {base &&
           React.cloneElement(base, {
