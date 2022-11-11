@@ -2,6 +2,7 @@ import React, { MouseEventHandler } from "react";
 import Tooltip from "../../../Tooltip";
 import IconButtons from "../../../../kit/IconButtons";
 import useTranslator from "../../../../hooks/useTranslator";
+import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
 
 interface Props {
   disabled?: boolean;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const RequestAction = ({
-  tooltipId = Date.now().toString() + RequestAction.name,
+  tooltipId = generateTooltipId("request_action"),
   disabled,
   onClick,
 }: Props): JSX.Element => {
