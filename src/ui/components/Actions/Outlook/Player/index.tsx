@@ -4,6 +4,7 @@ import Tooltip from "../../../Tooltip";
 import useSpeakerAttrs from "../../../../hooks/useSpeakerAttrs";
 import usePlayer from "../../../../hooks/usePlayer";
 import { AudioSource } from "../../../../../types/resources/pronunciation";
+import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -22,7 +23,7 @@ const Player = ({
   audioSrc,
   audioCreator,
   onClick,
-  tooltipId = Date.now().toString() + Player.name,
+  tooltipId = generateTooltipId("player"),
 }: Props): JSX.Element => {
   const { speakerTip, SpeakerComponent } = useSpeakerAttrs(audioCreator);
 
