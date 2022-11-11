@@ -1,6 +1,7 @@
 import React from "react";
 import Tooltip from "../../../Tooltip";
 import IconButtons from "../../../../kit/IconButtons";
+import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
 
 interface Props {
   className?: string;
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const PlayerDisabled = ({
-  tooltipId = Date.now().toString() + PlayerDisabled.name,
+  tooltipId = generateTooltipId("player_disabled"),
 }: Props): JSX.Element => {
   return (
     <>
