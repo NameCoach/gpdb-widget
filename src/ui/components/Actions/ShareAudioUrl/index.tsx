@@ -10,6 +10,7 @@ import styles from "./styles.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Tooltip from "../../Tooltip";
 import StyleContext from "../../../contexts/style";
+import generateTooltipId from "../../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind(styles);
 
@@ -22,11 +23,13 @@ export interface CopyButton {
 
 interface Props {
   buttons: CopyButton[];
+  tooltipId: string;
 }
 
-const ShareAudioUrlAction = (props: Props): JSX.Element => {
-  const tooltipId = Date.now().toString();
-
+const ShareAudioUrlAction = ({
+  buttons: propsButtons,
+  tooltipId = generateTooltipId("share_audio_url_action"),
+}: Props): JSX.Element => {
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -38,7 +41,7 @@ const ShareAudioUrlAction = (props: Props): JSX.Element => {
   const t = styleContext.t;
 
   const getButtons = (): CopyButton[] => {
-    return props.buttons.map(
+    return propsButtons.map(
       ({ url, text }): CopyButton => ({
         url: url.split("?")[0],
         text,
