@@ -2,6 +2,7 @@ import React, { MouseEventHandler } from "react";
 import classNames from "classnames/bind";
 import styles from "./styles.module.css";
 import Tooltip from "../../Tooltip";
+import generateTooltipId from "../../../../core/utils/generate-tooltip-id";
 
 interface Props {
   disabled?: boolean;
@@ -12,15 +13,18 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const RequestAction = (props: Props): JSX.Element => {
-  const tooltipId = props.tooltipId || Date.now().toString();
-
+const RequestAction = ({
+  disabled,
+  className,
+  tooltipId = generateTooltipId("request_action"),
+  onClick,
+}: Props): JSX.Element => {
   return (
     <div
-      className={cx(props.className, styles.wrapper, {
-        disabled: props.disabled,
+      className={cx(className, styles.wrapper, {
+        disabled: disabled,
       })}
-      onClick={props.onClick}
+      onClick={onClick}
     >
       <Tooltip id={tooltipId} />
       <i

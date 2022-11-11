@@ -16,14 +16,19 @@ import ReactTooltip from "react-tooltip";
 import useTheme from "../../hooks/useTheme";
 import { Theme } from "../../../types/style-context";
 import ShareAction from "../Actions/Outlook/Share";
+import generateTooltipId from "../../../core/utils/generate-tooltip-id";
 
 interface Props {
   loading: boolean;
   pronunciation: Pronunciation;
+  tooltipId?: string;
 }
 
-const ShareRecording = ({ loading, pronunciation }: Props): JSX.Element => {
-  const tooltipId = Date.now().toString() + ShareRecording.name;
+const ShareRecording = ({
+  loading,
+  pronunciation,
+  tooltipId = generateTooltipId("share_recording"),
+}: Props): JSX.Element => {
   const [showHintTooltip, setShowHintTooltip] = useState(true);
 
   const { theme } = useTheme();
