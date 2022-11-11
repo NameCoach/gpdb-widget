@@ -27,7 +27,7 @@ const FullNameLine = ({
   <>
     <div className={styles.container}>
       <div className={styles.name_line}>{fullName}</div>
-      {loading && <Loader />}
+      {loading && <Loader inline/>}
       {!loading && !isRecorderOpen && (
         <Actions
           pronunciation={pronunciation}
