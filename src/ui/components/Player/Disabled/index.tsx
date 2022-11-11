@@ -2,16 +2,19 @@ import classNames from "classnames/bind";
 import React from "react";
 import styles from "../styles.module.css";
 import Tooltip from "../../Tooltip";
+import generateTooltipId from "../../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind(styles);
 
 interface Props {
   className?: string;
+  tooltipId?: string;
 }
 
-const DisabledPlayer = (props: Props): JSX.Element => {
-  const tooltipId = Date.now().toString();
-
+const DisabledPlayer = ({
+  className,
+  tooltipId = generateTooltipId("disabled_player"),
+}: Props): JSX.Element => {
   return (
     <>
       <Tooltip
@@ -22,11 +25,7 @@ const DisabledPlayer = (props: Props): JSX.Element => {
       />
       <div
         aria-label="Disabled player"
-        className={cx(
-          props.className,
-          "disabled_player",
-          "unavailable__disabled"
-        )}
+        className={cx(className, "disabled_player", "unavailable__disabled")}
       >
         <i
           className={cx(styles.speakerUnavailable, "speaker-unavailable")}
