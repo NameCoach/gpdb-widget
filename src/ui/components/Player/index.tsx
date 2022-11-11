@@ -6,6 +6,7 @@ import Loader from "../Loader";
 import Tooltip from "../Tooltip";
 import useSpeakerAttrs from "../../hooks/useSpeakerAttrs";
 import usePlayer from "../../hooks/usePlayer";
+import generateTooltipId from "../../../core/utils/generate-tooltip-id";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -26,7 +27,7 @@ const Player = ({
   audioCreator,
   className,
   onClick,
-  tooltipId = Date.now().toString(),
+  tooltipId = generateTooltipId("player"),
 }: Props): JSX.Element => {
   const { speakerClassName, speakerTip } = useSpeakerAttrs(audioCreator);
 
