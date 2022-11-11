@@ -6,6 +6,7 @@ import styles from "../styles.module.css";
 import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../../contexts/style";
 import useTheme from "../../../hooks/useTheme";
+import generateTooltipId from "../../../../core/utils/generate-tooltip-id";
 
 export interface NameOption {
   key: string;
@@ -20,6 +21,7 @@ export interface Props {
   setAutoplay: React.Dispatch<React.SetStateAction<boolean>>;
   selectValue?: Option;
   setValue: React.Dispatch<React.SetStateAction<Option>>;
+  tooltipId?: string;
 }
 
 const nameToOption = (name: NameOption): Option => ({
@@ -33,9 +35,8 @@ const NamesList = ({
   setAutoplay,
   setValue,
   onSelect,
+  tooltipId = generateTooltipId("names_list"),
 }: Props): JSX.Element => {
-  const tooltipId = Date.now().toString() + NamesList.name;
-
   const { t } = useContext(StyleContext);
   const { theme, selectStyles, filterOption } = useTheme(NamesList.name);
 
