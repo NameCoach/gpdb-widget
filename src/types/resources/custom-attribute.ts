@@ -1,5 +1,5 @@
 export enum AttributePresentation {
-  TextBox = "Textbox",
+  Textbox = "Textbox",
   Dropdown = "Dropdown",
   Checkbox = "Checkbox",
   Textarea = "Textarea",

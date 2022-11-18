@@ -48,7 +48,7 @@ const Widget = (props: Props) => {
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>();
   const [loading, setLoading] = useState<boolean>(true);
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(props.client, styleContext);
+  const { t } = useTranslator(props.client, styleContext);
   const customFeatures = useCustomFeatures(props.client, styleContext);
 
   const verifyNames = async () => {
