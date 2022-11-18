@@ -1,0 +1,13 @@
+.divider {
+    composes: divider from "../../styles/outlook.css";
+  }
+  
+.no_result {
+  display: flex;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #333333;
+  justify-content: center;
+}

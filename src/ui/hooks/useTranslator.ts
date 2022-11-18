@@ -2,16 +2,19 @@ import { TFunction } from "i18next";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
-import IFrontController from "../../types/front-controller";
-import IStyleContext from "../../types/style-context";
+import SupportedLanguages from "../../translations/supported-languages";
+import ControllerContext from "../contexts/controller";
 import StyleContext from "../contexts/style";
 
-const useTranslator = (
-  controller: IFrontController,
-  styleContext?: IStyleContext
-): TFunction => {
-  const _styleContext = styleContext || useContext(StyleContext);
+interface HookReturn {
+  t: TFunction;
+  setLanguage: (language: SupportedLanguages) => void;
+}
 
+const useTranslator = (
+  controller = useContext(ControllerContext),
+  styleContext = useContext(StyleContext)
+): HookReturn => {
   const loadT = (translations = {}): TFunction => {
     const { t, i18n: i18next } = useTranslation("translations", { i18n });
 
@@ -26,9 +29,13 @@ const useTranslator = (
     return t;
   };
 
-  const t = _styleContext?.t || loadT(controller?.preferences?.translations);
+  const setLanguage = (language: SupportedLanguages): void => {
+    i18n.changeLanguage(language);
+  };
 
-  return t;
+  const t = styleContext?.t || loadT(controller?.preferences?.translations);
+
+  return { t, setLanguage };
 };
 
 export default useTranslator;
