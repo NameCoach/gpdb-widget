@@ -36,7 +36,7 @@ const ExtensionWidget = (props: Props): JSX.Element => {
   const [names, setNames] = useState<{ [t in NameTypes]: Name }>(props.names);
   const [loading, setLoading] = useState<boolean>(false);
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(props.client, styleContext);
+  const { t } = useTranslator(props.client, styleContext);
   const customFeatures = useCustomFeatures(props.client, styleContext);
 
   const verifyNames = async (): Promise<void> => {

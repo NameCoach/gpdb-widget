@@ -10,15 +10,20 @@ import {
   InfoWidget,
   NotificationsProvider,
   Notification,
+  StyleContext,
+  addOnDeviceChangeHandler,
+  PronunciationMyInfoWidget,
+  IStyleContext, Theme
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
-import MyInfoSection, { me } from './examples/MyInfoSection';
+import { me, names } from "./examples/pronunciation-my-info-params";
 import Parser from './parser';
 import ScreenResizer from './dev-tools/ScreenResizer';
 import Name, { NameTypes } from "../../src/types/resources/name";
 import { TERMS_AND_CONDITIONS_REQUEST_RESULT } from './examples/constants';
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
+import LanguageSetter from './dev-tools/LanguageSetter';
 
 const style = {
   margin: '50px auto 0 auto',
@@ -49,6 +54,8 @@ const extensionWidgetNames: { [t in NameTypes]: Name } =
 const renderWelcomeScreen = false;
 
 const App = () => {
+  addOnDeviceChangeHandler();
+
   const [name, setName] = useState('Jon Snow');
   const [loading, setLoading] = useState(true);
   const client = loadClient(
@@ -58,6 +65,11 @@ const App = () => {
     userContext,
     parser
   );
+
+  const styleContext: IStyleContext = {
+    displayRecorderSavingMessage: true,
+    theme: Theme.Outlook,
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -94,17 +106,13 @@ const App = () => {
 
       {!loading && <Widget client={client} name={name} style={style} />}
 
-      <hr className='divider'/>
-
       {!loading && <ExtensionWidget names={extensionWidgetNames} client={client} style={style} />}
 
-      <hr className='divider'/>
-
-      {!loading && <MyInfoSection client={client}/>}
-
-      <hr className='divider'/>
-
-      <SearchWidget client={client} />
+      <StyleContext.Provider value={styleContext}>
+        {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
+        {!loading && <SearchWidget client={client} />}
+        <div style={{marginTop: "30px"}}></div>
+      </StyleContext.Provider>
     </div>
   );
 
@@ -122,8 +130,9 @@ const App = () => {
 
     return (
       <NotificationsProvider>
-        <div style={{ margin: "50px auto 0 auto", width: "500px" }}>
+        <div style={{ margin: "50px auto 0 auto", width: "320px" }}>
           <ScreenResizer />
+          <LanguageSetter />
           { renderWelcomeScreen ?  <InfoWidget {...props} /> : <MainApp />}
         </div>
 
