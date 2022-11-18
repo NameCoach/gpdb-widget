@@ -32,6 +32,7 @@ export default function loadClient(
       });
 
     const client = new Client(application, configuration);
+
     return new FrontController(
       client,
       nameOwnerContext,
