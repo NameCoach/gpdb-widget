@@ -7,3 +7,7 @@ export const EVENTS = {
   fail: "fail",
   customAttrs: "to custom attrs",
 };
+
+export type MachineSpec = {
+  [x: string]: any;
+};

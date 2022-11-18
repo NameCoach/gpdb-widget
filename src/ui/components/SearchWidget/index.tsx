@@ -1,76 +1,66 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import IFrontController from "../../../types/front-controller";
-import styles from "../PronunciationMyInfoWidget/styles.module.css";
-import classNames from "classnames/bind";
-import NamesListContainer from "./Adapter";
+import ControllerContext from "../../contexts/controller";
+import StyleContext from "../../contexts/style";
+import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
+import usePermissions from "../../hooks/usePermissions";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
-import Header from "./Header";
-import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
+import useTranslator from "../../hooks/useTranslator";
+import NoPermissionsError from "../NoPermissionsError";
+import SearchContainer from "./SearchContainer";
 
-const cx = classNames.bind(styles);
-
-type Props = {
+interface Props {
   client: IFrontController;
   termsAndConditions?: TermsAndConditions;
-};
+}
 
 const SearchWidget = (props: Props): JSX.Element => {
-  const canSearchWidget = props.client.permissions?.can(
-    Resources.Pronunciation,
-    "search-widget"
+  const client = props.client;
+
+  const styleContext = useContext(StyleContext);
+
+  const { t } = useTranslator(client, styleContext);
+
+  const customFeatures = useCustomFeatures(client, styleContext);
+
+  const { canPronunciation } = usePermissions(client.permissions);
+
+  const canPerfromBasicSearch = canPronunciation("index");
+
+  const { show } = useFeaturesManager(
+    client.permissions,
+    customFeatures
   );
 
-  let inputValue = "";
-  const [name, setName] = useState("");
-
-  const handleSubmit = (): void => {
-    inputValue ? setName(inputValue.trim().toLowerCase()) : setName(name);
-  };
-
-  const handleChange = (value: string): void => {
-    setName("");
-    inputValue = value;
-  };
-
-  const handleEnterPressed = (e): void => {
-    if (e.key === "Enter" || e.keyCode === 13) handleSubmit();
-  };
-
-  const renderContainer = (): JSX.Element => (
-    <div className={cx(styles.container)}>
-      <Header />
-
-      <div className={cx(styles.row)}>
-        <input
-          aria-label="Search input field"
-          className={cx(styles.input)}
-          type="text"
-          required
-          onChange={(e): void => handleChange(e.target.value)}
-          onKeyPress={(e): void => handleEnterPressed(e)}
-          style={{ width: "85%", marginLeft: "20px" }}
-        />
-
-        <div
-          aria-label="Search button"
-          className={cx(styles.player)}
-          onClick={handleSubmit}
+  return (
+    <>
+      {show(ShowComponents.SearchWidget) && (
+        <StyleContext.Provider
+          value={{
+            ...styleContext,
+            displayRecorderSavingMessage:
+              styleContext?.displayRecorderSavingMessage,
+            customFeatures,
+            t,
+          }}
         >
-          <i className={cx("search")} />
-        </div>
-      </div>
-
-      {name && (
-        <NamesListContainer
-          client={props.client}
-          name={name}
-          termsAndConditions={props.termsAndConditions}
-        />
+          <ControllerContext.Provider value={client}>
+            <>
+              {canPerfromBasicSearch ? (
+                <SearchContainer
+                  controller={client}
+                  termsAndConditions={props.termsAndConditions}
+                />
+              ) : (
+                <NoPermissionsError />
+              )}
+            </>
+          </ControllerContext.Provider>
+        </StyleContext.Provider>
       )}
-    </div>
+    </>
   );
-
-  return canSearchWidget ? renderContainer() : <div />;
 };
 
 export default SearchWidget;
