@@ -1,4 +1,5 @@
 import IPermissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
+import { UserPermissions } from "../../types/permissions";
 import { FeaturesManager as ICustomFeaturesManager } from "../customFeaturesManager";
 import usePermissions from "../hooks/usePermissions";
 
@@ -8,9 +9,13 @@ interface UserResponseFeatures {
 
 export const useUserResponseFeatures = (
   permissionsManager: IPermissionsManager,
-  customFeaturesManager: ICustomFeaturesManager
+  customFeaturesManager: ICustomFeaturesManager,
+  enforcedPermissions?: UserPermissions
 ): UserResponseFeatures => {
-  const { canUserResponse } = usePermissions(permissionsManager);
+  const { canUserResponse } = usePermissions(
+    permissionsManager,
+    enforcedPermissions
+  );
 
   const canCreateUserResponse = (ownerSignature: string): boolean =>
     customFeaturesManager.canUserResponse(ownerSignature) &&

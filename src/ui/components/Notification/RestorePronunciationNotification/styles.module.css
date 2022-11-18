@@ -12,3 +12,20 @@
 .undo__button:hover {
   background-color: $colors_darker_brand;
 }
+
+.flex_column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 6px;
+}
+
+.btn__link {
+  composes: btn__link from "../../../styles/outlook.css";
+  color: #FFFFFF !important;
+}
+
+.text_container {
+  min-width: 270px;
+}
