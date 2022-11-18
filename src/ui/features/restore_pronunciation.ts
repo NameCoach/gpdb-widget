@@ -1,3 +1,5 @@
+import IPermissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
+import { UserPermissions } from "../../types/permissions";
 import Pronunciation from "../../types/resources/pronunciation";
 import usePermissions from "../hooks/usePermissions";
 
@@ -8,9 +10,13 @@ interface RestorePronunciationFeatures {
 }
 
 export const useRestorePronunciationFeatures = (
-  permissionsManager
+  permissionsManager: IPermissionsManager,
+  enforcedPermissions?: UserPermissions
 ): RestorePronunciationFeatures => {
-  const { canPronunciation } = usePermissions(permissionsManager);
+  const { canPronunciation } = usePermissions(
+    permissionsManager,
+    enforcedPermissions
+  );
 
   const canRestoreSelfPronunciation = (): boolean =>
     canPronunciation("restore") && canPronunciation("restore:self");
