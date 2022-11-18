@@ -91,6 +91,7 @@ export interface CustomAttributesRequests {
 
 export interface NamesServiceRequests {
   verifyNames: (name: string) => PromiseLike<{ [t in NameTypes]: Name }>;
+  getSuggestions: (name: string) => PromiseLike<string[]>;
 }
 
 export interface AnalyticsRequests {
