@@ -87,12 +87,10 @@
 
 .main__error__label {
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
   color: $colors_error;
 }
 
 .attribute__error {
-  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 13px;
   color: $colors_error;
