@@ -2,7 +2,7 @@ import * as React from "react";
 import IFrontController from "../../../types/front-controller";
 import Pronunciation from "../../../types/resources/pronunciation";
 import RestorePronunciationNotification from "../../components/Notification/RestorePronunciationNotification";
-import { RecorderCloseOptions } from "../../components/Recorder/types/handlersTypes";
+import { RecorderCloseOptions } from "../../components/Recorder/types/handlers-types";
 import useFeaturesManager from "../useFeaturesManager";
 import { useNotifications } from "../useNotification";
 import {
@@ -10,6 +10,7 @@ import {
   FeaturesManager as ICustomFeaturesManager,
 } from "../../customFeaturesManager";
 import { RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY } from "../../../constants";
+import { NotificationTags } from "../../../types/notifications";
 
 interface Options {
   controller: IFrontController;
@@ -32,10 +33,13 @@ const useOnRecorderClose = ({
   setPronunciation,
   setMyInfoHintShow,
 }: Options): ((option: RecorderCloseOptions) => Promise<any>) => {
-  const autoclose =
-    customFeaturesManager.getValue(
-      ConstantOverrides.RestorePronunciationTime
-    ) || RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY;
+  const autoclose = React.useMemo(() => {
+    return (
+      customFeaturesManager.getValue(
+        ConstantOverrides.RestorePronunciationTime
+      ) || RESTORE_PRONUNCIATION_AUTOCLOSE_DELAY
+    );
+  }, [customFeaturesManager, controller.preferences]);
 
   const { setNotification } = useNotifications();
 
@@ -43,6 +47,16 @@ const useOnRecorderClose = ({
     controller.permissions,
     customFeaturesManager
   );
+
+  const throwErrorNotification = () =>
+    setNotification({ tag: NotificationTags.DELETE_SELF });
+
+  const throwSuccessNotification = (onClick) =>
+    setNotification({
+      content: <RestorePronunciationNotification onClick={onClick} />,
+      tag: NotificationTags.DELETE_SELF,
+      autoclose: autoclose,
+    });
 
   const runDelayed = React.useCallback(() => {
     const delayedDestroy = setTimeout(async () => {
@@ -58,7 +72,7 @@ const useOnRecorderClose = ({
       setRecorderClosed();
       await load();
 
-      if (!success) setNotification();
+      if (!success) throwErrorNotification();
     }, autoclose);
 
     const onRestorePronunciationClick = async (): Promise<void> => {
@@ -67,21 +81,10 @@ const useOnRecorderClose = ({
       await load();
     };
 
-    const notificationId = new Date().getTime();
-
     setPronunciation(null);
     setMyInfoHintShow(true);
 
-    setNotification({
-      id: notificationId,
-      content: (
-        <RestorePronunciationNotification
-          id={notificationId}
-          onClick={onRestorePronunciationClick}
-        />
-      ),
-      autoclose: autoclose,
-    });
+    throwSuccessNotification(onRestorePronunciationClick);
 
     setRecorderClosed();
   }, [
@@ -108,9 +111,7 @@ const useOnRecorderClose = ({
     setRecorderClosed();
     await load();
 
-    if (!success) return setNotification();
-
-    const notificationId = new Date().getTime();
+    if (!success) return throwErrorNotification();
 
     const onRestorePronunciationClick = async (): Promise<void> => {
       const success = await controller.restore(pronunciation.id);
@@ -118,19 +119,10 @@ const useOnRecorderClose = ({
       setRecorderClosed();
       await load();
 
-      if (!success) setNotification();
+      if (!success) throwErrorNotification();
     };
 
-    setNotification({
-      id: notificationId,
-      content: (
-        <RestorePronunciationNotification
-          id={notificationId}
-          onClick={onRestorePronunciationClick}
-        />
-      ),
-      autoclose: autoclose,
-    });
+    throwSuccessNotification(onRestorePronunciationClick);
   }, [
     autoclose,
     controller,

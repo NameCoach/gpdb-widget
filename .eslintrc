@@ -25,6 +25,7 @@
   },
   "rules": {
     "@typescript-eslint/camelcase": 0,
+    "@typescript/interface-name-prefix": "off",
     "no-undef": 0,
     "no-useless-constructor": 0,
     "space-before-function-paren": 0,
