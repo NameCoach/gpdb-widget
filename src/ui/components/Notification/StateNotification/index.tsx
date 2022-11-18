@@ -11,7 +11,7 @@ export enum States {
 
 interface Props {
   state: States;
-  id: number;
+  id?: number;
   message: string;
 }
 

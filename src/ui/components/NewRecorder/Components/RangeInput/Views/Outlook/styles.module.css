@@ -1,0 +1,22 @@
+.flex_row {
+  composes: flex_row from "../../../../../../styles/outlook.css";
+  justify-content: space-between;
+  margin-top: 14px;
+}
+  
+.label {
+  composes: btn__link from "../../../../../../styles/outlook.css";
+  cursor: auto !important;
+  text-decoration-line: none !important;
+}
+
+.btn__link {
+  composes: btn__link from "../../../../../../styles/outlook.css";
+}
+
+.pitch {
+  padding-top: 0px;
+  margin-top: 28px;
+  padding-bottom: 0px;
+  width: 100%;
+}

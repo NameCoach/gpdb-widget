@@ -1,4 +1,8 @@
-.notification__container {
+.outlook {
+ /* Add later */
+}
+
+.default {
   position: absolute;
   bottom: 50px;
   display: flex;
