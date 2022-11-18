@@ -1,0 +1,29 @@
+.block {
+  composes: block from "../../styles/outlook.css";
+}
+
+.row {
+  composes: row from "../../styles/outlook.css";
+}
+
+.m_10 {
+  composes: m_10 from "../../styles/outlook.css";
+}
+
+.title {
+  composes: title from "../../styles/outlook.css";
+}
+
+.actions {
+  composes: actions from "../../styles/outlook.css";
+}
+
+.unavailable_hint {
+  position: relative;
+  font-size: 12px;
+  margin-top: 10px;
+  word-break: keep-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
