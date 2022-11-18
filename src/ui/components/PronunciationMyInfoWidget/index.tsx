@@ -6,9 +6,9 @@ import StyleContext from "../../contexts/style";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
-import FullNamesContainer from "../FullNamesContainer";
+import PronunciationsBlock from "../PronunciationsBlock";
 import NoPermissionsError from "../NoPermissionsError";
-import MyInfo from "../MyInfo";
+import PersonalBlock from "../PersonalBlock";
 import { HtmlComponents } from "../../customFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import usePermissions from "../../hooks/usePermissions";
@@ -38,7 +38,7 @@ const PronunciationMyInfoWidget = ({
   if (!name.value.trim()) throw new Error("Name shouldn't be blank");
 
   const styleContext = useContext(StyleContext);
-  const t = useTranslator(client, styleContext);
+  const { t } = useTranslator(client, styleContext);
   const customFeatures = useCustomFeatures(client, styleContext);
 
   const { canPronunciation } = usePermissions(client.permissions);
@@ -52,27 +52,21 @@ const PronunciationMyInfoWidget = ({
     [canPronunciation]
   );
 
-  const renderContainer = (): JSX.Element => (
+  const Container = (
     <div className={cx(styles.container)}>
       {names.length !== 0 && blockPermissions[Blocks.Pronunciations] && (
-        <>
-          <div className={cx(styles.title, styles.m_20)}>
-            {t("pronunciations_section_name", "Pronunciations")}
-          </div>
-          <FullNamesContainer
-            names={names}
-            termsAndConditions={termsAndConditions}
-            controller={client}
-          />
-        </>
+        <PronunciationsBlock
+          names={names}
+          controller={client}
+          termsAndConditions={termsAndConditions}
+        />
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
         <>
-          <hr className={styles.divider} />
-          <MyInfo
-            controller={client}
+          <PersonalBlock
             name={name}
+            controller={client}
             termsAndConditions={termsAndConditions}
           />
           {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}
@@ -84,6 +78,7 @@ const PronunciationMyInfoWidget = ({
   return (
     <StyleContext.Provider
       value={{
+        ...styleContext,
         displayRecorderSavingMessage:
           styleContext?.displayRecorderSavingMessage,
         customFeatures,
@@ -91,9 +86,7 @@ const PronunciationMyInfoWidget = ({
       }}
     >
       <ControllerContext.Provider value={client}>
-        {blockPermissions[Blocks.Invalid]
-          ? NoPermissionsError()
-          : renderContainer()}
+        {blockPermissions[Blocks.Invalid] ? <NoPermissionsError /> : Container}
       </ControllerContext.Provider>
     </StyleContext.Provider>
   );

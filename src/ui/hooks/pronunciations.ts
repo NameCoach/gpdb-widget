@@ -2,15 +2,15 @@ import { useState } from "react";
 import Pronunciation from "../../types/resources/pronunciation";
 import { NameTypes } from "../../types/resources/name";
 
-type PronunciationsState = { [t in NameTypes]: Pronunciation[] };
+export type PronunciationsState = { [t in NameTypes]: Pronunciation[] };
 
-type HookReturn = {
+export type UsePronunciationsReturn = {
   pronunciations: PronunciationsState;
   setPronunciations: (d: PronunciationsState) => void;
   updatePronunciationsByType: (type: NameTypes, data: Pronunciation[]) => void;
 };
 
-export function usePronunciations(): HookReturn {
+export function usePronunciations(): UsePronunciationsReturn {
   const [pronunciations, setPronunciations] = useState<PronunciationsState>({
     [NameTypes.FirstName]: [],
     [NameTypes.LastName]: [],
