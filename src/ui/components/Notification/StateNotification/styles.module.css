@@ -5,12 +5,15 @@
 }
 
 .container {
-  background-color: $colors_error;
-  color: $colors_white;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14;
+  background-color: $colors_error;
+  color: $colors_white;
 }
 
 .container.warning {

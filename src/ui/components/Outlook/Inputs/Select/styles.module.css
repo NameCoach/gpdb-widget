@@ -1,0 +1,39 @@
+.select_container {
+  margin: 3px 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.label_container {
+  margin: 6px 0;
+  height: auto;
+}
+
+.label {
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  color: $colors_dark_grey;
+}
+
+.select_input_container {
+  width: 100%;
+  background: white;
+  transition: box-shadow 0.3s ease-in-out;
+  border-radius: 6px;
+}
