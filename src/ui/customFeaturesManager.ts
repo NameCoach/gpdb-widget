@@ -9,6 +9,7 @@ export enum Features {
   CanUserResponse = "can_user_response",
   Share = "gw-share-icon",
   RenderHtml = "custom_html_components",
+  WidgetBlocks = "widget-blocks",
 }
 
 export enum ConstantOverrides {

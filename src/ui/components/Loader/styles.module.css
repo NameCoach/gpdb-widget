@@ -16,7 +16,6 @@
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
-  margin: 0 10px;
 }
 
 .loader__inline {
