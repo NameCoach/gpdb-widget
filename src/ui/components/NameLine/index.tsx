@@ -5,9 +5,6 @@ import Pronunciation, {
 import { NameTypes } from "../../../types/resources/name";
 import styles from "./styles.module.css";
 import Loader from "../Loader";
-import Player from "../Player";
-import RecordAction from "../Actions/Record";
-import UserResponseAction from "../Actions/UserResponse";
 import { NameOwner, UserResponse } from "gpdb-api-client";
 import ControllerContext from "../../contexts/controller";
 import NameTypesFactory from "../../../types/name-types-factory";
@@ -17,6 +14,12 @@ import userAgentManager from "../../../core/userAgentManager";
 import { getLabel } from "./helper-methods";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import useTranslator from "../../hooks/useTranslator";
+import useTheme from "../../hooks/useTheme";
+import { Theme } from "../../../types/style-context";
+import capitalizeString from "../../../core/utils/capitalize-string";
+import Actions from "./Actions";
+import useUserResponse from "../../hooks/useUserResponse";
+import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 
 const cx = classNames.bind(styles);
 
@@ -27,23 +30,35 @@ interface Props {
   owner?: NameOwner;
   canRecord: boolean;
   canUserResponse: boolean;
-  pronunciationNameClass?: string;
   reload: (type: NameTypes) => void;
   onRecorderClick: (name, type) => void;
+  isRecorderOpen?: boolean;
 }
 
-const NameLine = (props: Props): JSX.Element => {
+const NameLine = ({
+  pronunciations,
+  name,
+  type,
+  owner,
+  canRecord,
+  canUserResponse,
+  reload,
+  onRecorderClick,
+  isRecorderOpen,
+}: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
-  const t = useTranslator(controller);
+
+  const { theme, selectStyles, filterOption } = useTheme("NameLine");
+  const { t } = useTranslator(controller);
 
   const { isDeprecated: isOld } = userAgentManager;
   const options = useMemo(
     () =>
-      props.pronunciations.map((p, i) => ({
+      pronunciations.map((p, i) => ({
         label: `${i + 1} - ${getLabel(p, t)}`,
         value: i,
       })),
-    [props.pronunciations]
+    [pronunciations]
   );
 
   const [currentPronunciation, setPronunciation] = useState<Pronunciation>();
@@ -53,8 +68,8 @@ const NameLine = (props: Props): JSX.Element => {
 
   const sendAnalytics = (event, index = currentIndex): PromiseLike<void> =>
     controller.sendAnalytics(
-      `${NameTypesFactory[props.type]}_${event}_${index}`,
-      { name: props.name, type: props.type },
+      `${NameTypesFactory[type]}_${event}_${index}`,
+      { name, type },
       currentPronunciation.id
     );
 
@@ -64,97 +79,100 @@ const NameLine = (props: Props): JSX.Element => {
     setValue(selectedOption);
     setCurrentIndex(index);
     setAutoplay(true);
-    setPronunciation(props.pronunciations[index]);
+    setPronunciation(pronunciations[index]);
     sendAnalytics(AnalyticsEventType.Recording_select_list_change_to, index);
   };
 
   const onPlayClick = (): PromiseLike<void> =>
     sendAnalytics(AnalyticsEventType.Play_button_click);
 
-  const onUserResponse = async (): Promise<void> => {
-    const response =
-      currentPronunciation?.userResponse?.response === UserResponse.Save
-        ? UserResponse.NoOpinion
-        : UserResponse.Save;
-
-    await controller.createUserResponse(
-      currentPronunciation.id,
-      response,
-      props.owner
-    );
-
+  const userResponseCallback = () => {
     sendAnalytics(AnalyticsEventType.Save_button_click);
     setPronunciation(null);
-    setTimeout(() => props.reload(props.type), 1500);
+    setTimeout(() => reload(type), 1500);
   };
 
-  const selfPronunciation = props.pronunciations.find(
-    (item) => item.relativeSource === RelativeSource.RequesterPeer
-  );
+  const { onUserResponse } = useUserResponse({
+    callBack: userResponseCallback,
+    owner,
+    pronunciation: currentPronunciation,
+  });
+
+  const selfPronunciation = useMemo(() => {
+    return pronunciations.find(
+      (item) => item.relativeSource === RelativeSource.RequesterPeer
+    );
+  }, [pronunciations]);
+
+  const onRecordClick = (): void =>
+    onRecorderClick && onRecorderClick(name, type);
 
   useEffect(() => {
-    setPronunciation(props.pronunciations[0]);
+    setPronunciation(pronunciations[0]);
     setValue(options[0]);
-  }, [props.pronunciations]);
+  }, [pronunciations]);
 
   return (
-    <div className={cx(styles.pronunciation, "name_line_container")}>
-      <div className={cx(styles.pronunciation, "pronunciation_container")}>
-        <span
-          className={cx(
-            styles.pronunciation__name,
-            "pronunciation_name",
-            props.pronunciationNameClass
-          )}
-        >
-          {props.name}
-        </span>
-
-        {!currentPronunciation ? (
-          <Loader />
-        ) : (
-          <>
-            <div className={cx(styles.pronunciation__mid, "pronunciation_mid")}>
+    <div
+      className={cx(
+        styles.pronunciation,
+        styles.name_line_container,
+        isOld && `name--line--old--${theme}`,
+        {
+          hidden: theme === Theme.Outlook ? false : isRecorderOpen,
+        }
+      )}
+    >
+      <div className={cx(styles.pronunciation, `pronunciation--${theme}`)}>
+        <div className={cx(styles.name__wrapper, `wrapper--${theme}`)}>
+          <span className={cx(styles.pronunciation__name, `name--${theme}`)}>
+            {capitalizeString(name)}
+          </span>
+          {!currentPronunciation && <Loader />}
+        </div>
+        {currentPronunciation && (
+          <div
+            className={cx(styles.pronunciation__tail, `tail--${theme}`, {
+              hidden: isRecorderOpen,
+            })}
+          >
+            <div className={cx(styles.pronunciation__mid, `mid--${theme}`)}>
               <Select
                 options={options}
-                className={styles.pronunciation__control}
+                theme={theme}
                 onChange={onSelect}
                 value={value}
+                styles={selectStyles}
+                filterOption={filterOption(value.value)}
               />
             </div>
 
-            <div className={cx(styles.pronunciation__actions, { old: isOld })}>
-              <Player
-                className={styles.pronunciation__action}
-                audioSrc={currentPronunciation.audioSrc}
-                audioCreator={currentPronunciation.audioCreator}
-                autoplay={autoplay}
-                onClick={onPlayClick}
-              />
-
-              {props.canRecord && (
-                <RecordAction
-                  className={styles.pronunciation__action}
-                  onClick={(): void =>
-                    props.onRecorderClick(props.name, props.type)
-                  }
-                  rerecord={!!selfPronunciation}
-                />
-              )}
-              {props.canUserResponse && (
-                <UserResponseAction
-                  className={styles.pronunciation__action}
-                  active={
-                    currentPronunciation?.userResponse?.response ===
-                    UserResponse.Save
-                  }
-                  onClick={onUserResponse}
-                />
-              )}
-            </div>
-          </>
+            <Actions
+              onUserResponse={onUserResponse}
+              autoplay={autoplay}
+              onPlay={onPlayClick}
+              showRecordAction={canRecord}
+              showUserResponseAction={canUserResponse}
+              onRecordClick={onRecordClick}
+              rerecord={!!selfPronunciation}
+              saved={
+                currentPronunciation?.userResponse?.response ===
+                UserResponse.Save
+              }
+              audioSrc={currentPronunciation?.audioSrc}
+              audioCreator={currentPronunciation?.audioCreator}
+            />
+          </div>
         )}
       </div>
+
+      {currentPronunciation?.customAttributes?.length > 0 && (
+        <div className={styles.custom_attributes}>
+          <CustomAttributesInspector
+            data={currentPronunciation.customAttributes}
+          />
+        </div>
+      )}
 
       {currentPronunciation?.phoneticSpelling && (
         <div className={styles.phonetic}>
