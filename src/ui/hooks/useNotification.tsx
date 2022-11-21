@@ -1,33 +1,24 @@
 import * as React from "react";
+import Children from "../../types/children-prop";
+import {
+  AddNotification,
+  NotificationTags,
+  Notification,
+  DEFAULT_API,
+  NotificationsContextValue,
+} from "../../types/notifications";
 import DefaultErrorNotification from "../components/Notification/DefaultErrorNotification";
+import NotificationsContext from "../contexts/notifications";
 
-export interface AddNotification {
-  id?: number;
-  content: JSX.Element;
-  autoclose?: number;
+interface NotificationsProviderProps {
+  children: Children;
 }
 
-interface Notification {
-  id: number;
-  content: JSX.Element;
-  autoclose?: number;
-}
-
-const defaultApi = {
-  notifications: [] as Notification[],
-  setNotification: (notification?: AddNotification) => null,
-  clearNotification: (id: number) => null,
-};
-
-export type NotificationsContextValue = typeof defaultApi;
-
-export const NotificationsContext = React.createContext<NotificationsContextValue>(
-  defaultApi
-);
-
-export const NotificationsProvider = ({ children }: any): JSX.Element => {
+export const NotificationsProvider = ({
+  children,
+}: NotificationsProviderProps): JSX.Element => {
   const [notifications, setNotifications] = React.useState<Notification[]>(
-    defaultApi.notifications
+    DEFAULT_API.notifications
   );
 
   const clearNotification = React.useCallback(
@@ -40,16 +31,33 @@ export const NotificationsProvider = ({ children }: any): JSX.Element => {
 
   const setNotification = React.useCallback(
     (notification: AddNotification) => {
-      const id = new Date().getTime();
+      const id = notification?.id || new Date().getTime();
+      const tag = notification?.tag || NotificationTags.DEFAULT;
+
+      const content = notification.content ? (
+        React.cloneElement(notification?.content, { id })
+      ) : (
+        <DefaultErrorNotification id={id} />
+      );
 
       const nextNotifications = notifications.concat({
-        id,
-        content: <DefaultErrorNotification id={notification?.id || id} />,
         ...notification,
+        content,
+        id,
+        tag,
       } as Notification);
       setNotifications(nextNotifications);
     },
     [notifications, setNotifications]
+  );
+
+  const notificationsByTag = React.useCallback(
+    (tag: NotificationTags) => {
+      if (tag === NotificationTags.ALL) return notifications;
+
+      return notifications.filter((notification) => notification.tag === tag);
+    },
+    [notifications]
   );
 
   return (
@@ -58,6 +66,7 @@ export const NotificationsProvider = ({ children }: any): JSX.Element => {
         notifications,
         setNotification,
         clearNotification,
+        notificationsByTag,
       }}
     >
       {children}
@@ -65,4 +74,5 @@ export const NotificationsProvider = ({ children }: any): JSX.Element => {
   );
 };
 
-export const useNotifications = () => React.useContext(NotificationsContext);
+export const useNotifications = (): NotificationsContextValue =>
+  React.useContext(NotificationsContext);
