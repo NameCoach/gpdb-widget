@@ -1,0 +1,17 @@
+.m_10 {
+  composes: m_10 from "../../../styles/outlook.css";
+}
+
+.title {
+  composes: title from "../../../styles/outlook.css";
+}
+
+.container {
+  composes: container from "../../../styles/outlook.css";
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
