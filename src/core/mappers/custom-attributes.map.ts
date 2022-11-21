@@ -40,4 +40,20 @@ const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
   });
 };
 
+const CheckboxValueMapper = (value) => value === true;
+const DropdownValueMapper = (value) => value;
+const TextboxValueMapper = (value) => value?.toString() || "";
+const TextareaValueMapper = TextboxValueMapper;
+
+const MAPPERS = {
+  [AttributePresentation.Checkbox]: CheckboxValueMapper,
+  [AttributePresentation.Dropdown]: DropdownValueMapper,
+  [AttributePresentation.Textarea]: TextareaValueMapper,
+  [AttributePresentation.Textbox]: TextboxValueMapper,
+};
+
+export const valueMapperFunc = (presentation) => (value) => {
+  return MAPPERS[presentation](value);
+};
+
 export default customAttributesMap;

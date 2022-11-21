@@ -8,90 +8,156 @@ import { useRestorePronunciationFeatures } from "../features/restore_pronunciati
 import { useUserResponseFeatures } from "../features/user_response";
 import { useRecordingRequestFeatures } from "../features/recording_request";
 import { useRecorderFeatures } from "../features/recorder";
+import { UserPermissions } from "../../types/permissions";
+import { useShowWidgetBlocks } from "../features/widget_blocks";
+import ControllerContext from "../contexts/controller";
+import { useContext } from "react";
+import IStyleContext from "../../types/style-context";
+import StyleContext from "../contexts/style";
+import IFrontController from "../../types/front-controller";
+import useCustomFeatures from "./useCustomFeatures";
 
 interface FeaturesManager {
   readonly can: (name: string, ...rest: any[]) => boolean;
   readonly show: (name: string, ...rest: any[]) => boolean;
 }
 
+export enum ShowComponents {
+  RecorderRecordButton = "recorderRecordButton",
+  SelfRecorderAction = "selfRecorderAction",
+  CustomAttributesForSelf = "customAttributesForSelf",
+  PronunciationsBlock = "showPronunciationsBlock",
+  PersonalBlock = "showPersonalBlock",
+  SearchWidget = "showSearchWidget",
+}
+
+export enum CanComponents {
+   CreateRecordingRequest = "createRecordingRequest",
+   FindRecordingRequest = "findRecordingRequest",
+   RestoreOrgPeerPronunciation = "restoreOrgPeerPronunciation",
+   RestoreSelfPronunciation = "restoreSelfPronunciation",
+   Restore = "restore",
+   CreateUserResponse = "createUserResponse",
+   UserResponse = "userResponse",
+   DestroyPronunciation = "destroyPronunciation",
+   CustomDestroy = "customDestroy",
+   CreateSelfRecording = "createSelfRecording",
+   CreateOrgPeerRecording = "createOrgPeerRecording",
+   RecordNameBadge = "recordNameBadge",
+   Pronunciation = "pronunciation",
+   CreateCustomAttributes = "createCustomAttributes",
+   EditCustomAttributesForSelf= "editCustomAttributesForSelf",
+}
+
 const useFeaturesManager = (
-  permissionsManager: IPermissionsManager,
-  customFeaturesManager: ICustomFeaturesManager
+  permissionsManager?: IPermissionsManager,
+  customFeaturesManager?: ICustomFeaturesManager,
+  enforcedPermissions?: UserPermissions
 ): FeaturesManager => {
+  const controller = useContext<IFrontController>(ControllerContext);
+  const styleContext = useContext<IStyleContext>(StyleContext);
+  const customFeatures = useCustomFeatures(controller, styleContext);
+
+  const _permissionsManager = permissionsManager ? permissionsManager : controller.permissions;
+  const _customFeaturesManager = customFeaturesManager ? customFeaturesManager : customFeatures;
+
   const { canPronunciation, canUserResponse } = usePermissions(
-    permissionsManager
+    _permissionsManager,
+    enforcedPermissions
   );
 
   const {
     canCreateCustomAttributes,
     showCustomAttributesForSelf,
     canEditCustomAttributesForSelf,
-  } = useCustomAttributesFeatures(permissionsManager);
+  } = useCustomAttributesFeatures(_permissionsManager, enforcedPermissions);
 
   const {
     canRecordNameBadge,
     canCreateOrgPeerRecording,
     canCreateSelfRecording,
-  } = useCreatePronunciationFeatures(permissionsManager, customFeaturesManager);
+  } = useCreatePronunciationFeatures(
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
+  );
 
   const {
     customDestroy,
     canDestroyPronunciation,
   } = useDestroyPronunciationFeatures(
-    permissionsManager,
-    customFeaturesManager
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
   );
 
   const {
     canRestoreSelfPronunciation,
     canRestoreOrgPeerPronunciation,
     canRestore,
-  } = useRestorePronunciationFeatures(permissionsManager);
+  } = useRestorePronunciationFeatures(_permissionsManager, enforcedPermissions);
 
   const { canCreateUserResponse } = useUserResponseFeatures(
-    permissionsManager,
-    customFeaturesManager
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
   );
 
   const {
     canCreateRecordingRequest,
     canFindRecordingRequest,
-  } = useRecordingRequestFeatures(permissionsManager);
+  } = useRecordingRequestFeatures(_permissionsManager, enforcedPermissions);
 
   const {
     showRecorderRecordButton,
     showSelfRecorderAction,
-  } = useRecorderFeatures(permissionsManager, customFeaturesManager);
+  } = useRecorderFeatures(
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
+  );
+
+  const {
+    showPronunciationsBlock,
+    showPersonalBlock,
+    showSearchWidget,
+  } = useShowWidgetBlocks(
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
+  );
 
   const showContext = {
-    recorderRecordButton: showRecorderRecordButton,
-    selfRecorderAction: showSelfRecorderAction,
-
-    customAttributesForSelf: showCustomAttributesForSelf,
+    [ShowComponents.RecorderRecordButton]: showRecorderRecordButton,
+    [ShowComponents.SelfRecorderAction]: showSelfRecorderAction,
+    [ShowComponents.CustomAttributesForSelf]: showCustomAttributesForSelf,
+    [ShowComponents.PronunciationsBlock]: showPronunciationsBlock,
+    [ShowComponents.PersonalBlock]: showPersonalBlock,
+    [ShowComponents.SearchWidget]: showSearchWidget,
   };
 
   const canContext = {
-    createRecordingRequest: canCreateRecordingRequest,
-    findRecordingRequest: canFindRecordingRequest,
+    [CanComponents.CreateRecordingRequest]: canCreateRecordingRequest,
+    [CanComponents.FindRecordingRequest]: canFindRecordingRequest,
 
-    restoreOrgPeerPronunciation: canRestoreOrgPeerPronunciation,
-    restoreSelfPronunciation: canRestoreSelfPronunciation,
-    restore: canRestore,
+    [CanComponents.RestoreOrgPeerPronunciation]: canRestoreOrgPeerPronunciation,
+    [CanComponents.RestoreSelfPronunciation]: canRestoreSelfPronunciation,
+    [CanComponents.Restore]: canRestore,
 
-    createUserResponse: canCreateUserResponse,
-    userResponse: canUserResponse,
+    [CanComponents.CreateUserResponse]: canCreateUserResponse,
+    [CanComponents.UserResponse]: canUserResponse,
 
-    destroyPronunciation: canDestroyPronunciation,
-    customDestroy: customDestroy,
+    [CanComponents.DestroyPronunciation]: canDestroyPronunciation,
+    [CanComponents.CustomDestroy]: customDestroy,
 
-    createSelfRecording: canCreateSelfRecording,
-    createOrgPeerRecording: canCreateOrgPeerRecording,
-    recordNameBadge: canRecordNameBadge,
+    [CanComponents.CreateSelfRecording]: canCreateSelfRecording,
+    [CanComponents.CreateOrgPeerRecording]: canCreateOrgPeerRecording,
+    [CanComponents.RecordNameBadge]: canRecordNameBadge,
 
-    pronunciation: canPronunciation,
+    [CanComponents.Pronunciation]: canPronunciation,
 
-    createCustomAttributes: canCreateCustomAttributes,
-    editCustomAttributesForSelf: canEditCustomAttributesForSelf,
+    [CanComponents.CreateCustomAttributes]: canCreateCustomAttributes,
+    [CanComponents.EditCustomAttributesForSelf]: canEditCustomAttributesForSelf,
   };
 
   const can = (name: string, ...rest): boolean => canContext[name](...rest);
