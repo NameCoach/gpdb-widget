@@ -3,6 +3,7 @@ import { useCreatePronunciationFeatures } from "./create_pronunciation";
 import { FeaturesManager as ICustomFeaturesManager } from "../customFeaturesManager";
 import Pronunciation from "../../types/resources/pronunciation";
 import { useDestroyPronunciationFeatures } from "./destroy_pronunciation";
+import { UserPermissions } from "../../types/permissions";
 
 interface RecorderFeatures {
   readonly showRecorderRecordButton: (
@@ -14,17 +15,23 @@ interface RecorderFeatures {
 
 export const useRecorderFeatures = (
   permissionsManager: IPermissionsManager,
-  customFeaturesManager: ICustomFeaturesManager
+  customFeaturesManager: ICustomFeaturesManager,
+  enforcedPermissions?: UserPermissions
 ): RecorderFeatures => {
   const {
     canCreateOrgPeerRecording,
     canCreateSelfRecording,
     canRecordNameBadge,
-  } = useCreatePronunciationFeatures(permissionsManager, customFeaturesManager);
+  } = useCreatePronunciationFeatures(
+    permissionsManager,
+    customFeaturesManager,
+    enforcedPermissions
+  );
 
   const { canDestroyPronunciation } = useDestroyPronunciationFeatures(
     permissionsManager,
-    customFeaturesManager
+    customFeaturesManager,
+    enforcedPermissions
   );
 
   const showSelfRecorderAction = (pronunciation: Pronunciation): boolean =>
