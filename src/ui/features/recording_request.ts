@@ -1,4 +1,5 @@
 import IPermissionsManager from "gpdb-api-client/build/main/types/permissions-manager";
+import { UserPermissions } from "../../types/permissions";
 import usePermissions from "../hooks/usePermissions";
 
 interface RecordingRequestFeatures {
@@ -8,9 +9,14 @@ interface RecordingRequestFeatures {
 }
 
 export const useRecordingRequestFeatures = (
-  permissionsManager: IPermissionsManager
+  permissionsManager: IPermissionsManager,
+  enforcedPermissions?: UserPermissions
 ): RecordingRequestFeatures => {
-  const { canRecordingRequest } = usePermissions(permissionsManager);
+  const { canRecordingRequest } = usePermissions(
+    permissionsManager,
+    enforcedPermissions
+  );
+
   const canCreateRecordingRequest = (): boolean =>
     canRecordingRequest("create");
 

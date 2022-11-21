@@ -26,6 +26,7 @@ import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/
 import customAttributesMap, {
   CustomAttributeObject,
 } from "./mappers/custom-attributes.map";
+import searchResultsToSuggestions from "./utils/search-result-to-suggestions";
 
 // TODO: provide error handling and nullable responses
 
@@ -46,7 +47,7 @@ export default class FrontController implements IFrontController {
     nameOwnerSignature?: string
   ): boolean {
     const ownerSignature = nameOwnerSignature || this.nameOwnerContext.signature;
-    return ownerSignature === this.userContext.signature
+    return ownerSignature === this.userContext.signature;
   }
 
   async complexSearch(
@@ -281,6 +282,24 @@ export default class FrontController implements IFrontController {
     } catch (e) {
       console.log(`sendAnalytics error: ${e}`);
     }
+  }
+
+  async getSuggestions(name: string): Promise<any> {
+    const trimmedName = name.trim();
+
+    const foundNames = await this.namesApi.searchNames(
+      trimmedName,
+      this.apiClient.application.instanceSig
+    );
+
+    // TODO: move suggestions formation to backend
+    const names = searchResultsToSuggestions(
+      name,
+      foundNames.fullName,
+      foundNames.allNames
+    );
+
+    return names;
   }
 
   async verifyNames(name: string): Promise<any> {
