@@ -82,7 +82,7 @@ const CustomInput = ({
         return Dropdown();
       case AttributePresentation.Textarea:
         return Textarea();
-      case AttributePresentation.TextBox:
+      case AttributePresentation.Textbox:
         return Textbox();
     }
   };

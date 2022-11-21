@@ -9,8 +9,18 @@ import image from "@rollup/plugin-image";
 import simplevars from "postcss-simple-vars";
 import packageJson from "./package.json";
 import variables from "./src/ui/styles/variables/all.ts";
+import json from "@rollup/plugin-json";
+import svgr from "@svgr/rollup";
+import md5 from "md5";
 
-const modules = process.platform === "win32" ? { root: "." } : true;
+const modules =
+  process.platform === "win32"
+    ? { root: "." }
+    : {
+        generateScopedName: `[name]__[local]___[hash:base64:5]__[${md5(
+          Date.now()
+        )}]`,
+      };
 
 export default {
   input: "src/index.tsx",
@@ -32,6 +42,7 @@ export default {
     commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
     image(),
+    svgr(),
     postcss({
       extensions: [".css"],
       modules: modules,
@@ -43,5 +54,6 @@ export default {
         }),
       ],
     }),
+    json(),
   ],
 };
