@@ -1,9 +1,21 @@
 import React from "react";
+import { NotificationTags } from "../../../types/notifications";
 import { useNotifications } from "../../hooks/useNotification";
+import useTheme from "../../hooks/useTheme";
 import styles from "./styles.module.css";
 
-const Notification = (): JSX.Element => {
-  const { notifications, clearNotification } = useNotifications();
+interface Props {
+  tag?: NotificationTags;
+}
+
+const Notification = ({
+  tag = NotificationTags.DEFAULT,
+}: Props): JSX.Element => {
+  const { clearNotification, notificationsByTag } = useNotifications();
+
+  const { theme } = useTheme();
+
+  const notifications = notificationsByTag(tag);
 
   return (
     <>
@@ -11,7 +23,7 @@ const Notification = (): JSX.Element => {
         if (autoclose) setTimeout(() => clearNotification(id), autoclose);
 
         return (
-          <div key={id} className={styles.notification__container}>
+          <div key={id} className={styles[theme]}>
             {content}
           </div>
         );
