@@ -1,0 +1,96 @@
+:root {
+  --tooltip-arrow-size: 6px;
+}
+
+.modal_wrapper {
+  /* display: inline-block; */
+  position: relative;
+  align-self: center;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.tooltip_tip{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 100;
+  white-space: nowrap;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-color: $colors_dark_grey;
+  color: $colors_white;
+  background: $colors_darker_brand;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 10px
+}
+
+
+.tooltip_tip::before {
+  content: " ";
+  left: 80%;
+  border: solid transparent;
+  height: 0;
+  width: 1px;
+  position: absolute;
+  pointer-events: none;
+  border-width: var(--tooltip-arrow-size);
+  margin-left: calc(var(--tooltip-arrow-size) * -1);
+}
+
+.tooltip_tip.closable {
+  margin-left: 4px;
+}
+
+.tooltip_tip.top::before {
+  top: 100%;
+  border-top-color: $colors_darker_brand;
+}
+
+/* CSS border triangles */
+.tooltip_tip.right::before {
+  left: 85.7%;
+}
+
+/* CSS border triangles */
+.tooltip_tip.left::before {
+  left: 12%;
+}
+
+.title {
+  display: flex;
+  line-height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.tooltip_button {
+  background: white;
+  border: solid 1px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  padding: 5px 5px;
+  margin: 2px;
+  color: $colors_dark_grey;
+}
+
+.column_actions {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.inline_actions {
+  display: flex;
+  flex-direction: row;
+}
