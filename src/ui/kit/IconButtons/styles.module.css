@@ -1,0 +1,31 @@
+.icon_button {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.disabled {
+    pointer-events:none;
+    opacity: 0.4;
+}
+
+.modal {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+}
+
+.no_background {
+    background-color: unset !important;
+}
+
+.square_20 {
+    height: 20px;
+    width: 20px;
+}
+
+.max_height_24 {
+    max-height: 24px;
+}

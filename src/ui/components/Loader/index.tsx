@@ -10,12 +10,14 @@ interface Props {
 const cx = classNames.bind(styles);
 
 const Loader = (props: Props) => (
-  <div
-    className={cx(styles.loader, {
-      loader__inline: props.inline,
-      loader__sm: props.sm,
-    })}
-  />
+  <div>
+    <div
+      className={cx(styles.loader, {
+        loader__inline: props.inline,
+        loader__sm: props.sm,
+      })}
+    />
+  </div>
 );
 
 export default Loader;

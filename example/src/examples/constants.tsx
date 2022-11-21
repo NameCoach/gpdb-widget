@@ -246,3 +246,68 @@ export const TERMS_AND_CONDITIONS_REQUEST_RESULT = {
         `,
     },
 }
+
+// Redesigned Welcome message data below. Just in case it will be lost from BE tables.
+// data: {
+//   elements: [
+//     {
+//       id: "title",
+//       name: "title",
+//       type: "raw-html",
+//       data: `
+//         <div class="row">
+//           <h4 class="message_header">Welcome</h4>
+//         </div>
+//       `,
+//     },
+//     {
+//       id: "message",
+//       name: "message",
+//       type: "raw-html",
+//       data: `
+//         <div class="row">
+//           <p class="message">
+//             Thank you for installing the NameCoach add-in!
+//             <br/>
+//             <br/>
+//             Now you can easily record and access accurate audio name pronunciations for your contacts.
+//             <br/>
+//             <br/>
+//             Before getting started please read <a href="https://us-nc-files.s3.us-east-1.amazonaws.com/outlook-add-in-docs/outlook-add-in-eula.pdf" target="_blank">this document</a>.
+//             <br/>
+//             <br/>
+//             By clicking on the ‘Get started’ button you accept the terms of use provided in the document.
+//           </p>
+//         </div>
+//       `,
+//     }
+//   ],
+//   closeAction: {
+//     callBackAction: true,
+//     callBackComponent: true,
+//     text: "Get started!",
+//   },
+//   generalStyles: `
+//     .row {
+//       display: flex;
+//       flex-direction: row;
+//       align-items: flex-start;
+//       width: 100%;
+//     }
+    
+//     .message_header {
+//       font-size: 18px;
+//       font-weight: 700;
+//       margin: 0;
+//       color: $colors_dark_grey;
+//       width: 100%;
+//       text-align: center;
+//     }
+
+//     .message {
+//       font-size: 16px;
+//       font-weight: 500;
+//     }
+//   `
+// }
+// }
