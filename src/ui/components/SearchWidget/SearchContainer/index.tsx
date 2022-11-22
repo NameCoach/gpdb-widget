@@ -28,10 +28,18 @@ const permissions = {
   },
 };
 
-const replaceSplitter = (string: string): string => {
-  if (string.includes(",")) return string.split(",").join(" ");
+const sanitizeString = (searchInput: string): string => {
+  const splittedNames = searchInput
+    .split(",")
+    .join(" ")
+    .split(".")
+    .join(" ")
+    .split(" ");
+  const trimmedNames = splittedNames.filter((name) => {
+    if (name !== " ") return name.trim();
+  });
 
-  return string;
+  return trimmedNames.join(" ");
 };
 
 const SearchContainer = (props: Props): JSX.Element => {
@@ -43,28 +51,43 @@ const SearchContainer = (props: Props): JSX.Element => {
   const [names, setNames] = useState([] as NameOption[]);
   const [loading, setLoading] = useState(false);
 
-  const onSearchSubmit = useCallback((name: string): void => {
-    if (name === "") return;
+  const onSubmitSearch = useCallback((searchInput: string): void => {
+    if (searchInput === "") return;
 
-    const _name = replaceSplitter(name);
+    const isEmail = searchInput.includes("@");
 
-    const nameIsEmail = _name.includes("@");
-    const ownerSignature = nameIsEmail ? _name : DEFAULT_NAME_OWNER;
+    if (isEmail) {
+      const namesObj = [
+        {
+          key: searchInput,
+          value: searchInput,
+          owner: { signature: searchInput },
+        },
+      ];
 
-    const _names = [
-      {
-        key: _name,
-        value: _name,
-        owner: { signature: ownerSignature },
-      },
-    ];
+      setNames(namesObj);
+    } else {
+      const value = sanitizeString(searchInput);
+      const namesObj = [
+        {
+          key: value,
+          value,
+          owner: { signature: DEFAULT_NAME_OWNER },
+        },
+      ];
 
-    setNames(_names);
+      setNames(namesObj);
+    }
     setLoading(true);
   }, []);
 
-  const onInputChange = (): void => setNames([]);
+  const clearNames = (): void => {
+    if (names.length > 0) setNames([]);
+  };
+
   const onNamesLoaded = (): void => setLoading(false);
+
+  console.log("names: ", names);
 
   return (
     <div className={cx(styles.container)}>
@@ -73,8 +96,8 @@ const SearchContainer = (props: Props): JSX.Element => {
       </div>
 
       <SearchBar
-        onSubmit={onSearchSubmit}
-        onInputChange={onInputChange}
+        onSubmit={onSubmitSearch}
+        onInputChange={clearNames}
         controller={props.controller}
       />
 
