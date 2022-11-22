@@ -87,8 +87,6 @@ const SearchContainer = (props: Props): JSX.Element => {
 
   const onNamesLoaded = (): void => setLoading(false);
 
-  console.log("names: ", names);
-
   return (
     <div className={cx(styles.container)}>
       <div aria-label={title} className={cx(styles.title, styles.m_10)}>
