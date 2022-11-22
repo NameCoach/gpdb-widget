@@ -11,10 +11,7 @@ import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
 
-interface Props {
-  termsAndConditions?: TermsAndConditions;
-  controller: IFrontController;
-}
+const UNPERMITTED_INPUT_CHARS_REGEXP = /\.|,|\/|!|#|\$|%|\^|&|\*|\(|\)|_|\+|=|\{|\}|\[|\]|\||:|;|'|"|\\|>|<|\?|`|~/g;
 
 const cx = classNames.bind(styles);
 
@@ -28,19 +25,20 @@ const permissions = {
   },
 };
 
-const sanitizeString = (searchInput: string): string => {
-  const splittedNames = searchInput
-    .split(",")
-    .join(" ")
-    .split(".")
-    .join(" ")
-    .split(" ");
+const sanitizeNames = (namesString: string): string => {
+  const names = namesString.replace(UNPERMITTED_INPUT_CHARS_REGEXP, " ");
+  const splittedNames = names.split(" ");
   const trimmedNames = splittedNames.filter((name) => {
     if (name !== " ") return name.trim();
   });
 
   return trimmedNames.join(" ");
 };
+
+interface Props {
+  termsAndConditions?: TermsAndConditions;
+  controller: IFrontController;
+}
 
 const SearchContainer = (props: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
@@ -67,7 +65,7 @@ const SearchContainer = (props: Props): JSX.Element => {
 
       setNames(namesObj);
     } else {
-      const value = sanitizeString(searchInput);
+      const value = sanitizeNames(searchInput);
       const namesObj = [
         {
           key: value,
