@@ -17,7 +17,7 @@
 .label_container {
   margin-bottom: 10.5px;
   line-height: 17px;
-  height: 17px;
+  min-height: 17px;
 }
 
 .label {
