@@ -5,8 +5,9 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import CustomAttributes from "../Outlook/CustomAttributes";
 import StyleContext from "../../contexts/style";
-import useFeaturesManager, { CanComponents } from "../../hooks/useFeaturesManager";
-import useCustomFeatures from "../../hooks/useCustomFeatures";
+import useFeaturesManager, {
+  CanComponents,
+} from "../../hooks/useFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import Pronunciation from "../../../types/resources/pronunciation";
 import ControllerContext from "../../../../src/ui/contexts/controller";
@@ -14,6 +15,7 @@ import IStyleContext from "../../../types/style-context";
 import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import Actions from "./Actions";
 import useCustomAttributes from "../../hooks/useCustomAttributes";
+import Gap from "../../kit/Gap";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -63,7 +65,7 @@ const MyInfo = ({
     <>
       {canEditCustomAttributes && (
         <div className={cx(styles.block, styles.column)}>
-          <div className={cx(styles.row)}>
+          <div className={cx(styles.row, styles.height_22)}>
             <div>
               <span className={styles.title}>
                 {t("my_info_section_custom_attributes")}
@@ -80,6 +82,8 @@ const MyInfo = ({
             />
           </div>
 
+          <Gap height={20} />
+
           <div className={cx(styles.row)}>
             {((): JSX.Element => {
               if (inEdit)
@@ -93,10 +97,12 @@ const MyInfo = ({
                 );
               else {
                 if (customAttrsPresent)
-                  return <CustomAttributesInspector
-                    data={data}
-                    pronunciation={pronunciation}
-                  />;
+                  return (
+                    <CustomAttributesInspector
+                      data={data}
+                      pronunciation={pronunciation}
+                    />
+                  );
                 else
                   return (
                     <div className={styles.tip_container}>

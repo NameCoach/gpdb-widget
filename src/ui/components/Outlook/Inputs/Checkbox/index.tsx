@@ -11,9 +11,9 @@ const Checkbox = ({
   value,
   label,
   disabled,
-  onUpdate,
+  onChange,
 }: CustomAttributesInputsProps): JSX.Element => {
-  const onClick = () => onUpdate(!value);
+  const onClick = (): void => onChange(id, !value);
 
   return (
     <div className={cx(styles.checkbox_container, styles.row)}>
