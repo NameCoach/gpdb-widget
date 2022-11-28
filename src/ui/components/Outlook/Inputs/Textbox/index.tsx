@@ -3,7 +3,6 @@ import { CustomAttributesInputsProps } from "../types";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 
-const DEBOUNCE = 200; //miliseconds
 const cx = classNames.bind(styles);
 
 const Textbox = ({
@@ -12,10 +11,10 @@ const Textbox = ({
   label,
   disabled,
   metadata,
-  onUpdate,
+  onChange,
   hasErrors,
 }: CustomAttributesInputsProps): JSX.Element => {
-  const _onUpdate = (event) => onUpdate(event.target.value);
+  const onInputChange = ({ target: { value } }): void => onChange(id, value);
 
   return (
     <div className={cx(styles.textbox_container, styles.column)}>
@@ -27,8 +26,8 @@ const Textbox = ({
       <div className={cx(styles.row)}>
         <input
           id={id}
-          onChange={_onUpdate}
-          className={cx(styles.input, {has_errors: hasErrors})}
+          onChange={onInputChange}
+          className={cx(styles.input, { has_errors: hasErrors })}
           name={label}
           placeholder={metadata?.placeholder}
           value={String(value)}
