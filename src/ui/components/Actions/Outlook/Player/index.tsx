@@ -1,10 +1,11 @@
 import React from "react";
 import Loader from "../../../Loader";
-import Tooltip from "../../../Tooltip";
+import Tooltip from "../../../../kit/Tooltip";
 import useSpeakerAttrs from "../../../../hooks/useSpeakerAttrs";
 import usePlayer from "../../../../hooks/usePlayer";
 import { AudioSource } from "../../../../../types/resources/pronunciation";
 import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -35,17 +36,26 @@ const Player = ({
     currentAudio,
   });
 
+  const tooltip = useTooltip<HTMLButtonElement>();
+
   return (
     <>
-      <Tooltip id={tooltipId} />
-
       {audioReady ? (
-        <SpeakerComponent
-          onClick={play}
-          iconOptions={{ playing: isPlaying }}
-          data-tip={speakerTip}
-          data-for={tooltipId}
-        />
+        <div>
+          <Tooltip
+            id={tooltipId}
+            opener={tooltip.opener}
+            rightArrow
+            ref={tooltip.tooltipRef}
+          >
+            {speakerTip}
+          </Tooltip>
+          <SpeakerComponent
+            ref={tooltip.openerRef}
+            onClick={play}
+            iconOptions={{ playing: isPlaying }}
+          />
+        </div>
       ) : (
         <Loader inline sm />
       )}

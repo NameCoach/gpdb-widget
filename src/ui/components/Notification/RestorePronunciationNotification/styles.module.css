@@ -1,12 +1,10 @@
 .undo__button {
-  background-color: $colors_grey;
-  color: $colors_white;
   cursor: pointer;
-  border: none;
-  box-sizing: border-box;
   font-weight: 600;
   font-size: 14px;
   padding: 5px 4px;
+  background-color: $colors_grey;
+  color: $colors_white;
 }
 
 .undo__button:hover {
@@ -24,8 +22,4 @@
 .btn__link {
   composes: btn__link from "../../../styles/outlook.css";
   color: #FFFFFF !important;
-}
-
-.text_container {
-  min-width: 270px;
 }
