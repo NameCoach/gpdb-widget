@@ -1,5 +1,4 @@
 .inspector_container {
-  margin: 3px 0;
 }
 
 .column {
@@ -29,14 +28,15 @@
 .label {
   font-size: 14px;
   font-weight: 500;
-  margin: 3px 0;
+  margin: 0;
   color: $colors_dark_grey;
 }
 
 .value {
+  min-height: 17px;
   font-size: 14px;
   font-weight: 400;
-  margin: 3px 0;
+  margin: 0;
   width: auto;
   width: 100%;
   overflow-y: auto;
@@ -73,4 +73,8 @@ div.inspector_container.row > div.row > p.value {
 .cross {
   background-size: 15px;
   background-image: url("./cross.svg");
+}
+
+.margin_bottom_6 {
+  margin-bottom: 6px;
 }
