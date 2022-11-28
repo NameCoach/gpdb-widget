@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 
 interface Props {
   width?: number;
@@ -7,18 +7,21 @@ interface Props {
   className?: string;
 }
 
+// this was created to be used in ie11, because flex gap is not supported
 const Gap = ({ width = 0, height = 0, box, className }: Props) => {
-  const style = box
-    ? {
-        width: box.toString() + "px",
-        height: box.toString() + "px",
-      }
-    : {
-        width: width.toString() + "px",
-        height: height.toString() + "px",
-      };
+  const style = useMemo(() => {
+    return box
+      ? {
+          width: box.toString() + "px",
+          height: box.toString() + "px",
+        }
+      : {
+          width: width.toString() + "px",
+          height: height.toString() + "px",
+        };
+  }, [width, height]);
 
   return <div style={style} className={className} />;
 };
 
-export default Gap;
+export default memo(Gap);
