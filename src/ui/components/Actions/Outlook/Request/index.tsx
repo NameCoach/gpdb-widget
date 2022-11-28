@@ -1,8 +1,9 @@
 import React, { MouseEventHandler } from "react";
-import Tooltip from "../../../Tooltip";
+import Tooltip from "../../../../kit/Tooltip";
 import IconButtons from "../../../../kit/IconButtons";
 import useTranslator from "../../../../hooks/useTranslator";
 import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 
 interface Props {
   disabled?: boolean;
@@ -16,17 +17,25 @@ const RequestAction = ({
   onClick,
 }: Props): JSX.Element => {
   const { t } = useTranslator();
+  const tooltip = useTooltip<HTMLButtonElement>();
 
   return (
-    <>
-      <Tooltip id={tooltipId} />
+    <div>
+      <Tooltip
+        id={tooltipId}
+        opener={tooltip.opener}
+        rightArrow
+        ref={tooltip.tooltipRef}
+      >
+        {t("tooltip_request_recording_tip")}
+      </Tooltip>
+
       <IconButtons.Request
+        ref={tooltip.openerRef}
         disabled={disabled}
         onClick={onClick}
-        data-tip={t("tooltip_request_recording_tip")}
-        data-for={tooltipId}
       />
-    </>
+    </div>
   );
 };
 
