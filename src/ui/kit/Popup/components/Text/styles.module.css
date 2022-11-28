@@ -1,0 +1,15 @@
+.container {
+  font-weight: 400;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  line-height: 17px;
+  display: flex;
+  margin: 0;
+  overflow-wrap: break-word;
+  text-align: center;
+}
