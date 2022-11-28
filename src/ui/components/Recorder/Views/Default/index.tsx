@@ -7,8 +7,7 @@ import Settings from "../../Components/Settings";
 import styles from "./styles.module.css";
 import ControllerContext from "../../../../contexts/controller";
 import Loader from "../../../Loader";
-import Tooltip from "../../../Tooltip";
-import { SAVE_PITCH_TIP } from "../../../../../constants";
+import Tooltip from "../../../../kit/Tooltip";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../../../core/userAgentManager";
 import StyleContext from "../../../../contexts/style";
@@ -17,6 +16,7 @@ import useTranslator from "../../../../hooks/useTranslator";
 import FailedStateContainer from "../../Components/FailedStateContainer";
 import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../constants";
 import { DefaultViewProps } from "../../types/views";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 
 const cx = classNames.bind(styles);
 
@@ -57,6 +57,7 @@ const DefaultView = ({
   const styleContext = useContext(StyleContext);
 
   const { t } = useTranslator(controller, styleContext);
+  const tooltip = useTooltip<HTMLButtonElement>();
 
   const { isDeprecated: isOld } = userAgentManager;
 
@@ -180,15 +181,21 @@ const DefaultView = ({
                   {t("recorder_back_button_default")}
                 </button>
 
-                <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-                  {t("recorder_save_pitch_button")}
-                </button>
-
-                <Tooltip
-                  uuid="save_pitch_tooltip_id"
-                  multiline
-                  eventOff="mouseout"
-                />
+                <div>
+                  <Tooltip
+                    id="save_pitch_tooltip_id"
+                    opener={tooltip.opener}
+                    ref={tooltip.tooltipRef}
+                    rightArrow
+                  >
+                    {t("save_pitch_tooltip_text")}
+                  </Tooltip>
+                  <button onClick={onSampleRateSave}
+                    ref={tooltip.openerRef}
+                  >
+                    {t("recorder_save_pitch_button")}
+                  </button>
+                </div>
               </>
             )}
 

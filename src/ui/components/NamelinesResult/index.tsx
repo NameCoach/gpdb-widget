@@ -18,14 +18,14 @@ import useCustomFeatures from "../../hooks/useCustomFeatures";
 import { UserPermissions } from "../../../types/permissions";
 import useOnRecorderClose from "../../hooks/PronunciationsBlock/useOnRecorderClose";
 import checkIfNameExist from "../../../core/utils/check-if-name-exists";
-import ModalTooltip from "../ModalTooltip";
-import { PresentationMode } from "../../../types/modal-tooltip";
 import { useNotifications } from "../../hooks/useNotification";
 import getDeleteNotificationTag from "../../../core/utils/get-delete-notification-tag";
 import { NotificationTags } from "../../../types/notifications";
 import Notification from "../Notification";
 import NewRecorder from "../NewRecorder";
 import useTranslator from "../../hooks/useTranslator";
+import usePopup from "../../kit/Popup/hooks/usePopup";
+import Popup from "../../kit/Popup";
 
 type UseNamePartsReturn = {
   nameParts: Name[];
@@ -44,12 +44,6 @@ interface Props {
 }
 
 const cx = classNames.bind(styles);
-
-const MODAL_TOOLTIP_STYLE: React.CSSProperties = {
-  position: "relative",
-  inset: "auto auto 7px 5px",
-  marginTop: "8px",
-};
 
 const NameLinesResult = ({
   nameOwner,
@@ -145,45 +139,51 @@ const NameLinesResult = ({
     return notifications.length > 0;
   };
 
+  const popup = usePopup<HTMLDivElement>();
+
   return (
     <>
       {nameParts.map((name, index) => (
         <React.Fragment key={name.key}>
-          <ModalTooltip
-            id={`pronunciations_block_${index}`}
-            showOnClick={false}
-            closable
-            isActive={showNotifications(getDeleteNotificationTag(name.type))}
-            mode={PresentationMode.Left}
-            tipStyle={MODAL_TOOLTIP_STYLE}
+          <Popup
+            opener={popup.opener}
+            ref={popup.popupRef}
+            fullWidth
+            show={showNotifications(getDeleteNotificationTag(name.type))}
           >
             <Notification tag={getDeleteNotificationTag(name.type)} />
-          </ModalTooltip>
+          </Popup>
 
-          {name.exist ? (
-            <NameLine
-              pronunciations={pronunciations[name.type]}
-              name={name.key}
-              type={name.type}
-              owner={nameOwner}
-              reload={reloadName}
-              canRecord={canRecordOrgPeer}
-              canUserResponse={canUserResponse} // can be removed and be checked inside the component
-              isRecorderOpen={isRecorderOpen && recorderNameType === name.type}
-              onRecorderClick={openRecorder}
-            />
-          ) : (
-            <AbsentName
-              name={name.key}
-              type={name.type}
-              owner={nameOwner}
-              canRecordingRequestCreate={canCreateRecordingRequest} // can be removed and be checked inside the component
-              canPronunciationCreate={canRecordOrgPeer}
-              canRecordingRequestFind={canFindRecordingRequest} // can be removed and be checked inside the component
-              isRecorderOpen={isRecorderOpen && recorderNameType === name.type}
-              onRecorderClick={openRecorder}
-            />
-          )}
+          <div ref={popup.openerRef}>
+            {name.exist ? (
+              <NameLine
+                pronunciations={pronunciations[name.type]}
+                name={name.key}
+                type={name.type}
+                owner={nameOwner}
+                reload={reloadName}
+                canRecord={canRecordOrgPeer}
+                canUserResponse={canUserResponse} // can be removed and be checked inside the component
+                isRecorderOpen={
+                  isRecorderOpen && recorderNameType === name.type
+                }
+                onRecorderClick={openRecorder}
+              />
+            ) : (
+              <AbsentName
+                name={name.key}
+                type={name.type}
+                owner={nameOwner}
+                canRecordingRequestCreate={canCreateRecordingRequest} // can be removed and be checked inside the component
+                canPronunciationCreate={canRecordOrgPeer}
+                canRecordingRequestFind={canFindRecordingRequest} // can be removed and be checked inside the component
+                isRecorderOpen={
+                  isRecorderOpen && recorderNameType === name.type
+                }
+                onRecorderClick={openRecorder}
+              />
+            )}
+          </div>
 
           {isRecorderOpen && !loading && recorderNameType === name.type && (
             <NewRecorder
