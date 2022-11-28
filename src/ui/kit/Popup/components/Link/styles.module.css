@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  font-weight: 400;
+  line-height: 17px;
+  font-size: 14px;
+}
+
+.link {
+  text-decoration-line: underline;
+  margin-top: 4px;
+  color: $colors_white;
+}
+
+.link:hover {
+  cursor: pointer;
+}
