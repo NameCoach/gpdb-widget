@@ -3,10 +3,11 @@ import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { AudioSource } from "../../../types/resources/pronunciation";
 import Loader from "../Loader";
-import Tooltip from "../Tooltip";
+import Tooltip from "../../kit/Tooltip";
 import useSpeakerAttrs from "../../hooks/useSpeakerAttrs";
 import usePlayer from "../../hooks/usePlayer";
 import generateTooltipId from "../../../core/utils/generate-tooltip-id";
+import useTooltip from "../../kit/Tooltip/hooks/useTooltip";
 
 interface Props {
   icon?: "speaker" | "playable";
@@ -39,23 +40,31 @@ const Player = ({
     currentAudio,
   });
 
+  const tooltip = useTooltip<HTMLDivElement>();
+
   return (
-    <div
-      className={cx(styles.player, className, {
-        player__active: isPlaying,
-      })}
-      onClick={play}
-    >
-      <Tooltip id={tooltipId} />
-      {audioReady ? (
-        <i
-          className={cx(speakerClassName)}
-          data-tip={speakerTip}
-          data-for={tooltipId}
-        />
-      ) : (
-        <Loader inline sm />
-      )}
+    <div>
+      <Tooltip
+        id={tooltipId}
+        opener={tooltip.opener}
+        ref={tooltip.tooltipRef}
+        rightArrow
+      >
+        {speakerTip}
+      </Tooltip>
+      <div
+        className={cx(styles.player, className, {
+          player__active: isPlaying,
+        })}
+        onClick={play}
+        ref={tooltip.openerRef}
+      >
+        {audioReady ? (
+          <i className={cx(speakerClassName)} />
+        ) : (
+          <Loader inline sm />
+        )}
+      </div>
     </div>
   );
 };
