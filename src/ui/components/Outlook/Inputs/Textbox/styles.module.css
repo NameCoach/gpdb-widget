@@ -1,7 +1,3 @@
-.textbox_container {
-  margin: 3px 0;
-}
-
 .column {
   display: flex;
   flex-direction: column;
@@ -19,8 +15,9 @@
 }
 
 .label_container {
-  margin: 6px 0;
-  height: auto;
+  margin-bottom: 10.5px;
+  line-height: 17px;
+  height: 17px;
 }
 
 .label {
@@ -57,10 +54,12 @@
 }
 
 .input.has_errors {
+  background-color: $redesign_colors_error_input_background;
   border: 1px solid $colors_red;
 }
 
 .input.has_errors:hover {
+  background-color: $redesign_colors_error_input_background;
   border: 1px solid $colors_red;
 }
 

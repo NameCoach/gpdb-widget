@@ -13,7 +13,9 @@ import {
   StyleContext,
   addOnDeviceChangeHandler,
   PronunciationMyInfoWidget,
-  IStyleContext, Theme
+  IStyleContext,
+  Theme,
+  Gap
 } from "gpdb-widget";
 import { useDebouncedCallback } from 'use-debounce';
 import { me, names } from "./examples/pronunciation-my-info-params";
@@ -110,7 +112,11 @@ const App = () => {
 
       <StyleContext.Provider value={styleContext}>
         {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
+
+        {<Gap height={32}/>}
+
         {!loading && <SearchWidget client={client} />}
+
         <div style={{marginTop: "30px"}}></div>
       </StyleContext.Provider>
     </div>
@@ -132,7 +138,9 @@ const App = () => {
       <NotificationsProvider>
         <div style={{ margin: "50px auto 0 auto", width: "320px" }}>
           <ScreenResizer />
+
           <LanguageSetter />
+
           { renderWelcomeScreen ?  <InfoWidget {...props} /> : <MainApp />}
         </div>
 
