@@ -113,7 +113,7 @@ const App = () => {
       <StyleContext.Provider value={styleContext}>
         {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
 
-        {<Gap height={32}/>}
+        {<Gap height={34}/>}
 
         {!loading && <SearchWidget client={client} />}
 
