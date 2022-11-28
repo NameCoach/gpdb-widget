@@ -16,9 +16,6 @@ export const ANALYTICS_API_URL =
 export const SEARCH_BOX_TIP =
   "Input the name you want to find pronunciation for. You can also find the name and its pronunciation by providing an email. If you want to find a fullname, please use whitespace or coma to separate the name parts.";
 
-export const SAVE_PITCH_TIP =
-  "Pitch settings changes do not effect already recorded pronunciation.<br>Please, re-record your pronunciation to apply the new settings.";
-
 export const DEVICES_CHANGED_MESSAGE =
   "The configuration of your media devices has changed. Please relaunch the NameCoach add-in in order to avoid issues with recording.";
 
