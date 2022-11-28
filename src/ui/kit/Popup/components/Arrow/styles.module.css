@@ -1,0 +1,15 @@
+.container {
+	position: fixed;
+  z-index: 224748363;
+}
+
+.triangle {
+	stroke-width: 8;
+	fill: $colors_darker_brand;
+	stroke: $colors_darker_brand;
+}
+
+.arrow {
+	filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
+	display: block;
+}

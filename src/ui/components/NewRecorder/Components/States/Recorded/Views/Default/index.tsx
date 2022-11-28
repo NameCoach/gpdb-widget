@@ -1,17 +1,17 @@
 import classNames from "classnames/bind";
 import React, { useContext } from "react";
-import { SAVE_PITCH_TIP } from "../../../../../../../../constants";
 import userAgentManager from "../../../../../../../../core/userAgentManager";
 import ControllerContext from "../../../../../../../contexts/controller";
 import useTranslator from "../../../../../../../hooks/useTranslator";
 import Player from "../../../../../../Player";
-import Tooltip from "../../../../../../Tooltip";
+import Tooltip from "../../../../../../../kit/Tooltip";
 import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../../../../constants";
 import RangeInput from "../../../../RangeInput";
 import Settings from "../../../../Settings";
 import { StateProps } from "../../types";
 
 import styles from "../../../../../styles/default/styles.module.css";
+import useTooltip from "../../../../../../../kit/Tooltip/hooks/useTooltip";
 
 const cx = classNames.bind(styles);
 
@@ -35,6 +35,7 @@ const DefaultView = ({
   const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
   const { t } = useTranslator(controller);
+  const tooltip = useTooltip<HTMLButtonElement>();
 
   return (
     <>
@@ -65,15 +66,22 @@ const DefaultView = ({
                 {t("recorder_back_button_default")}
               </button>
 
-              <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-                {t("recorder_save_pitch_button")}
-              </button>
-
-              <Tooltip
-                uuid="save_pitch_tooltip_id"
-                multiline
-                eventOff="mouseout"
-              />
+              <div>
+                <Tooltip
+                  id="save_pitch_tooltip_id"
+                  rightArrow
+                  opener={tooltip.opener}
+                  ref={tooltip.tooltipRef}
+                >
+                  {t("save_pitch_tooltip_text")}
+                </Tooltip>
+                <button 
+                  ref={tooltip.openerRef}
+                  onClick={onSampleRateSave}
+                >
+                  {t("recorder_save_pitch_button")}
+                </button>
+              </div>
             </>
           )}
 

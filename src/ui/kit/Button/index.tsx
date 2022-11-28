@@ -4,8 +4,8 @@ import { ButtonProps } from "../types";
 const Button = ({
   children,
   ...rest
-}: ButtonProps): React.ReactElement<ButtonProps> => {
-  return <button {...rest}>{children}</button>;
+}: ButtonProps, ref): React.ReactElement<ButtonProps> => {
+  return <button {...rest} ref={ref}>{children}</button>;
 };
 
-export default Button;
+export default React.forwardRef(Button);
