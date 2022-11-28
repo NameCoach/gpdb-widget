@@ -36,13 +36,13 @@ const CustomAttributesInspector = ({ data, pronunciation }: Props) => {
             if (presentation === AttributePresentation.Checkbox)
               Component = BooleanInspector;
 
-            return (
+            return value ? (
               <>
                 <Component key={index} value={value} label={label} />
 
                 {index !== data?.length - 1 && <Gap height={12} />}
               </>
-            );
+            ) : null;
           })}
         </div>
       )}
