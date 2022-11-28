@@ -7,12 +7,12 @@ export interface CustomAttributesInputsProps {
   disabled?: boolean;
   values?: string[];
   metadata?: Record<string, any>;
-  onUpdate: (any) => void;
   hasErrors?: boolean;
+  onChange?: (id: string, value: any) => void;
 }
 
 export interface CustomAttributesProps {
   disabled?: boolean;
   errors?: any[];
-  data: CustomAttributeObject[],
+  data: CustomAttributeObject[];
 }
