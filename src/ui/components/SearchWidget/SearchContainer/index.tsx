@@ -28,9 +28,7 @@ const permissions = {
 const sanitizeNames = (namesString: string): string => {
   const names = namesString.replace(UNPERMITTED_INPUT_CHARS_REGEXP, " ");
   const splittedNames = names.split(" ");
-  const trimmedNames = splittedNames.filter((name) => {
-    if (name !== " ") return name.trim();
-  });
+  const trimmedNames = splittedNames.filter((name) => !!name);
 
   return trimmedNames.join(" ");
 };
