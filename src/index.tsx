@@ -17,6 +17,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import ChangeableText from "./ui/components/ModalTooltip/ChangableText";
 import IconButtons from "./ui/kit/IconButtons";
 import Icons from "./ui/kit/Icons";
+import Gap from "./ui/kit/Gap";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -88,4 +89,5 @@ export {
   useTranslator,
   SupportedLanguages,
   UserAgentManager,
+  Gap,
 };
