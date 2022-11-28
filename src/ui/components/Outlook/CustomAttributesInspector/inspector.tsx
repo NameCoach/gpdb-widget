@@ -8,10 +8,17 @@ const Inspector = ({ label, value }) => {
   return (
     <>
       {value && (
-        <div className={cx(styles.inspector_container, styles.column)}>
-          <div className={cx(styles.row)}>
+        <div
+          className={cx(
+            styles.inspector_container,
+            styles.column,
+            styles.transition
+          )}
+        >
+          <div className={cx(styles.row, styles.margin_bottom_6)}>
             <p className={cx(styles.label)}>{label}</p>
           </div>
+
           <div className={styles.row}>
             <p className={cx(styles.value)}>{value}</p>
           </div>
