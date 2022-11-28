@@ -7,12 +7,12 @@ import { NameOwner } from "gpdb-api-client";
 import StyleContext from "../../contexts/style";
 import FullNameLine from "../FullNameLine";
 import useTranslator from "../../hooks/useTranslator";
-import ModalTooltip from "../ModalTooltip";
 import Notification from "../Notification";
 import { NotificationTags } from "../../../types/notifications";
 import { useNotifications } from "../../hooks/useNotification";
-import { PresentationMode } from "../../../types/modal-tooltip";
 import ShareRecording from "../ShareRecording";
+import usePopup from "../../kit/Popup/hooks/usePopup";
+import Popup from "../../kit/Popup";
 
 export interface NameOption {
   key: string;
@@ -33,12 +33,6 @@ export interface Props {
 
 const cx = classNames.bind(styles);
 
-const MODAL_TOOLTIP_STYLE: React.CSSProperties = {
-  position: "relative",
-  inset: "auto auto 7px 5px",
-  marginTop: "15px",
-};
-
 const MyRecording = ({
   pronunciation,
   name,
@@ -46,8 +40,6 @@ const MyRecording = ({
   isRecorderOpen,
   onRecorderOpen,
   showRecordAction,
-  myInfoHintShow,
-  canCreateSelfRecording,
 }: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
   const { t } = useTranslator(null, styleContext);
@@ -56,10 +48,7 @@ const MyRecording = ({
   const showNotifications =
     notificationsByTag(NotificationTags.DELETE_SELF).length > 0;
 
-  const unavailableHint = t(
-    "unavailable_hint",
-    "Your name recording is unavailable, click on the microphone icon to record your name"
-  );
+  const popup = usePopup<HTMLDivElement>();
 
   return (
     <div className={styles.block}>
@@ -72,24 +61,26 @@ const MyRecording = ({
         </div>
       </div>
 
-      <ModalTooltip
-        id="fullname_tooltip"
-        showOnClick={false}
-        closable
-        isActive={showNotifications}
-        mode={PresentationMode.Left}
-        tipStyle={MODAL_TOOLTIP_STYLE}
-      >
-        <Notification tag={NotificationTags.DELETE_SELF} />
-      </ModalTooltip>
-
-      <FullNameLine
-        pronunciation={pronunciation}
-        fullName={name.value}
-        showRecordAction={showRecordAction}
-        isRecorderOpen={isRecorderOpen}
-        onRecorderOpen={onRecorderOpen}
-      />
+      <div>
+        <Popup
+          opener={popup.opener}
+          ref={popup.popupRef}
+          fullWidth
+          closeable
+          show={showNotifications}
+        >
+          <Notification tag={NotificationTags.DELETE_SELF} />
+        </Popup>
+        <div ref={popup.openerRef}>
+          <FullNameLine
+            pronunciation={pronunciation}
+            fullName={name.value}
+            showRecordAction={showRecordAction}
+            isRecorderOpen={isRecorderOpen}
+            onRecorderOpen={onRecorderOpen}
+          />
+        </div>
+      </div>
     </div>
   );
 };
