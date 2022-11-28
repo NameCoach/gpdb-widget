@@ -1,4 +1,4 @@
-import React, { memo, useImperativeHandle, useState } from "react";
+import React, { memo, useEffect, useImperativeHandle, useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./styles.module.css";
@@ -14,10 +14,24 @@ import { cloneDeep } from "lodash";
 
 const cx = classNames.bind(styles);
 
+const errorArrayToObject = (errorsArray: any[]): { [x: string]: any } => {
+  const errorsObject = cloneDeep(errorsArray?.[0] || {});
+
+  Object.keys(errorsObject).forEach((key) => {
+    errorsObject[key] = errorsObject[key]?.reduce((acc, item) => {
+      return [...acc, ...item?.value];
+    }, []);
+  });
+
+  return errorsObject;
+};
+
 const CustomAttributes = (
-  { disabled, errors, data }: CustomAttributesProps,
+  { disabled, errors: propsErrors, data }: CustomAttributesProps,
   ref
 ): JSX.Element => {
+  const [errors, setErrors] = useState(errorArrayToObject(propsErrors));
+
   // Allow parent component to receive custom attributes data from above
   const [_data, setData] = useState<CustomAttributeObject[]>(cloneDeep(data));
   useImperativeHandle(ref, () => ({ data: _data }), [_data]);
@@ -28,24 +42,6 @@ const CustomAttributes = (
     setData(newData);
   };
 
-  const onCheckBoxUpdate = (id) => (value) => {
-    setAttributeValue(id, value);
-  };
-  const onSelectUpdate = (id) => (option) => {
-    setAttributeValue(id, option.value);
-  };
-  const onTextareaUpdate = (id) => (value) => {
-    setAttributeValue(id, value);
-  };
-  const onTextboxUpdate = onTextareaUpdate;
-
-  const HandlerPresentationMapper = {
-    [AttributePresentation.Checkbox]: onCheckBoxUpdate,
-    [AttributePresentation.Dropdown]: onSelectUpdate,
-    [AttributePresentation.Textbox]: onTextboxUpdate,
-    [AttributePresentation.Textarea]: onTextareaUpdate,
-  };
-
   const ComponentPresentationMapper = {
     [AttributePresentation.Checkbox]: Checkbox,
     [AttributePresentation.Dropdown]: Select,
@@ -53,32 +49,44 @@ const CustomAttributes = (
     [AttributePresentation.Textarea]: Textarea,
   };
 
+  const onInputChange = (id, value) => {
+    setAttributeValue(id, value);
+
+    const { [id]: _errorId, ...restErrors } = errors;
+
+    setErrors(restErrors);
+  };
+
+  useEffect(() => {
+    if (propsErrors.length > 0) {
+      const errs = errorArrayToObject(propsErrors);
+      setErrors(errs);
+    }
+  }, [propsErrors]);
+
   return (
     <div className={cx(styles.column)}>
       {_data.map(
         ({ presentation, id, value, values, label, metadata }, index) => {
           const Component = ComponentPresentationMapper[presentation];
-          const updateHandler = HandlerPresentationMapper[presentation](id);
-          const attributeErrors = errors
-            .find((e) => Object.keys(e).includes(id))
-            ?.[id]?.find((e) => Object.keys(e).includes("value"))?.value;
+          const errorMessages = errors[id] || [];
 
           return (
             <React.Fragment key={index}>
-              <Errors
-                id={`custom_attr_error_${id}`}
-                messages={attributeErrors}
-              />
               <Component
-                id={`custom_attr_${id}`}
+                id={id}
                 value={value}
                 label={label}
                 disabled={disabled}
                 values={values}
                 metadata={metadata}
-                onUpdate={updateHandler}
-                hasErrors={attributeErrors?.length > 0}
+                hasErrors={errorMessages.length > 0}
+                onChange={onInputChange}
               />
+
+              {presentation !== AttributePresentation.Checkbox && (
+                <Errors id={id} messages={errorMessages} />
+              )}
             </React.Fragment>
           );
         }

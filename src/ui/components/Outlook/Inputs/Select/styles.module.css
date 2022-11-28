@@ -1,7 +1,3 @@
-.select_container {
-  margin: 3px 0;
-}
-
 .column {
   display: flex;
   flex-direction: column;
@@ -19,8 +15,9 @@
 }
 
 .label_container {
-  margin: 6px 0;
-  height: auto;
+  margin-bottom: 8px;
+  line-height: 17px;
+  height: 17px;
 }
 
 .label {
