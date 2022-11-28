@@ -34,7 +34,7 @@ const Surface = ({ children }: SurfaceProps, ref): JSX.Element => {
     // if (fullWidth) return null;
 
     const containerWidth = container.offsetWidth;
-    const sideOffset = arrowSideOffset || DEFAULT_ARROW.sideOffset;
+    const sideOffset = typeof arrowSideOffset === "number" ? arrowSideOffset : DEFAULT_ARROW.sideOffset;
 
     if (fullWidth) return placeholderPosition.left + SURFACE_DEFAULT.paddingLeft;
     if (rightArrow) return openerPosition.right - containerWidth - (openerPosition.width - DEFAULT_ARROW.width)/2 + sideOffset;
