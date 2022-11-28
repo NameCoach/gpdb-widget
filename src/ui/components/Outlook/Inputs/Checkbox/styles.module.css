@@ -19,6 +19,7 @@
   font-size: 14px;
   margin: 0;
   color: $colors_dark_grey;
+  min-height: 17px;
 }
 
 .checked_icon {
