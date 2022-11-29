@@ -15,6 +15,8 @@ import styles from "./styles.module.css";
 import { PopupProps, Popup as PopupType, PopupRef } from "./types";
 import { PopupContext } from "./contexts/popup_context";
 
+const DefaultRect = typeof DOMRect === 'undefined' ? {left: 0, top: 0} as DOMRect : new DOMRect;
+
 const cx = classNames.bind(styles);
 
 const Popup = (props: PopupProps, ref: PopupRef): JSX.Element => {
@@ -22,13 +24,13 @@ const Popup = (props: PopupProps, ref: PopupRef): JSX.Element => {
 
   const [visible, setVisible] = useState<boolean>(show || false);
   const showPopup = !disabled && visible;
-  const [openerPosition, setOpenerPosition] = useState<DOMRect>(new DOMRect);
+  const [openerPosition, setOpenerPosition] = useState<DOMRect>(DefaultRect);
   const _popupRef = useRef<HTMLDivElement>(null);
   const [placeholderStyles, setPlaceholderStyles] = useState<CSSProperties>({});
   const [surface, setSurface] = useState<HTMLDivElement>(null);
-  const surfacePosition = surface?.getBoundingClientRect() || new DOMRect;
+  const surfacePosition = surface?.getBoundingClientRect() || DefaultRect;
   const surfaceRef = useCallback((ref) => { setSurface(ref); }, []);
-  const [placeholderPosition, setPlaceholderPosition] = useState<DOMRect>(new DOMRect);
+  const [placeholderPosition, setPlaceholderPosition] = useState<DOMRect>(DefaultRect);
   const [placeholder, setPlaceholder] = useState<HTMLDivElement>(null);
   const placeholderRef = useCallback((ref) => { setPlaceholder(ref) }, []);
 
@@ -91,7 +93,7 @@ const Popup = (props: PopupProps, ref: PopupRef): JSX.Element => {
 
     if (disabled && visible) setVisible(false);
 
-    if (disabled || !visible) setOpenerPosition(new DOMRect);
+    if (disabled || !visible) setOpenerPosition(DefaultRect);
 
     return () => window.removeEventListener("click", handleOuterClick);
   }, [visible, disabled]);
