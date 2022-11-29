@@ -9,6 +9,8 @@ import usePlayer from "../../hooks/usePlayer";
 import generateTooltipId from "../../../core/utils/generate-tooltip-id";
 import useTooltip from "../../kit/Tooltip/hooks/useTooltip";
 
+const PLAY_TOOLTIP_SIDE_OFFSET = 2;
+
 interface Props {
   icon?: "speaker" | "playable";
   autoplay?: boolean;
@@ -49,6 +51,7 @@ const Player = ({
         opener={tooltip.opener}
         ref={tooltip.tooltipRef}
         rightArrow
+        arrowSideOffset={PLAY_TOOLTIP_SIDE_OFFSET}
       >
         {speakerTip}
       </Tooltip>
