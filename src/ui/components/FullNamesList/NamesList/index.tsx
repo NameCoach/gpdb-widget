@@ -83,6 +83,7 @@ const NamesList = ({
           filterOption={filterOption(selectValue?.value)}
           notFirstSelected
           ref={selectRef}
+          placeholder={t("pronunciations_drop_down_placeholder")}
         />
       </div>
     </div>
