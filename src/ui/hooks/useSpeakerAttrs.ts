@@ -22,7 +22,7 @@ interface HookReturn {
   SpeakerComponent: IconButtonFC;
 }
 
-const useSpeakerAttrs = (audioCreator: AudioSource): HookReturn => {
+const useSpeakerAttrs = (audioCreator: AudioSource = null): HookReturn => {
   const { t } = useTranslator();
   
   const SPEAKERS_ATTRS = {
