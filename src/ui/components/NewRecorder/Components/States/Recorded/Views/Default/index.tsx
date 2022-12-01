@@ -9,9 +9,10 @@ import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../../../../constants";
 import RangeInput from "../../../../RangeInput";
 import Settings from "../../../../Settings";
 import { StateProps } from "../../types";
-
 import styles from "../../../../../styles/default/styles.module.css";
 import useTooltip from "../../../../../../../kit/Tooltip/hooks/useTooltip";
+import useSpeakerAttrs from "../../../../../../../hooks/useSpeakerAttrs";
+import generateTooltipId from "../../../../../../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind(styles);
 
@@ -19,23 +20,21 @@ const DefaultView = ({
   slider,
   openSlider,
   closeSlider,
-
   onDefaultSampleRateClick,
   onUpdateSampleRate,
   onSampleRateSave,
-
   sampleRate,
-
   audioUrl,
   handleOnRecorderClose,
-
   onSave,
   onStart,
 }: StateProps): JSX.Element => {
   const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
   const { t } = useTranslator(controller);
-  const tooltip = useTooltip<HTMLButtonElement>();
+  const playerTip = useTooltip<HTMLDivElement>();
+  const { speakerTip } = useSpeakerAttrs();
+  const savePitchTip = useTooltip<HTMLButtonElement>();
 
   return (
     <>
@@ -45,7 +44,22 @@ const DefaultView = ({
         })}
       >
         <div className={styles.inline}>
-          <Player audioSrc={audioUrl} icon="playable" className="player" />
+          <div>
+            <Tooltip
+              opener={playerTip.opener}
+              ref={playerTip.tooltipRef}
+              rightArrow
+              id={generateTooltipId("player")}
+            >
+              {speakerTip}
+            </Tooltip>
+            <Player
+              audioSrc={audioUrl}
+              icon="playable"
+              className="player"
+              ref={playerTip.openerRef}
+            />
+          </div>
           {!slider && <Settings onClick={openSlider} active={slider} />}
         </div>
       </div>
@@ -70,15 +84,12 @@ const DefaultView = ({
                 <Tooltip
                   id="save_pitch_tooltip_id"
                   rightArrow
-                  opener={tooltip.opener}
-                  ref={tooltip.tooltipRef}
+                  opener={savePitchTip.opener}
+                  ref={savePitchTip.tooltipRef}
                 >
                   {t("save_pitch_tooltip_text")}
                 </Tooltip>
-                <button 
-                  ref={tooltip.openerRef}
-                  onClick={onSampleRateSave}
-                >
+                <button ref={savePitchTip.openerRef} onClick={onSampleRateSave}>
                   {t("recorder_save_pitch_button")}
                 </button>
               </div>
