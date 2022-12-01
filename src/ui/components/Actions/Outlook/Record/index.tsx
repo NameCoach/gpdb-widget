@@ -4,7 +4,7 @@ import IconButtons from "../../../../kit/IconButtons";
 import Tooltip from "../../../../kit/Tooltip";
 import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 
-const TOOLTIP_SIDE_OFFSET = 2;
+const TOOLTIP_SIDE_OFFSET = 0;
 
 interface Props {
   rerecord?: boolean;
