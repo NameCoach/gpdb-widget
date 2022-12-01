@@ -13,8 +13,8 @@ const UserResponseAction = ({ saved, onClick }: Props): JSX.Element => {
   const { t } = useTranslator();
   const tooltip = useTooltip<HTMLButtonElement>();
   const tooltipMessage = saved
-    ? t("user_response_bookmark_recording")
-    : t("user_response_bookmark_recording_saved");
+    ? t("user_response_bookmark_recording_saved")
+    : t("user_response_bookmark_recording");
   
   return <div>
     <Tooltip opener={tooltip.opener} ref={tooltip.tooltipRef} rightArrow>
