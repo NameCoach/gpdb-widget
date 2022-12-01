@@ -28,6 +28,21 @@ const Actions = ({
   const closeTip = useTooltip<HTMLButtonElement>();
   const saveTip = useTooltip<HTMLButtonElement>();
   const editTip = useTooltip<HTMLButtonElement>();
+
+  const closeEditHandle = () => {
+    closeEdit();
+    closeTip.tooltip.hide();
+  };
+
+  const saveMyInfoHande = () => {
+    saveMyInfo();
+    saveTip.tooltip.hide();
+  };
+
+  const openEditHandle = () => {
+    openEdit();
+    editTip.tooltip.hide();
+  };
   
   return (
     <ActionsPanel>
@@ -41,13 +56,13 @@ const Actions = ({
                 <Tooltip opener={closeTip.opener} ref={closeTip.tooltipRef} rightArrow>
                   {t("my_info_discard_changes")}
                 </Tooltip>
-                <IconButtons.Close onClick={closeEdit} ref={closeTip.openerRef}/>
+                <IconButtons.Close onClick={closeEditHandle} ref={closeTip.openerRef}/>
               </div>
               <div>
                 <Tooltip opener={saveTip.opener} ref={saveTip.tooltipRef} rightArrow arrowSideOffset={TOOLTIP_SIDE_OFFSET}>
                   {t("my_info_save_changes")}
                 </Tooltip>
-                <IconButtons.Save onClick={saveMyInfo} ref={saveTip.openerRef}/>
+                <IconButtons.Save onClick={saveMyInfoHande} ref={saveTip.openerRef}/>
               </div>
             </>
           );
@@ -57,7 +72,7 @@ const Actions = ({
               <Tooltip opener={editTip.opener} ref={editTip.tooltipRef} rightArrow arrowSideOffset={TOOLTIP_SIDE_OFFSET}>
                 {t("my_info_edit")}
               </Tooltip>
-              <IconButtons.Edit onClick={openEdit} ref={editTip.openerRef}/>
+              <IconButtons.Edit onClick={openEditHandle} ref={editTip.openerRef}/>
             </div>
           )
       })()}
