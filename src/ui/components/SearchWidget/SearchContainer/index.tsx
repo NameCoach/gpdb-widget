@@ -11,7 +11,8 @@ import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
 
-const UNPERMITTED_INPUT_CHARS_REGEXP = /\.|,|\/|!|#|\$|%|\^|&|\*|\(|\)|_|\+|=|\{|\}|\[|\]|\||:|;|'|"|\\|>|<|\?|`|~/g;
+const UNPERMITTED_INPUT_CHARS_REGEXP = /\d+|.|,|\/|!|#|\$| -|- |%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
+const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
 const cx = classNames.bind(styles);
 
@@ -48,9 +49,9 @@ const SearchContainer = (props: Props): JSX.Element => {
   const [loading, setLoading] = useState(false);
 
   const onSubmitSearch = useCallback((searchInput: string): void => {
-    if (searchInput === "") return;
+    if (!searchInput) return;
 
-    const isEmail = searchInput.includes("@");
+    const isEmail = EMAIL_REGEXP.test(searchInput);
 
     if (isEmail) {
       const namesObj = [
