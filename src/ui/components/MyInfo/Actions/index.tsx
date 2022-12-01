@@ -6,7 +6,7 @@ import Tooltip from "../../../kit/Tooltip";
 import useTooltip from "../../../kit/Tooltip/hooks/useTooltip";
 import Loader from "../../Loader";
 
-const TOOLTIP_SIDE_OFFSET = 2;
+const TOOLTIP_SIDE_OFFSET = 0;
 
 interface Props {
   loading: boolean;
