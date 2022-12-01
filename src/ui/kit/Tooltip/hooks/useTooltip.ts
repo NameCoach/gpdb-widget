@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { TOOLTIP_HIDE_DELAY, TOOLTIP_SHOW_DELAY } from "../../../../constants";
 import { OpenerRef, Popup, PopupRef } from "../../Popup/types";
 
@@ -44,7 +44,7 @@ const useTooltip = <OpenerType = HTMLElement>({
       closeTimeout = setTimeout(tooltip.hide, TOOLTIP_HIDE_DELAY);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!customHandlers && opener) {
       const _opener = opener as unknown as HTMLElement;
       _opener.addEventListener("mouseenter", openerOnMouseEnter);
