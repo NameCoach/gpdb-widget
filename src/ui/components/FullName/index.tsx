@@ -15,8 +15,14 @@ import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import ControllerContext from "../../contexts/controller";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
+import useTooltip from "../../kit/Tooltip/hooks/useTooltip";
+import useSpeakerAttrs from "../../hooks/useSpeakerAttrs";
+import Tooltip from "../../kit/Tooltip";
+import generateTooltipId from "../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind([styles, nameLineStyles]);
+
+const TOOLTIP_SIDE_OFFSET = 0;
 
 interface Props {
   children: ReactNode;
@@ -31,6 +37,9 @@ const FullName = (props: Props): JSX.Element => {
   const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
   const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
+  const tooltip = useTooltip<HTMLDivElement>();
+  const { speakerTip } = useSpeakerAttrs(pronunciation?.audioCreator);
+
 
   const sendAnalytics = (eventType): PromiseLike<void> =>
     controller.sendAnalytics(
@@ -62,12 +71,24 @@ const FullName = (props: Props): JSX.Element => {
           }
         >
           {pronunciation && pronunciation.audioSrc && (
-            <Player
-              onClick={onPlayClick}
-              audioSrc={pronunciation.audioSrc}
-              audioCreator={pronunciation.audioCreator}
-              className={nameLineStyles.pronunciation__action}
-            />
+            <div>
+              <Tooltip
+                opener={tooltip.opener}
+                ref={tooltip.tooltipRef}
+                rightArrow
+                id={generateTooltipId("player")}
+                arrowSideOffset={TOOLTIP_SIDE_OFFSET}
+              >
+                {speakerTip}
+              </Tooltip>
+              <Player
+                onClick={onPlayClick}
+                audioSrc={pronunciation.audioSrc}
+                audioCreator={pronunciation.audioCreator}
+                className={nameLineStyles.pronunciation__action}
+                ref={tooltip.openerRef}
+              />
+            </div>
           )}
           {props.canPronunciationCreate && (
             <RecordAction
