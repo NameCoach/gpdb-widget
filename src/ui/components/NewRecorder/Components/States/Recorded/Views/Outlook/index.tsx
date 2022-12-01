@@ -10,6 +10,10 @@ import { StateProps } from "../../types";
 
 import styles from "../../../../../styles/outlook/styles.module.css";
 import Player from "../../../../../../Actions/Outlook/Player";
+import useTooltip from "../../../../../../../kit/Tooltip/hooks/useTooltip";
+import useSpeakerAttrs from "../../../../../../../hooks/useSpeakerAttrs";
+import Tooltip from "../../../../../../../kit/Tooltip";
+import generateTooltipId from "../../../../../../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind(styles);
 
@@ -17,22 +21,20 @@ const OutlookView = ({
   slider,
   openSlider,
   closeSlider,
-
   onDefaultSampleRateClick,
   onUpdateSampleRate,
   onSampleRateSave,
-
   sampleRate,
-
   audioUrl,
   handleOnRecorderClose,
-
   onSave,
   onStart,
 }: StateProps): JSX.Element => {
   const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
   const { t } = useTranslator(controller);
+  const tooltip = useTooltip<HTMLDivElement>();
+  const { speakerTip } = useSpeakerAttrs();
 
   const onSliderRerecord = async (): Promise<void> => {
     onSampleRateSave();
@@ -54,7 +56,22 @@ const OutlookView = ({
         <>
           {!slider && (
             <div className={styles.inline}>
-              <Player audioSrc={audioUrl} icon="playable" className="player" />
+              <div>
+                <Tooltip
+                  opener={tooltip.opener}
+                  ref={tooltip.tooltipRef}
+                  rightArrow
+                  id={generateTooltipId("player")}
+                >
+                  {speakerTip}
+                </Tooltip>
+                <Player
+                  audioSrc={audioUrl}
+                  icon="playable"
+                  className="player"
+                  ref={tooltip.openerRef}
+                />
+              </div>
             </div>
           )}
 
