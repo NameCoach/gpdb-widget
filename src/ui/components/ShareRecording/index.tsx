@@ -21,8 +21,8 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const cx = classNames.bind(styles);
 
-const SHARE_TOOLTIP_SIDE_OFFSET = 2;
-const SHARE_POPUP_SIDE_OFFSET = 2;
+const SHARE_TOOLTIP_SIDE_OFFSET = 0;
+const SHARE_POPUP_SIDE_OFFSET = 0;
 
 interface Props {
   loading: boolean;
