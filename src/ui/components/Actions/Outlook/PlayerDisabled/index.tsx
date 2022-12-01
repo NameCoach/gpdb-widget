@@ -5,7 +5,7 @@ import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
 import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 import useTranslator from "../../../../hooks/useTranslator";
 
-const PLAY_TOOLTIP_SIDE_OFFSET = 2;
+const PLAY_TOOLTIP_SIDE_OFFSET = 0;
 interface Props {
   className?: string;
   tooltipId?: string;
