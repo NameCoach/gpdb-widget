@@ -7,11 +7,12 @@ const cx = classNames.bind(styles);
 export interface ButtonProps {
   children?: React.ReactNode;
   onClick?: () => any;
+  style?: React.CSSProperties;
 };
 
-const Button = ({ children, onClick}: ButtonProps): JSX.Element => {
+const Button = ({ children, onClick, style}: ButtonProps): JSX.Element => {
   return <div className={cx(styles.container)}>
-    <button className={cx(styles.button)} onClick={onClick}>
+    <button className={cx(styles.button)} style={style} onClick={onClick}>
       {children}
     </button>
   </div>;
