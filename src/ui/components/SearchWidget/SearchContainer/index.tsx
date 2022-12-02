@@ -11,7 +11,7 @@ import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
 
-const UNPERMITTED_INPUT_CHARS_REGEXP = /\d+|.|,|\/|!|#|\$| -|- |%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
+const UNPERMITTED_INPUT_CHARS_REGEXP = /^-| -|- |\d+|\.|,|\/|!|#|\$|%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
 const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
 const cx = classNames.bind(styles);
