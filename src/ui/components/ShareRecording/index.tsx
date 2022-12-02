@@ -84,7 +84,7 @@ const ShareRecording = ({
               <div className={cx(styles.row)}>
                 {copyButtons.map((button, index) => (
                   <CopyToClipboard text={button.url} key={index}>
-                    <Button>
+                    <Button style={{width: button.width}}>
                       <ChangeableText
                         initialText={button.text}
                         newText={t("share_recording_popup_copied")}
