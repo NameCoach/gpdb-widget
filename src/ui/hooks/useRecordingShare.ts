@@ -4,6 +4,7 @@ import { Features, FeaturesManager } from "../customFeaturesManager";
 export interface ShareButton {
   text: string;
   url: string;
+  width: string;
 }
 
 const useRecordingShare = (
@@ -22,10 +23,10 @@ const useRecordingShare = (
     return share_urls
       .map((item) => {
         if (item === "defaultAudio" && pronunciation.audioSrc)
-          return { url: pronunciation.audioSrc, text: "Audio" };
+          return { url: pronunciation.audioSrc, text: "Audio", width: "auto" };
 
         if (item === "nameBadge" && pronunciation.nameBadgeLink) {
-          return { url: pronunciation.nameBadgeLink, text: "My NameBadge" };
+          return { url: pronunciation.nameBadgeLink, text: "My NameBadge", width: "141px" };
         }
       })
       .filter((item) => item);
