@@ -60,7 +60,6 @@ const OutlookView = ({
                 <Tooltip
                   opener={tooltip.opener}
                   ref={tooltip.tooltipRef}
-                  rightArrow
                   id={generateTooltipId("player")}
                 >
                   {speakerTip}
