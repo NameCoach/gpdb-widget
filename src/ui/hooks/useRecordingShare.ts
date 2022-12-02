@@ -24,8 +24,8 @@ const useRecordingShare = (
         if (item === "defaultAudio" && pronunciation.audioSrc)
           return { url: pronunciation.audioSrc, text: "Audio" };
 
-        if (item === "nameBadge" && pronunciation.nameBadgeLink) {
-          return { url: pronunciation.nameBadgeLink, text: "My NameBadge" };
+        if (true || item === "nameBadge" && pronunciation.nameBadgeLink) {
+          return { url: pronunciation.nameBadgeLink || "string", text: "My NameBadge" };
         }
       })
       .filter((item) => item);
