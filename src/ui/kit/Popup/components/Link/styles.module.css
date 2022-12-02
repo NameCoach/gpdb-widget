@@ -6,7 +6,7 @@
 }
 
 .link {
-  text-decoration-line: underline;
+  text-decoration: underline;
   margin-top: 4px;
   color: $colors_white;
 }
