@@ -40,7 +40,7 @@ const Surface = ({ children }: SurfaceProps, ref): JSX.Element => {
     if (rightArrow) return openerPosition.right - containerWidth - (openerPosition.width - DEFAULT_ARROW.width)/2 + sideOffset;
     if (leftArrow) return openerPosition.left + (openerPosition.width - DEFAULT_ARROW.width)/2 - sideOffset;
 
-    return openerPosition.left;
+    return openerPosition.left + (openerPosition.width - containerWidth)/2;
   };
 
   const computeTop = ():number => {
