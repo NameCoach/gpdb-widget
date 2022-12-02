@@ -81,17 +81,19 @@ const ShareRecording = ({
           >
             <div className={cx(styles.column)}>
               <Text>{t("share_recording_popup_title")}</Text>
-              {copyButtons.map((button, index) => (
-                <CopyToClipboard text={button.url} key={index}>
-                <Button>
-                  <ChangeableText
-                    initialText={button.text}
-                    newText={t("share_recording_popup_copied")}
-                    revertAfterChange
-                  />
-                </Button>
-                </CopyToClipboard>
-              ))}
+              <div className={cx(styles.row)}>
+                {copyButtons.map((button, index) => (
+                  <CopyToClipboard text={button.url} key={index}>
+                    <Button>
+                      <ChangeableText
+                        initialText={button.text}
+                        newText={t("share_recording_popup_copied")}
+                        revertAfterChange
+                      />
+                    </Button>
+                  </CopyToClipboard>
+                ))}
+              </div>
             </div>
           </Popup>
           <div ref={openerRef} onClick={popup.openerOnMouseClick}>
