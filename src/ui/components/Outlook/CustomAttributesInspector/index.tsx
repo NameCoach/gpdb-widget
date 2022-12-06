@@ -9,6 +9,7 @@ import useFeaturesManager, {
   CanComponents,
 } from "../../../hooks/useFeaturesManager";
 import Pronunciation from "../../../../types/resources/pronunciation";
+import Gap from "../../../kit/Gap";
 
 const cx = classNames.bind(styles);
 
@@ -17,14 +18,17 @@ interface Props {
   pronunciation?: Pronunciation;
 }
 
-const CustomAttributesInspector = ({ data, pronunciation,  }: Props) => {
+const CustomAttributesInspector = ({ data, pronunciation }: Props) => {
   const { can } = useFeaturesManager();
   // #TODO: rework custom attributes feature in manager, cause it mixes data and policies
-  const canEdifCustomAttributes = can(CanComponents.EditCustomAttributesForSelf, pronunciation);
+  const canEditCustomAttributes = can(
+    CanComponents.EditCustomAttributesForSelf,
+    pronunciation
+  );
 
   return (
     <>
-      {canEdifCustomAttributes && (
+      {canEditCustomAttributes && (
         <div className={cx(styles.column)}>
           {data.map(({ presentation, value, label }, index) => {
             let Component = Inspector;
@@ -32,7 +36,13 @@ const CustomAttributesInspector = ({ data, pronunciation,  }: Props) => {
             if (presentation === AttributePresentation.Checkbox)
               Component = BooleanInspector;
 
-            return <Component key={index} value={value} label={label} />;
+            return value ? (
+              <>
+                <Component key={index} value={value} label={label} />
+
+                {index !== data?.length - 1 && <Gap height={12} />}
+              </>
+            ) : null;
           })}
         </div>
       )}

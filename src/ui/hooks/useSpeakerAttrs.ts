@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { AudioSource } from "../../types/resources/pronunciation";
-import IconButtons from "../kit/IconButtons";
-import { IconButtonProps } from "../kit/types";
+import IconButtons, { IconButtonFC } from "../kit/IconButtons";
+import useTranslator from "./useTranslator";
 
 enum SpeakerCssClasses {
   Default = "speaker",
@@ -10,38 +10,44 @@ enum SpeakerCssClasses {
   NameOwner = "speaker-name-owner",
 }
 
-const SPEAKERS_ATTRS = {
-  [AudioSource.Gpdb]: {
-    className: SpeakerCssClasses.Gpdb,
-    tip: "This is a NameCoach<br />Library Recording",
-    component: IconButtons.SpeakerLibrary,
-  },
-  [AudioSource.NameUser]: {
-    className: SpeakerCssClasses.User,
-    tip: "This recording<br />is provided by a peer<br />in your organization",
-    component: IconButtons.SpeakerPeer,
-  },
-  [AudioSource.NameOwner]: {
-    className: SpeakerCssClasses.NameOwner,
-    tip: "This is a self recorded name",
-    component: IconButtons.SpeakerOwner,
-  },
-  Default: {
-    className: SpeakerCssClasses.Default,
-    tip: "",
-    component: IconButtons.Speaker,
-  },
+interface SpeakersAttrsValue {
+  className: string;
+  tip: string;
+  component: IconButtonFC;
 };
-
-type SpeakersAttrsValue = typeof SPEAKERS_ATTRS.Default;
 
 interface HookReturn {
   speakerClassName: string;
   speakerTip: string;
-  SpeakerComponent: React.FC<IconButtonProps>;
+  SpeakerComponent: IconButtonFC;
 }
 
-const useSpeakerAttrs = (audioCreator: AudioSource): HookReturn => {
+const useSpeakerAttrs = (audioCreator: AudioSource = null): HookReturn => {
+  const { t } = useTranslator();
+  
+  const SPEAKERS_ATTRS = {
+    [AudioSource.Gpdb]: {
+      className: SpeakerCssClasses.Gpdb,
+      tip: t("gpdb_library_speaker_tooltip_text"),
+      component: IconButtons.SpeakerLibrary,
+    },
+    [AudioSource.NameUser]: {
+      className: SpeakerCssClasses.User,
+      tip: t("gpdb_peer_speaker_tooltip_text"),
+      component: IconButtons.SpeakerPeer,
+    },
+    [AudioSource.NameOwner]: {
+      className: SpeakerCssClasses.NameOwner,
+      tip: t("gpdb_self_recorded_speaker_tooltip_text"),
+      component: IconButtons.SpeakerOwner,
+    },
+    Default: {
+      className: SpeakerCssClasses.Default,
+      tip: t("default_speaker_tooltip_text"),
+      component: IconButtons.Speaker,
+    },
+  };
+  
   const getSpeakerAttrs = useCallback(
     (audioCreator: AudioSource): SpeakersAttrsValue => {
       if (!audioCreator) return SPEAKERS_ATTRS.Default;
