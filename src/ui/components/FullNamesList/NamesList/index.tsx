@@ -1,12 +1,13 @@
-import React, { useMemo, useContext } from "react";
-import Tooltip from "../../Tooltip";
-import Select, { Option } from "../../Select";
+import React, { useCallback, useMemo, useState } from "react";
+import Tooltip from "../../../kit/Tooltip";
+import Select, { Option, SelectRef } from "../../Select";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import styles from "../styles.module.css";
 import { NameOwner } from "gpdb-api-client";
-import StyleContext from "../../../contexts/style";
 import useTheme from "../../../hooks/useTheme";
 import generateTooltipId from "../../../../core/utils/generate-tooltip-id";
+import useTranslator from "../../../hooks/useTranslator";
+import useTooltip from "../../../kit/Tooltip/hooks/useTooltip";
 
 export interface NameOption {
   key: string;
@@ -37,8 +38,11 @@ const NamesList = ({
   onSelect,
   tooltipId = generateTooltipId("names_list"),
 }: Props): JSX.Element => {
-  const { t } = useContext(StyleContext);
+  const { t } = useTranslator();
+  const tooltip = useTooltip<HTMLDivElement>();
   const { theme, selectStyles, filterOption } = useTheme(NamesList.name);
+  const [select, setSelect] = useState<SelectRef>({} as SelectRef);
+  const selectRef = useCallback((ref: SelectRef) => setSelect(ref), []);
 
   const options = useMemo(() => names.map(nameToOption), [names]);
 
@@ -59,22 +63,29 @@ const NamesList = ({
   return (
     <div className={styles.control}>
       <Tooltip
-        className={styles.tooltip}
         id={tooltipId}
-        place="top"
-        effect="solid"
-      />
-
-      <Select
-        controlCustomProps={selectControlCustomProps}
-        onChange={onChange}
-        options={options}
-        theme={theme}
-        styles={selectStyles}
-        filterOption={filterOption(selectValue?.value)}
-        placeholder={t("pronunciations_drop_down_placeholder")}
-        notFirstSelected
-      />
+        rightArrow
+        opener={tooltip.opener}
+        ref={tooltip.tooltipRef}
+        disabled={select.menuOpened}
+      >
+        {t("pronunciations_drop_down_placeholder")}
+      </Tooltip>
+      <div
+        ref={tooltip.openerRef}
+      >
+        <Select
+          controlCustomProps={selectControlCustomProps}
+          onChange={onChange}
+          options={options}
+          theme={theme}
+          styles={selectStyles}
+          filterOption={filterOption(selectValue?.value)}
+          notFirstSelected
+          ref={selectRef}
+          placeholder={t("pronunciations_drop_down_placeholder")}
+        />
+      </div>
     </div>
   );
 };

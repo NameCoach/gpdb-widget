@@ -47,6 +47,30 @@
     "share_button_name_badge": "NameBadge",
     "share_button_audio_url": "Audio URL",
 
-    "tooltip_request_recording_tip": "Request recording",
-    "search_widget_input_placeholder": "Name or Email"
+    "tooltip_request_recording_tip": "Request a new pronunciation",
+    "search_widget_input_placeholder": "Name or Email",
+
+    "player_disabled_tooltip_text": "Pronunciation not available",
+    "request_recording_action_tooltip_text": "Request a new pronunciation",
+    "save_pitch_tooltip_text": "Pitch settings changes do not effect already recorded pronunciation. Please, re-record your pronunciation to apply the new settings.",
+    "gpdb_library_speaker_tooltip_text": "Play library recording",
+    "gpdb_peer_speaker_tooltip_text": "Play peer recording",
+    "gpdb_self_recorded_speaker_tooltip_text": "Play owner recording",
+    "default_speaker_tooltip_text": "Play 'My Recording'",
+
+    "share_recording_popup_title": "Share",
+    "share_recording_popup_copied": "Copied!",
+
+    "record_edit_my_recording": "Edit 'My Recording'",
+    "record_create_new_recording": "Create a new recording",
+    "user_response_bookmark_recording": "Bookmark a prefered recording",
+    "user_response_bookmark_recording_saved": "Your bookmarked recording",
+
+    "my_info_discard_changes": "Discard 'My Info' changes",
+    "my_info_save_changes": "Save 'My Info' changes",
+    "my_info_edit": "Edit 'My Info'",
+
+    "search_widget_tip": "Search for a pronunciation",
+
+    "empty": ""
 }

@@ -33,6 +33,8 @@ const COLORS = {
   colors_light_grey: LIGHT_GREY,
   colors_red: "#C82D4A",
   colors_purple: "#6B419B",
+  redesign_colors_error_input_background: "#FFF2F2",
+  redesign_colors_error_input_message: "#A12038",
 };
 
 export default COLORS;
