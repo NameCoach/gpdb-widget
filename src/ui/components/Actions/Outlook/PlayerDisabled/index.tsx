@@ -1,8 +1,11 @@
 import React from "react";
-import Tooltip from "../../../Tooltip";
+import Tooltip from "../../../../kit/Tooltip";
 import IconButtons from "../../../../kit/IconButtons";
 import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
+import useTranslator from "../../../../hooks/useTranslator";
 
+const PLAY_TOOLTIP_SIDE_OFFSET = 0;
 interface Props {
   className?: string;
   tooltipId?: string;
@@ -11,15 +14,25 @@ interface Props {
 const PlayerDisabled = ({
   tooltipId = generateTooltipId("player_disabled"),
 }: Props): JSX.Element => {
+  const tooltip = useTooltip<HTMLButtonElement>();
+  const { t } = useTranslator();
+
   return (
-    <>
-      <Tooltip id={tooltipId} place="top" effect="solid" />
+    <div>
+      <Tooltip
+        id={tooltipId}
+        rightArrow
+        opener={tooltip.opener}
+        ref={tooltip.tooltipRef}
+        arrowSideOffset={PLAY_TOOLTIP_SIDE_OFFSET}
+      >
+        {t("player_disabled_tooltip_text")}
+      </Tooltip>
 
       <IconButtons.SpeakerNoRecording
-        data-tip="Pronunciations not available"
-        data-for={tooltipId}
+        ref={tooltip.openerRef}
       />
-    </>
+    </div>
   );
 };
 
