@@ -14,15 +14,13 @@
   border-radius: 6px;
   border-style: solid;
   border-width: 1px;
-  width: 100%;
+  padding: 0 20px 0 8px;
 
   font-size: 14px;
   font-weight: 400;
   line-height: 17px;
   color: $colors_dark_grey;
-  height: 30px;
-  
-  padding: 0 20px 0 8px;
+  height: 30px;  
 }
 
 .input:hover, .input:focus, .input:focus-visible {
@@ -92,4 +90,10 @@
 
 .search_button_icon {
   margin-left: -22px;
+}
+
+.input_container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
