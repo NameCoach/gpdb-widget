@@ -1,0 +1,21 @@
+.container {
+  position: fixed;
+  z-index: 2247483647;
+}
+
+.surface {
+  border-radius: 6px;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  background-color: $colors_darker_brand;
+  box-shadow: 0 2px 4px $colors_black;
+  color: $colors_white;
+}
+
+.notFullWidth {
+  max-width: 260px;
+  width: auto;
+}
