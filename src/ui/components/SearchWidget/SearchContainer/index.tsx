@@ -11,10 +11,8 @@ import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
 
-interface Props {
-  termsAndConditions?: TermsAndConditions;
-  controller: IFrontController;
-}
+const UNPERMITTED_INPUT_CHARS_REGEXP = /^-| -|- |\d+|\.|,|\/|!|#|\$|%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
+const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
 const cx = classNames.bind(styles);
 
@@ -28,11 +26,18 @@ const permissions = {
   },
 };
 
-const replaceSplitter = (string: string): string => {
-  if (string.includes(",")) return string.split(",").join(" ");
+const sanitizeNames = (namesString: string): string => {
+  const names = namesString.replace(UNPERMITTED_INPUT_CHARS_REGEXP, " ");
+  const splittedNames = names.split(" ");
+  const trimmedNames = splittedNames.filter((name) => !!name);
 
-  return string;
+  return trimmedNames.join(" ");
 };
+
+interface Props {
+  termsAndConditions?: TermsAndConditions;
+  controller: IFrontController;
+}
 
 const SearchContainer = (props: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
@@ -43,27 +48,40 @@ const SearchContainer = (props: Props): JSX.Element => {
   const [names, setNames] = useState([] as NameOption[]);
   const [loading, setLoading] = useState(false);
 
-  const onSearchSubmit = useCallback((name: string): void => {
-    if (name === "") return;
+  const onSubmitSearch = useCallback((searchInput: string): void => {
+    if (!searchInput) return;
 
-    const _name = replaceSplitter(name);
+    const isEmail = EMAIL_REGEXP.test(searchInput);
 
-    const nameIsEmail = _name.includes("@");
-    const ownerSignature = nameIsEmail ? _name : DEFAULT_NAME_OWNER;
+    if (isEmail) {
+      const namesObj = [
+        {
+          key: searchInput,
+          value: searchInput,
+          owner: { signature: searchInput },
+        },
+      ];
 
-    const _names = [
-      {
-        key: _name,
-        value: _name,
-        owner: { signature: ownerSignature },
-      },
-    ];
+      setNames(namesObj);
+    } else {
+      const value = sanitizeNames(searchInput);
+      const namesObj = [
+        {
+          key: value,
+          value,
+          owner: { signature: DEFAULT_NAME_OWNER },
+        },
+      ];
 
-    setNames(_names);
+      setNames(namesObj);
+    }
     setLoading(true);
   }, []);
 
-  const onInputChange = (): void => setNames([]);
+  const clearNames = (): void => {
+    if (names.length > 0) setNames([]);
+  };
+
   const onNamesLoaded = (): void => setLoading(false);
 
   return (
@@ -73,8 +91,8 @@ const SearchContainer = (props: Props): JSX.Element => {
       </div>
 
       <SearchBar
-        onSubmit={onSearchSubmit}
-        onInputChange={onInputChange}
+        onSubmit={onSubmitSearch}
+        onInputChange={clearNames}
         controller={props.controller}
       />
 
