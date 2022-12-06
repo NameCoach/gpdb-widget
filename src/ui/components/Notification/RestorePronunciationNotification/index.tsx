@@ -52,7 +52,7 @@ const RestorePronunciationNotification = ({
         <button className={styles.undo__button} onClick={handleOnClick}>
           {t(
             "restrore_pronunciation_button",
-            "You have deleted your pronunciation.Undo"
+            "You have deleted your pronunciation. Undo"
           )}
         </button>
       )}
