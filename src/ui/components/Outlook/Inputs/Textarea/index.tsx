@@ -11,10 +11,10 @@ const Textarea = ({
   label,
   disabled,
   metadata,
-  onUpdate,
+  onChange,
   hasErrors,
 }: CustomAttributesInputsProps): JSX.Element => {
-  const _onUpdate = (event) => onUpdate(event.target.value);
+  const onTextAreaChange = ({ target: { value } }): void => onChange(id, value);
 
   return (
     <div className={cx(styles.textarea_container, styles.column)}>
@@ -27,8 +27,8 @@ const Textarea = ({
         <textarea
           id={id}
           rows={4}
-          onChange={_onUpdate}
-          className={cx(styles.input, {has_errors: hasErrors})}
+          onChange={onTextAreaChange}
+          className={cx(styles.input, { has_errors: hasErrors })}
           name={label}
           placeholder={metadata?.placeholder}
           value={String(value)}

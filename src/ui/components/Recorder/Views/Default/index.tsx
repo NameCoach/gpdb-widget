@@ -7,8 +7,7 @@ import Settings from "../../Components/Settings";
 import styles from "./styles.module.css";
 import ControllerContext from "../../../../contexts/controller";
 import Loader from "../../../Loader";
-import Tooltip from "../../../Tooltip";
-import { SAVE_PITCH_TIP } from "../../../../../constants";
+import Tooltip from "../../../../kit/Tooltip";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../../../core/userAgentManager";
 import StyleContext from "../../../../contexts/style";
@@ -17,6 +16,9 @@ import useTranslator from "../../../../hooks/useTranslator";
 import FailedStateContainer from "../../Components/FailedStateContainer";
 import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../constants";
 import { DefaultViewProps } from "../../types/views";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
+import useSpeakerAttrs from "../../../../hooks/useSpeakerAttrs";
+import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
 
 const cx = classNames.bind(styles);
 
@@ -48,15 +50,16 @@ const DefaultView = ({
   termsAndConditionsProps: { termsAndConditions, onTermsAndConditionsAccept },
   sliderProps: { slider, openSlider, showSlider },
   customAttributesProps: { onCustomAttributesBack, onCustomAttributesSaved },
-
   owner,
   pronunciation,
   onDeletePronunciation,
 }: DefaultViewProps): JSX.Element => {
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
-
   const { t } = useTranslator(controller, styleContext);
+  const pitchSaveTip = useTooltip<HTMLButtonElement>();
+  const playerTip = useTooltip<HTMLDivElement>();
+  const { speakerTip } = useSpeakerAttrs(pronunciation.audioCreator);
 
   const { isDeprecated: isOld } = userAgentManager;
 
@@ -104,7 +107,22 @@ const DefaultView = ({
 
         {step === STATES.RECORDED && (
           <div className={styles.inline}>
-            <Player audioSrc={audioUrl} icon="playable" className="player" />
+            <div>
+              <Tooltip
+                opener={playerTip.opener}
+                ref={playerTip.tooltipRef}
+                rightArrow
+                id={generateTooltipId("player")}
+              >
+                {speakerTip}
+              </Tooltip>
+              <Player
+                audioSrc={audioUrl}
+                icon="playable"
+                className="player"
+                ref={playerTip.openerRef}
+              />
+            </div>
             {showSlider && <Settings onClick={openSlider} active={slider} />}
           </div>
         )}
@@ -180,15 +198,22 @@ const DefaultView = ({
                   {t("recorder_back_button_default")}
                 </button>
 
-                <button data-tip={SAVE_PITCH_TIP} onClick={onSampleRateSave}>
-                  {t("recorder_save_pitch_button")}
-                </button>
-
-                <Tooltip
-                  uuid="save_pitch_tooltip_id"
-                  multiline
-                  eventOff="mouseout"
-                />
+                <div>
+                  <Tooltip
+                    id="save_pitch_tooltip_id"
+                    opener={pitchSaveTip.opener}
+                    ref={pitchSaveTip.tooltipRef}
+                    rightArrow
+                  >
+                    {t("save_pitch_tooltip_text")}
+                  </Tooltip>
+                  <button
+                    onClick={onSampleRateSave}
+                    ref={pitchSaveTip.openerRef}
+                  >
+                    {t("recorder_save_pitch_button")}
+                  </button>
+                </div>
               </>
             )}
 
