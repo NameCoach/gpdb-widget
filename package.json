@@ -1,7 +1,7 @@
 {
   "name": "gpdb-widget",
   "homepage": "https://NameCoachDevTeam.github.io/gpdb-widget",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "GPDB widget react component",
   "author": "NameCoach",
   "license": "MIT",
@@ -94,7 +94,8 @@
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-typescript2": "^0.30.0",
     "standard-version": "^9.2.0",
-    "typescript": "^3.9.9"
+    "typescript": "^3.9.9",
+    "core-js": "*"
   },
   "files": [
     "build"
