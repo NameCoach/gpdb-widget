@@ -1,8 +1,8 @@
 import classNames from "classnames/bind";
 import React from "react";
-import { TOOLTIP_DELAY } from "../../../../../../../constants";
 import generateTooltipId from "../../../../../../../core/utils/generate-tooltip-id";
-import Tooltip from "../../../../../Tooltip";
+import useTooltip from "../../../../../../kit/Tooltip/hooks/useTooltip";
+import Tooltip from "../../../../../../kit/Tooltip";
 import { SettingsProps } from "../../types";
 import styles from "./styles.module.css";
 
@@ -14,12 +14,23 @@ const DefaultView = ({
   tooltipId = generateTooltipId("recorder_settings"),
 }: SettingsProps): JSX.Element => {
   const options = { onClick };
+  const tooltip = useTooltip<HTMLDivElement>();
 
   return (
-    <>
-      <div className={cx(styles.settings, { active: active })} {...options} />
-      <Tooltip id={tooltipId} delayHide={TOOLTIP_DELAY} />
-    </>
+    // TODO: Check if tooltip is needed here. Check if this componen is needed.
+    <div>
+      <Tooltip
+        // delayHide={TOOLTIP_DELAY}
+        id={tooltipId}
+        opener={tooltip.opener}
+        ref={tooltip.tooltipRef}
+      />
+      <div
+        ref={tooltip.openerRef}
+        className={cx(styles.settings, { active: active })}
+        {...options}
+      />
+    </div>
   );
 };
 

@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+  display: none;
+}
+
+.placeholder {
+  position: relative;
+  width: 100%;
+  display: flex;
+}

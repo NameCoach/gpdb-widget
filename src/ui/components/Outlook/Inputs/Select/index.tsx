@@ -27,7 +27,7 @@ const Select = ({
   disabled,
   metadata,
   values,
-  onUpdate,
+  onChange,
   hasErrors,
 }: CustomAttributesInputsProps): JSX.Element => {
   const { theme: appTheme } = useTheme();
@@ -53,6 +53,7 @@ const Select = ({
         },
       };
       if (hasErrors) {
+        res.backgroundColor = COLORS.redesign_colors_error_input_background;
         res.borderColor = COLORS.colors_red;
         res["&:hover"].borderColor = COLORS.colors_red;
       }
@@ -122,6 +123,8 @@ const Select = ({
   const outlookProps =
     appTheme === Theme.Outlook ? { components: { DropdownIndicator } } : {};
 
+  const onSelectChange = ({ value }) => onChange(id, value);
+
   return (
     <div className={cx(styles.select_container, styles.column)}>
       <div className={cx(styles.row, styles.label_container)}>
@@ -130,7 +133,7 @@ const Select = ({
       <div className={cx(styles.row)}>
         <ReactSelect
           id={id}
-          onChange={onUpdate}
+          onChange={onSelectChange}
           value={selectValue}
           options={options}
           isDisabled={disabled}
