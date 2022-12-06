@@ -16,6 +16,10 @@ import { MAX_SAMPLE_RATE, MIN_SAMPLE_RATE } from "../../constants";
 import { OutlookViewProps } from "../../types/views";
 import { RelativeSource } from "../../../../../types/resources/pronunciation";
 import { InboundRelativeSource } from "../../types/inbound-relative-source";
+import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
+import useSpeakerAttrs from "../../../../hooks/useSpeakerAttrs";
+import generateTooltipId from "../../../../../core/utils/generate-tooltip-id";
+import Tooltip from "../../../../kit/Tooltip";
 
 const cx = classNames.bind(styles);
 
@@ -43,15 +47,15 @@ const OutlookView = ({
   uploaderProps: { onUploaderChange, fileSizeError },
   termsAndConditionsProps: { termsAndConditions, onTermsAndConditionsAccept },
   sliderProps: { closeSlider, slider, openSlider, showSlider },
-
   pronunciation,
   onDeletePronunciation,
   relativeSource,
 }: OutlookViewProps): JSX.Element => {
   const controller = useContext(ControllerContext);
   const styleContext = useContext(StyleContext);
-
   const { t } = useTranslator(controller, styleContext);
+  const tooltip = useTooltip<HTMLDivElement>();
+  const { speakerTip } = useSpeakerAttrs(pronunciation.audioCreator);
 
   const { isDeprecated: isOld } = userAgentManager;
 
@@ -125,11 +129,22 @@ const OutlookView = ({
           <>
             {!slider && (
               <div className={styles.inline}>
-                <Player
-                  audioSrc={audioUrl}
-                  icon="playable"
-                  className="player"
-                />
+                <div>
+                  <Tooltip
+                    opener={tooltip.opener}
+                    ref={tooltip.tooltipRef}
+                    rightArrow
+                    id={generateTooltipId("player")}
+                  >
+                    {speakerTip}
+                  </Tooltip>
+                  <Player
+                    audioSrc={audioUrl}
+                    icon="playable"
+                    className="player"
+                    ref={tooltip.openerRef}
+                  />
+                </div>
               </div>
             )}
 
