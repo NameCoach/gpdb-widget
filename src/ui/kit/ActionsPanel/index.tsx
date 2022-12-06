@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useMemo } from "react";
 import Children, { Child } from "../../../types/children-prop";
 import Gap from "../Gap";
 import styles from "./styles.module.css";
@@ -8,7 +8,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ActionsPanel = (props: Props) => {
-  const { childrenAreArray, children } = (function () {
+  const { childrenAreArray, children } = useMemo(() => {
     const fragment = props.children as ReactElement;
     const childrenAreFragment = fragment.type === React.Fragment;
 
@@ -25,7 +25,7 @@ const ActionsPanel = (props: Props) => {
     if (childrenAreArray) children = children.filter((child) => child);
 
     return { childrenAreArray, children };
-  })();
+  }, [props.children]);
 
   return (
     <div className={styles.flex_column_centered}>
