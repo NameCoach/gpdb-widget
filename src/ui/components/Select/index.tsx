@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { MutableRefObject, useImperativeHandle, useMemo, useState } from "react";
 import Select from "react-select";
 import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
@@ -18,6 +18,10 @@ export interface CustomStyles {
   option: object;
   valueContainer: object;
   placeholder: object;
+}
+
+export interface SelectRef {
+  menuOpened: boolean;
 }
 
 interface Props {
@@ -121,9 +125,17 @@ const customStyles = (theme) => (
   }),
 });
 
-const SelectComponent = (props: Props): JSX.Element => {
+const SelectComponent = (props: Props, ref: MutableRefObject<SelectRef>): JSX.Element => {
   const { theme: appTheme } = useTheme();
   const firstSelectedOption = useMemo(() => props.options[0], props.options);
+  const [menuOpened, setMenuOpened] = useState<boolean>(false);
+  useImperativeHandle(
+    ref,
+    (): SelectRef => ({
+      menuOpened,
+    }),
+    [menuOpened]
+  );
 
   const handleOnChange = (selectedValue: Option): void =>
     props.onChange(selectedValue);
@@ -152,9 +164,11 @@ const SelectComponent = (props: Props): JSX.Element => {
       styles={customStyles(props.theme)(props.styles)}
       filterOption={props.filterOption}
       disabled={props.disabled}
+      onMenuOpen={() => setMenuOpened(true)}
+      onMenuClose={() => setMenuOpened(false)}
       {...outlookProps}
     />
   );
 };
 
-export default SelectComponent;
+export default React.forwardRef(SelectComponent);

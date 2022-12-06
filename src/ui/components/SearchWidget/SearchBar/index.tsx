@@ -6,6 +6,8 @@ import IFrontController from "../../../../types/front-controller";
 import IconButtons from "../../../kit/IconButtons";
 import useTranslator from "../../../hooks/useTranslator";
 import styles from "./styles.module.css";
+import Tooltip from "../../../kit/Tooltip";
+import useTooltip from "../../../kit/Tooltip/hooks/useTooltip";
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +22,7 @@ const ENTER_KEY_CODE = 13;
 const HANDLE_SUBMIT_DELAY = 300;
 const GET_SUGGESTIONS_DELAY = 500;
 const ZERO_ARRAY_LENGTH = 0;
+const SEARCH_TOOLTIP_SIDE_OFFSET = 0;
 
 const SearchBar = ({
   onSubmit,
@@ -27,6 +30,8 @@ const SearchBar = ({
   controller,
 }: Props): JSX.Element => {
   const { t } = useTranslator(controller);
+  const inputTip = useTooltip<HTMLDivElement>();
+  const iconTip = useTooltip<HTMLButtonElement>();
 
   const [input, setInput] = useState("");
 
@@ -85,21 +90,40 @@ const SearchBar = ({
   return (
     <>
       <div className={cx(styles.row)}>
-        <input
-          aria-label="Search input field"
-          className={cx(styles.input)}
-          placeholder={t("search_widget_input_placeholder")}
-          type="text"
-          required
-          value={input}
-          onChange={handleChange}
-          onKeyPress={handleKeyPressed}
-        />
-
-        <IconButtons.Search
-          onClick={handleSubmit}
-          className={styles.search_button_icon}
-        />
+        <div className={cx(styles.input_container)}>
+          <Tooltip
+            opener={inputTip.opener}
+            ref={inputTip.tooltipRef}
+          >
+            {t("search_widget_tip")}
+          </Tooltip>
+          <input
+            aria-label="Search input field"
+            className={cx(styles.input)}
+            placeholder={t("search_widget_input_placeholder")}
+            type="text"
+            required
+            value={input}
+            onChange={handleChange}
+            onKeyPress={handleKeyPressed}
+            ref={inputTip.openerRef}
+          />
+        </div>
+        <div >
+          <Tooltip
+            opener={iconTip.opener}
+            ref={iconTip.tooltipRef}
+            rightArrow
+            arrowSideOffset={SEARCH_TOOLTIP_SIDE_OFFSET}
+          >
+            {t("search_widget_tip")}
+          </Tooltip>
+          <IconButtons.Search
+            className={styles.search_button_icon}
+            onClick={handleSubmit}
+            ref={iconTip.openerRef}
+          />
+        </div>
       </div>
 
       <div className={cx(styles.row, styles.suggestions_block)}>
