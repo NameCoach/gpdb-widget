@@ -23,9 +23,8 @@ import NameParser from "../types/name-parser";
 import DefaultNameParser from "./parsers/default-name-parser";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
-import customAttributesMap, {
-  CustomAttributeObject,
-} from "./mappers/custom-attributes.map";
+import customAttributesMap from "./mappers/custom-attributes.map";
+import { CustomAttributeObject } from "../types/resources/custom-attribute";
 import searchResultsToSuggestions from "./utils/search-result-to-suggestions";
 
 // TODO: provide error handling and nullable responses
@@ -43,17 +42,15 @@ export default class FrontController implements IFrontController {
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
-  isUserOwnsName(
-    nameOwnerSignature?: string
-  ): boolean {
-    const ownerSignature = nameOwnerSignature || this.nameOwnerContext.signature;
+  isUserOwnsName(nameOwnerSignature?: string): boolean {
+    const ownerSignature =
+      nameOwnerSignature || this.nameOwnerContext.signature;
     return ownerSignature === this.userContext.signature;
   }
 
   async complexSearch(
     names: Array<Name>,
-    nameOwner?: NameOwner,
-    meta?: Meta
+    nameOwner?: NameOwner
   ): Promise<{ [t in NameTypes]: Pronunciation[] }> {
     const owner = nameOwner || this.nameOwnerContext;
 
