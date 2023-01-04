@@ -3,14 +3,18 @@ import classNames from "classnames/bind";
 
 import styles from "./styles.module.css";
 import Checkbox from "../Inputs/Checkbox";
-import { AttributePresentation } from "../../../../types/resources/custom-attribute";
+import {
+  AttributePresentation,
+  CustomAttributeObject,
+} from "../../../../types/resources/custom-attribute";
 import Textarea from "../Inputs/Textarea";
 import Select from "../Inputs/Select";
 import Textbox from "../Inputs/Textbox";
 import { CustomAttributesProps } from "../Inputs/types";
 import Errors from "../Errors";
-import { CustomAttributeObject } from "../../../../core/mappers/custom-attributes.map";
 import { cloneDeep } from "lodash";
+import MultipleCheckbox from "../Inputs/MultipleCheckbox";
+import Radio from "../Inputs/Radio";
 
 const cx = classNames.bind(styles);
 
@@ -47,6 +51,8 @@ const CustomAttributes = (
     [AttributePresentation.Dropdown]: Select,
     [AttributePresentation.Textbox]: Textbox,
     [AttributePresentation.Textarea]: Textarea,
+    [AttributePresentation.MultipleCheckbox]: MultipleCheckbox,
+    [AttributePresentation.Radio]: Radio,
   };
 
   const onInputChange = (id, value) => {

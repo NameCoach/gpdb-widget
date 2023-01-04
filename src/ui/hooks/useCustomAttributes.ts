@@ -1,11 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { cloneDeep } from "lodash";
 import IFrontController from "../../types/front-controller";
 import ControllerContext from "../../ui/contexts/controller";
-import {
-  CustomAttributeObject,
-  valueMapperFunc,
-} from "../../core/mappers/custom-attributes.map";
+import { valueMapperFunc } from "../../core/mappers/custom-attributes.map";
+import { CustomAttributeObject } from "../../types/resources/custom-attribute";
 import Pronunciation from "../../types/resources/pronunciation";
 import { NameOption } from "../../ui/components/FullNamesList";
 
@@ -16,12 +14,25 @@ interface HookProps {
   saveCallback?: () => void;
 }
 
+interface HookReturn {
+  loading: boolean;
+  errors: any[]; // TODO: provide proper type
+  data: CustomAttributeObject[];
+  saveCustomAttributes: () => Promise<void>;
+  exitEditMode: () => void;
+  enterEditMode: () => void;
+  inEdit: boolean;
+  config: CustomAttributeObject[];
+  customAttrsPresent: boolean;
+  customAttrsRef: React.MutableRefObject<Record<string, any>>;
+}
+
 const useCustomAttributes = ({
   pronunciation,
   name,
   saveCallback,
   controller = useContext<IFrontController>(ControllerContext),
-}: HookProps) => {
+}: HookProps): HookReturn => {
   const [inEdit, setInEdit] = useState<boolean>(false);
   const [data, setData] = useState<CustomAttributeObject[]>(
     cloneDeep(pronunciation?.customAttributes) || []
@@ -30,7 +41,9 @@ const useCustomAttributes = ({
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const config = cloneDeep(controller.customAttributes);
+  const config: CustomAttributeObject[] = cloneDeep(
+    controller.customAttributes
+  );
 
   const customAttrsPresent =
     data?.length > 0 &&
