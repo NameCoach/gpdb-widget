@@ -60,9 +60,9 @@ const FullNamesList = ({
       </div>
 
       {!loading && customAttributesDataPresent && (
-        <CustomAttributesInspector 
+        <CustomAttributesInspector
           data={pronunciation.customAttributes}
-          pronunciation={pronunciation} 
+          pronunciation={pronunciation}
         />
       )}
     </>
