@@ -1,3 +1,4 @@
+// REMOVE THIS LATER, not used anymore
 import React, {
   memo,
   useCallback,
@@ -12,11 +13,11 @@ import Checkbox from "../Inputs/Checkbox";
 import DisabledInput from "../Inputs/DisabledInput";
 import CustomAttribute, {
   AttributePresentation,
+  CustomAttributeObject,
 } from "../../../types/resources/custom-attribute";
 import CustomInput from "../Inputs/CustomInput";
 import ControllerContext from "../../contexts/controller";
 import Close from "../Close";
-import { CustomAttributeObject } from "../../../core/mappers/custom-attributes.map";
 import Loader from "../Loader";
 import { NameOwner } from "gpdb-api-client";
 import {
@@ -154,19 +155,23 @@ const CustomAttributes = ({
                       />
                     )}
 
-                    {disabled && ( attribute.presentation !== AttributePresentation.Checkbox
-                      ? <DisabledInput
-                        id={attribute.id}
-                        label={attribute.label}
-                        value={attribute.value as string}
-                      />
-                      : <Checkbox 
+                    {disabled &&
+                      (attribute.presentation !==
+                      AttributePresentation.Checkbox ? (
+                        <DisabledInput
                           id={attribute.id}
                           label={attribute.label}
                           value={attribute.value as string}
+                        />
+                      ) : (
+                        <Checkbox
+                          id={attribute.id}
+                          label={attribute.label}
+                          value={attribute.value as boolean}
                           disabled
-                          onUpdate={onUpdate}/>
-                    )}
+                          onUpdate={onUpdate}
+                        />
+                      ))}
 
                     {state === STATES.FAILED && errors[attribute.id] && (
                       <p className={styles.attribute__error}>
