@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Range } from "react-range";
 import ControllerContext from "../../../../../../contexts/controller";
 import useTranslator from "../../../../../../hooks/useTranslator";
-import { STEP } from "../../constants";
+import { STEP } from "../../../../constants";
 import { OTLOOK_THUMB_STYLE } from "../../styles";
 import Track from "../../Track";
 import { RangeInputProps } from "../../types";

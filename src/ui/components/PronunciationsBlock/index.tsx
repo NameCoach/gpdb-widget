@@ -10,7 +10,10 @@ import { UserPermissions } from "../../../types/permissions";
 import StyleContext from "../../contexts/style";
 import useTranslator from "../../hooks/useTranslator";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
-import useFeaturesManager, { CanComponents, ShowComponents } from "../../hooks/useFeaturesManager";
+import useFeaturesManager, {
+  CanComponents,
+  ShowComponents,
+} from "../../hooks/useFeaturesManager";
 import { usePronunciations } from "../../hooks/pronunciations";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Name, { NameTypes } from "../../../types/resources/name";
