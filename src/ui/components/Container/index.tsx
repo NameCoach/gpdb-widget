@@ -20,7 +20,9 @@ import useRecorderState, {
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
-import useFeaturesManager, { CanComponents } from "../../hooks/useFeaturesManager";
+import useFeaturesManager, {
+  CanComponents,
+} from "../../hooks/useFeaturesManager";
 import MyInfo from "../MyInfo";
 import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import { NameOption } from "../FullNamesList";
@@ -36,10 +38,18 @@ interface Props {
 
 const cx = classNames.bind(styles);
 
-const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): JSX.Element => {
+const Container = ({
+  names,
+  verifyNames,
+  hideLogo,
+  termsAndConditions,
+}: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const [loading, setLoading] = useState(true);
-  const [fullNameOption, setFullNameOption] = useState<NameOption>({value: names.fullName.key, key: names.fullName.key})
+  const [fullNameOption, setFullNameOption] = useState<NameOption>({
+    value: names.fullName.key,
+    key: names.fullName.key,
+  });
   const [firstName, setFirstName] = useState(names.firstName as Name);
   const [lastName, setLastName] = useState(names.lastName as Name);
   const [fullName, setFullName] = useState(names.fullName as Name);
@@ -75,23 +85,26 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
 
   const canRecordOrgPeer = useMemo(
     () =>
-      can(CanComponents.CreateOrgPeerRecording, controller.nameOwnerContext.signature),
+      can(
+        CanComponents.CreateOrgPeerRecording,
+        controller.nameOwnerContext.signature
+      ),
     [controller.nameOwnerContext.signature, controller.permissions]
   );
 
-  const canCreateFullName = useMemo(
-    () => {
+  const canCreateFullName = useMemo(() => {
     if (controller.isUserOwnsName())
       return can(CanComponents.CreateSelfRecording, fullNamePronunciation);
 
-      // TODO: make that a named attribute of pronunciations object? INT-164
-    if (fullNamePronunciation?.nameOwnerCreated)
-      return false;
+    // TODO: make that a named attribute of pronunciations object? INT-164
+    if (fullNamePronunciation?.nameOwnerCreated) return false;
 
-      return canRecordOrgPeer;
-    },
-    [controller.nameOwnerContext, controller.permissions, fullNamePronunciation]
-  );
+    return canRecordOrgPeer;
+  }, [
+    controller.nameOwnerContext,
+    controller.permissions,
+    fullNamePronunciation,
+  ]);
 
   const canPronunciationSearch = useMemo(() => {
     return controller.permissions.can(Resources.Pronunciation, "search");
@@ -102,7 +115,7 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
     if (type === NameTypes.FirstName) setFirstName({ ...firstName, exist: true });
     if (type === NameTypes.LastName) setLastName({ ...lastName, exist: true });
     if (type === NameTypes.FullName) setFullName({ ...fullName, exist: true });
-    setFullNameOption({value: names.fullName.key, key: names.fullName.key})
+    setFullNameOption({ value: names.fullName.key, key: names.fullName.key });
   };
 
   const simpleSearch = async (type: NameTypes): Promise<void> => {
@@ -288,7 +301,9 @@ const Container = ({names, verifyNames, hideLogo, termsAndConditions}: Props): J
     <>
       {isSingleName ? renderSingleNameHeader() : renderFullNameHeader()}
       {isRecorderOpen && !loading && (
-        <StyleContext.Provider value={{displayRecorderSavingMessage: true, theme: Theme.Outlook}}>
+        <StyleContext.Provider
+          value={{ displayRecorderSavingMessage: true, theme: Theme.Outlook }}
+        >
           <Recorder
             name={recorderState.name}
             type={recorderState.type}
