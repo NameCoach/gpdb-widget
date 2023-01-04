@@ -19,7 +19,7 @@ import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
 import MyInfo from "../MyInfo";
-import NewRecorder from "../NewRecorder";
+import NewRecorder from "../Recorder";
 
 interface Props {
   name: Omit<NameOption, "key">;
