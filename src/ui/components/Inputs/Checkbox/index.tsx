@@ -5,7 +5,7 @@ import classNames from "classnames/bind";
 interface Props {
   id: string;
   label: string;
-  value: string;
+  value: boolean;
   disabled: boolean;
   onUpdate?: (any) => void;
 }
