@@ -1,5 +1,11 @@
+// REMOVE THIS LATER, not used anymore
+
 import React, { memo } from "react";
-import { AttributePresentation } from "../../../../types/resources/custom-attribute";
+import {
+  AttributePresentation,
+  CustomAttributesValues,
+  CustomAttributeValue,
+} from "../../../../types/resources/custom-attribute";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import Select from "../../Select";
@@ -10,10 +16,10 @@ const cx = classNames.bind(styles);
 interface Props {
   label: string;
   id: string;
-  value: string;
+  value: CustomAttributeValue;
   metadata?: Record<string, any>;
   type: string;
-  values?: string[];
+  values?: CustomAttributesValues;
   onUpdate: (any) => void;
 }
 
@@ -42,7 +48,7 @@ const CustomInput = ({
   };
 
   const getOptions = (): { value: string; label: string }[] =>
-    values.map((value) => {
+    (values as Array<any>).map((value) => {
       return { value, label: value };
     });
 
@@ -51,7 +57,7 @@ const CustomInput = ({
       className={styles.dropdown_control}
       onChange={onSelect}
       options={getOptions()}
-      value={{ value, label: value }}
+      value={{ value: value as string, label: value as string }}
     />
   );
 
@@ -62,7 +68,7 @@ const CustomInput = ({
       className={styles.input}
       name={label}
       placeholder={placeholder}
-      value={value}
+      value={value as string}
     />
   );
 
@@ -72,7 +78,7 @@ const CustomInput = ({
       className={styles.input}
       name={label}
       placeholder={placeholder}
-      value={value}
+      value={value as string}
     />
   );
 
@@ -93,7 +99,7 @@ const CustomInput = ({
     <Checkbox
       id={id}
       label={label}
-      value={value}
+      value={value as boolean}
       disabled={false}
       onUpdate={onUpdate}
     />
