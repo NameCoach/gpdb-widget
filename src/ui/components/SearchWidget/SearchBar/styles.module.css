@@ -1,5 +1,3 @@
-
-
 .input {
   composes: input from "../../../styles/outlook.css";
   display: flex;
@@ -51,53 +49,36 @@
   margin-bottom: 12px;
 }
 
-.player {
-  composes: icon-btn from "../../../styles/icons.css";
-}
-
-.search {
-  composes: search from "../../../styles/icons.css";
-}
-
-.m_5 {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.suggestions_block {
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0px 2px 4px $colors_black;
+.search_bar {
+  background: #FFFFFF;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  background-color: $colors_background;
+  height: 30px;
+  padding-left: 8px;
+  padding-right: 10px;
+  border: 1px solid transparent;
+} 
+
+.search_bar:hover, .search_bar:focus, .search_bar:focus-visible {
+  border: 1px solid $colors_darker_brand;
 }
 
-.suggestion_line {
+.search_input, .search_input:hover, .search_input:focus {
+  outline: none !important;
+  border: none !important;
   width: 100%;
-  align-self: start;
-  cursor: pointer;
 }
 
-.suggestion_name {
-  margin-left: 8px;
-  margin-right: 6px;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-}
-
-.suggestion_line:hover {
-  background-color: $colors_secondary_gray;
+.search_input::placeholder, .search_input:-ms-input-placeholder, .search_input::-ms-input-placeholder {
+  color: $colors_light_grey;
 }
 
 .search_button_icon {
   margin-left: -22px;
 }
-
 .input_container {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 18px;
 }
