@@ -21,6 +21,7 @@ import { NameOwner } from "gpdb-api-client";
 import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import NameLinesResult from "../NamelinesResult";
 import nameToKeyTypeObjectsArray from "../../../core/utils/name-to-key-type-objects-array";
+import stringIsEmail from "../../../core/utils/string-is-email";
 
 interface Props {
   names: NameOption[];
@@ -145,7 +146,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
 
     setNameOwner(name.owner);
 
-    if (name.value.includes("@") && canSearchBySig) {
+    if (stringIsEmail(name.value) && canSearchBySig) {
       return await searchBySig(name);
     }
 
