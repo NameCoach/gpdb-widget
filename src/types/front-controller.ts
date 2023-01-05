@@ -13,8 +13,7 @@ import {
 import NameParser from "./name-parser";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
-import { CustomAttributeObject } from "../core/mappers/custom-attributes.map";
-
+import { CustomAttributeObject } from "../types/resources/custom-attribute";
 export interface Meta {
   uri?: string;
 }
@@ -26,9 +25,7 @@ export interface PublicAttributes {
 }
 
 export interface PublicHelpers {
-  isUserOwnsName: (
-    nameOwnerSignature?: string
-  ) => boolean
+  isUserOwnsName: (nameOwnerSignature?: string) => boolean;
 }
 
 export interface GpdbRequests {
@@ -109,7 +106,7 @@ export interface SettingsRequests {
 }
 
 type IFrontController = PublicAttributes &
-PublicHelpers &
+  PublicHelpers &
   GpdbRequests &
   CustomAttributesRequests &
   NamesServiceRequests &
