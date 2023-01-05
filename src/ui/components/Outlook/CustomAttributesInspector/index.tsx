@@ -1,10 +1,14 @@
-import React, { memo } from "react";
-import { CustomAttributeObject } from "../../../../core/mappers/custom-attributes.map";
-import { AttributePresentation } from "../../../../types/resources/custom-attribute";
+import React, { Fragment, memo, useMemo } from "react";
+import {
+  AttributePresentation,
+  CustomAttributeObject,
+  CustomAttributeValue,
+} from "../../../../types/resources/custom-attribute";
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import Inspector from "./inspector";
 import BooleanInspector from "./boolean_inspector";
+import MultipleBooleanInspector from "./multiple_boolean_inspector";
 import useFeaturesManager, {
   CanComponents,
 } from "../../../hooks/useFeaturesManager";
@@ -17,8 +21,15 @@ interface Props {
   data: CustomAttributeObject[];
   pronunciation?: Pronunciation;
 }
+const ATTRIBUTE_PRESENTATIONS = {
+  [AttributePresentation.Checkbox]: BooleanInspector,
+  [AttributePresentation.MultipleCheckbox]: MultipleBooleanInspector,
+};
 
-const CustomAttributesInspector = ({ data, pronunciation }: Props) => {
+const CustomAttributesInspector = ({
+  data,
+  pronunciation,
+}: Props): JSX.Element => {
   const { can } = useFeaturesManager();
   // #TODO: rework custom attributes feature in manager, cause it mixes data and policies
   const canEditCustomAttributes = can(
@@ -26,22 +37,30 @@ const CustomAttributesInspector = ({ data, pronunciation }: Props) => {
     pronunciation
   );
 
+  const valuePresent = (value: CustomAttributeValue): boolean => {
+    if (typeof value === "object" && Object.keys(value).length > 0) return true;
+    if (typeof value === "string" && value.length > 0) return true;
+    if (typeof value === "boolean" && value === true) return true;
+
+    return false;
+  };
+
+  const dataLastElementIndex = useMemo(() => data?.length - 1, [data]);
+
   return (
     <>
       {canEditCustomAttributes && (
         <div className={cx(styles.column)}>
           {data.map(({ presentation, value, label }, index) => {
-            let Component = Inspector;
+            const Component =
+              ATTRIBUTE_PRESENTATIONS[presentation] ?? Inspector;
 
-            if (presentation === AttributePresentation.Checkbox)
-              Component = BooleanInspector;
-
-            return value ? (
-              <>
+            return valuePresent(value) ? (
+              <Fragment key={index}>
                 <Component key={index} value={value} label={label} />
 
-                {index !== data?.length - 1 && <Gap height={12} />}
-              </>
+                {index !== dataLastElementIndex && <Gap height={12} />}
+              </Fragment>
             ) : null;
           })}
         </div>
