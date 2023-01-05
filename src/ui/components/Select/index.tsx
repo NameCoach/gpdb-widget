@@ -1,4 +1,9 @@
-import React, { MutableRefObject, useImperativeHandle, useMemo, useState } from "react";
+import React, {
+  MutableRefObject,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import Select from "react-select";
 import { BRAND, _SECONDARY } from "../../styles/variables/colors";
 import { Theme } from "../../../types/style-context";
@@ -125,7 +130,10 @@ const customStyles = (theme) => (
   }),
 });
 
-const SelectComponent = (props: Props, ref: MutableRefObject<SelectRef>): JSX.Element => {
+const SelectComponent = (
+  props: Props,
+  ref: MutableRefObject<SelectRef>
+): JSX.Element => {
   const { theme: appTheme } = useTheme();
   const firstSelectedOption = useMemo(() => props.options[0], props.options);
   const [menuOpened, setMenuOpened] = useState<boolean>(false);

@@ -49,5 +49,10 @@
 }
 
 .permissions {
-  composes: recorder__body from "../Recorder/styles.module.css";
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  line-height: 22px;
 }

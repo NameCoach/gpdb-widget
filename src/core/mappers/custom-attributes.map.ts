@@ -1,21 +1,59 @@
-import CustomAttribute, {
+import {
+  Attribute,
   AttributePresentation,
+  CustomAttributeObject,
+  CustomAttributeValue,
+  MultipleCheckboxField,
 } from "../../types/resources/custom-attribute";
-import { AttributeConfig } from "gpdb-api-client";
 
-type Attribute = CustomAttribute & AttributeConfig;
-type CustomAttributesValue = string | boolean;
+const CheckboxValueMapper = (value) => value === true;
+const DropdownValueMapper = (value) => value;
+const RadioValueMapper = DropdownValueMapper;
+const TextboxValueMapper = (value) => value?.toString() || "";
+const TextareaValueMapper = TextboxValueMapper;
+const MultipleCheckboxMapper = (value) =>
+  value.reduce(() => {
+    return Object.assign(
+      {},
+      ...Array.from(value, (item: MultipleCheckboxField) => ({
+        [item.id]: String(item.value || false),
+      }))
+    );
+  }, {});
 
-export type CustomAttributeObject = Attribute & { values?: string[] };
+const MAPPERS = {
+  [AttributePresentation.Checkbox]: CheckboxValueMapper,
+  [AttributePresentation.Dropdown]: DropdownValueMapper,
+  [AttributePresentation.Textarea]: TextareaValueMapper,
+  [AttributePresentation.Textbox]: TextboxValueMapper,
+  [AttributePresentation.Radio]: RadioValueMapper,
+  [AttributePresentation.MultipleCheckbox]: MultipleCheckboxMapper,
+};
 
-const getValue = (attribute: Attribute): CustomAttributesValue => {
-  const value = attribute?.value;
-  const defaultValue = attribute?.metadata?.default_value;
+export const valueMapperFunc = (presentation) => (value) => {
+  return MAPPERS[presentation](value);
+};
 
-  if (attribute.presentation === AttributePresentation.Checkbox) {
+const getValue = ({
+  value,
+  metadata,
+  presentation,
+}: Pick<
+  Attribute,
+  "presentation" | "value" | "metadata"
+>): CustomAttributeValue => {
+  const defaultValue = metadata?.default_value;
+
+  if (presentation === AttributePresentation.Checkbox) {
     const checkboxDefaultValue = defaultValue || false;
 
     return value === undefined ? checkboxDefaultValue : value;
+  }
+
+  if (presentation === AttributePresentation.MultipleCheckbox) {
+    return metadata?.values.map((item) => {
+      return { ...item, value: value ? value[item.id] === "true" : false };
+    });
   }
 
   return value || defaultValue || "";
@@ -24,36 +62,16 @@ const getValue = (attribute: Attribute): CustomAttributesValue => {
 const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
   if (!raw || raw.length === 0) return [];
 
-  return raw.map((attribute) => {
-    const _attribute: CustomAttributeObject = {
-      id: attribute.id,
-      value: getValue(attribute),
-      label: attribute.label,
-      presentation: attribute.presentation,
-      metadata: attribute.metadata,
+  return raw.map(({ id, value, metadata, label, presentation }) => {
+    return {
+      id,
+      value: getValue({ value, metadata, presentation }),
+      label,
+      presentation,
+      metadata: metadata,
+      values: metadata?.values || [],
     };
-
-    if (_attribute.presentation === AttributePresentation.Dropdown)
-      _attribute.values = attribute.metadata?.values;
-
-    return _attribute;
   });
-};
-
-const CheckboxValueMapper = (value) => value === true;
-const DropdownValueMapper = (value) => value;
-const TextboxValueMapper = (value) => value?.toString() || "";
-const TextareaValueMapper = TextboxValueMapper;
-
-const MAPPERS = {
-  [AttributePresentation.Checkbox]: CheckboxValueMapper,
-  [AttributePresentation.Dropdown]: DropdownValueMapper,
-  [AttributePresentation.Textarea]: TextareaValueMapper,
-  [AttributePresentation.Textbox]: TextboxValueMapper,
-};
-
-export const valueMapperFunc = (presentation) => (value) => {
-  return MAPPERS[presentation](value);
 };
 
 export default customAttributesMap;
