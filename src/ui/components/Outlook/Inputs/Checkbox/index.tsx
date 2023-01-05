@@ -12,13 +12,14 @@ const Checkbox = ({
   label,
   disabled,
   onChange,
+  isChild,
 }: CustomAttributesInputsProps): JSX.Element => {
   const onClick = (): void => onChange(id, !value);
 
   return (
-    <div className={cx(styles.checkbox_container, styles.row)}>
+    <div className={cx(styles.checkbox_container, styles.row, { isChild })}>
       <div className={cx(styles.row)}>
-        <label className={cx(styles.label)} htmlFor={id}>
+        <label className={cx(styles.label, { isChild })} htmlFor={id}>
           {label}
         </label>
       </div>
