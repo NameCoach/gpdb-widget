@@ -8,3 +8,5 @@ export const DEFAULT_SAMPLE_RATE = 48000;
 export const MIN_SAMPLE_RATE = 16000;
 
 export const MAX_ALLOWED_FILE_SIZE = 5242880; // 5MB
+
+export const STEP = 0.1;
