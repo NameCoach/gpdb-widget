@@ -2,9 +2,7 @@ import {
   NAME_PARTS_MAX_ALLOWED_COUNT,
   SUGGESTIONS_ALLOWED_COUNT,
 } from "../../constants";
-
-const capitalize = (string: string): string =>
-  string.charAt(0).toUpperCase() + string.slice(1);
+import capitalizeString from "./capitalize-string";
 
 const getNamesCombinations = (objectWithArrayValues: object): Array<any> => {
   const recursive = (keys: Array<string>): Array<any> => {
@@ -65,7 +63,7 @@ const searchResultsToSuggestions = (
     .map((name) =>
       name
         .split(" ")
-        .map((item) => capitalize(item))
+        .map((item) => capitalizeString(item))
         .join(" ")
     );
 
