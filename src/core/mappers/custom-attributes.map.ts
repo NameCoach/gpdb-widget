@@ -62,16 +62,20 @@ const getValue = ({
 const customAttributesMap = (raw: Attribute[]): CustomAttributeObject[] => {
   if (!raw || raw.length === 0) return [];
 
-  return raw.map(({ id, value, metadata, label, presentation }) => {
-    return {
-      id,
-      value: getValue({ value, metadata, presentation }),
-      label,
-      presentation,
-      metadata: metadata,
-      values: metadata?.values || [],
-    };
-  });
+  return raw
+    .map(({ id, value, metadata, label, presentation }) => {
+      if (presentation in AttributePresentation) {
+        return {
+          id,
+          value: getValue({ value, metadata, presentation }),
+          label,
+          presentation,
+          metadata,
+          values: metadata?.values || []
+        };
+      }
+    })
+    .filter((item) => item);
 };
 
 export default customAttributesMap;
