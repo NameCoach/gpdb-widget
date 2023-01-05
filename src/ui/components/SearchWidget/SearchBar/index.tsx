@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { MIN_INPUT_SYMBOLS_TO_SUGGEST } from "../../../../constants";
 import IFrontController from "../../../../types/front-controller";
@@ -8,6 +8,7 @@ import useTranslator from "../../../hooks/useTranslator";
 import styles from "./styles.module.css";
 import Tooltip from "../../../kit/Tooltip";
 import useTooltip from "../../../kit/Tooltip/hooks/useTooltip";
+import SuggestedNames from "../SuggestedNames";
 
 const cx = classNames.bind(styles);
 
@@ -17,12 +18,22 @@ interface Props {
   controller: IFrontController;
 }
 
-const ENTER_KEY_NAME = "Enter";
-const ENTER_KEY_CODE = 13;
+enum KeyBoardKeys {
+  ENTER = "Enter",
+  ARROW_UP_KEY = "ArrowUp",
+  ARROW_DOWN_KEY = "ArrowDown",
+}
+
 const HANDLE_SUBMIT_DELAY = 300;
-const GET_SUGGESTIONS_DELAY = 500;
-const ZERO_ARRAY_LENGTH = 0;
 const SEARCH_TOOLTIP_SIDE_OFFSET = 0;
+const GET_SUGGESTIONS_DELAY = 1000;
+
+type FocusableElement = HTMLDivElement | HTMLInputElement;
+type ContainerElement = HTMLDivElement & {
+  suggestedNamesCache: { [x: string]: string[] };
+  focusableElements: FocusableElement[];
+  focusedElement: FocusableElement;
+};
 
 const SearchBar = ({
   onSubmit,
@@ -30,116 +41,147 @@ const SearchBar = ({
   controller,
 }: Props): JSX.Element => {
   const { t } = useTranslator(controller);
-  const inputTip = useTooltip<HTMLDivElement>();
   const iconTip = useTooltip<HTMLButtonElement>();
 
-  const [input, setInput] = useState("");
+  const containerRef = useRef<ContainerElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const suggestedNamesRef = useRef<HTMLDivElement>(null);
 
-  const [renderSuggestions, setRenderSuggestions] = useState(false);
-  const [
-    disableDebouncedCallbackResult,
-    setDisableDebouncedCallbackResult,
-  ] = useState(false);
   const [suggestedNames, setSuggestedNames] = useState<Array<string>>([]);
 
   const handleSubmit = useDebouncedCallback((): void => {
-    setRenderSuggestions(false);
-    onSubmit(input.trim());
+    setSuggestedNames([]);
+
+    onSubmit(inputRef.current.value.trim());
   }, HANDLE_SUBMIT_DELAY);
 
-  const handleKeyPressed = ({ key, keyCode }): void =>
-    (key === ENTER_KEY_NAME || keyCode === ENTER_KEY_CODE) && handleSubmit();
+  const handleKeyPressed = ({ key }: React.KeyboardEvent): void =>
+    key === KeyBoardKeys.ENTER && handleSubmit();
 
   const getNamesToSuggest = useDebouncedCallback(async (name: string) => {
-    const names = await controller.getSuggestions(name);
+    const suggestedNamesCache = containerRef.current.suggestedNamesCache || {};
 
-    if (names.length > ZERO_ARRAY_LENGTH) {
-      setRenderSuggestions(true);
-      setSuggestedNames(names);
-    }
+    const names =
+      suggestedNamesCache[name] || (await controller.getSuggestions(name));
 
-    if (disableDebouncedCallbackResult === true) {
-      setDisableDebouncedCallbackResult(false);
-      setRenderSuggestions(false);
-    }
+    containerRef.current.suggestedNamesCache = suggestedNamesCache;
+    containerRef.current.suggestedNamesCache[name] = names;
+
+    setSuggestedNames(names);
   }, GET_SUGGESTIONS_DELAY);
 
-  const handleChange = ({ target: { value } }) => {
+  const clearInput = (): void => {
     onInputChange();
-    setInput(value);
 
-    if (value.length < MIN_INPUT_SYMBOLS_TO_SUGGEST) {
-      setDisableDebouncedCallbackResult(true);
+    containerRef.current.focusableElements = null;
+    containerRef.current.focusedElement = null;
+  };
 
-      return setRenderSuggestions(false);
-    }
+  const handleChange = ({ target: { value } }): Promise<void> => {
+    clearInput();
 
     if (value.length >= MIN_INPUT_SYMBOLS_TO_SUGGEST) {
-      setDisableDebouncedCallbackResult(false);
-
-      return getNamesToSuggest(value.trim());
+      return getNamesToSuggest(value.trim().toLowerCase());
+    } else {
+      getNamesToSuggest.cancel();
+      setSuggestedNames([]);
     }
   };
 
-  const handleSuggestionClick = (name: string) => {
-    setInput(name);
+  const handleSuggestionClick = (name: string): void => {
+    inputRef.current.value = name;
 
     handleSubmit();
   };
 
+  const handleKeyDown = ({ key }): void => {
+    if (suggestedNames.length === 0) return;
+
+    if (
+      ![
+        KeyBoardKeys.ENTER,
+        KeyBoardKeys.ARROW_DOWN_KEY,
+        KeyBoardKeys.ARROW_UP_KEY,
+      ].includes(key)
+    )
+      return;
+
+    const focusableElements = containerRef.current?.focusableElements || [
+      inputRef.current,
+      ...((suggestedNamesRef.current
+        .children as unknown) as FocusableElement[]),
+    ];
+    const focusedElement =
+      containerRef.current?.focusedElement || inputRef.current;
+    const focusedElementIndex = focusableElements.indexOf(focusedElement);
+
+    if (
+      key === KeyBoardKeys.ARROW_DOWN_KEY &&
+      focusedElementIndex !== focusableElements.length - 1
+    ) {
+      const element = focusableElements[focusedElementIndex + 1];
+
+      containerRef.current.focusedElement = element;
+
+      element.focus();
+    }
+
+    if (key === KeyBoardKeys.ARROW_UP_KEY && focusedElementIndex > 0) {
+      const element = focusableElements[focusedElementIndex - 1];
+
+      containerRef.current.focusedElement = element;
+
+      element.focus();
+    }
+
+    if (key === KeyBoardKeys.ENTER) {
+      const value =
+        (focusedElement as HTMLInputElement).value ||
+        (focusedElement?.children[0] as HTMLElement).innerText;
+
+      inputRef.current.focus();
+
+      handleSuggestionClick(value);
+    }
+  };
+
   return (
-    <>
-      <div className={cx(styles.row)}>
-        <div className={cx(styles.input_container)}>
-          <Tooltip
-            opener={inputTip.opener}
-            ref={inputTip.tooltipRef}
-          >
-            {t("search_widget_tip")}
-          </Tooltip>
-          <input
-            aria-label="Search input field"
-            className={cx(styles.input)}
-            placeholder={t("search_widget_input_placeholder")}
-            type="text"
-            required
-            value={input}
-            onChange={handleChange}
-            onKeyPress={handleKeyPressed}
-            ref={inputTip.openerRef}
-          />
-        </div>
-        <div >
-          <Tooltip
-            opener={iconTip.opener}
-            ref={iconTip.tooltipRef}
-            rightArrow
-            arrowSideOffset={SEARCH_TOOLTIP_SIDE_OFFSET}
-          >
-            {t("search_widget_tip")}
-          </Tooltip>
-          <IconButtons.Search
-            className={styles.search_button_icon}
-            onClick={handleSubmit}
-            ref={iconTip.openerRef}
-          />
-        </div>
+    <div ref={containerRef} onKeyDown={handleKeyDown}>
+      <div className={cx(styles.search_bar, styles.row)}>
+        <input
+          ref={inputRef}
+          aria-label="Search input field"
+          className={cx(styles.search_input)}
+          placeholder={t("search_widget_input_placeholder")}
+          type="text"
+          required
+          onChange={handleChange}
+          onKeyPress={handleKeyPressed}
+        />
+
+        <Tooltip
+          opener={iconTip.opener}
+          ref={iconTip.tooltipRef}
+          rightArrow
+          arrowSideOffset={SEARCH_TOOLTIP_SIDE_OFFSET}
+        >
+          {t("search_widget_tip")}
+        </Tooltip>
+        <IconButtons.Search
+          onClick={handleSubmit}
+          className={styles.search_button_icon}
+          ref={iconTip.openerRef}
+        />
       </div>
 
-      <div className={cx(styles.row, styles.suggestions_block)}>
-        {renderSuggestions &&
-          suggestedNames.length > 0 &&
-          suggestedNames.map((name, key) => (
-            <div
-              className={cx(styles.suggestion_line)}
-              key={key}
-              onClick={(): void => handleSuggestionClick(name)}
-            >
-              <p className={cx(styles.suggestion_name)}>{name}</p>
-            </div>
-          ))}
-      </div>
-    </>
+      {suggestedNames.length > 0 && (
+        <SuggestedNames
+          ref={suggestedNamesRef}
+          names={suggestedNames}
+          onClick={handleSuggestionClick}
+        />
+      )}
+    </div>
   );
 };
 
