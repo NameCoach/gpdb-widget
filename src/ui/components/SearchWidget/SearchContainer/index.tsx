@@ -10,9 +10,9 @@ import { DEFAULT_NAME_OWNER } from "../../../../constants";
 import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
+import stringIsEmail from "../../../../core/utils/string-is-email";
 
 const UNPERMITTED_INPUT_CHARS_REGEXP = /^-| -|- |\d+|\.|,|\/|!|#|\$|%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
-const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
 const cx = classNames.bind(styles);
 
@@ -51,9 +51,7 @@ const SearchContainer = (props: Props): JSX.Element => {
   const onSubmitSearch = useCallback((searchInput: string): void => {
     if (!searchInput) return;
 
-    const isEmail = EMAIL_REGEXP.test(searchInput);
-
-    if (isEmail) {
+    if (stringIsEmail(searchInput)) {
       const namesObj = [
         {
           key: searchInput,
