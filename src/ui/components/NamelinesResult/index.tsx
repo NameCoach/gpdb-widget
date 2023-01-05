@@ -22,7 +22,7 @@ import { useNotifications } from "../../hooks/useNotification";
 import getDeleteNotificationTag from "../../../core/utils/get-delete-notification-tag";
 import { NotificationTags } from "../../../types/notifications";
 import Notification from "../Notification";
-import NewRecorder from "../NewRecorder";
+import NewRecorder from "../Recorder";
 import useTranslator from "../../hooks/useTranslator";
 import usePopup from "../../kit/Popup/hooks/usePopup";
 import Popup from "../../kit/Popup";

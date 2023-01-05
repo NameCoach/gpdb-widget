@@ -2,6 +2,10 @@
   margin-bottom: 15.5px;
 }
 
+.checkbox_container.isChild {
+  margin-bottom: 0;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -21,6 +25,10 @@
   cursor: default;
   color: $colors_dark_grey;
   min-height: 17px;
+}
+
+.label.isChild {
+  font-weight: 400;
 }
 
 .checked_icon {
