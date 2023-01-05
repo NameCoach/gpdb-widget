@@ -1,10 +1,11 @@
 import React, { memo } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
+import { InspectorProps } from "./types";
 
 const cx = classNames.bind(styles);
 
-const Inspector = ({ label, value }) => {
+const Inspector = ({ label, value }: InspectorProps): JSX.Element => {
   return (
     <>
       {value && (
