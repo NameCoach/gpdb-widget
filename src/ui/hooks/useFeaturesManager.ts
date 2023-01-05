@@ -32,21 +32,21 @@ export enum ShowComponents {
 }
 
 export enum CanComponents {
-   CreateRecordingRequest = "createRecordingRequest",
-   FindRecordingRequest = "findRecordingRequest",
-   RestoreOrgPeerPronunciation = "restoreOrgPeerPronunciation",
-   RestoreSelfPronunciation = "restoreSelfPronunciation",
-   Restore = "restore",
-   CreateUserResponse = "createUserResponse",
-   UserResponse = "userResponse",
-   DestroyPronunciation = "destroyPronunciation",
-   CustomDestroy = "customDestroy",
-   CreateSelfRecording = "createSelfRecording",
-   CreateOrgPeerRecording = "createOrgPeerRecording",
-   RecordNameBadge = "recordNameBadge",
-   Pronunciation = "pronunciation",
-   CreateCustomAttributes = "createCustomAttributes",
-   EditCustomAttributesForSelf= "editCustomAttributesForSelf",
+  CreateRecordingRequest = "createRecordingRequest",
+  FindRecordingRequest = "findRecordingRequest",
+  RestoreOrgPeerPronunciation = "restoreOrgPeerPronunciation",
+  RestoreSelfPronunciation = "restoreSelfPronunciation",
+  Restore = "restore",
+  CreateUserResponse = "createUserResponse",
+  UserResponse = "userResponse",
+  DestroyPronunciation = "destroyPronunciation",
+  CustomDestroy = "customDestroy",
+  CreateSelfRecording = "createSelfRecording",
+  CreateOrgPeerRecording = "createOrgPeerRecording",
+  RecordNameBadge = "recordNameBadge",
+  Pronunciation = "pronunciation",
+  CreateCustomAttributes = "createCustomAttributes",
+  EditCustomAttributesForSelf = "editCustomAttributesForSelf",
 }
 
 const useFeaturesManager = (
@@ -58,8 +58,8 @@ const useFeaturesManager = (
   const styleContext = useContext<IStyleContext>(StyleContext);
   const customFeatures = useCustomFeatures(controller, styleContext);
 
-  const _permissionsManager = permissionsManager ? permissionsManager : controller.permissions;
-  const _customFeaturesManager = customFeaturesManager ? customFeaturesManager : customFeatures;
+  const _permissionsManager = permissionsManager || controller.permissions;
+  const _customFeaturesManager = customFeaturesManager || customFeatures;
 
   const { canPronunciation, canUserResponse } = usePermissions(
     _permissionsManager,
