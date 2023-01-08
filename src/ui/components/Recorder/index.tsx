@@ -17,6 +17,9 @@ import outlookStyles from "./styles/outlook/styles.module.css";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
 import { Theme } from "../../../types/style-context";
+import { Row } from "../../kit/Grid";
+import { StyledText } from "../../kit/Topography";
+import Gap from "../../kit/Gap";
 
 const defaultCx = classNames.bind(defaultStyles);
 const outlookCx = classNames.bind(outlookStyles);
@@ -82,6 +85,13 @@ const NewRecorder = ({
             old: isOld,
           })}
         >
+          <Row padding={"0 6px"} borderBox>
+            <StyledText small bold>
+              {/* TODO: move to i18n */}
+              Recording
+            </StyledText>
+          </Row>
+          <Gap height={16}/>
           <CurrentState />
         </div>
       </RecorderProvider>
