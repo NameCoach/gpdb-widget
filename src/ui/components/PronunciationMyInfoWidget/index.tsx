@@ -13,6 +13,7 @@ import { HtmlComponents } from "../../customFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import usePermissions from "../../hooks/usePermissions";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
+import { PersonalSection } from "../PersonalSection";
 
 interface Props {
   client: IFrontController;
@@ -64,9 +65,9 @@ const PronunciationMyInfoWidget = ({
 
       {blockPermissions[Blocks.MyInfo] && (
         <>
-          <PersonalBlock
-            name={name}
-            controller={client}
+          <PersonalSection
+            name={name.value}
+            owner={name.owner}
             termsAndConditions={termsAndConditions}
           />
           {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}
