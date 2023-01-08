@@ -241,10 +241,10 @@ const Container = ({
         <>
           {controller.isUserOwnsName() ? (
             <MyInfo
-              name={fullNameOption}
+              name={fullNameOption.value}
+              owner={fullNameOption.owner}
               pronunciation={fullNamePronunciation}
               onCustomAttributesSaved={() => reloadName(fullName.type)}
-              loading={loading}
             />
           ) : (
             <CustomAttributesInspector
