@@ -20,6 +20,7 @@ import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
 import MyInfo from "../MyInfo";
 import NewRecorder from "../Recorder";
+import { LibraryRecordings } from "../LibraryRecordings";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -130,10 +131,10 @@ const PersonalBlock = (props: Props): JSX.Element => {
           )}
           {pronunciation ? (
             <MyInfo
-              name={props.name}
+              name={props.name.value}
+              owner={props.name.owner}
               pronunciation={pronunciation}
               onCustomAttributesSaved={onCustomAttributesSaved}
-              loading={loading}
             />
           ) : null}
         </div>
