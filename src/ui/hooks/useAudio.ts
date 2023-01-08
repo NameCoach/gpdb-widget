@@ -63,18 +63,18 @@ export default function useAudio({
 
       audioRef.current.setAttribute("src", newSrc);
       audioRef.current.load();
-      setAudioReady(true);
     };
 
     setNewAudio();
   }, [audioSrc]);
-
+  
   useEffect(() => {
     audioRef.current.onended = () => setAudioPlaying(false);
     audioRef.current.onerror = () => {
       _onError(audioRef.current.error);
       setAudioPlaying(false);
     }
+    audioRef.current.onloadedmetadata = () => setAudioReady(true);
   }, []);
 
   const stopAudio = () => {
