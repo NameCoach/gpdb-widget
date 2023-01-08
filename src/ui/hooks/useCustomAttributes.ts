@@ -5,10 +5,10 @@ import ControllerContext from "../../ui/contexts/controller";
 import { valueMapperFunc } from "../../core/mappers/custom-attributes.map";
 import { CustomAttributeObject } from "../../types/resources/custom-attribute";
 import Pronunciation from "../../types/resources/pronunciation";
-import { NameOption } from "../../ui/components/FullNamesList";
+import { NameOwner } from "gpdb-api-client";
 
 interface HookProps {
-  name: Omit<NameOption, "key">;
+  owner: NameOwner;
   pronunciation: Pronunciation;
   controller?: IFrontController;
   saveCallback?: () => void;
@@ -29,7 +29,7 @@ interface HookReturn {
 
 const useCustomAttributes = ({
   pronunciation,
-  name,
+  owner,
   saveCallback,
   controller = useContext<IFrontController>(ControllerContext),
 }: HookProps): HookReturn => {
@@ -68,7 +68,7 @@ const useCustomAttributes = ({
       return prev;
     }, {});
 
-    const res = await controller.saveCustomAttributes(values, name.owner);
+    const res = await controller.saveCustomAttributes(values, owner);
 
     if (res.hasErrors) {
       setErrors(res.errors.custom_attributes_values);
