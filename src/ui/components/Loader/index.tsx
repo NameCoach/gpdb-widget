@@ -5,6 +5,7 @@ import classNames from "classnames/bind";
 interface Props {
   inline?: boolean;
   sm?: boolean;
+  btn?: boolean;
 }
 
 const cx = classNames.bind(styles);
@@ -15,6 +16,7 @@ const Loader = (props: Props) => (
       className={cx(styles.loader, {
         loader__inline: props.inline,
         loader__sm: props.sm,
+        loader__btn: props.btn,
       })}
     />
   </div>
