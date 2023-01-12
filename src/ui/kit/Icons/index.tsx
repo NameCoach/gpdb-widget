@@ -6,6 +6,7 @@ import HelpIcon from "./Help";
 import MicrophoneIcon from "./Microphone";
 import RequestIcon from "./Request";
 import SaveIcon from "./Save";
+import SaveWithChangesIcon from "./SaveWithChanges";
 import SearchIcon from "./Search";
 import SettingsIcon from "./Settings";
 import ShareIcon from "./Share";
@@ -51,6 +52,9 @@ const Icons = {
   ),
   Save: (props: IconProps): React.ReactElement<IconProps> => (
     <SaveIcon {...props} />
+  ),
+  SaveWithChanges: (props: IconProps): React.ReactElement<IconProps> => (
+    <SaveWithChangesIcon {...props} />
   ),
   Search: (props: IconProps): React.ReactElement<IconProps> => (
     <SearchIcon {...props} />

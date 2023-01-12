@@ -15,6 +15,7 @@ interface Props {
   saveMyInfo: () => void;
   openEdit: () => void;
   canEditCustomAttributes: boolean;
+  isUnsavedChanges: boolean;
 }
 const Actions = ({
   loading,
@@ -23,6 +24,7 @@ const Actions = ({
   saveMyInfo,
   openEdit,
   canEditCustomAttributes,
+  isUnsavedChanges,
 }: Props): JSX.Element => {
   const { t } = useTranslator();
   const closeTip = useTooltip<HTMLButtonElement>();
@@ -34,7 +36,7 @@ const Actions = ({
     closeTip.tooltip.hide();
   };
 
-  const saveMyInfoHande = () => {
+  const saveMyInfoHandle = () => {
     saveMyInfo();
     saveTip.tooltip.hide();
   };
@@ -74,10 +76,17 @@ const Actions = ({
                 >
                   {t("my_info_save_changes")}
                 </Tooltip>
-                <IconButtons.Save
-                  onClick={saveMyInfoHande}
-                  ref={saveTip.openerRef}
-                />
+                {isUnsavedChanges ? (
+                  <IconButtons.SaveWithChanges
+                    onClick={saveMyInfoHandle}
+                    ref={saveTip.openerRef}
+                  />
+                ) : (
+                  <IconButtons.Save
+                    ref={saveTip.openerRef}
+                    disabled
+                  />
+                )}
               </div>
             </>
           );
