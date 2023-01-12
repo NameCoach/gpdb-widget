@@ -12,4 +12,5 @@ export interface CustomAttributesProps {
   disabled?: boolean;
   errors?: any[];
   data: CustomAttributeObject[];
+  makeChanges: (value: boolean) => void;
 }
