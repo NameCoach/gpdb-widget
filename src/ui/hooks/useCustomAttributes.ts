@@ -34,6 +34,7 @@ const useCustomAttributes = ({
   controller = useContext<IFrontController>(ControllerContext),
 }: HookProps): HookReturn => {
   const [inEdit, setInEdit] = useState<boolean>(false);
+  const [isUnsavedChanges, setIsUnsavedChanges] = useState<boolean>(false);
   const [data, setData] = useState<CustomAttributeObject[]>(
     cloneDeep(pronunciation?.customAttributes) || []
   );
@@ -89,6 +90,8 @@ const useCustomAttributes = ({
 
   const enterEditMode = (): void => setInEdit(true);
 
+  const makeChanges = (value: boolean): void => setIsUnsavedChanges(value);
+
   return {
     loading,
     errors,
@@ -100,6 +103,8 @@ const useCustomAttributes = ({
     config,
     customAttrsPresent,
     customAttrsRef,
+    makeChanges,
+    isUnsavedChanges,
   };
 };
 
