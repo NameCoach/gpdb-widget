@@ -31,7 +31,7 @@ const errorArrayToObject = (errorsArray: any[]): { [x: string]: any } => {
 };
 
 const CustomAttributes = (
-  { disabled, errors: propsErrors, data }: CustomAttributesProps,
+  { disabled, errors: propsErrors, data, makeChanges }: CustomAttributesProps,
   ref
 ): JSX.Element => {
   const [errors, setErrors] = useState(errorArrayToObject(propsErrors));
@@ -44,6 +44,7 @@ const CustomAttributes = (
     const newData = [..._data];
     newData.find((attr) => attr.id === id).value = value;
     setData(newData);
+    makeChanges(JSON.stringify(data) !== JSON.stringify(newData));
   };
 
   const ComponentPresentationMapper = {
