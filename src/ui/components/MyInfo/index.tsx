@@ -54,6 +54,8 @@ const MyInfo = ({
     config,
     customAttrsPresent,
     customAttrsRef,
+    makeChanges,
+    isUnsavedChanges,
   } = useCustomAttributes({
     controller,
     pronunciation,
@@ -79,6 +81,7 @@ const MyInfo = ({
               saveMyInfo={saveCustomAttributes}
               openEdit={enterEditMode}
               canEditCustomAttributes={canEditCustomAttributes}
+              isUnsavedChanges={isUnsavedChanges}
             />
           </div>
 
@@ -93,6 +96,7 @@ const MyInfo = ({
                     errors={errors}
                     data={data?.length > 0 ? data : config}
                     ref={customAttrsRef}
+                    makeChanges={makeChanges}
                   />
                 );
               else {
