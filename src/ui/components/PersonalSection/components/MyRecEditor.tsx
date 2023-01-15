@@ -51,9 +51,14 @@ export const MyRecEditor = ({
   visible,
   onLibraryDelete,
 }: MyRecEditorProps) => {
-  const [recorderOpened, setRecorderOpened] = useState<boolean>(false);
-  const [libraryOpened, setLibraryOpened] = useState<boolean>(false);
+  const [recorderOpened, setRecorderOpened] = useState<boolean>(
+    !!(pronunciation && !(firstNamePronunciation || lastNamePronunciation))
+  );
+  const [libraryOpened, setLibraryOpened] = useState<boolean>(
+    !!(firstNamePronunciation || lastNamePronunciation)
+  );
   const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(false);
   const { show } = useFeaturesManager();
 
   return (
@@ -69,7 +74,7 @@ export const MyRecEditor = ({
         </StyledText>
       </Row>
       <StyledGap height={8} />
-      {recorderOpened && (
+      {recorderOpened && !libraryOpened && (
         <>
           {!showNotification && (
             <Row>
@@ -79,6 +84,7 @@ export const MyRecEditor = ({
                 owner={owner}
                 onRecorderClose={(option) => {
                   if (option === RecorderCloseOptions.CANCEL) {
+                    onCancelClick();
                     setRecorderOpened(false);
                   } else if (option === RecorderCloseOptions.DELETE) {
                     setShowNotification(true);
@@ -94,16 +100,22 @@ export const MyRecEditor = ({
               />
             </Row>
           )}
-          <Row visible={showNotification}>
-            <DeletedRecordingNotification
-              onClose={() => {
-                onRecordingDelete().finally(onSave);
-              }}
-              onRestore={() => {
-                setShowNotification(false);
-              }}
-            />
-          </Row>
+          {showNotification && (
+            <Row>
+              <DeletedRecordingNotification
+                onClose={() => {
+                  onRecordingDelete().finally(() => {
+                    setTouched(true);
+                    setRecorderOpened(false);
+                    onCancelClick();
+                  });
+                }}
+                onRestore={() => {
+                  setShowNotification(false);
+                }}
+              />
+            </Row>
+          )}
           <StyledGap height={8} />
         </>
       )}
@@ -116,18 +128,23 @@ export const MyRecEditor = ({
             lastNamePronunciation={lastNamePronunciation}
             owner={owner}
             name={name}
-            onCancel={() => setLibraryOpened(false)}
+            onCancel={onCancelClick}
             onSaved={() => {
               onSave();
               setLibraryOpened(false);
             }}
-            onDelete={onLibraryDelete}
+            onDelete={() => {
+              onLibraryDelete();
+              setTouched(true);
+              onCancelClick();
+              setLibraryOpened(false);
+            }}
           />
           <StyledGap height={8} />
         </>
       )}
       <Row>
-        {!recorderOpened && (
+        {!recorderOpened &&(
           <RecorderButton
             onClick={() => {
               setLibraryOpened(false);
@@ -149,7 +166,7 @@ export const MyRecEditor = ({
         <>
           <StyledGap height={18} />
           <Row centered>
-            <Button onClick={onCancelClick}>
+            <Button onClick={touched ? onSave : onCancelClick}>
               {/* TODO: move to i18n */}
               Cancel
             </Button>
