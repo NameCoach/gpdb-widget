@@ -128,6 +128,7 @@ export const PersonalSection = ({
         pronunciation.sourceType,
         pronunciation.relativeSource
       )
+      .then(load)
       .then(() => setLoading(false));
   };
 
