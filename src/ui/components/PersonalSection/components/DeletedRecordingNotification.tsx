@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { Column } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
@@ -18,11 +18,22 @@ const StyledContainer = styled(Column)`
 interface DeletedRecordingNotificationProps {
   onClose: () => any;
   onRestore: () => any;
-  visible?: boolean;
 }
 
-export const DeletedRecordingNotification = ({onClose, onRestore, visible}: DeletedRecordingNotificationProps) => {
-  return <StyledContainer visible={visible} centered>
+const AUTOCLOSE_DELAY = 5000;
+
+export const DeletedRecordingNotification = ({onClose, onRestore}: DeletedRecordingNotificationProps) => {
+  const timeout = useRef<ReturnType<typeof setTimeout>>(null);
+  
+  useLayoutEffect(() => {
+    timeout.current = setTimeout(onClose, AUTOCLOSE_DELAY);
+
+    return () => {
+      clearTimeout(timeout.current);
+    };
+  }, [onClose]);
+  
+  return <StyledContainer centered>
     <IconButtons.CloseTooltip onClick={onClose}/>
     <StyledText small color={WHITE}>
       {/* TODO: move it to I18n */}
