@@ -25,6 +25,8 @@ interface HookReturn {
   config: CustomAttributeObject[];
   customAttrsPresent: boolean;
   customAttrsRef: React.MutableRefObject<Record<string, any>>;
+  makeChanges: (value: boolean) => void;
+  isUnsavedChanges: boolean;
 }
 
 const useCustomAttributes = ({
