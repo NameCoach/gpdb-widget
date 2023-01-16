@@ -3,7 +3,6 @@ import { StyledColumn as Column, Row } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import IconButtons from "../../../kit/IconButtons";
-import { SpeakerButton } from "../../../kit/Buttons/SpeakerButton";
 import { Speaker } from "../../shared/components";
 
 interface MyRecPresenterProps {
@@ -62,7 +61,7 @@ export const MyRecPresenter = ({
             {lastNamePronunciation ? (
               <Speaker pronunciation={lastNamePronunciation} />
             ) : (
-              <SpeakerButton disabled />
+              <Speaker disabled />
             )}
           </Row>
         </>
