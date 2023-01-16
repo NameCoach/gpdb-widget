@@ -111,7 +111,7 @@ interface PreferredRecordings {
 }
 
 export interface PreferredRecordingsRequests {
-  getPreferredRecordings: () => Promise<PreferredRecordings>;
+  getPreferredRecordings: (userContext?: User) => Promise<PreferredRecordings>;
   savePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
   deletePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
 }
