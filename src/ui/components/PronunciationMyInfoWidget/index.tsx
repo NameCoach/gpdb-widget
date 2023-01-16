@@ -8,7 +8,6 @@ import classNames from "classnames/bind";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import PronunciationsBlock from "../PronunciationsBlock";
 import NoPermissionsError from "../NoPermissionsError";
-import PersonalBlock from "../PersonalBlock";
 import { HtmlComponents } from "../../customFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import usePermissions from "../../hooks/usePermissions";
@@ -59,7 +58,6 @@ const PronunciationMyInfoWidget = ({
         <PronunciationsBlock
           names={names}
           controller={client}
-          termsAndConditions={termsAndConditions}
         />
       )}
 
