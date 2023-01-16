@@ -462,8 +462,8 @@ export default class FrontController implements IFrontController {
     })
   }
 
-  async getPreferredRecordings(): Promise<any> {
-    const body = await this.apiClient.preferredRecordings.get({userContext: this.userContext})
+  async getPreferredRecordings(userContext = null): Promise<any> {
+    const body = await this.apiClient.preferredRecordings.get({userContext: userContext || this.userContext})
       .catch(e => {
         console.log(e, e.details);
       })
