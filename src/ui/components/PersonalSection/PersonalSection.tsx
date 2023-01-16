@@ -72,7 +72,7 @@ export const PersonalSection = ({
   ] = useState<Pronunciation>(null);
   const [inEdit, setInEdit] = useState<boolean>(false);
 
-  const loadPreferrefLibRecs = useCallback(async () => {
+  const loadPreferredLibRecs = useCallback(async () => {
     if (!show(ShowComponents.LibraryRecordings)) return;
     if (!canSimpleSearch) return;
 
@@ -103,7 +103,7 @@ export const PersonalSection = ({
 
     setPronunciation(fullName.find((p) => p.nameOwnerCreated));
 
-    await loadPreferrefLibRecs();
+    await loadPreferredLibRecs();
 
     setLoading(false);
   }, [controller, owner, name]);
@@ -120,6 +120,8 @@ export const PersonalSection = ({
   };
 
   const onRecordingDelete = async (): Promise<void> => {
+    if (!pronunciation) return;
+    
     setLoading(true);
 
     await controller
@@ -129,12 +131,26 @@ export const PersonalSection = ({
         pronunciation.relativeSource
       )
       .then(load)
-      .then(() => setLoading(false));
+      .catch((e) => {
+        console.log(e, e.details);
+      });
   };
 
-  const onLibraryDelete = () => {
-    setFirstNamePronunciation(null);
-    setLastNamePronunciation(null);
+  const onLibraryDelete = async (): Promise<void> => {
+    if (!firstNamePronunciation && !lastNamePronunciation) return;
+    
+    setLoading(true);
+
+    await controller
+      .deletePreferredRecordings({
+        firstNamePronunciation: firstNamePronunciation,
+        lastNamePronunciation: lastNamePronunciation,
+      })
+      .then(load)
+      .then(() => setLoading(false))
+      .catch((e) => {
+        console.log(e, e.details);
+      });
   };
 
   useEffect(() => {
@@ -174,9 +190,9 @@ export const PersonalSection = ({
                 setInEdit(false);
                 load();
               }}
-              visible={inEdit}
               onRecordingDelete={onRecordingDelete}
               onLibraryDelete={onLibraryDelete}
+              visible={inEdit}
             />
           )}
           {!loading && (
