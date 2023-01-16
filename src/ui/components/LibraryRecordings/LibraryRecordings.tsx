@@ -132,31 +132,6 @@ export const LibraryRecordings = ({
       });
   };
 
-  const _onDelete = () => {
-    setLoading(true);
-    
-    controller
-      .deletePreferredRecordings({
-        firstNamePronunciation: fnPronun,
-        lastNamePronunciation: lnPronun,
-      })
-      .then(() => {
-        if (fnPronuns.length > 0) {
-          setFnPronun(fnPronuns[0]);
-          setTouched(true);
-        }
-        if (lnPronuns.length > 0) {
-          setLnPronun(lnPronuns[0]);
-          setTouched(true);
-        }
-        onDelete();
-      })
-      .catch((e) => {
-        console.log(e, e.details);
-        setLoading(false);
-      });
-  };
-
   if (loading)
     return (
       <Container>
@@ -210,7 +185,7 @@ export const LibraryRecordings = ({
           </Button>
         )}
         {!touched && (firstNamePronunciation || lastNamePronunciation) && (
-          <Button danger onClick={_onDelete}>
+          <Button danger onClick={onDelete}>
             {/* TODO: move to i18n */}
             Delete
           </Button>
