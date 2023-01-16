@@ -1,6 +1,5 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import classNames from "classnames/bind";
-import { TermsAndConditions } from "../../hooks/useRecorderState";
 import FullNamesList, { NameOption } from "../FullNamesList";
 
 import styles from "./styles.module.css";
@@ -22,27 +21,35 @@ import { AnalyticsEventType } from "../../../types/resources/analytics-event-typ
 import NameLinesResult from "../NamelinesResult";
 import nameToKeyTypeObjectsArray from "../../../core/utils/name-to-key-type-objects-array";
 import stringIsEmail from "../../../core/utils/string-is-email";
+import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
+import { LibraryRecordingsPresenter } from "./components";
+import { Row } from "../../kit/Grid";
+import { StyledText } from "../../kit/Topography";
+import Loader from "../Loader";
+import FullNameLine from "../FullNameLine";
 
 interface Props {
   names: NameOption[];
-  onSelect?: (NameOption) => void;
-  termsAndConditions?: TermsAndConditions;
   controller: IFrontController;
   permissions?: UserPermissions;
 }
 
 const cx = classNames.bind(styles);
 
-const PronunciationsBlock = (props: Props): JSX.Element => {
+const PronunciationsBlock = ({
+  names,
+  controller,
+  permissions,
+}: Props): JSX.Element => {
   const styleContext = useContext(StyleContext);
-  const { t } = useTranslator(props.controller, styleContext);
+  const { t } = useTranslator(controller, styleContext);
 
-  const customFeatures = useCustomFeatures(props.controller);
+  const customFeatures = useCustomFeatures(controller);
 
   const { can, show } = useFeaturesManager(
-    props.controller.permissions,
+    controller.permissions,
     customFeatures,
-    props.permissions
+    permissions
   );
 
   const {
@@ -52,20 +59,34 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
   } = usePronunciations();
 
   const [currentPronunciation, setCurrent] = useState<Pronunciation>(null);
-  const [loading, setLoading] = useState(false);
   const [nameParts, setNameParts] = useState<Name[]>([]);
   const [nameOwner, setNameOwner] = useState<NameOwner>(null);
+  const [firstName, setFirstName] = useState<string>(null);
+  const [lastName, setLastName] = useState<string>(null);
+  const [
+    firstNamePronunciation,
+    setFirstNamePronunciation,
+  ] = useState<Pronunciation>(null);
+  const [
+    lastNamePronunciation,
+    setLastNamePronunciation,
+  ] = useState<Pronunciation>(null);
+  const [firstNamePending, setFirstNamePending] = useState<boolean>(false);
+  const [lastNamePending, setLastNamePending] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const loadTimeout = useRef<ReturnType<typeof setTimeout>>(null);
   const fullNamesObject = useRef([]);
+  const [autoplay, setAutoplay] = useState<boolean>(false);
 
-  const nameParser = props.controller.nameParser;
+  const nameParser = controller.nameParser;
 
   const canComplexSearch = can(CanComponents.Pronunciation, "search");
   const canSearchBySig = can(CanComponents.Pronunciation, "search_by_sig");
 
   const searchBySig = async (name: NameOption): Promise<void> => {
     const nameOwner = { signature: name.value, email: name.value };
-    const [names, result] = await props.controller.searchBySig(nameOwner);
+    const [names, result] = await controller.searchBySig(nameOwner);
 
     const fullName = names.find((n) => n.type === NameTypes.FullName);
 
@@ -77,7 +98,7 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     const _current = result.fullName[0];
     setCurrent(_current);
 
-    if (_current) return setLoading(false);
+    if (_current) return;
 
     setNameParts(
       names
@@ -89,14 +110,12 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     );
 
     setPronunciations(result);
-
-    setLoading(false);
   };
 
   const sendAnalytics = (name: NameOption): PromiseLike<void> => {
     const names = nameToKeyTypeObjectsArray(name.value, nameParser);
 
-    return props.controller.sendAnalytics(
+    return controller.sendAnalytics(
       AnalyticsEventType.Available,
       Object.values(names)
     );
@@ -106,13 +125,13 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     fullNamesObject.current = [name];
     const names = nameToKeyTypeObjectsArray(name.value, nameParser);
 
-    const result = await props.controller.complexSearch(names, name.owner);
+    const result = await controller.complexSearch(names, name.owner);
 
     const _current = result.fullName[0];
 
     setCurrent(_current);
 
-    if (_current?.nameOwnerCreated) return setLoading(false);
+    if (_current?.nameOwnerCreated) return;
 
     setNameParts(
       names
@@ -124,12 +143,10 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     );
 
     setPronunciations(result);
-
-    setLoading(false);
   };
 
   const simpleSearch = async (name: NameOption): Promise<void> => {
-    const pronunciations = await props.controller.simpleSearch(
+    const pronunciations = await controller.simpleSearch(
       {
         key: name.value,
         type: NameTypes.FullName,
@@ -138,34 +155,104 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
     );
 
     setCurrent(pronunciations[0]);
-    setLoading(false);
+  };
+
+  const onFirstNameRecRequest = async () => {
+    return await controller
+      .requestRecording(firstName, NameTypes.FirstName, nameOwner)
+      .then(() => setFirstNamePending(true))
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const onLastNameRecRequest = async () => {
+    return await controller
+      .requestRecording(lastName, NameTypes.LastName, nameOwner)
+      .then(() => setLastNamePending(true))
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const loadPreferredLibRecs = async (name) => {
+    if (!show(ShowComponents.LibraryRecordings)) return;
+
+    const names = nameToKeyTypeObjectsArray(name.value, nameParser).filter(
+      (name) => name.type !== NameTypes.FullName
+    );
+
+    const _firstName = names.find((name) => name.type === NameTypes.FirstName)
+      ?.key;
+    const _lastName = names.find((name) => name.type === NameTypes.LastName)
+      ?.key;
+
+    setFirstName(_firstName);
+    setLastName(_lastName);
+
+    const result = await controller.getPreferredRecordings(name.owner);
+
+    setFirstNamePronunciation(result.firstNamePronunciation);
+    setLastNamePronunciation(result.lastNamePronunciation);
+
+    if (!result.firstNamePronunciation) {
+      const _fnRecReq = await controller.findRecordingRequest(
+        _firstName,
+        NameTypes.FirstName,
+        name.owner
+      );
+      setFirstNamePending(_fnRecReq);
+    }
+    if (!result.lastNamePronunciation) {
+      const _lnRecReq = await controller.findRecordingRequest(
+        _lastName,
+        NameTypes.LastName,
+        name.owner
+      );
+      setLastNamePending(_lnRecReq);
+    }
   };
 
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
+    setCurrent(null);
 
     setNameOwner(name.owner);
 
     if (stringIsEmail(name.value) && canSearchBySig) {
-      return await searchBySig(name);
-    }
-
-    if (canComplexSearch) {
-      return await complexSearch(name)
+      await searchBySig(name);
+    } else if (canComplexSearch) {
+      await complexSearch(name)
         .then(() => sendAnalytics(name))
         .catch((e) => console.log(e));
+    } else {
+      await simpleSearch(name);
     }
+    await loadPreferredLibRecs(name);
 
-    return await simpleSearch(name);
+    setTimeout(() => setLoading(false), 1000);
   };
 
-  const onSelect = (name: NameOption): Promise<void> => {
-    const owner = props.names.find((n) => n.key === name.key).owner;
+  const [selectedName, setSelectedName] = useState<NameOption>(null);
+
+  const _onSelect = (name: NameOption): Promise<void> => {
+    setSelectedName(name);
+
+    const owner = names.find((n) => n.key === name.key).owner;
 
     setNameParts([]);
 
     return loadName({ ...name, owner });
   };
+
+  const customAttributesDataPresent =
+    currentPronunciation?.customAttributes?.length > 0;
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(loadTimeout.current);
+    };
+  }, []);
 
   return (
     <>
@@ -176,33 +263,89 @@ const PronunciationsBlock = (props: Props): JSX.Element => {
           </div>
 
           <FullNamesList
-            names={props.names}
-            onSelect={onSelect}
+            names={names}
+            onSelect={_onSelect}
             pronunciation={currentPronunciation}
-            loading={loading}
+            loading={false}
             hideFullName={
-              canComplexSearch && !currentPronunciation && nameParts.length > 0
+              (canComplexSearch &&
+                !currentPronunciation &&
+                nameParts.length > 0) ||
+              !!(firstNamePronunciation || lastNamePronunciation)
             }
+            setAutoplay={setAutoplay}
           />
 
-          {canComplexSearch && !currentPronunciation && (
-            <NameLinesResult
-              controller={props.controller}
-              nameOwner={nameOwner}
-              loading={loading}
-              setLoading={setLoading}
-              usePronunciations={{
-                pronunciations,
-                setPronunciations,
-                updatePronunciationsByType,
-              }}
-              useNameParts={{
-                nameParts,
-                setNameParts,
-              }}
-              permissions={props.permissions}
+          {loading && (
+            <Row>
+              <Row>
+                <StyledText medium>{selectedName.value}</StyledText>
+              </Row>
+              <Row right autoWidth>
+                <Loader btn />
+              </Row>
+            </Row>
+          )}
+
+          {!loading &&
+            !(
+              canComplexSearch &&
+              !currentPronunciation &&
+              nameParts.length > 0
+            ) &&
+            !firstNamePronunciation &&
+            !lastNamePronunciation &&
+            selectedName && (
+              <FullNameLine
+                pronunciation={currentPronunciation}
+                fullName={selectedName.value}
+                autoplay={autoplay}
+                loading={loading}
+              />
+            )}
+
+          {!loading && customAttributesDataPresent && (
+            <CustomAttributesInspector
+              data={currentPronunciation.customAttributes}
+              pronunciation={currentPronunciation}
             />
           )}
+
+          {!loading && (firstNamePronunciation || lastNamePronunciation) && (
+            <LibraryRecordingsPresenter
+              firstName={firstName}
+              lastName={lastName}
+              firstNamePronunciation={firstNamePronunciation}
+              lastNamePronunciation={lastNamePronunciation}
+              firstNamePending={firstNamePending}
+              lastNamePending={lastNamePending}
+              onFirstNameRecRequest={onFirstNameRecRequest}
+              onLastNameRecRequest={onLastNameRecRequest}
+            />
+          )}
+
+          {!loading &&
+            canComplexSearch &&
+            !currentPronunciation &&
+            !firstNamePronunciation &&
+            !lastNamePronunciation && (
+              <NameLinesResult
+                controller={controller}
+                nameOwner={nameOwner}
+                loading={loading}
+                setLoading={setLoading}
+                usePronunciations={{
+                  pronunciations,
+                  setPronunciations,
+                  updatePronunciationsByType,
+                }}
+                useNameParts={{
+                  nameParts,
+                  setNameParts,
+                }}
+                permissions={permissions}
+              />
+            )}
         </div>
       )}
     </>
