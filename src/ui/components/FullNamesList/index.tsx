@@ -5,7 +5,6 @@ import styles from "./styles.module.css";
 import { NameOwner } from "gpdb-api-client";
 import FullNameLine from "../FullNameLine";
 import NamesList from "./NamesList";
-import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 
 export interface NameOption {
   key: string;
@@ -19,20 +18,16 @@ export interface Props {
   loading?: boolean;
   onSelect?: (NameOption) => PromiseLike<void>;
   hideFullName?: boolean;
+  setAutoplay: (arg: boolean) => void;
 }
 
 const FullNamesList = ({
   names,
   pronunciation,
-  loading,
   onSelect,
-  hideFullName,
+  setAutoplay
 }: Props): JSX.Element => {
-  const [autoplay, setAutoplay] = useState<boolean>(false);
   const [selectValue, setValue] = useState<Option>();
-
-  const customAttributesDataPresent =
-    pronunciation?.customAttributes?.length > 0;
 
   useEffect(() => {
     setAutoplay(false);
@@ -49,22 +44,7 @@ const FullNamesList = ({
           selectValue={selectValue}
           onSelect={onSelect}
         />
-        {!hideFullName && selectValue && (
-          <FullNameLine
-            pronunciation={pronunciation}
-            fullName={selectValue.label}
-            autoplay={autoplay}
-            loading={loading}
-          />
-        )}
       </div>
-
-      {!loading && customAttributesDataPresent && (
-        <CustomAttributesInspector
-          data={pronunciation.customAttributes}
-          pronunciation={pronunciation}
-        />
-      )}
     </>
   );
 };
