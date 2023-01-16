@@ -15,14 +15,15 @@ const StyledContainer = styled(Column)`
   position: relative;
 `;
 
-interface DeletedRecordingNotificationProps {
+interface DeletedNotificationProps {
   onClose: () => any;
   onRestore: () => any;
+  message: string;
 }
 
 const AUTOCLOSE_DELAY = 5000;
 
-export const DeletedRecordingNotification = ({onClose, onRestore}: DeletedRecordingNotificationProps) => {
+export const DeletedNotification = ({onClose, onRestore, message}: DeletedNotificationProps) => {
   const timeout = useRef<ReturnType<typeof setTimeout>>(null);
   
   useLayoutEffect(() => {
@@ -36,8 +37,7 @@ export const DeletedRecordingNotification = ({onClose, onRestore}: DeletedRecord
   return <StyledContainer centered>
     <IconButtons.CloseTooltip onClick={onClose}/>
     <StyledText small color={WHITE}>
-      {/* TODO: move it to I18n */}
-      You have deleted your recording.
+      {message}
     </StyledText>
     <Gap height={8}/>
     <Link onClick={onRestore}>
