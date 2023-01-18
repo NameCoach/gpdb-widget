@@ -16,6 +16,7 @@ import IStyleContext from "../../types/style-context";
 import StyleContext from "../contexts/style";
 import IFrontController from "../../types/front-controller";
 import useCustomFeatures from "./useCustomFeatures";
+import { useLibraryRecordings } from "../features/library_recordings";
 
 interface FeaturesManager {
   readonly can: (name: string, ...rest: any[]) => boolean;
@@ -29,24 +30,25 @@ export enum ShowComponents {
   PronunciationsBlock = "showPronunciationsBlock",
   PersonalBlock = "showPersonalBlock",
   SearchWidget = "showSearchWidget",
+  LibraryRecordings = "showLibraryRecordings",
 }
 
 export enum CanComponents {
-   CreateRecordingRequest = "createRecordingRequest",
-   FindRecordingRequest = "findRecordingRequest",
-   RestoreOrgPeerPronunciation = "restoreOrgPeerPronunciation",
-   RestoreSelfPronunciation = "restoreSelfPronunciation",
-   Restore = "restore",
-   CreateUserResponse = "createUserResponse",
-   UserResponse = "userResponse",
-   DestroyPronunciation = "destroyPronunciation",
-   CustomDestroy = "customDestroy",
-   CreateSelfRecording = "createSelfRecording",
-   CreateOrgPeerRecording = "createOrgPeerRecording",
-   RecordNameBadge = "recordNameBadge",
-   Pronunciation = "pronunciation",
-   CreateCustomAttributes = "createCustomAttributes",
-   EditCustomAttributesForSelf= "editCustomAttributesForSelf",
+  CreateRecordingRequest = "createRecordingRequest",
+  FindRecordingRequest = "findRecordingRequest",
+  RestoreOrgPeerPronunciation = "restoreOrgPeerPronunciation",
+  RestoreSelfPronunciation = "restoreSelfPronunciation",
+  Restore = "restore",
+  CreateUserResponse = "createUserResponse",
+  UserResponse = "userResponse",
+  DestroyPronunciation = "destroyPronunciation",
+  CustomDestroy = "customDestroy",
+  CreateSelfRecording = "createSelfRecording",
+  CreateOrgPeerRecording = "createOrgPeerRecording",
+  RecordNameBadge = "recordNameBadge",
+  Pronunciation = "pronunciation",
+  CreateCustomAttributes = "createCustomAttributes",
+  EditCustomAttributesForSelf = "editCustomAttributesForSelf",
 }
 
 const useFeaturesManager = (
@@ -58,8 +60,8 @@ const useFeaturesManager = (
   const styleContext = useContext<IStyleContext>(StyleContext);
   const customFeatures = useCustomFeatures(controller, styleContext);
 
-  const _permissionsManager = permissionsManager ? permissionsManager : controller.permissions;
-  const _customFeaturesManager = customFeaturesManager ? customFeaturesManager : customFeatures;
+  const _permissionsManager = permissionsManager || controller.permissions;
+  const _customFeaturesManager = customFeaturesManager || customFeatures;
 
   const { canPronunciation, canUserResponse } = usePermissions(
     _permissionsManager,
@@ -127,6 +129,14 @@ const useFeaturesManager = (
     enforcedPermissions
   );
 
+  const {
+    showLibraryRecordings,
+  } = useLibraryRecordings(
+    _permissionsManager,
+    _customFeaturesManager,
+    enforcedPermissions
+  )
+
   const showContext = {
     [ShowComponents.RecorderRecordButton]: showRecorderRecordButton,
     [ShowComponents.SelfRecorderAction]: showSelfRecorderAction,
@@ -134,6 +144,7 @@ const useFeaturesManager = (
     [ShowComponents.PronunciationsBlock]: showPronunciationsBlock,
     [ShowComponents.PersonalBlock]: showPersonalBlock,
     [ShowComponents.SearchWidget]: showSearchWidget,
+    [ShowComponents.LibraryRecordings]: showLibraryRecordings,
   };
 
   const canContext = {
@@ -160,8 +171,8 @@ const useFeaturesManager = (
     [CanComponents.EditCustomAttributesForSelf]: canEditCustomAttributesForSelf,
   };
 
-  const can = (name: string, ...rest): boolean => canContext[name](...rest);
-  const show = (name: string, ...rest): boolean => showContext[name](...rest);
+  const can = (name: CanComponents, ...rest: any[]): boolean => canContext[name].call(this, ...rest);
+  const show = (name: ShowComponents, ...rest: any[]): boolean => showContext[name].call(this, ...rest);
 
   return { can, show } as const;
 };

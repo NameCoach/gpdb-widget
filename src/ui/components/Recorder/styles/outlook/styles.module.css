@@ -1,0 +1,154 @@
+.recorder {
+  position: relative;
+
+  font-size: inherit !important;
+  line-height: inherit !important;
+  min-height: 0px !important;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  
+  background: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+
+  margin-top: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.recorder__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  flex: inherit !important;
+
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px !important;
+  line-height: 20px !important;
+  text-align: center;
+  color: #333333;
+}
+
+.old {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.recorder__actions {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inline {
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.recorder__actions button {
+  margin: auto 5px;
+  margin-top: 0px;
+}
+
+.recorder__countdown {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px !important;
+  line-height: 22px;
+  margin-top: 10px !important;
+}
+
+.recorder__timer {
+  opacity: 1 !important;
+
+  font-style: normal;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  line-height: 20px;
+  color: $colors_grey_2;
+  margin-top: 10px;
+}
+
+.recorder.default button {
+  cursor: pointer;
+  border: 1px solid $colors_border;
+  box-sizing: border-box;
+  border-radius: 2px;
+  padding: 5px 4px;
+  background: transparent;
+  color: $colors_darker_brand;
+  font-weight: 600;
+}
+
+.recorder.default button:hover {
+  background-color: $colors_secondary;
+}
+
+.recorder.default button:active {
+  background-color: $colors_secondary;
+}
+
+.no__border {
+  border: none;
+}
+
+.modal__wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 2.5em;
+}
+
+.btn {
+  composes: btn from "../../../../styles/outlook.css" !important;
+}
+
+.btn.red {
+  background-color: #C82D4A;
+}
+
+.btn.purple {
+  background-color: #7C4BB4;
+}
+
+.btn.outline {
+  border: 1px solid #333333 !important;
+  background-color: white;
+  color: #333333;
+}
+
+.margin_top_zero {
+  margin-top: 0px !important;
+}
+
+.flex_column_centered {
+  composes: flex_column_centered from "../../../../styles/outlook.css";
+}
+
+.flex_row {
+  composes: flex_row from "../../../../styles/outlook.css";
+}
+
+.gap_h_20 {
+  height:  20px;
+}
+
+.recorder_init_step_hint {
+  width: fit-content;
+}
+
+.slider_hint {
+  composes: recorder_init_step_hint;
+}

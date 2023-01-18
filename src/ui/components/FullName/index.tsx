@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import Pronunciation from "../../../types/resources/pronunciation";
@@ -39,7 +33,6 @@ const FullName = (props: Props): JSX.Element => {
   const controller = useContext(ControllerContext);
   const tooltip = useTooltip<HTMLDivElement>();
   const { speakerTip } = useSpeakerAttrs(pronunciation?.audioCreator);
-
 
   const sendAnalytics = (eventType): PromiseLike<void> =>
     controller.sendAnalytics(
