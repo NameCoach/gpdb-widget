@@ -16,22 +16,24 @@ import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import Actions from "./Actions";
 import useCustomAttributes from "../../hooks/useCustomAttributes";
 import Gap from "../../kit/Gap";
+import { NameOwner } from "gpdb-api-client";
 
 interface Props {
-  name: Omit<NameOption, "key">;
+  name: string;
+  owner: NameOwner;
   pronunciation: Pronunciation;
   onCustomAttributesSaved: () => void;
-  loading: boolean;
 }
 
 const cx = classNames.bind(styles);
 
 const MyInfo = ({
   name,
+  owner,
   pronunciation,
   onCustomAttributesSaved,
 }: Props): JSX.Element => {
-  if (!name?.value?.trim()) throw new Error("Name shouldn't be blank");
+  if (!name?.trim()) throw new Error("Name shouldn't be blank");
 
   const controller = useContext<IFrontController>(ControllerContext);
   const styleContext = useContext<IStyleContext>(StyleContext);
@@ -54,10 +56,12 @@ const MyInfo = ({
     config,
     customAttrsPresent,
     customAttrsRef,
+    makeChanges,
+    isUnsavedChanges,
   } = useCustomAttributes({
     controller,
     pronunciation,
-    name,
+    owner,
     saveCallback: onCustomAttributesSaved,
   });
 
@@ -79,6 +83,7 @@ const MyInfo = ({
               saveMyInfo={saveCustomAttributes}
               openEdit={enterEditMode}
               canEditCustomAttributes={canEditCustomAttributes}
+              isUnsavedChanges={isUnsavedChanges}
             />
           </div>
 
@@ -93,6 +98,7 @@ const MyInfo = ({
                     errors={errors}
                     data={data?.length > 0 ? data : config}
                     ref={customAttrsRef}
+                    makeChanges={makeChanges}
                   />
                 );
               else {
