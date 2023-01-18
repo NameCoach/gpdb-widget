@@ -12,12 +12,15 @@ import useRecorderState, {
 import styles from "./styles.module.css";
 
 import StyleContext from "../../contexts/style";
-import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
+import useFeaturesManager, {
+  ShowComponents,
+} from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
 import MyInfo from "../MyInfo";
-import NewRecorder from "../NewRecorder";
+import NewRecorder from "../Recorder";
+import { LibraryRecordings } from "../LibraryRecordings";
 
 interface Props {
   name: Omit<NameOption, "key">;
@@ -126,12 +129,14 @@ const PersonalBlock = (props: Props): JSX.Element => {
               relativeSource={RelativeSource.RequesterSelf}
             />
           )}
-          <MyInfo
-            name={props.name}
-            pronunciation={pronunciation}
-            onCustomAttributesSaved={onCustomAttributesSaved}
-            loading={loading}
-          />
+          {pronunciation ? (
+            <MyInfo
+              name={props.name.value}
+              owner={props.name.owner}
+              pronunciation={pronunciation}
+              onCustomAttributesSaved={onCustomAttributesSaved}
+            />
+          ) : null}
         </div>
       )}
     </>

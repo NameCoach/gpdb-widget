@@ -15,6 +15,8 @@ interface Props {
   saveMyInfo: () => void;
   openEdit: () => void;
   canEditCustomAttributes: boolean;
+  isUnsavedChanges: boolean;
+  makeChanges: (value: boolean) => void;
 }
 const Actions = ({
   loading,
@@ -23,6 +25,8 @@ const Actions = ({
   saveMyInfo,
   openEdit,
   canEditCustomAttributes,
+  isUnsavedChanges,
+  makeChanges
 }: Props): JSX.Element => {
   const { t } = useTranslator();
   const closeTip = useTooltip<HTMLButtonElement>();
@@ -32,9 +36,10 @@ const Actions = ({
   const closeEditHandle = () => {
     closeEdit();
     closeTip.tooltip.hide();
+    makeChanges(false);
   };
 
-  const saveMyInfoHande = () => {
+  const saveMyInfoHandle = () => {
     saveMyInfo();
     saveTip.tooltip.hide();
   };
@@ -43,7 +48,7 @@ const Actions = ({
     openEdit();
     editTip.tooltip.hide();
   };
-  
+
   return (
     <ActionsPanel>
       {(() => {
@@ -53,28 +58,58 @@ const Actions = ({
           return (
             <>
               <div>
-                <Tooltip opener={closeTip.opener} ref={closeTip.tooltipRef} rightArrow>
+                <Tooltip
+                  opener={closeTip.opener}
+                  ref={closeTip.tooltipRef}
+                  rightArrow
+                >
                   {t("my_info_discard_changes")}
                 </Tooltip>
-                <IconButtons.Close onClick={closeEditHandle} ref={closeTip.openerRef}/>
+                <IconButtons.Close
+                  onClick={closeEditHandle}
+                  ref={closeTip.openerRef}
+                />
               </div>
               <div>
-                <Tooltip opener={saveTip.opener} ref={saveTip.tooltipRef} rightArrow arrowSideOffset={TOOLTIP_SIDE_OFFSET}>
+                <Tooltip
+                  opener={saveTip.opener}
+                  ref={saveTip.tooltipRef}
+                  rightArrow
+                  arrowSideOffset={TOOLTIP_SIDE_OFFSET}
+                >
                   {t("my_info_save_changes")}
                 </Tooltip>
-                <IconButtons.Save onClick={saveMyInfoHande} ref={saveTip.openerRef}/>
+                {isUnsavedChanges ? (
+                  <IconButtons.SaveWithChanges
+                    onClick={saveMyInfoHandle}
+                    ref={saveTip.openerRef}
+                  />
+                ) : (
+                  <IconButtons.Save
+                    ref={saveTip.openerRef}
+                    disabled
+                  />
+                )}
               </div>
             </>
           );
         else if (canEditCustomAttributes)
           return (
             <div>
-              <Tooltip opener={editTip.opener} ref={editTip.tooltipRef} rightArrow arrowSideOffset={TOOLTIP_SIDE_OFFSET}>
+              <Tooltip
+                opener={editTip.opener}
+                ref={editTip.tooltipRef}
+                rightArrow
+                arrowSideOffset={TOOLTIP_SIDE_OFFSET}
+              >
                 {t("my_info_edit")}
               </Tooltip>
-              <IconButtons.Edit onClick={openEditHandle} ref={editTip.openerRef}/>
+              <IconButtons.Edit
+                onClick={openEditHandle}
+                ref={editTip.openerRef}
+              />
             </div>
-          )
+          );
       })()}
     </ActionsPanel>
   );
