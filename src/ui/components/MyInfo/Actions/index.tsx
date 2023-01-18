@@ -16,6 +16,7 @@ interface Props {
   openEdit: () => void;
   canEditCustomAttributes: boolean;
   isUnsavedChanges: boolean;
+  makeChanges: (value: boolean) => void;
 }
 const Actions = ({
   loading,
@@ -25,6 +26,7 @@ const Actions = ({
   openEdit,
   canEditCustomAttributes,
   isUnsavedChanges,
+  makeChanges
 }: Props): JSX.Element => {
   const { t } = useTranslator();
   const closeTip = useTooltip<HTMLButtonElement>();
@@ -34,6 +36,7 @@ const Actions = ({
   const closeEditHandle = () => {
     closeEdit();
     closeTip.tooltip.hide();
+    makeChanges(false);
   };
 
   const saveMyInfoHandle = () => {
