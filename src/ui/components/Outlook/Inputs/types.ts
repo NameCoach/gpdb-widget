@@ -1,18 +1,16 @@
-import { CustomAttributeObject } from "../../../../core/mappers/custom-attributes.map";
+import { CustomAttributeObject } from "../../../../types/resources/custom-attribute";
 
-export interface CustomAttributesInputsProps {
-  id: string;
-  value: string | boolean | Record<string, any>;
-  label: string;
-  disabled?: boolean;
-  values?: string[];
-  metadata?: Record<string, any>;
+export interface CustomAttributesInputsProps
+  extends Omit<CustomAttributeObject, "presentation"> {
   hasErrors?: boolean;
+  disabled?: boolean;
   onChange?: (id: string, value: any) => void;
+  isChild?: boolean;
 }
 
 export interface CustomAttributesProps {
   disabled?: boolean;
   errors?: any[];
   data: CustomAttributeObject[];
+  makeChanges: (value: boolean) => void;
 }

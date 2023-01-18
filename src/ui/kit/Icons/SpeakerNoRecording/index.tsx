@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 
 const SpeakerNoRecordingIcon = ({
   style,
-  className,
+  className = styles.disableHover,
   playing,
 }: PlayableIconProps): React.ReactElement<PlayableIconProps> => (
   <SpeakerNoRecording
