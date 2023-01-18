@@ -1,28 +1,42 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { cloneDeep } from "lodash";
 import IFrontController from "../../types/front-controller";
 import ControllerContext from "../../ui/contexts/controller";
-import {
-  CustomAttributeObject,
-  valueMapperFunc,
-} from "../../core/mappers/custom-attributes.map";
+import { valueMapperFunc } from "../../core/mappers/custom-attributes.map";
+import { CustomAttributeObject } from "../../types/resources/custom-attribute";
 import Pronunciation from "../../types/resources/pronunciation";
-import { NameOption } from "../../ui/components/FullNamesList";
+import { NameOwner } from "gpdb-api-client";
 
 interface HookProps {
-  name: Omit<NameOption, "key">;
+  owner: NameOwner;
   pronunciation: Pronunciation;
   controller?: IFrontController;
   saveCallback?: () => void;
 }
 
+interface HookReturn {
+  loading: boolean;
+  errors: any[]; // TODO: provide proper type
+  data: CustomAttributeObject[];
+  saveCustomAttributes: () => Promise<void>;
+  exitEditMode: () => void;
+  enterEditMode: () => void;
+  inEdit: boolean;
+  config: CustomAttributeObject[];
+  customAttrsPresent: boolean;
+  customAttrsRef: React.MutableRefObject<Record<string, any>>;
+  makeChanges: (value: boolean) => void;
+  isUnsavedChanges: boolean;
+}
+
 const useCustomAttributes = ({
   pronunciation,
-  name,
+  owner,
   saveCallback,
   controller = useContext<IFrontController>(ControllerContext),
-}: HookProps) => {
+}: HookProps): HookReturn => {
   const [inEdit, setInEdit] = useState<boolean>(false);
+  const [isUnsavedChanges, setIsUnsavedChanges] = useState<boolean>(false);
   const [data, setData] = useState<CustomAttributeObject[]>(
     cloneDeep(pronunciation?.customAttributes) || []
   );
@@ -30,7 +44,9 @@ const useCustomAttributes = ({
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const config = cloneDeep(controller.customAttributes);
+  const config: CustomAttributeObject[] = cloneDeep(
+    controller.customAttributes
+  );
 
   const customAttrsPresent =
     data?.length > 0 &&
@@ -54,7 +70,7 @@ const useCustomAttributes = ({
       return prev;
     }, {});
 
-    const res = await controller.saveCustomAttributes(values, name.owner);
+    const res = await controller.saveCustomAttributes(values, owner);
 
     if (res.hasErrors) {
       setErrors(res.errors.custom_attributes_values);
@@ -76,6 +92,8 @@ const useCustomAttributes = ({
 
   const enterEditMode = (): void => setInEdit(true);
 
+  const makeChanges = (value: boolean): void => setIsUnsavedChanges(value);
+
   return {
     loading,
     errors,
@@ -87,6 +105,8 @@ const useCustomAttributes = ({
     config,
     customAttrsPresent,
     customAttrsRef,
+    makeChanges,
+    isUnsavedChanges,
   };
 };
 

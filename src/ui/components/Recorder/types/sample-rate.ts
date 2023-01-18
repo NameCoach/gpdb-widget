@@ -1,3 +1,1 @@
-export type SampleRate = {
-  value: number;
-};
+export type SampleRate = number;
