@@ -14,3 +14,7 @@
 .main.playing:hover {
     opacity: 1;
 }
+
+.disableHover:hover {
+  opacity: 1;
+}

@@ -1,0 +1,36 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+  
+.column {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+  
+.row.justify_right {
+  justify-content: flex-end;
+}
+  
+.label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+  color: $colors_dark_grey;
+}
+  
+.filarea {
+  width: 100%;
+}
+
+.checkbox_container {
+
+}
+
+.margin_bottom_10_5 {
+  margin-bottom: 10.5px;
+}

@@ -23,9 +23,8 @@ import NameParser from "../types/name-parser";
 import DefaultNameParser from "./parsers/default-name-parser";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
-import customAttributesMap, {
-  CustomAttributeObject,
-} from "./mappers/custom-attributes.map";
+import customAttributesMap from "./mappers/custom-attributes.map";
+import { CustomAttributeObject } from "../types/resources/custom-attribute";
 import searchResultsToSuggestions from "./utils/search-result-to-suggestions";
 
 // TODO: provide error handling and nullable responses
@@ -43,17 +42,15 @@ export default class FrontController implements IFrontController {
     private readonly namesApi: NamesApi = new NamesApi()
   ) {}
 
-  isUserOwnsName(
-    nameOwnerSignature?: string
-  ): boolean {
-    const ownerSignature = nameOwnerSignature || this.nameOwnerContext.signature;
+  isUserOwnsName(nameOwnerSignature?: string): boolean {
+    const ownerSignature =
+      nameOwnerSignature || this.nameOwnerContext.signature;
     return ownerSignature === this.userContext.signature;
   }
 
   async complexSearch(
     names: Array<Name>,
-    nameOwner?: NameOwner,
-    meta?: Meta
+    nameOwner?: NameOwner
   ): Promise<{ [t in NameTypes]: Pronunciation[] }> {
     const owner = nameOwner || this.nameOwnerContext;
 
@@ -183,7 +180,7 @@ export default class FrontController implements IFrontController {
     id: string,
     type: UserResponse,
     nameOwner?: NameOwner
-  ): PromiseLike<void> {
+  ): Promise<void> {
     const ownerSig = nameOwner?.signature || this.nameOwnerContext.signature;
     const ownerSigType =
       nameOwner?.signatureType || this.nameOwnerContext?.signatureType;
@@ -201,7 +198,7 @@ export default class FrontController implements IFrontController {
     name: string,
     type: NameTypes,
     nameOwner?: NameOwner
-  ): PromiseLike<void> {
+  ): Promise<void> {
     const owner = nameOwner || this.nameOwnerContext;
 
     return this.apiClient.pronunciations.createRecordingRequest({
@@ -453,4 +450,38 @@ export default class FrontController implements IFrontController {
       pronunciation.customAttributes?.length > 0
     );
   }
+
+  async savePreferredRecordings({
+    firstNamePronunciation,
+    lastNamePronunciation,
+  }): Promise<void> {
+    return await this.apiClient.preferredRecordings.save({
+      firstNameRecordingId: firstNamePronunciation?.id,
+      lastNameRecordingId: lastNamePronunciation?.id,
+      userContext: this.userContext,
+    })
+  }
+
+  async getPreferredRecordings(userContext = null): Promise<any> {
+    const body = await this.apiClient.preferredRecordings.get({userContext: userContext || this.userContext})
+      .catch(e => {
+        console.log(e, e.details);
+      })
+
+    const firstNamePronunciation = body?.first_name_recording ? pronunciationMap(body.first_name_recording) : null;
+    const lastNamePronunciation = body?.last_name_recording ? pronunciationMap(body.last_name_recording) : null;
+
+    return { firstNamePronunciation, lastNamePronunciation };
+  }
+
+  async deletePreferredRecordings({
+    firstNamePronunciation,
+    lastNamePronunciation
+  }): Promise<void> {
+    await this.apiClient.preferredRecordings.delete({
+      firstNameRecordingId: firstNamePronunciation?.id,
+      lastNameRecordingId: lastNamePronunciation?.id,
+      userContext: this.userContext,
+    })
+  };
 }
