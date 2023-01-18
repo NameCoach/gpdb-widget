@@ -8,11 +8,11 @@ import classNames from "classnames/bind";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import PronunciationsBlock from "../PronunciationsBlock";
 import NoPermissionsError from "../NoPermissionsError";
-import PersonalBlock from "../PersonalBlock";
 import { HtmlComponents } from "../../customFeaturesManager";
 import useTranslator from "../../hooks/useTranslator";
 import usePermissions from "../../hooks/usePermissions";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
+import { PersonalSection } from "../PersonalSection";
 
 interface Props {
   client: IFrontController;
@@ -58,15 +58,14 @@ const PronunciationMyInfoWidget = ({
         <PronunciationsBlock
           names={names}
           controller={client}
-          termsAndConditions={termsAndConditions}
         />
       )}
 
       {blockPermissions[Blocks.MyInfo] && (
         <>
-          <PersonalBlock
-            name={name}
-            controller={client}
+          <PersonalSection
+            name={name.value}
+            owner={name.owner}
             termsAndConditions={termsAndConditions}
           />
           {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}

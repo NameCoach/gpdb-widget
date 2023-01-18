@@ -180,7 +180,7 @@ export default class FrontController implements IFrontController {
     id: string,
     type: UserResponse,
     nameOwner?: NameOwner
-  ): PromiseLike<void> {
+  ): Promise<void> {
     const ownerSig = nameOwner?.signature || this.nameOwnerContext.signature;
     const ownerSigType =
       nameOwner?.signatureType || this.nameOwnerContext?.signatureType;
@@ -198,7 +198,7 @@ export default class FrontController implements IFrontController {
     name: string,
     type: NameTypes,
     nameOwner?: NameOwner
-  ): PromiseLike<void> {
+  ): Promise<void> {
     const owner = nameOwner || this.nameOwnerContext;
 
     return this.apiClient.pronunciations.createRecordingRequest({
@@ -450,4 +450,38 @@ export default class FrontController implements IFrontController {
       pronunciation.customAttributes?.length > 0
     );
   }
+
+  async savePreferredRecordings({
+    firstNamePronunciation,
+    lastNamePronunciation,
+  }): Promise<void> {
+    return await this.apiClient.preferredRecordings.save({
+      firstNameRecordingId: firstNamePronunciation?.id,
+      lastNameRecordingId: lastNamePronunciation?.id,
+      userContext: this.userContext,
+    })
+  }
+
+  async getPreferredRecordings(userContext = null): Promise<any> {
+    const body = await this.apiClient.preferredRecordings.get({userContext: userContext || this.userContext})
+      .catch(e => {
+        console.log(e, e.details);
+      })
+
+    const firstNamePronunciation = body?.first_name_recording ? pronunciationMap(body.first_name_recording) : null;
+    const lastNamePronunciation = body?.last_name_recording ? pronunciationMap(body.last_name_recording) : null;
+
+    return { firstNamePronunciation, lastNamePronunciation };
+  }
+
+  async deletePreferredRecordings({
+    firstNamePronunciation,
+    lastNamePronunciation
+  }): Promise<void> {
+    await this.apiClient.preferredRecordings.delete({
+      firstNameRecordingId: firstNamePronunciation?.id,
+      lastNameRecordingId: lastNamePronunciation?.id,
+      userContext: this.userContext,
+    })
+  };
 }
