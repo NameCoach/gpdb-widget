@@ -3,14 +3,18 @@ import classNames from "classnames/bind";
 
 import styles from "./styles.module.css";
 import Checkbox from "../Inputs/Checkbox";
-import { AttributePresentation } from "../../../../types/resources/custom-attribute";
+import {
+  AttributePresentation,
+  CustomAttributeObject,
+} from "../../../../types/resources/custom-attribute";
 import Textarea from "../Inputs/Textarea";
 import Select from "../Inputs/Select";
 import Textbox from "../Inputs/Textbox";
 import { CustomAttributesProps } from "../Inputs/types";
 import Errors from "../Errors";
-import { CustomAttributeObject } from "../../../../core/mappers/custom-attributes.map";
 import { cloneDeep } from "lodash";
+import MultipleCheckbox from "../Inputs/MultipleCheckbox";
+import Radio from "../Inputs/Radio";
 
 const cx = classNames.bind(styles);
 
@@ -27,7 +31,7 @@ const errorArrayToObject = (errorsArray: any[]): { [x: string]: any } => {
 };
 
 const CustomAttributes = (
-  { disabled, errors: propsErrors, data }: CustomAttributesProps,
+  { disabled, errors: propsErrors, data, makeChanges }: CustomAttributesProps,
   ref
 ): JSX.Element => {
   const [errors, setErrors] = useState(errorArrayToObject(propsErrors));
@@ -40,6 +44,7 @@ const CustomAttributes = (
     const newData = [..._data];
     newData.find((attr) => attr.id === id).value = value;
     setData(newData);
+    makeChanges(JSON.stringify(data) !== JSON.stringify(newData));
   };
 
   const ComponentPresentationMapper = {
@@ -47,6 +52,8 @@ const CustomAttributes = (
     [AttributePresentation.Dropdown]: Select,
     [AttributePresentation.Textbox]: Textbox,
     [AttributePresentation.Textarea]: Textarea,
+    [AttributePresentation.MultipleCheckbox]: MultipleCheckbox,
+    [AttributePresentation.Radio]: Radio,
   };
 
   const onInputChange = (id, value) => {

@@ -15,8 +15,6 @@ interface Props {
   tooltipId?: string;
 }
 
-let currentAudio;
-
 const Player = ({
   autoplay,
   audioSrc,
@@ -30,7 +28,6 @@ const Player = ({
     audioCreator,
     audioSrc,
     onClick,
-    currentAudio,
   });
 
   return (
