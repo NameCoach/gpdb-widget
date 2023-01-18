@@ -32,6 +32,10 @@
   color: $colors_dark_grey;
 }
 
+.label.isChild {
+  font-weight: 400;
+}
+
 .value {
   min-height: 17px;
   font-size: 14px;

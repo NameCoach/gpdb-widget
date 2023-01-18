@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import ReactTooltip from "react-tooltip";
 import SystemContext from "../contexts/system";
-import useAudioRef from "./useAudioRef";
+import useAudio from "./useAudio";
 
 interface HookReturn {
   isPlaying: boolean;
@@ -13,55 +13,24 @@ const usePlayer = ({
   audioSrc,
   audioCreator,
   onClick,
-  currentAudio,
 }): HookReturn => {
-  const { audioRef, audioReady } = useAudioRef(audioSrc);
-  const [isPlaying, setPlaying] = useState<boolean>(false);
   const systemContext = useContext(SystemContext);
   const errorHandler = systemContext?.errorHandler;
+  const onError = (e) => errorHandler(e, "player", { audioSrc, autoplay, audioCreator });
 
-  const stop = (): void => setPlaying(false);
+  const { audioReady, audioPlaying, playAudio } = useAudio({audioSrc, onError});
 
   const play = async (): Promise<void> => {
-    try {
       if (onClick) onClick();
 
-      audioRef.current.onended = stop;
-
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
-
-      setPlaying(true);
-      currentAudio = audioRef.current;
-
-      await audioRef.current.play();
-    } catch (e) {
-      errorHandler &&
-        errorHandler(e, "player", {
-          audioSrc: audioSrc,
-          autoplay: autoplay,
-          audioCreator: audioCreator,
-        });
-      currentAudio = null;
-      setPlaying(false);
-    }
+      await playAudio();
   };
 
   useEffect(() => {
-    ReactTooltip.rebuild();
     if (autoplay && audioReady) play();
   }, [audioSrc, audioReady]);
 
-  useEffect(() => {
-    return (): void => {
-      if (audioReady) audioRef.current.removeEventListener("pause", stop);
-      if (currentAudio) currentAudio.removeEventListener("pause", stop);
-    };
-  }, []);
-
-  return { isPlaying, play, audioReady };
+  return {isPlaying: audioPlaying, play, audioReady };
 };
 
 export default usePlayer;
