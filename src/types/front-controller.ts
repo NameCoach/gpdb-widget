@@ -13,8 +13,7 @@ import {
 import NameParser from "./name-parser";
 import { loadParams as permissionsLoadParams } from "gpdb-api-client/build/main/types/repositories/permissions";
 import { loadParams as preferencesLoadParams } from "gpdb-api-client/build/main/types/repositories/client-side-preferences";
-import { CustomAttributeObject } from "../core/mappers/custom-attributes.map";
-
+import { CustomAttributeObject } from "../types/resources/custom-attribute";
 export interface Meta {
   uri?: string;
 }
@@ -26,9 +25,7 @@ export interface PublicAttributes {
 }
 
 export interface PublicHelpers {
-  isUserOwnsName: (
-    nameOwnerSignature?: string
-  ) => boolean
+  isUserOwnsName: (nameOwnerSignature?: string) => boolean;
 }
 
 export interface GpdbRequests {
@@ -39,15 +36,15 @@ export interface GpdbRequests {
     names: Array<Omit<Name, "exist">>,
     nameOwner?: NameOwner,
     meta?: Meta
-  ) => PromiseLike<{ [t in NameTypes]: Pronunciation[] }>;
+  ) => Promise<{ [t in NameTypes]: Pronunciation[] }>;
   simpleSearch: (
     name: Omit<Name, "exist">,
     nameOwner?: NameOwner,
     meta?: Meta
-  ) => PromiseLike<Pronunciation[]>;
+  ) => Promise<Pronunciation[]>;
   searchBySig: (
     nameOwner?: NameOwner
-  ) => PromiseLike<
+  ) => Promise<
     [Array<Omit<Name, "exist">>, { [t in NameTypes]: Pronunciation[] }]
   >;
   destroy: (
@@ -60,26 +57,26 @@ export interface GpdbRequests {
     id: string,
     type: UserResponse,
     nameOwner?: NameOwner
-  ) => PromiseLike<void>;
+  ) => Promise<void>;
   createRecording: (
     name: string,
     type: NameTypes,
     audio: string,
     owner?: NameOwner
-  ) => PromiseLike<void>;
+  ) => Promise<void>;
   requestRecording: (
     name: string,
     type: NameTypes,
     nameOwner?: NameOwner
-  ) => PromiseLike<void>;
+  ) => Promise<void>;
   findRecordingRequest: (
     name: string,
     type: NameTypes,
     nameOwner?: NameOwner
-  ) => PromiseLike<boolean>;
-  loadPermissions: (rest?: permissionsLoadParams) => PromiseLike<void>;
-  loadCustomAttributesConfig: () => PromiseLike<void>;
-  loadClientPreferences: (rest?: preferencesLoadParams) => PromiseLike<void>;
+  ) => Promise<boolean>;
+  loadPermissions: (rest?: permissionsLoadParams) => Promise<void>;
+  loadCustomAttributesConfig: () => Promise<void>;
+  loadClientPreferences: (rest?: preferencesLoadParams) => Promise<void>;
 }
 
 export interface CustomAttributesRequests {
@@ -90,8 +87,8 @@ export interface CustomAttributesRequests {
 }
 
 export interface NamesServiceRequests {
-  verifyNames: (name: string) => PromiseLike<{ [t in NameTypes]: Name }>;
-  getSuggestions: (name: string) => PromiseLike<string[]>;
+  verifyNames: (name: string) => Promise<{ [t in NameTypes]: Name }>;
+  getSuggestions: (name: string) => Promise<string[]>;
 }
 
 export interface AnalyticsRequests {
@@ -100,20 +97,32 @@ export interface AnalyticsRequests {
     message: string | object | boolean,
     recordingId?: string,
     rootUrl?: string
-  ) => PromiseLike<void>;
+  ) => Promise<void>;
 }
 
 export interface SettingsRequests {
-  saveAudioSampleRate: (rate: number) => PromiseLike<void>;
-  loadAudioSampleRate: () => PromiseLike<number>;
+  saveAudioSampleRate: (rate: number) => Promise<void>;
+  loadAudioSampleRate: () => Promise<number>;
+}
+
+interface PreferredRecordings {
+  firstNamePronunciation: Pronunciation | null;
+  lastNamePronunciation: Pronunciation | null;
+}
+
+export interface PreferredRecordingsRequests {
+  getPreferredRecordings: (userContext?: User) => Promise<PreferredRecordings>;
+  savePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
+  deletePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
 }
 
 type IFrontController = PublicAttributes &
-PublicHelpers &
+  PublicHelpers &
   GpdbRequests &
   CustomAttributesRequests &
   NamesServiceRequests &
   AnalyticsRequests &
-  Partial<SettingsRequests>;
+  Partial<SettingsRequests> &
+  PreferredRecordingsRequests;
 
 export default IFrontController;
