@@ -1,6 +1,24 @@
+import { NameOwner } from "gpdb-api-client";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import IFrontController from "../../types/front-controller";
+import { NameTypes } from "../../types/resources/name";
 import ControllerContext from "../contexts/controller";
 import StyleContext from "../contexts/style";
+
+interface HookOptions {
+  controller?: IFrontController;
+  canRecordingRequestFind: boolean;
+  name: string;
+  type: NameTypes;
+  owner: NameOwner;
+}
+
+interface HookReturn {
+  onRequest: () => Promise<void>;
+  isRequested: boolean;
+  requestedMessage: string;
+  loading: boolean;
+}
 
 const useRecordingRequest = ({
   controller = useContext(ControllerContext),
@@ -8,7 +26,7 @@ const useRecordingRequest = ({
   name,
   type,
   owner,
-}) => {
+}: HookOptions): HookReturn => {
   const [isRequested, setRequested] = useState(false);
   const [loading, setLoading] = useState(true);
   const { t } = useContext(StyleContext);
