@@ -84,6 +84,7 @@ const MyInfo = ({
               openEdit={enterEditMode}
               canEditCustomAttributes={canEditCustomAttributes}
               isUnsavedChanges={isUnsavedChanges}
+              makeChanges={makeChanges}
             />
           </div>
 
