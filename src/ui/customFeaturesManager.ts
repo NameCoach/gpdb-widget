@@ -10,6 +10,7 @@ export enum Features {
   Share = "gw-share-icon",
   RenderHtml = "custom_html_components",
   WidgetBlocks = "widget-blocks",
+  LibraryRecordings = "library_recordings",
 }
 
 export enum ConstantOverrides {
