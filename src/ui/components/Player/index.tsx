@@ -17,7 +17,6 @@ interface Props {
 }
 
 const cx = classNames.bind(styles);
-let currentAudio;
 
 const Player = ({
   autoplay,
@@ -33,7 +32,6 @@ const Player = ({
     audioCreator,
     audioSrc,
     onClick,
-    currentAudio,
   });
 
   return (
