@@ -51,7 +51,6 @@ import usePopup from "./ui/kit/Popup/hooks/usePopup";
 import SupportedLanguages from "./translations/supported-languages";
 import UserAgentManager from "./core/userAgentManager";
 
-
 export {
   Widget,
   ExtensionWidget,
@@ -94,5 +93,5 @@ export {
   Popup,
   useTooltip,
   usePopup,
-  PopupComponents
+  PopupComponents,
 };

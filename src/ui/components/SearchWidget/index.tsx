@@ -3,7 +3,9 @@ import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import StyleContext from "../../contexts/style";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
-import useFeaturesManager, { ShowComponents } from "../../hooks/useFeaturesManager";
+import useFeaturesManager, {
+  ShowComponents,
+} from "../../hooks/useFeaturesManager";
 import usePermissions from "../../hooks/usePermissions";
 import { TermsAndConditions } from "../../hooks/useRecorderState";
 import useTranslator from "../../hooks/useTranslator";
@@ -28,10 +30,7 @@ const SearchWidget = (props: Props): JSX.Element => {
 
   const canPerfromBasicSearch = canPronunciation("index");
 
-  const { show } = useFeaturesManager(
-    client.permissions,
-    customFeatures
-  );
+  const { show } = useFeaturesManager(client.permissions, customFeatures);
 
   return (
     <>
