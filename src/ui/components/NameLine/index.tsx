@@ -19,7 +19,6 @@ import { Theme } from "../../../types/style-context";
 import capitalizeString from "../../../core/utils/capitalize-string";
 import Actions from "./Actions";
 import useUserResponse from "../../hooks/useUserResponse";
-import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 
 const cx = classNames.bind(styles);
 
@@ -165,14 +164,6 @@ const NameLine = ({
           </div>
         )}
       </div>
-
-      {currentPronunciation?.customAttributes?.length > 0 && (
-        <div className={styles.custom_attributes}>
-          <CustomAttributesInspector
-            data={currentPronunciation.customAttributes}
-          />
-        </div>
-      )}
 
       {currentPronunciation?.phoneticSpelling && (
         <div className={styles.phonetic}>

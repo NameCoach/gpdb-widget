@@ -1,13 +1,10 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useContext } from "react";
 import Pronunciation from "../../../types/resources/pronunciation";
 import StyleContext from "../../contexts/style";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useRecordingShare from "../../hooks/useRecordingShare";
-import DefaultShareAction from "../Actions/Share";
 import Tooltip from "../../kit/Tooltip";
 import useTranslator from "../../hooks/useTranslator";
-import useTheme from "../../hooks/useTheme";
-import { Theme } from "../../../types/style-context";
 import ShareAction from "../Actions/Outlook/Share";
 import generateTooltipId from "../../../core/utils/generate-tooltip-id";
 import useTooltip from "../../kit/Tooltip/hooks/useTooltip";
@@ -35,12 +32,6 @@ const ShareRecording = ({
   pronunciation,
   tooltipId = generateTooltipId("share_recording"),
 }: Props): JSX.Element => {
-  const { theme } = useTheme();
-
-  const tooltipBaseComponent = useMemo(() => {
-    return theme === Theme.Outlook ? <ShareAction /> : <DefaultShareAction />;
-  }, [theme]);
-
   const styleContext = useContext(StyleContext);
   const { t } = useTranslator();
   const tooltip = useTooltip<HTMLDivElement>();
@@ -84,7 +75,7 @@ const ShareRecording = ({
               <div className={cx(styles.row)}>
                 {copyButtons.map((button, index) => (
                   <CopyToClipboard text={button.url} key={index}>
-                    <Button style={{width: button.width}}>
+                    <Button style={{ width: button.width }}>
                       <ChangeableText
                         initialText={button.text}
                         newText={t("share_recording_popup_copied")}
@@ -97,7 +88,7 @@ const ShareRecording = ({
             </div>
           </Popup>
           <div ref={openerRef} onClick={popup.openerOnMouseClick}>
-            {React.cloneElement(tooltipBaseComponent)}
+            {React.cloneElement(<ShareAction />)}
           </div>
         </div>
       )}
