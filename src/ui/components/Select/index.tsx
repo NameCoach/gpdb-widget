@@ -16,13 +16,14 @@ export interface Option {
 }
 
 export interface CustomStyles {
-  control: object;
-  singleValue: object;
-  menu: object;
-  menuList: object;
-  option: object;
-  valueContainer: object;
-  placeholder: object;
+  container?: object;
+  control?: object;
+  singleValue?: object;
+  menu?: object;
+  menuList?: object;
+  option?: object;
+  valueContainer?: object;
+  placeholder?: object;
 }
 
 export interface SelectRef {
@@ -54,7 +55,8 @@ const theme = (theme) => ({
 });
 
 const customStyles = (theme) => (
-  controlStyles = {
+  controlStyles: CustomStyles = {
+    container: {},
     control: {},
     singleValue: {},
     menu: {},
@@ -64,6 +66,12 @@ const customStyles = (theme) => (
     placeholder: {},
   }
 ) => ({
+  container: (provided, state) => {
+    return {
+      ...provided,
+      ...controlStyles.container,
+    };
+  },
   control: (provided, state) => {
     const res = {
       ...provided,
