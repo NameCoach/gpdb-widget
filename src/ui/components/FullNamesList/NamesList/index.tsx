@@ -71,9 +71,7 @@ const NamesList = ({
       >
         {t("pronunciations_drop_down_placeholder")}
       </Tooltip>
-      <div
-        ref={tooltip.openerRef}
-      >
+      <div ref={tooltip.openerRef}>
         <Select
           controlCustomProps={selectControlCustomProps}
           onChange={onChange}
