@@ -32,7 +32,10 @@ const Select = ({
 }: CustomAttributesInputsProps): JSX.Element => {
   const { theme: appTheme } = useTheme();
 
-  const options = values?.map((value) => ({ value, label: value }));
+  const options = (values as string[])?.map((value) => ({
+    value,
+    label: value,
+  }));
   const selectValue = value &&
     String(value).length > 0 && { value: String(value), label: String(value) };
 
