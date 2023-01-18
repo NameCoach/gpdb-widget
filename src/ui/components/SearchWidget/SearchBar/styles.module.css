@@ -40,10 +40,6 @@
   color: $colors_light_grey;
 }
 
-.input::-ms-clear {
-  display: none;
-}
-
 .row {
   composes: row from "../../../styles/outlook.css";
   margin-bottom: 12px;
@@ -67,6 +63,10 @@
   outline: none !important;
   border: none !important;
   width: 100%;
+}
+
+.search_input::-ms-clear, .search_input:hover::-ms-clear, .search_input:focus::-ms-clear {
+  display: none;
 }
 
 .search_input::placeholder, .search_input:-ms-input-placeholder, .search_input::-ms-input-placeholder {
