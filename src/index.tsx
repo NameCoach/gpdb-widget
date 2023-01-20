@@ -19,6 +19,7 @@ import Gap from "./ui/kit/Gap";
 import Tooltip from "./ui/kit/Tooltip";
 import Popup from "./ui/kit/Popup";
 import * as PopupComponents from "./ui/kit/Popup/components";
+import { DeviceChangedModal } from "./ui/components/DeviceChangedModal";
 
 // TYPES
 import type IFrontController from "./types/front-controller";
@@ -94,4 +95,5 @@ export {
   useTooltip,
   usePopup,
   PopupComponents,
+  DeviceChangedModal,
 };
