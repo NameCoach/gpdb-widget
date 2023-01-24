@@ -7,7 +7,7 @@
 .label {
   composes: btn__link from "../../../../../../styles/outlook.css";
   cursor: auto !important;
-  text-decoration-line: none !important;
+  text-decoration: none !important;
 }
 
 .btn__link {
