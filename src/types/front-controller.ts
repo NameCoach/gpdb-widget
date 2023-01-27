@@ -116,6 +116,10 @@ export interface PreferredRecordingsRequests {
   deletePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
 }
 
+export interface Avatars {
+  getAvatar: (owner?: User) => Promise<string>;
+}
+
 type IFrontController = PublicAttributes &
   PublicHelpers &
   GpdbRequests &
@@ -123,6 +127,7 @@ type IFrontController = PublicAttributes &
   NamesServiceRequests &
   AnalyticsRequests &
   Partial<SettingsRequests> &
-  PreferredRecordingsRequests;
+  PreferredRecordingsRequests &
+  Avatars;
 
 export default IFrontController;

@@ -5,7 +5,7 @@ import PronunciationMyInfoWidget from "./ui/components/PronunciationMyInfoWidget
 import Loader from "./ui/components/Loader";
 import FullNamesList from "./ui/components/FullNamesList";
 import Recorder from "./ui/components/Recorder";
-import PersonalBlock from "./ui/components/PersonalBlock";
+import PersonalBlock from "./ui/components/deprecated/PersonalBlock";
 import PronunciationsBlock from "./ui/components/PronunciationsBlock";
 import Player from "./ui/components/Player";
 import SearchWidget from "./ui/components/SearchWidget";
