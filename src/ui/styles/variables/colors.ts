@@ -39,4 +39,13 @@ const COLORS = {
   redesign_colors_error_input_message: "#A12038",
 };
 
+export const AVATAR_PLACEHOLDER_COLORS = {
+  purple: "#7C4BB4",
+  blue: "#1976D2",
+  red: "#C82D4A",
+  orange: "#E53935",
+  azure: "#2DBFC8",
+  green: "#8DC82D",
+};
+
 export default COLORS;
