@@ -1,8 +1,8 @@
 import React from "react";
-import ActionsPanel from "../../../../kit/ActionsPanel";
-import RecordAction from "../../../Actions/Outlook/Record";
+import ActionsPanel from "../../../../../kit/ActionsPanel";
+import RecordAction from "../../../../Actions/Outlook/Record";
 import { Props } from "../types";
-import { Speaker } from "../../../shared/components";
+import { Speaker } from "../../../../shared/components";
 
 
 const OutlookView = ({

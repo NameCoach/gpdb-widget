@@ -484,4 +484,13 @@ export default class FrontController implements IFrontController {
       userContext: this.userContext,
     })
   };
+
+  async getAvatar(
+    owner: User = this.userContext,
+  ): Promise<string> {
+    const v = Math.floor(Math.random() * 2);
+
+    if (v === 0) return null;
+    return "https://upload.wikimedia.org/wikipedia/en/f/ff/SuccessKid.jpg";
+  }
 }
