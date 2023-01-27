@@ -26,7 +26,9 @@ import { LibraryRecordingsPresenter } from "./components";
 import { Row } from "../../kit/Grid";
 import { StyledText } from "../../kit/Topography";
 import Loader from "../Loader";
-import FullNameLine from "../FullNameLine";
+import { Speaker, Title } from "../shared/components";
+import { Avatar } from "../shared/components/Avatar";
+import RecordAction from "../Actions/Outlook/Record";
 
 interface Props {
   names: NameOption[];
@@ -74,6 +76,7 @@ const PronunciationsBlock = ({
   const [firstNamePending, setFirstNamePending] = useState<boolean>(false);
   const [lastNamePending, setLastNamePending] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>(null);
 
   const loadTimeout = useRef<ReturnType<typeof setTimeout>>(null);
   const fullNamesObject = useRef([]);
@@ -213,10 +216,18 @@ const PronunciationsBlock = ({
     }
   };
 
+  const loadAvatar = async (owner) => {
+    if (!show(ShowComponents.Avatars)) return;
+
+    controller.getAvatar(owner)
+      .then((url) => setAvatarUrl(url))
+      .catch(e => console.log(e));
+  };
+
   const loadName = async (name: NameOption): Promise<void> => {
     setLoading(true);
     setCurrent(null);
-
+    setAvatarUrl(null);
     setNameOwner(name.owner);
 
     if (stringIsEmail(name.value) && canSearchBySig) {
@@ -229,8 +240,9 @@ const PronunciationsBlock = ({
       await simpleSearch(name);
     }
     await loadPreferredLibRecs(name);
+    await loadAvatar(name.owner);
 
-    setTimeout(() => setLoading(false), 1000);
+    loadTimeout.current = setTimeout(() => setLoading(false), 1000);
   };
 
   const [selectedName, setSelectedName] = useState<NameOption>(null);
@@ -258,9 +270,9 @@ const PronunciationsBlock = ({
     <>
       {show(ShowComponents.PronunciationsBlock) && (
         <div className={styles.container}>
-          <div className={cx(styles.title, styles.m_10)}>
-            {t("pronunciations_section_name", "Pronunciations")}
-          </div>
+          <Row padding={"20px 0"}>
+            <Title>{t("pronunciations_section_name", "Pronunciations")}</Title>
+          </Row>
 
           <FullNamesList
             names={names}
@@ -276,39 +288,34 @@ const PronunciationsBlock = ({
             setAutoplay={setAutoplay}
           />
 
-          {loading && (
-            <Row>
+          {selectedName && (
+            <Row padding={"8px 0"} gap={8}>
+              <Row left autoWidth>
+                <Avatar name={selectedName.value} src={avatarUrl}/>
+              </Row>
               <Row>
                 <StyledText medium>{selectedName.value}</StyledText>
               </Row>
-              <Row right autoWidth>
-                <Loader btn />
+              <Row gap={8} right autoWidth>
+                {loading ? (
+                  <Loader btn />
+                ) : (
+                  !firstNamePronunciation &&
+                  !lastNamePronunciation && (
+                    <>
+                      {currentPronunciation ? (
+                        <Speaker
+                          autoplay={autoplay}
+                          pronunciation={currentPronunciation}
+                        />
+                      ) : (
+                        <Speaker disabled />
+                      )}
+                    </>
+                  )
+                )}
               </Row>
             </Row>
-          )}
-
-          {!loading &&
-            !(
-              canComplexSearch &&
-              !currentPronunciation &&
-              nameParts.length > 0
-            ) &&
-            !firstNamePronunciation &&
-            !lastNamePronunciation &&
-            selectedName && (
-              <FullNameLine
-                pronunciation={currentPronunciation}
-                fullName={selectedName.value}
-                autoplay={autoplay}
-                loading={loading}
-              />
-            )}
-
-          {!loading && customAttributesDataPresent && (
-            <CustomAttributesInspector
-              data={currentPronunciation.customAttributes}
-              pronunciation={currentPronunciation}
-            />
           )}
 
           {!loading && (firstNamePronunciation || lastNamePronunciation) && (
@@ -321,6 +328,13 @@ const PronunciationsBlock = ({
               lastNamePending={lastNamePending}
               onFirstNameRecRequest={onFirstNameRecRequest}
               onLastNameRecRequest={onLastNameRecRequest}
+            />
+          )}
+
+          {!loading && customAttributesDataPresent && (
+            <CustomAttributesInspector
+              data={currentPronunciation.customAttributes}
+              pronunciation={currentPronunciation}
             />
           )}
 
