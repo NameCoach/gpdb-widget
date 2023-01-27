@@ -1,6 +1,6 @@
 import React from "react";
-import { Theme } from "../../../../types/style-context";
-import useTheme from "../../../hooks/useTheme";
+import { Theme } from "../../../../../types/style-context";
+import useTheme from "../../../../hooks/useTheme";
 import { Props } from "./types";
 import OutlookView from "./Outlook";
 
