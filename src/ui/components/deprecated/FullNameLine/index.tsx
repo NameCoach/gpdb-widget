@@ -1,8 +1,8 @@
 import React, { MouseEventHandler } from "react";
 
-import Pronunciation from "../../../types/resources/pronunciation";
+import Pronunciation from "../../../../types/resources/pronunciation";
 import styles from "./styles.module.css";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import Actions from "./Actions";
 
 export interface Props {
