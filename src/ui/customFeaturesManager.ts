@@ -11,6 +11,7 @@ export enum Features {
   RenderHtml = "custom_html_components",
   WidgetBlocks = "widget-blocks",
   LibraryRecordings = "library_recordings",
+  Avatars = "avatars",
 }
 
 export enum ConstantOverrides {
