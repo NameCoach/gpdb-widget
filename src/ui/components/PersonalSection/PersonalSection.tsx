@@ -53,8 +53,9 @@ export const PersonalSection = ({
   ] = useRecorderState();
 
   const [pronunciation, setPronunciation] = useState<Pronunciation>(null);
-  const [loading, setLoading] = useState(true);
-  const [myInfoHintShow, setMyInfoHintShow] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [myInfoHintShow, setMyInfoHintShow] = useState<boolean>(true);
+  const [avatarUrl, setAvatarUrl] = useState<string>(null);
 
   const showRecordAction = show("selfRecorderAction", pronunciation);
   const canCreateSelfRecording = can("createSelfRecording", pronunciation);
@@ -89,6 +90,14 @@ export const PersonalSection = ({
     setLastNamePronunciation(result.lastNamePronunciation);
   }, [controller, owner, name]);
 
+  const loadAvatar = async () => {
+    if (!show(ShowComponents.Avatars)) return;
+
+    controller.getAvatar(owner)
+      .then((url) => setAvatarUrl(url))
+      .catch(e => console.log(e));
+  };
+  
   const load = useCallback(async () => {
     if (!canSimpleSearch) return;
 
@@ -104,6 +113,7 @@ export const PersonalSection = ({
     setPronunciation(fullName.find((p) => p.nameOwnerCreated));
 
     await loadPreferredLibRecs();
+    await loadAvatar();
 
     setLoading(false);
   }, [controller, owner, name]);
@@ -192,6 +202,7 @@ export const PersonalSection = ({
               }}
               onRecordingDelete={onRecordingDelete}
               onLibraryDelete={onLibraryDelete}
+              avatarUrl={avatarUrl}
               visible={inEdit}
             />
           )}
@@ -206,6 +217,7 @@ export const PersonalSection = ({
               onEditClick={() => {
                 setInEdit(true);
               }}
+              avatarUrl={avatarUrl}
               visible={!inEdit}
             />
           )}
