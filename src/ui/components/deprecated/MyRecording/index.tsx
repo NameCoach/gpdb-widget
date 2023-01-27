@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 
-import Pronunciation from "../../../types/resources/pronunciation";
+import Pronunciation from "../../../../types/resources/pronunciation";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import { NameOwner } from "gpdb-api-client";
-import StyleContext from "../../contexts/style";
+import StyleContext from "../../../contexts/style";
 import FullNameLine from "../FullNameLine";
-import useTranslator from "../../hooks/useTranslator";
-import Notification from "../Notification";
-import { NotificationTags } from "../../../types/notifications";
-import { useNotifications } from "../../hooks/useNotification";
-import ShareRecording from "../ShareRecording";
-import usePopup from "../../kit/Popup/hooks/usePopup";
-import Popup from "../../kit/Popup";
+import useTranslator from "../../../hooks/useTranslator";
+import Notification from "../../Notification";
+import { NotificationTags } from "../../../../types/notifications";
+import { useNotifications } from "../../../hooks/useNotification";
+import ShareRecording from "../../ShareRecording";
+import usePopup from "../../../kit/Popup/hooks/usePopup";
+import Popup from "../../../kit/Popup";
 
 export interface NameOption {
   key: string;
