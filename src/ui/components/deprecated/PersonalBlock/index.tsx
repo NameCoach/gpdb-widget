@@ -1,26 +1,26 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import IFrontController from "../../../types/front-controller";
-import { NameOption } from "../FullNamesList";
+import IFrontController from "../../../../types/front-controller";
+import { NameOption } from "../../FullNamesList";
 import Pronunciation, {
   RelativeSource,
-} from "../../../types/resources/pronunciation";
-import { NameTypes } from "../../../types/resources/name";
+} from "../../../../types/resources/pronunciation";
+import { NameTypes } from "../../../../types/resources/name";
 import useRecorderState, {
   TermsAndConditions,
-} from "../../hooks/useRecorderState";
+} from "../../../hooks/useRecorderState";
 
 import styles from "./styles.module.css";
 
-import StyleContext from "../../contexts/style";
+import StyleContext from "../../../contexts/style";
 import useFeaturesManager, {
   ShowComponents,
-} from "../../hooks/useFeaturesManager";
-import useCustomFeatures from "../../hooks/useCustomFeatures";
-import useOnRecorderClose from "../../hooks/MyInfo/useOnRecorderClose";
+} from "../../../hooks/useFeaturesManager";
+import useCustomFeatures from "../../../hooks/useCustomFeatures";
+import useOnRecorderClose from "../../../hooks/MyInfo/useOnRecorderClose";
 import MyRecording from "../MyRecording";
-import MyInfo from "../MyInfo";
-import NewRecorder from "../Recorder";
-import { LibraryRecordings } from "../LibraryRecordings";
+import MyInfo from "../../MyInfo";
+import NewRecorder from "../../Recorder";
+import { LibraryRecordings } from "../../LibraryRecordings";
 
 interface Props {
   name: Omit<NameOption, "key">;
