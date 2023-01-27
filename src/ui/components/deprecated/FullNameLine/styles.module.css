@@ -17,5 +17,5 @@
 }
 
 .actions {
-  composes: actions from "../../styles/outlook.css";
+  composes: actions from "../../../styles/outlook.css";
 }
