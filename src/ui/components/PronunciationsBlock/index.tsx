@@ -303,13 +303,11 @@ const PronunciationsBlock = ({
                   !firstNamePronunciation &&
                   !lastNamePronunciation && (
                     <>
-                      {currentPronunciation ? (
+                      {currentPronunciation && (
                         <Speaker
                           autoplay={autoplay}
                           pronunciation={currentPronunciation}
                         />
-                      ) : (
-                        <Speaker disabled />
                       )}
                     </>
                   )
