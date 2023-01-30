@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Column, Row } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
 import { RecorderButton } from "./RecorderButton";
@@ -75,9 +75,11 @@ export const MyRecEditor = ({
   return (
     <Column visible={visible}>
       <Row>
-        <Row left autoWidth>
-          <Avatar name={name} src={avatarUrl}/>
-        </Row>
+        {show(ShowComponents.Avatars) && (
+          <Row left autoWidth>
+            <Avatar name={name} src={avatarUrl} />
+          </Row>
+        )}
         <Row>
           <StyledText medium>{name}</StyledText>
         </Row>
