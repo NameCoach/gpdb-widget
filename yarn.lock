@@ -3323,10 +3323,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-gpdb-api-client@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.2.1.tgz#011401707c69fd986d64d776447eb2fc86e6a17f"
-  integrity sha512-FUvObAk4+1ZW545WHpCbTWAdZmDDkHn7SGuFppCIcFKj6iXeSPzo23pQSQeniu1h8bjEyTRt8L9pbSgjztjVkg==
+gpdb-api-client@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/gpdb-api-client/-/gpdb-api-client-1.3.0.tgz#d6bf031407dc362f03ec219f31f26ca1ccbe3c5e"
+  integrity sha512-QdPh7wXinqlxR0jeomfjbdI/2GtSALFehItRbt+ek79UzvI9/9tu/Hmq/OdczrPxPBfbx0KvydNce+LsQhzttQ==
   dependencies:
     cross-fetch "^3.0.6"
     jsrsasign "^10.3.0"
