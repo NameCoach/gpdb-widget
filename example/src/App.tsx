@@ -13,7 +13,6 @@ import {
   PronunciationMyInfoWidget,
   IStyleContext,
   Theme,
-  Gap,
 } from "gpdb-widget";
 import { useDebouncedCallback } from "use-debounce";
 import { me, names } from "./examples/pronunciation-my-info-params";
@@ -140,12 +139,7 @@ const App = () => {
 
       <StyleContext.Provider value={styleContext}>
         {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
-
-        {<Gap height={34}/>}
-
         {!loading && <SearchWidget client={client} />}
-
-        <div style={{marginTop: "30px"}}></div>
       </StyleContext.Provider>
     </div>
   );
