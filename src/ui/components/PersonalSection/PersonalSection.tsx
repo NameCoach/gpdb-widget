@@ -84,7 +84,9 @@ export const PersonalSection = ({
     setFirstName(names.find((name) => name.type === NameTypes.FirstName).key);
     setLastName(names.find((name) => name.type === NameTypes.LastName).key);
 
-    const result = await controller.getPreferredRecordings();
+    const result = await controller.getPreferredRecordings({
+      ownerContext: owner
+    });
 
     setFirstNamePronunciation(result.firstNamePronunciation);
     setLastNamePronunciation(result.lastNamePronunciation);
