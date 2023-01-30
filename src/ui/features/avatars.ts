@@ -16,23 +16,15 @@ export const useAvatars = (
   enforcedPermissions?: UserPermissions,
 ): IAvatars => {
   const featureAbsent = !customFeaturesManager.isPresent(
-    Features.LibraryRecordings
+    Features.Avatars
   );
   const featureEnabled = !featureAbsent && customFeaturesManager.getValue(Features.Avatars);
-  
-  // TODO: delete after BE developed
-  const permissionsGranted = true;
-  
-  // TODO: uncomment after BE developed
-  // const permissionsGranted =
-  //   permissionsManager.can(Resources.Avatars, "show") &&
-  //   permissionsManager.can(Resources.Avatars, "create") &&
-  //   permissionsManager.can(Resources.Avatars, "destroy");
+  const permissionsGranted =
+    permissionsManager.can(Resources.Avatars, "show") &&
+    permissionsManager.can(Resources.Avatars, "create") &&
+    permissionsManager.can(Resources.Avatars, "destroy");
   
   const showAvatars = () => {
-    // TODO: remove it after BE developed
-    return true;
-    
     if (featureAbsent) return false;
     if (!permissionsGranted) return false;
 
