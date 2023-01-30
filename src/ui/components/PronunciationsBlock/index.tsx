@@ -222,7 +222,8 @@ const PronunciationsBlock = ({
   const loadAvatar = async (owner) => {
     if (!show(ShowComponents.Avatars)) return;
 
-    await controller.getAvatar(owner)
+    await controller
+      .getAvatar(owner)
       .then((url) => setAvatarUrl(url))
       .catch((e) => console.log(e));
   };
@@ -293,9 +294,11 @@ const PronunciationsBlock = ({
 
           {selectedName && (
             <Row padding={"8px 0"} gap={8}>
-              <Row left autoWidth>
-                <Avatar name={selectedName.value} src={avatarUrl}/>
-              </Row>
+              {show(ShowComponents.Avatars) && (
+                <Row left autoWidth>
+                  <Avatar name={selectedName.value} src={avatarUrl} />
+                </Row>
+              )}
               <Row>
                 <StyledText medium>{selectedName.value}</StyledText>
               </Row>
