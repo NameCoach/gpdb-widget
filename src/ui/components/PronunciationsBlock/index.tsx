@@ -28,7 +28,6 @@ import { StyledText } from "../../kit/Topography";
 import Loader from "../Loader";
 import { Speaker, Title } from "../shared/components";
 import { Avatar } from "../shared/components/Avatar";
-import RecordAction from "../Actions/Outlook/Record";
 
 interface Props {
   names: NameOption[];
@@ -193,7 +192,11 @@ const PronunciationsBlock = ({
     setFirstName(_firstName);
     setLastName(_lastName);
 
-    const result = await controller.getPreferredRecordings(name.owner);
+    const result = await controller.getPreferredRecordings({
+      // TODO: change userContext to outlook user in https://name-coach.atlassian.net/browse/INT-507
+      userContext: name.owner,
+      ownerContext: name.owner,
+    });
 
     setFirstNamePronunciation(result.firstNamePronunciation);
     setLastNamePronunciation(result.lastNamePronunciation);
@@ -219,9 +222,9 @@ const PronunciationsBlock = ({
   const loadAvatar = async (owner) => {
     if (!show(ShowComponents.Avatars)) return;
 
-    controller.getAvatar(owner)
+    await controller.getAvatar(owner)
       .then((url) => setAvatarUrl(url))
-      .catch(e => console.log(e));
+      .catch((e) => console.log(e));
   };
 
   const loadName = async (name: NameOption): Promise<void> => {
