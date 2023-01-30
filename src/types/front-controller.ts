@@ -111,13 +111,15 @@ interface PreferredRecordings {
 }
 
 export interface PreferredRecordingsRequests {
-  getPreferredRecordings: (userContext?: User) => Promise<PreferredRecordings>;
+  getPreferredRecordings: (args: {ownerContext: User, userContext?: User}) => Promise<PreferredRecordings>;
   savePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
   deletePreferredRecordings: (args: PreferredRecordings) => Promise<void>;
 }
 
 export interface Avatars {
   getAvatar: (owner?: User) => Promise<string>;
+  saveAvatar: (image: string, owner?: User) => Promise<string>;
+  deleteAvatar: () => Promise<void>;
 }
 
 type IFrontController = PublicAttributes &
