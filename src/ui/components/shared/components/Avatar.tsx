@@ -47,7 +47,10 @@ export const Avatar = ({ src = "", name = "" }: AvatarProps) => {
       .then((res) => res.blob())
       .then((blob) => URL.createObjectURL(blob))
       .then((url) => setImage(url))
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e)
+        setImage(null);
+      });
   }, [src]);
 
   const getInitials = (): string => {
