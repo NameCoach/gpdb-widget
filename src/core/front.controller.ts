@@ -459,38 +459,65 @@ export default class FrontController implements IFrontController {
       firstNameRecordingId: firstNamePronunciation?.id,
       lastNameRecordingId: lastNamePronunciation?.id,
       userContext: this.userContext,
-    })
+    });
   }
 
-  async getPreferredRecordings(userContext = null): Promise<any> {
-    const body = await this.apiClient.preferredRecordings.get({userContext: userContext || this.userContext})
-      .catch(e => {
-        console.log(e, e.details);
+  async getPreferredRecordings({
+    userContext = null,
+    ownerContext,
+  }): Promise<any> {
+    // TODO: refactor this in https://name-coach.atlassian.net/browse/INT-507
+    const body = await this.apiClient.preferredRecordings
+      .get({
+        userContext: userContext || this.userContext,
+        ownerContext,
       })
+      .catch((e) => {
+        console.log(e, e.details);
+      });
 
-    const firstNamePronunciation = body?.first_name_recording ? pronunciationMap(body.first_name_recording) : null;
-    const lastNamePronunciation = body?.last_name_recording ? pronunciationMap(body.last_name_recording) : null;
+    const firstNamePronunciation = body?.first_name_recording
+      ? pronunciationMap(body.first_name_recording)
+      : null;
+    const lastNamePronunciation = body?.last_name_recording
+      ? pronunciationMap(body.last_name_recording)
+      : null;
 
     return { firstNamePronunciation, lastNamePronunciation };
   }
 
   async deletePreferredRecordings({
     firstNamePronunciation,
-    lastNamePronunciation
+    lastNamePronunciation,
   }): Promise<void> {
     await this.apiClient.preferredRecordings.delete({
       firstNameRecordingId: firstNamePronunciation?.id,
       lastNameRecordingId: lastNamePronunciation?.id,
       userContext: this.userContext,
-    })
-  };
+    });
+  }
 
-  async getAvatar(
-    owner: User = this.userContext,
-  ): Promise<string> {
-    const v = Math.floor(Math.random() * 2);
+  async getAvatar(owner: User = this.userContext): Promise<string> {
+    const result = await this.apiClient.avatars.get({
+      ownerContext: owner,
+      userContext: this.userContext,
+    });
 
-    if (v === 0) return null;
-    return "https://upload.wikimedia.org/wikipedia/en/f/ff/SuccessKid.jpg";
+    return result.avatar_url;
+  }
+
+  async saveAvatar(image: string): Promise<string> {
+    const result = await this.apiClient.avatars.save({
+      userContext: this.userContext,
+      imageBase64: image,
+    });
+
+    return result.avatar_url
+  }
+
+  async deleteAvatar(): Promise<void> {
+    await this.apiClient.avatars.delete({
+      userContext: this.userContext,
+    });
   }
 }
