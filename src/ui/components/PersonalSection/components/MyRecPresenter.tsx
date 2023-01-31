@@ -4,6 +4,8 @@ import { StyledText } from "../../../kit/Topography";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import IconButtons from "../../../kit/IconButtons";
 import { Speaker } from "../../shared/components";
+import { Avatar } from "../../shared/components/Avatar";
+import useFeaturesManager, { ShowComponents } from "../../../hooks/useFeaturesManager";
 
 interface MyRecPresenterProps {
   name: string;
@@ -13,6 +15,7 @@ interface MyRecPresenterProps {
   lastName: string;
   lastNamePronunciation: Pronunciation;
   onEditClick: () => any;
+  avatarUrl?: string;
   visible?: boolean;
 }
 
@@ -24,11 +27,19 @@ export const MyRecPresenter = ({
   lastName,
   lastNamePronunciation,
   onEditClick,
-  visible
+  avatarUrl,
+  visible,
 }: MyRecPresenterProps) => {
+  const { show } = useFeaturesManager();
+  
   return (
     <Column visible={visible}>
       <Row padding={"8px 0"}>
+        {show(ShowComponents.Avatars) && (
+          <Row left autoWidth>
+            <Avatar name={name} src={avatarUrl} />
+          </Row>
+        )}
         <Row>
           <StyledText medium>{name}</StyledText>
         </Row>
