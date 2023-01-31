@@ -14,6 +14,7 @@ const email = {
   value: 'sometest.email@gmail.com',
   owner: {
     signature: 'sometest.email@gmail.com',
+    signatureType: 'email',
     email: 'sometest.email@gmail.com'
   }
 };
@@ -21,6 +22,7 @@ const emailWithoutDot = {
   value: 'sometestemailwithoutadot@gmail.com',
   owner: {
     signature: 'sometestemailwithoutadot@gmail.com',
+    signatureType: 'email',
     email: 'sometestemailwithoutadot@gmail.com'
   }
 };
@@ -28,6 +30,7 @@ const longEmailWithComplexDomain = {
   value: 'somelongemailwithcomplexdomain@custom-domain.omniemail.com',
   owner: {
     signature: 'somelongemailwithcomplexdomain@custom-domain.omniemail.com',
+    signatureType: 'email',
     email: 'somelongemailwithcomplexdomain@custom-domain.omniemail.com'
   }
 };
@@ -35,6 +38,7 @@ const testName1 = {
   value: 'Jason Robertson',
   owner: {
     signature: 'jasonrobertson@gmail.com',
+    signatureType: 'email',
     email: 'jasonrobertson@gmail.com'
   }
 }
