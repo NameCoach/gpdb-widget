@@ -11,6 +11,8 @@ import { NameOption } from "../../FullNamesList";
 import SearchResult from "../SearchResult";
 import Loader from "../../Loader";
 import stringIsEmail from "../../../../core/utils/string-is-email";
+import { Row } from "../../../kit/Grid";
+import { Title } from "../../shared/components";
 
 const UNPERMITTED_INPUT_CHARS_REGEXP = /^-| -|- |\d+|\.|,|\/|!|#|\$|%|\^|&|@|\*|\(|\)|_|\+|=|\{|}|\[|]|\||:|№|;|'|"|\\|>|<|\?|`|~|-$/g;
 
@@ -84,9 +86,9 @@ const SearchContainer = (props: Props): JSX.Element => {
 
   return (
     <div className={cx(styles.container)}>
-      <div aria-label={title} className={cx(styles.title, styles.m_10)}>
-        {title}
-      </div>
+      <Row padding={"20px 0"} aria-label={title}>
+        <Title>{title}</Title>
+      </Row>
 
       <SearchBar
         onSubmit={onSubmitSearch}

@@ -3,7 +3,6 @@ import { Option } from "../Select";
 import Pronunciation from "../../../types/resources/pronunciation";
 import styles from "./styles.module.css";
 import { NameOwner } from "gpdb-api-client";
-import FullNameLine from "../FullNameLine";
 import NamesList from "./NamesList";
 
 export interface NameOption {
