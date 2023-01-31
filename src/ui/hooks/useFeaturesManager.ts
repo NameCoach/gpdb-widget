@@ -51,6 +51,7 @@ export enum CanComponents {
   Pronunciation = "pronunciation",
   CreateCustomAttributes = "createCustomAttributes",
   EditCustomAttributesForSelf = "editCustomAttributesForSelf",
+  CanRequestAvatars = "canRequestAvatars",
 }
 
 const useFeaturesManager = (
@@ -137,7 +138,7 @@ const useFeaturesManager = (
     enforcedPermissions
   );
 
-  const { showAvatars } = useAvatars(
+  const { showAvatars, canRequestAvatars } = useAvatars(
     _permissionsManager,
     _customFeaturesManager,
     enforcedPermissions
@@ -176,6 +177,8 @@ const useFeaturesManager = (
 
     [CanComponents.CreateCustomAttributes]: canCreateCustomAttributes,
     [CanComponents.EditCustomAttributesForSelf]: canEditCustomAttributesForSelf,
+
+    [CanComponents.CanRequestAvatars]: canRequestAvatars,
   };
 
   const can = (name: CanComponents, ...rest: any[]): boolean =>
