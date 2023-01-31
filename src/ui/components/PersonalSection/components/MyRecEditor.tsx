@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Column, Row } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
 import { RecorderButton } from "./RecorderButton";
@@ -17,6 +17,7 @@ import { DeletedNotification } from "./DeletedNotification";
 import useFeaturesManager, {
   ShowComponents,
 } from "../../../hooks/useFeaturesManager";
+import { Avatar } from "../../shared/components/Avatar";
 
 interface MyRecEditorProps {
   name: string;
@@ -31,8 +32,9 @@ interface MyRecEditorProps {
   onRecordingDelete: () => any;
   onCancelClick: () => any;
   onSave: () => any;
-  visible?: boolean;
   onLibraryDelete: () => any;
+  avatarUrl?: string;
+  visible?: boolean;
 }
 
 export const MyRecEditor = ({
@@ -48,8 +50,9 @@ export const MyRecEditor = ({
   onRecordingDelete,
   onCancelClick,
   onSave,
-  visible,
   onLibraryDelete,
+  avatarUrl,
+  visible,
 }: MyRecEditorProps) => {
   const [recorderOpened, setRecorderOpened] = useState<boolean>(null);
   const [libraryOpened, setLibraryOpened] = useState<boolean>(null);
@@ -72,7 +75,14 @@ export const MyRecEditor = ({
   return (
     <Column visible={visible}>
       <Row>
-        <StyledText medium>{name}</StyledText>
+        {show(ShowComponents.Avatars) && (
+          <Row left autoWidth>
+            <Avatar name={name} src={avatarUrl} />
+          </Row>
+        )}
+        <Row>
+          <StyledText medium>{name}</StyledText>
+        </Row>
       </Row>
       <StyledGap height={16} />
       <Row>
