@@ -8,6 +8,7 @@ import useRecorderState, {
 
 import StyleContext from "../../contexts/style";
 import useFeaturesManager, {
+  CanComponents,
   ShowComponents,
 } from "../../hooks/useFeaturesManager";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
@@ -93,7 +94,7 @@ export const PersonalSection = ({
   }, [controller, owner, name]);
 
   const loadAvatar = async () => {
-    if (!show(ShowComponents.Avatars)) return;
+    if (!show(ShowComponents.Avatars) || !can(CanComponents.CanRequestAvatars)) return;
 
     controller.getAvatar(owner)
       .then((url) => setAvatarUrl(url))
