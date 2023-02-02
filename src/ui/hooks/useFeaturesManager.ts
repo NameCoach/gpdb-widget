@@ -182,9 +182,9 @@ const useFeaturesManager = (
   };
 
   const can = (name: CanComponents, ...rest: any[]): boolean =>
-    canContext[name].call(this, ...rest);
+    canContext[name].call(undefined, ...rest);
   const show = (name: ShowComponents, ...rest: any[]): boolean =>
-    showContext[name].call(this, ...rest);
+    showContext[name].call(undefined, ...rest);
 
   return { can, show } as const;
 };

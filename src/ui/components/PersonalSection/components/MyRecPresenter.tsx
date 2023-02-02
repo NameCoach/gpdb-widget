@@ -36,14 +36,14 @@ export const MyRecPresenter = ({
     <Column visible={visible}>
       <Row padding={"8px 0"}>
         {show(ShowComponents.Avatars) && (
-          <Row left autoWidth>
+          <Row left autoWidth flex={"0 0 auto"}>
             <Avatar name={name} src={avatarUrl} />
           </Row>
         )}
         <Row>
           <StyledText medium>{name}</StyledText>
         </Row>
-        <Row gap={8} right autoWidth>
+        <Row gap={8} right autoWidth flex={"0 0 auto"}>
           {!firstNamePronunciation && !lastNamePronunciation && (
             <>
               {pronunciation ? (
