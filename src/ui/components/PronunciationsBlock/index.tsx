@@ -23,7 +23,7 @@ import nameToKeyTypeObjectsArray from "../../../core/utils/name-to-key-type-obje
 import stringIsEmail from "../../../core/utils/string-is-email";
 import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import { LibraryRecordingsPresenter } from "./components";
-import { Row } from "../../kit/Grid";
+import { Column, Row } from "../../kit/Grid";
 import { StyledText } from "../../kit/Topography";
 import Loader from "../Loader";
 import { Speaker, Title } from "../shared/components";
@@ -273,7 +273,7 @@ const PronunciationsBlock = ({
   return (
     <>
       {show(ShowComponents.PronunciationsBlock) && (
-        <div className={styles.container}>
+        <Column gap={12}>
           <Row padding={"20px 0"}>
             <Title>{t("pronunciations_section_name", "Pronunciations")}</Title>
           </Row>
@@ -295,14 +295,14 @@ const PronunciationsBlock = ({
           {selectedName && (
             <Row padding={"8px 0"} gap={8}>
               {show(ShowComponents.Avatars) && (
-                <Row left autoWidth>
+                <Row left autoWidth flex={"0 0 auto"}>
                   <Avatar name={selectedName.value} src={avatarUrl} />
                 </Row>
               )}
               <Row>
                 <StyledText medium>{selectedName.value}</StyledText>
               </Row>
-              <Row gap={8} right autoWidth>
+              <Row gap={8} right autoWidth flex={"0 0 auto"}>
                 {loading ? (
                   <Loader btn />
                 ) : (
@@ -364,7 +364,7 @@ const PronunciationsBlock = ({
                 permissions={permissions}
               />
             )}
-        </div>
+        </Column>
       )}
     </>
   );
