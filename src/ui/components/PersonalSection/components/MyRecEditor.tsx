@@ -76,7 +76,7 @@ export const MyRecEditor = ({
     <Column visible={visible}>
       <Row>
         {show(ShowComponents.Avatars) && (
-          <Row left autoWidth>
+          <Row left autoWidth flex={"0 0 auto"}>
             <Avatar name={name} src={avatarUrl} />
           </Row>
         )}
