@@ -18,6 +18,9 @@ export interface StyledRowProps {
   visible?: boolean;
   hidden?: boolean;
 
+  // flex
+  flex?: string;
+
   borderBox?: boolean;
 }
 
@@ -53,5 +56,9 @@ export const StyledRow = styled.div`
   box-sizing: ${(props) => {
     if (props.borderBox) return "border-box";
     return "content-box";
-  }}
+  }};
+  flex: ${(props: StyledRowProps) => {
+    if (props.flex) return props.flex;
+    return "0 1 auto";
+  }};
 `;
