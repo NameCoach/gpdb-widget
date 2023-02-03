@@ -127,9 +127,9 @@ const App = () => {
         />
       </div>
 
-      {!loading && <Widget client={client} name={name} style={style} />}
+      {false && !loading && <Widget client={client} name={name} style={style} />}
 
-      {!loading && (
+      { false && !loading && (
         <ExtensionWidget
           names={extensionWidgetNames}
           client={client}

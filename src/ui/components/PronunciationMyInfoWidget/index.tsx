@@ -66,7 +66,6 @@ const PronunciationMyInfoWidget = ({
           <PersonalSection
             name={name.value}
             owner={name.owner}
-            termsAndConditions={termsAndConditions}
           />
           {customFeatures.renderCustomComponent(HtmlComponents.UnderMyInfo)}
         </>
