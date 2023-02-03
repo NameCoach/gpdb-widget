@@ -220,7 +220,8 @@ const PronunciationsBlock = ({
   };
 
   const loadAvatar = async (owner) => {
-    if (!show(ShowComponents.Avatars) || !can(CanComponents.CanRequestAvatars)) return;
+    if (!show(ShowComponents.Avatars) || !can(CanComponents.CanRequestAvatars))
+      return;
 
     await controller
       .getAvatar(owner)
