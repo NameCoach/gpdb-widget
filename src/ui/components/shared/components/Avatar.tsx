@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { StyledText } from "../../../kit/Topography";
 import COLORS, {
@@ -14,6 +14,7 @@ interface StylecContainerProps {
 }
 
 const StyledContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,13 +22,33 @@ const StyledContainer = styled.div`
   height: ${AVATAR_SIZE}px;
   border 0px solid transparent;
   border-radius: 50%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: ${(props: StylecContainerProps) =>
-    `url('${props.image}')` || "none"};
   background-color: ${(props: StylecContainerProps) =>
     props.backgroundColor || "transparent"};
+`;
+
+const StyledImage = styled.img`
+  /* z-index: "100"; */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border 0px solid transparent;
+  border-radius: 50%;
+  display: ${(props) => {
+    if (typeof props.visible === "boolean")
+      return props.visible ? "inline" : "none";
+    if (typeof props.hidden === "boolean")
+      return props.hidden ? "none" : "inline";
+    return "inline";
+  }};
+  visibility: ${(props) => {
+    if (typeof props.visible === "boolean")
+      return props.visible ? "visible" : "hidden";
+    if (typeof props.hidden === "boolean")
+      return props.hidden ? "hidden" : "visible";
+  }};
 `;
 
 interface AvatarProps {
@@ -35,23 +56,11 @@ interface AvatarProps {
   name?: string;
 }
 
-export const Avatar = ({ src = "", name = "" }: AvatarProps) => {
-  const [image, setImage] = useState<string | null>(null);
+export const Avatar = ({ src, name = "" }: AvatarProps) => {
+  const [imageVisible, setImageVisible] = useState<boolean>(false);
 
-  useLayoutEffect(() => {
-    setImage(null);
-
-    if (!src) return;
-
-    fetch(src)
-      .then((res) => res.blob())
-      .then((blob) => URL.createObjectURL(blob))
-      .then((url) => setImage(url))
-      .catch((e) => {
-        console.log(e)
-        setImage(null);
-      });
-  }, [src]);
+  const imageOnLoad = () => setImageVisible(true);
+  const imageOnError = (e) => console.log(e);
 
   const getInitials = (): string => {
     let _name = name.trim();
@@ -82,12 +91,13 @@ export const Avatar = ({ src = "", name = "" }: AvatarProps) => {
   };
 
   return (
-    <StyledContainer backgroundColor={getColorByText()} image={image}>
-      {!image && (
-        <StyledText medium color={COLORS.colors_white}>
-          {getInitials().toUpperCase()}
-        </StyledText>
-      )}
+    <StyledContainer
+      backgroundColor={getColorByText()}
+    >
+      <StyledText medium color={COLORS.colors_white}>
+        {getInitials().toUpperCase()}
+      </StyledText>{" "}
+      <StyledImage visible={imageVisible} src={src} onLoad={imageOnLoad} onError={imageOnError}/>
     </StyledContainer>
   );
 };
