@@ -3,7 +3,7 @@ import Pronunciation from "../../../../types/resources/pronunciation";
 import { Column, Row } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
 import { Speaker } from "../../shared/components";
-import { RequestButton } from "../../../kit/Buttons/RequestButton";
+import { RequestButton } from "../../../kit/NewIconButtons/RequestButton";
 
 interface LibraryRecordingsPresenterProps {
   firstName: string;
