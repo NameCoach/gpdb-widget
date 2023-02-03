@@ -1,53 +1,40 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Pronunciation from "../../../../../types/resources/pronunciation";
-import {
-  SpeakerButton,
-  SpeakerTypes,
-} from "../../../../kit/Buttons/SpeakerButton";
 import Tooltip from "../../../../kit/Tooltip";
 import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
 import useTranslator from "../../../../hooks/useTranslator";
 import useAudio from "../../../../hooks/useAudio";
 import { getSpeakerType, getTooltipText } from "./utils";
 import Loader from "../../../Loader";
+import { SpeakerButton, SpeakerTypes } from "../../../../kit/NewIconButtons";
 
 interface SpeakerProps {
   pronunciation?: Pronunciation;
   type?: SpeakerTypes;
-  disabled?: boolean;
   autoplay?: boolean;
 }
 
 export const Speaker = ({
   pronunciation = null,
   type = null,
-  disabled = false,
   autoplay = false,
 }: SpeakerProps): JSX.Element => {
   const iconTip = useTooltip<HTMLButtonElement>();
-
   const { t } = useTranslator();
-
   const { playAudio, audioPlaying, audioReady } = useAudio({
     audioSrc: pronunciation?.audioSrc,
   });
-
   const [played, setPlayed] = useState<boolean>(false);
 
-  const speakerType = useMemo(
-    () =>
-      getSpeakerType({
-        relativeSource: pronunciation?.relativeSource,
-        type,
-        disabled,
-      }),
-    [pronunciation, type, disabled]
-  );
+  const disabled = !pronunciation;
 
-  const speakerTooltipTip = useMemo(() => {
-    return t(getTooltipText(speakerType));
-  }, [speakerType]);
-
+  const speakerType = getSpeakerType({
+    relativeSource: pronunciation?.relativeSource,
+    type,
+    disabled,
+  });
+  const speakerTooltipTip = t(getTooltipText(speakerType));
+  
   useEffect(() => {
     if (!audioReady) {
       setPlayed(false);
@@ -69,7 +56,7 @@ export const Speaker = ({
       >
         {speakerTooltipTip}
       </Tooltip>
-      {(audioReady || speakerType === SpeakerTypes.Disabled) ? (
+      {audioReady || speakerType === SpeakerTypes.Disabled ? (
         <SpeakerButton
           type={speakerType}
           onClick={playAudio}
