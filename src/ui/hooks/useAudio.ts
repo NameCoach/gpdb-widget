@@ -75,6 +75,12 @@ export default function useAudio({
       setAudioPlaying(false);
     }
     audioRef.current.onloadedmetadata = () => setAudioReady(true);
+
+    return () => {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.onloadedmetadata = null;
+    };
   }, []);
 
   const stopAudio = () => {
