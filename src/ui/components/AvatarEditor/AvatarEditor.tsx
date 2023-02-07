@@ -91,7 +91,7 @@ export const AvatarEditor = ({
             label={UploadLabel}
             onFileSelected={upload}
           />
-          <BinButton disabled={!!avatarUrl} onClick={onBinClick} />
+          <BinButton disabled={!avatarUrl} onClick={onBinClick} />
         </Row>
       </Row>
     </Card>
