@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Pronunciation from "../../../../../types/resources/pronunciation";
 import Tooltip from "../../../../kit/Tooltip";
 import useTooltip from "../../../../kit/Tooltip/hooks/useTooltip";
