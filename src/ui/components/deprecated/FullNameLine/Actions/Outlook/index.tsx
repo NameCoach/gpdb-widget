@@ -4,21 +4,15 @@ import RecordAction from "../../../../Actions/Outlook/Record";
 import { Props } from "../types";
 import { Speaker } from "../../../../shared/components";
 
-
 const OutlookView = ({
   pronunciation,
   autoplay,
   showRecordAction,
   onRecorderOpen,
 }: Props): JSX.Element => {
-
   return (
     <ActionsPanel>
-      {pronunciation ? (
-        <Speaker autoplay={autoplay} pronunciation={pronunciation}/>
-      ) : (
-        <Speaker disabled />
-      )}
+      <Speaker autoplay={autoplay} pronunciation={pronunciation} />
 
       {showRecordAction && (
         <RecordAction onClick={onRecorderOpen} rerecord={!!pronunciation} />
