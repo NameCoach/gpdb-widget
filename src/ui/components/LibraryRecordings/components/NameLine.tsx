@@ -3,7 +3,7 @@ import { Column, Row } from "../../../kit/Grid";
 import { StyledText } from "../../../kit/Topography";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import Select from "../../Select";
-import { RequestButton } from "../../../kit/Buttons/RequestButton";
+import { RequestButton } from "../../../kit/NewIconButtons/RequestButton";
 import { Speaker } from "../../shared/components";
 
 interface NameLineProps {
