@@ -121,24 +121,32 @@ export const usePersonal = ({
       .finally(() => setLoading(false));
   }, [controller, owner, name]);
 
-  const cleanReload = async () => {
-    setPronunciation(null);
-    setLibFNPronun(null);
-    setLibLNPronun(null);
-    setTempFNPronun(null);
-    setTempLNPronun(null);
+  const clearChanges = () => {
+    setTempFNPronun(libFNPronun);
+    setTempLNPronun(libLNPronun);
     setInEdit(false);
     closeEditors();
     setRecDeleted(false);
     setRecBlob(null);
     setLibDeleted(false);
     setRecFailed(false);
-    setAvatarUrl(null);
-    setTempAvatarUrl(null);
+    setTempAvatarUrl(avatarUrl);
     setTempAvatarFile(null);
     setAvatarDeleted(null);
     setAvatarError(null);
     setShowUnsavedTip(false);
+  };
+
+  const cleanReload = async () => {
+    clearChanges();
+
+    setAvatarUrl(null);
+    setTempAvatarUrl(null);
+    setLibFNPronun(null);
+    setLibLNPronun(null);
+    setTempFNPronun(null);
+    setTempLNPronun(null);
+    setPronunciation(null);
 
     await load();
   };
@@ -214,7 +222,7 @@ export const usePersonal = ({
       return;
     }
 
-    setInEdit(false);
+    clearChanges();
   };
 
   const onEditSave = async () => {

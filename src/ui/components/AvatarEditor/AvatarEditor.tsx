@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { Row } from "../../kit/Grid";
+import { Column, Row } from "../../kit/Grid";
 import { Card } from "../../kit/Cards";
 import { Avatar } from "../shared/components/Avatar";
-import { StyledText } from "../../kit/Topography";
+import { StyledP, StyledText } from "../../kit/Topography";
 import { BinButton } from "../../kit/NewIconButtons";
 import { Uploader } from "../shared/components";
 import { MAX_ALLOWED_FILE_SIZE } from "../Recorder/constants";
@@ -10,6 +10,7 @@ import { DARK_RED } from "../../styles/variables/colors";
 import { UploadLabel } from "../PersonalSection/components/UploadLabel";
 import { AvatarEditorProps } from "./types";
 
+const AVATAR_ALLOWED_TYPES = "png, gif, jpeg, jpg";
 const AVATAR_UPLOADER_ACCEPT = ".png, .gif, .jpeg, .jpg";
 const AVATAR_MIME_TYPES = ["image/png", "image/gif", "image/jpeg", "image.jpg"];
 
@@ -38,15 +39,14 @@ export const AvatarEditor = ({
       setFileName(file.name);
 
       if (file.size > MAX_ALLOWED_FILE_SIZE) {
-        const error =
-          "File must be less then 5MB.";
+        const error = "Must be less then 5MB.";
         setFileError(error);
         if (onFail) setTimeout(() => onFail(error), 0);
         return;
       }
 
       if (!AVATAR_MIME_TYPES.includes(file.type)) {
-        const error = `File must be of '${AVATAR_UPLOADER_ACCEPT}' types.`;
+        const error = `Only ${AVATAR_ALLOWED_TYPES}.`;
         setFileError(error);
         if (onFail) setTimeout(() => onFail(error), 0);
         return;
@@ -77,13 +77,43 @@ export const AvatarEditor = ({
         <Row left autoWidth flex={"0 0 auto"}>
           <Avatar name={name} src={avatarUrl} />
         </Row>
-        <Row>
-          {fileError ? (
-            <StyledText color={DARK_RED}>{fileError}</StyledText>
-          ) : (
-            <StyledText>{fileName}</StyledText>
+
+        <Column gap={4}>
+          {!avatarUrl && !fileError && !fileName && (
+            <>
+              <Row>
+                <StyledText bold>No photo</StyledText>
+              </Row>
+              <Row>
+                <StyledP textLeft>{`${AVATAR_ALLOWED_TYPES}; <5MB`}</StyledP>
+              </Row>
+            </>
           )}
-        </Row>
+
+          {avatarUrl && !fileName && !fileError && (
+            <>
+              <Row>
+                <StyledText bold>Photo</StyledText>
+              </Row>
+              <Row>
+                <StyledP textLeft>{`${AVATAR_ALLOWED_TYPES}; <5MB`}</StyledP>
+              </Row>
+            </>
+          )}
+
+          {fileError && (
+            <Row>
+              <StyledText color={DARK_RED}>{fileError}</StyledText>
+            </Row>
+          )}
+
+          {avatarUrl && fileName && (
+            <Row>
+              <StyledText>{fileName}</StyledText>
+            </Row>
+          )}
+        </Column>
+
         <Row gap={8} right autoWidth flex={"0 0 auto"}>
           <Uploader
             name={"avatar"}
