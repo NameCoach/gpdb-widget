@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { StyledText } from "../../../kit/Topography";
 import COLORS, {
@@ -27,7 +27,6 @@ const StyledContainer = styled.div`
 `;
 
 const StyledImage = styled.img`
-  /* z-index: "100"; */
   width: 100%;
   height: 100%;
   position: absolute;
@@ -60,7 +59,10 @@ export const Avatar = ({ src, name = "" }: AvatarProps) => {
   const [imageVisible, setImageVisible] = useState<boolean>(false);
 
   const imageOnLoad = () => setImageVisible(true);
-  const imageOnError = (e) => console.log(e);
+  const imageOnError = (e) => {
+    console.log(e);
+    setImageVisible(false);
+  };
 
   const getInitials = (): string => {
     let _name = name.trim();
@@ -91,13 +93,17 @@ export const Avatar = ({ src, name = "" }: AvatarProps) => {
   };
 
   return (
-    <StyledContainer
-      backgroundColor={getColorByText()}
-    >
+    <StyledContainer backgroundColor={getColorByText()}>
       <StyledText medium color={COLORS.colors_white}>
         {getInitials().toUpperCase()}
       </StyledText>{" "}
-      <StyledImage visible={imageVisible} src={src} onLoad={imageOnLoad} onError={imageOnError}/>
+      <StyledImage
+        visible={!!src && imageVisible}
+        src={src}
+        onLoad={imageOnLoad}
+        onError={imageOnError}
+        alt={""}
+      />
     </StyledContainer>
   );
 };
