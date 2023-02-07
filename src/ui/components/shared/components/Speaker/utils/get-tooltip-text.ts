@@ -1,4 +1,4 @@
-import { SpeakerTypes } from "../../../../../kit/Buttons/SpeakerButton";
+import { SpeakerTypes } from "../../../../../kit/NewIconButtons";
 
 const translationsTexts = {
   [SpeakerTypes.Peer]: "gpdb_peer_speaker_tooltip_text",
