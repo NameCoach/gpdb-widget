@@ -1,49 +1,36 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NameLine } from "./components";
-import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import { NameOwner } from "gpdb-api-client";
-import Pronunciation, { AudioSource } from "../../../types/resources/pronunciation";
-import { Container } from "./Container";
+import Pronunciation, {
+  AudioSource,
+} from "../../../types/resources/pronunciation";
 import { Row } from "../../kit/Grid";
 import { StyledText } from "../../kit/Topography";
 import { Button } from "../../kit/Buttons";
 import { NameTypes } from "../../../types/resources/name";
 import Loader from "../Loader";
-
-interface LibraryRecordingsProps {
-  firstName?: string;
-  firstNamePronunciation?: Pronunciation;
-  lastName?: string;
-  lastNamePronunciation?: Pronunciation;
-  owner: NameOwner;
-  name: string;
-  onCancel: () => any;
-  onSaved: () => any;
-  onDelete: () => any;
-}
+import { Card } from "../../kit/Cards";
+import { BinButton } from "../../kit/NewIconButtons";
+import IFrontController from "../../../types/front-controller";
+import { LibraryRecordingsProps } from "./types";
 
 export const LibraryRecordings = ({
-  firstName,
-  firstNamePronunciation,
-  lastName,
-  lastNamePronunciation,
   owner,
-  onCancel,
-  onSaved,
+  firstName,
+  lastName,
+  firstNamePronun,
+  lastNamePronun,
+  onFirstNameSelect,
+  onLastNameSelect,
+  onClose,
   onDelete,
+  deleted,
 }: LibraryRecordingsProps) => {
   const controller = useContext<IFrontController>(ControllerContext);
-  const [touched, setTouched] = useState<boolean>(false);
 
   const [fnPronuns, setFnPronuns] = useState<Pronunciation[]>([]);
   const [lnPronuns, setLnPronuns] = useState<Pronunciation[]>([]);
-  const [fnPronun, setFnPronun] = useState<Pronunciation>(
-    firstNamePronunciation
-  );
-  const [lnPronun, setLnPronun] = useState<Pronunciation>(
-    lastNamePronunciation
-  );
   const [fnRecReqPending, setFnRecReqPending] = useState<boolean>(false);
   const [lnRecReqPending, setLnRecReqPending] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -57,38 +44,42 @@ export const LibraryRecordings = ({
     // search for pronunciations
     const result = await controller.complexSearch(names, owner);
 
-    const _fnPronuns = result.firstName.filter(p => p.audioCreator === AudioSource.Gpdb);
-    const _lnPronuns = result.lastName.filter(p => p.audioCreator === AudioSource.Gpdb);
+    const _fnPronuns = result.firstName.filter(
+      (p) => p.audioCreator === AudioSource.Gpdb
+    );
+    const _lnPronuns = result.lastName.filter(
+      (p) => p.audioCreator === AudioSource.Gpdb
+    );
 
     setFnPronuns(_fnPronuns);
     setLnPronuns(_lnPronuns);
 
-    if (!fnPronun && _fnPronuns.length > 0) {
-      setFnPronun(_fnPronuns[0]);
-      setTouched(true);
+    if (!firstNamePronun && _fnPronuns.length > 0) {
+      onFirstNameSelect(_fnPronuns[0]);
     }
-    if (!lnPronun && _lnPronuns.length > 0) {
-      setLnPronun(_lnPronuns[0]);
-      setTouched(true);
+    if (!lastNamePronun && _lnPronuns.length > 0) {
+      onLastNameSelect(_lnPronuns[0]);
     }
 
     // check for pending recording requests if no pronunciations found
+    const requests = [];
+
     if (_fnPronuns.length === 0) {
-      const _fnRecReq = await controller.findRecordingRequest(
-        firstName,
-        NameTypes.FirstName,
-        owner
+      requests.push(
+        controller
+          .findRecordingRequest(firstName, NameTypes.FirstName, owner)
+          .then((reqPending: boolean) => setFnRecReqPending(reqPending))
       );
-      setFnRecReqPending(_fnRecReq);
     }
     if (_lnPronuns.length === 0) {
-      const _lnRecReq = await controller.findRecordingRequest(
-        lastName,
-        NameTypes.LastName,
-        owner
+      requests.push(
+        controller
+          .findRecordingRequest(lastName, NameTypes.LastName, owner)
+          .then((reqPending: boolean) => setLnRecReqPending(reqPending))
       );
-      setLnRecReqPending(_lnRecReq);
     }
+
+    await Promise.all(requests);
 
     setLoading(false);
   }, [firstName, lastName, owner, controller]);
@@ -112,85 +103,58 @@ export const LibraryRecordings = ({
   };
 
   useEffect(() => {
-    if (!loading) return;
-
     load();
-  }, [loading, load]);
-
-  const onSave = () => {
-    setLoading(true);
-
-    controller
-      .savePreferredRecordings({
-        firstNamePronunciation: fnPronun,
-        lastNamePronunciation: lnPronun,
-      })
-      .then(() => onSaved())
-      .catch((e) => {
-        console.log(e, e.details);
-        setLoading(false);
-      });
-  };
+  }, [load]);
 
   if (loading)
     return (
-      <Container>
+      <Card>
         <Loader />
-      </Container>
+      </Card>
     );
 
   return (
-    <Container gap={18}>
+    <Card gap={18}>
       <Row>
-        <StyledText small bold>
-          {/* TODO: move to i18n */}
-          Library recordings
-        </StyledText>
+        <Row>
+          <StyledText small bold>
+            {/* TODO: move to i18n */}
+            Library recordings
+          </StyledText>
+        </Row>
+        <Row right autoWidth flex={"0 0 auto"}>
+          <BinButton disabled={deleted} onClick={onDelete} />
+        </Row>
       </Row>
 
       <NameLine
         name={firstName}
-        pronunciation={fnPronun}
+        pronunciation={firstNamePronun}
         pronunciations={fnPronuns}
         onRecordingRequest={onFnRecReq}
         pending={fnRecReqPending}
         onSelect={(p) => {
-          setTouched(true);
-          setFnPronun(p);
+          onFirstNameSelect(p);
         }}
       />
 
       <NameLine
         name={lastName}
-        pronunciation={lnPronun}
+        pronunciation={lastNamePronun}
         pronunciations={lnPronuns}
         onRecordingRequest={onLnRecReq}
         pending={lnRecReqPending}
         onSelect={(p) => {
-          setTouched(true);
-          setLnPronun(p);
+          onLastNameSelect(p);
         }}
       />
 
-      <Row padding={"10px 0"} centered gap={10}>
-        <Button onClick={onCancel}>
+      <Row padding={"10px 0 0 0"} centered gap={10}>
+        <Button onClick={onClose}>
           {/* TODO: move to i18n */}
           Cancel
         </Button>
-
-        {touched && (
-          <Button primary onClick={onSave}>
-            {/* TODO: move to i18n */}
-            Save
-          </Button>
-        )}
-        {!touched && (firstNamePronunciation || lastNamePronunciation) && (
-          <Button danger onClick={onDelete}>
-            {/* TODO: move to i18n */}
-            Delete
-          </Button>
-        )}
       </Row>
-    </Container>
+    </Card>
   );
 };
