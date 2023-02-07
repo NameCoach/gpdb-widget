@@ -56,10 +56,13 @@ const useRecordRTC = ({
 
     log(`gpdb-widget pitch current sample rate: ${sampleRate}`);
 
+    let _sampleRate = sampleRate;
+
     if (defaultSampleRate !== audioCtxSampleRate) {
       setDefaultSampleRate(audioCtxSampleRate);
       log(`AudioContext sample rate will be used as Default sample rate`);
       setSampleRate(audioCtxSampleRate);
+      _sampleRate = audioCtxSampleRate;
       log(`audio context sample rate is used as current pitch value`);
     }
 
@@ -67,7 +70,7 @@ const useRecordRTC = ({
       recorderType: RecordRTC.StereoAudioRecorder,
       mimeType: "audio/wav",
       noWorker: true,
-      sampleRate: sampleRate,
+      sampleRate: _sampleRate,
     } as Options;
 
     return new RecordRTC(stream, options);
