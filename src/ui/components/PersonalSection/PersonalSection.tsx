@@ -1,178 +1,82 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import IFrontController from "../../../types/front-controller";
-import Pronunciation from "../../../types/resources/pronunciation";
-import { NameTypes } from "../../../types/resources/name";
-import useRecorderState, {
-  TermsAndConditions,
-} from "../../hooks/useRecorderState";
-
-import StyleContext from "../../contexts/style";
-import useFeaturesManager, {
-  CanComponents,
-  ShowComponents,
-} from "../../hooks/useFeaturesManager";
-import useCustomFeatures from "../../hooks/useCustomFeatures";
+import React from "react";
 import MyInfo from "../MyInfo";
-import ControllerContext from "../../contexts/controller";
 import { NameOwner } from "gpdb-api-client";
 import { Column, Row } from "../../kit/Grid";
 import ShareRecording from "../ShareRecording";
-import { Title } from "../shared/components";
+import { Speaker, Title } from "../shared/components";
 import useTranslator from "../../hooks/useTranslator";
-import { MyRecPresenter } from "./components";
-import { MyRecEditor } from "./components/MyRecEditor";
-import nameToKeyTypeObjectsArray from "../../../core/utils/name-to-key-type-objects-array";
 import Loader from "../Loader";
+import { Avatar } from "../shared/components/Avatar";
+import { StyledP, StyledText } from "../../kit/Topography";
+import { Actions, AvatarEditor } from "./components";
+import { DARKER_RED } from "../../styles/variables/colors";
+import { Recorder } from "../NewRecorder";
+import { LibraryRecordings } from "../LibraryRecordings";
+import { Uploader } from "../Uploader";
+import { CardIconButton } from "../../kit/Buttons";
+import { Library, Mic, Upload } from "../../kit/NewIcons";
+import { usePersonal } from "./hooks";
 
 interface Props {
   name: string;
   owner: NameOwner;
-  termsAndConditions?: TermsAndConditions;
 }
 
-export const PersonalSection = ({
-  name,
-  owner,
-  termsAndConditions,
-}: Props): JSX.Element => {
+export const PersonalSection = ({ name, owner }: Props): JSX.Element => {
   if (!name?.trim()) throw new Error("Name shouldn't be blank");
 
   const { t } = useTranslator();
-  const styleContext = useContext(StyleContext);
-  const controller = useContext<IFrontController>(ControllerContext);
-  const customFeatures = useCustomFeatures(controller, styleContext);
 
-  const { can, show } = useFeaturesManager(
-    controller.permissions,
-    customFeatures
-  );
-
-  const [
-    recorderState,
-    setRecorderClosed,
-    setRecorderOpen,
-  ] = useRecorderState();
-
-  const [pronunciation, setPronunciation] = useState<Pronunciation>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [myInfoHintShow, setMyInfoHintShow] = useState<boolean>(true);
-  const [avatarUrl, setAvatarUrl] = useState<string>(null);
-
-  const showRecordAction = show("selfRecorderAction", pronunciation);
-  const canCreateSelfRecording = can("createSelfRecording", pronunciation);
-  const canSimpleSearch = can("pronunciation", "index");
-
-  const [firstName, setFirstName] = useState<string>(null);
-  const [
-    firstNamePronunciation,
-    setFirstNamePronunciation,
-  ] = useState<Pronunciation>(null);
-  const [lastName, setLastName] = useState<string>(null);
-  const [
-    lastNamePronunciation,
-    setLastNamePronunciation,
-  ] = useState<Pronunciation>(null);
-  const [inEdit, setInEdit] = useState<boolean>(false);
-
-  const loadPreferredLibRecs = useCallback(async () => {
-    if (!show(ShowComponents.LibraryRecordings)) return;
-    if (!canSimpleSearch) return;
-
-    const names = nameToKeyTypeObjectsArray(name, controller.nameParser).filter(
-      (name) => name.type !== NameTypes.FullName
-    );
-
-    setFirstName(names.find((name) => name.type === NameTypes.FirstName).key);
-    setLastName(names.find((name) => name.type === NameTypes.LastName).key);
-
-    const result = await controller.getPreferredRecordings({
-      ownerContext: owner
-    });
-
-    setFirstNamePronunciation(result.firstNamePronunciation);
-    setLastNamePronunciation(result.lastNamePronunciation);
-  }, [controller, owner, name]);
-
-  const loadAvatar = async () => {
-    if (!show(ShowComponents.Avatars) || !can(CanComponents.CanRequestAvatars)) return;
-
-    controller.getAvatar(owner)
-      .then((url) => setAvatarUrl(url))
-      .catch(e => console.log(e));
-  };
-  
-  const load = useCallback(async () => {
-    if (!canSimpleSearch) return;
-
-    setLoading(true);
-    const fullName = await controller.simpleSearch(
-      {
-        key: name,
-        type: NameTypes.FullName,
-      },
-      owner
-    );
-
-    setPronunciation(fullName.find((p) => p.nameOwnerCreated));
-
-    await loadPreferredLibRecs();
-    await loadAvatar();
-
-    setLoading(false);
-  }, [controller, owner, name]);
-
-  const onRecorderOpen = (): void => {
-    setRecorderOpen(true, name, NameTypes.FullName, termsAndConditions);
-
-    if (myInfoHintShow) setMyInfoHintShow(false);
-  };
-
-  const onCustomAttributesSaved = async (): Promise<void> => {
-    await load();
-    setMyInfoHintShow(true);
-  };
-
-  const onRecordingDelete = async (): Promise<void> => {
-    if (!pronunciation) return;
-    
-    setLoading(true);
-
-    await controller
-      .destroy(
-        pronunciation.id,
-        pronunciation.sourceType,
-        pronunciation.relativeSource
-      )
-      .then(load)
-      .catch((e) => {
-        console.log(e, e.details);
-      });
-  };
-
-  const onLibraryDelete = async (): Promise<void> => {
-    if (!firstNamePronunciation && !lastNamePronunciation) return;
-    
-    setLoading(true);
-
-    await controller
-      .deletePreferredRecordings({
-        firstNamePronunciation: firstNamePronunciation,
-        lastNamePronunciation: lastNamePronunciation,
-      })
-      .then(load)
-      .then(() => setLoading(false))
-      .catch((e) => {
-        console.log(e, e.details);
-      });
-  };
-
-  useEffect(() => {
-    load();
-  }, [name, controller, load]);
+  const {
+    showPersonalBlock,
+    showAvatars,
+    canAvatars,
+    showLibraryRecordings,
+    showRecorder,
+    showUploader,
+    showLibraryEditor,
+    pronunciation,
+    libFNPronun,
+    libLNPronun,
+    tempFNPronun,
+    tempLNPronun,
+    loading,
+    inEdit,
+    firstName,
+    lastName,
+    avatarUrl,
+    tempAvatarUrl,
+    tempAvatarFile,
+    libDeleted,
+    recFailed,
+    touched,
+    showUnsavedTip,
+    avatarError,
+    openEdit,
+    onEditClose,
+    onEditSave,
+    openRecorder,
+    openUploader,
+    openLibraryEditor,
+    closeEditors,
+    recOnDelete,
+    recOnRecord,
+    recOnFail,
+    libOnDelete,
+    libOnLNSelect,
+    libOnFNSelect,
+    avatarOnUpload,
+    avatarOnDelete,
+    avatarOnFail,
+    load,
+  } = usePersonal({
+    name,
+    owner,
+  });
 
   return (
     <>
-      {show(ShowComponents.PersonalBlock) && (
+      {showPersonalBlock && (
         <Column>
           <Row padding={"20px 0"}>
             <Title>{t("my_info_section_name", "My Recording")}</Title>
@@ -186,43 +90,132 @@ export const PersonalSection = ({
           )}
 
           {!loading && (
-            <MyRecEditor
-              name={name}
-              pronunciation={pronunciation}
-              firstName={firstName}
-              firstNamePronunciation={firstNamePronunciation}
-              lastName={lastName}
-              lastNamePronunciation={lastNamePronunciation}
-              owner={owner}
-              termsAndConditions={termsAndConditions}
-              onRecorderOpen={onRecorderOpen}
-              onCancelClick={() => {
-                setInEdit(false);
-              }}
-              onSave={() => {
-                setInEdit(false);
-                load();
-              }}
-              onRecordingDelete={onRecordingDelete}
-              onLibraryDelete={onLibraryDelete}
-              avatarUrl={avatarUrl}
-              visible={inEdit}
-            />
-          )}
-          {!loading && (
-            <MyRecPresenter
-              name={name}
-              pronunciation={pronunciation}
-              firstName={firstName}
-              firstNamePronunciation={firstNamePronunciation}
-              lastName={lastName}
-              lastNamePronunciation={lastNamePronunciation}
-              onEditClick={() => {
-                setInEdit(true);
-              }}
-              avatarUrl={avatarUrl}
-              visible={!inEdit}
-            />
+            <Column gap={8}>
+              <Row>
+                {showAvatars && (
+                  <Row left autoWidth flex={"0 0 auto"}>
+                    <Avatar name={name} src={avatarUrl} />
+                  </Row>
+                )}
+                <Row>
+                  <StyledText medium>{name}</StyledText>
+                </Row>
+                <Actions
+                  inEdit={inEdit}
+                  pronunciation={pronunciation}
+                  firstNamePronun={tempFNPronun}
+                  lastNamePronun={tempLNPronun}
+                  touched={touched}
+                  onEdit={openEdit}
+                  onSave={onEditSave}
+                  onClose={onEditClose}
+                />
+              </Row>
+              {!inEdit && (tempFNPronun || tempLNPronun) && (
+                <>
+                  <Row padding={"16px 0"}>
+                    <StyledText medium>{firstName}</StyledText>
+                    <Speaker pronunciation={libFNPronun} />
+                  </Row>
+                  <Row padding={"16px 0"}>
+                    <StyledText medium>{lastName}</StyledText>
+                    <Speaker pronunciation={libLNPronun} />
+                  </Row>
+                </>
+              )}
+              {inEdit && (
+                <>
+                  <Row visible={loading} centered>
+                    <Loader />
+                  </Row>
+                  <Column gap={8} visible={!loading}>
+                    <Row visible={showUnsavedTip}>
+                      <StyledP color={DARKER_RED}>
+                        Are you sure you don't want to save changes?
+                      </StyledP>
+                    </Row>
+                    <Row padding="8px 0 0 0">
+                      <StyledText medium>
+                        {/* TODO: move to i18n */}
+                        My name recording
+                      </StyledText>
+                    </Row>
+
+                    {/* Editors */}
+                    {showRecorder && (
+                      <Recorder
+                        pronunciation={pronunciation}
+                        onDelete={recOnDelete}
+                        onRecord={recOnRecord}
+                        onFail={recOnFail}
+                        onClose={closeEditors}
+                      />
+                    )}
+                    {showLibraryEditor && (
+                      <LibraryRecordings
+                        owner={owner}
+                        firstName={firstName}
+                        lastName={lastName}
+                        firstNamePronun={tempFNPronun}
+                        lastNamePronun={tempLNPronun}
+                        onClose={closeEditors}
+                        onDelete={libOnDelete}
+                        onFirstNameSelect={libOnFNSelect}
+                        onLastNameSelect={libOnLNSelect}
+                        deleted={libDeleted}
+                      />
+                    )}
+                    {showUploader && (
+                      <Uploader
+                        onUpload={recOnRecord}
+                        onClose={closeEditors}
+                        recorderFailed={recFailed}
+                      />
+                    )}
+
+                    {/* Editors openers Buttons */}
+                    <Row>
+                      {!showRecorder && (
+                        <CardIconButton
+                          onClick={openRecorder}
+                          icon={Mic}
+                          // TODO: move to i18n
+                          text={"Record"}
+                        />
+                      )}
+                      {!showLibraryEditor && showLibraryRecordings && (
+                        <CardIconButton
+                          onClick={openLibraryEditor}
+                          icon={Library}
+                          // TODO: move to i18n
+                          text={"Library"}
+                        />
+                      )}
+                      {!showUploader && (
+                        <CardIconButton
+                          onClick={openUploader}
+                          icon={Upload}
+                          // TODO: move to i18n
+                          text={"Upload"}
+                        />
+                      )}
+                    </Row>
+
+                    {showAvatars && canAvatars && (
+                      <AvatarEditor
+                        name={name}
+                        src={tempAvatarUrl}
+                        tempFileName={tempAvatarFile?.name}
+                        tempError={avatarError}
+                        onUpload={avatarOnUpload}
+                        onDelete={avatarOnDelete}
+                        onFail={avatarOnFail}
+                      />
+                    )}
+                  </Column>
+                </>
+              )}
+            </Column>
           )}
 
           {pronunciation ? (
@@ -230,7 +223,7 @@ export const PersonalSection = ({
               name={name}
               owner={owner}
               pronunciation={pronunciation}
-              onCustomAttributesSaved={onCustomAttributesSaved}
+              onCustomAttributesSaved={load}
             />
           ) : null}
         </Column>
