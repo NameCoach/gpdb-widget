@@ -64,7 +64,6 @@ export const usePersonal = ({
     libDeleted || tempFNPronun !== libFNPronun || tempLNPronun !== libLNPronun;
   const avatarTouched = avatarDeleted || !!tempAvatarFile;
   const touched = recTouched || libTouched || avatarTouched;
-  debugger;
 
   const canSimpleSearch = can(CanComponents.Pronunciation, "index");
   const showPersonalBlock = show(ShowComponents.PersonalBlock);
