@@ -1,5 +1,5 @@
 import { RelativeSource } from "../../../../../../types/resources/pronunciation";
-import { SpeakerTypes } from "../../../../../kit/Buttons/SpeakerButton";
+import { SpeakerTypes } from "../../../../../kit/NewIconButtons";
 
 interface Props {
   relativeSource?: RelativeSource;

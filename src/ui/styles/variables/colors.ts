@@ -1,12 +1,21 @@
 export const SECONDARY = "rgba(138, 73, 212, 0.2)";
 export const _SECONDARY = "rgba(121, 121, 121, 0.1)";
-export const DARK_GREY = "#333333";
-export const BRAND = "#946cc1";
-export const DARKER_BRAND = "#7C4BB4";
-export const DANGER_RED = "#C82D4A";
-export const DARK_BRAND = "#572096";
+
+export const LIGHTEST_GREY = "#AFAFAF";
 export const SECONDARY_GRAY = "#cccccc";
 export const LIGHT_GREY = "#999999";
+export const GREY = "#666666";
+export const DARK_GREY = "#333333";
+
+export const LIGHT_BRAND = "#CDA7F9";
+export const BRAND = "#946cc1";
+export const DARKER_BRAND = "#7C4BB4";
+export const DARK_BRAND = "#572096";
+
+export const LIGHT_RED = "#F87C93";
+export const DARKER_RED = "#C82D4A";
+export const DARK_RED = "#A12038";
+
 export const WHITE = "white";
 
 const COLORS = {
@@ -24,7 +33,7 @@ const COLORS = {
   colors_success: "green",
   colors_warning: "yellow",
   colors_grey: "grey",
-  colors_grey_2: "#666666",
+  colors_grey_2: GREY,
   colors_label_Gray: "rgb(121 121 121)",
   colors_secondary_gray: SECONDARY_GRAY,
   colors_border: "rgba(121, 121, 121, 0.6)",
@@ -47,5 +56,19 @@ export const AVATAR_PLACEHOLDER_COLORS = {
   azure: "#2DBFC8",
   green: "#8DC82D",
 };
+
+export const BUTTON_COLORS = {
+  default: GREY,
+  defaultFocused: DARK_GREY,
+  defaultDisabled: LIGHTEST_GREY,
+
+  primary: DARKER_BRAND,
+  primaryFocused: DARK_BRAND,
+  primaryDisabled: LIGHT_BRAND,
+
+  danger: DARKER_RED,
+  dangerFocused: DARK_RED,
+  dangerDisabled: LIGHT_RED,
+}
 
 export default COLORS;
