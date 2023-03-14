@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import Pronunciation from "../../../types/resources/pronunciation";
 import Player from "../Player";
-import RecordAction from "../Actions/Record";
+import RecordAction from "../Actions/Outlook/Record";
 import { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
@@ -85,8 +85,8 @@ const FullName = (props: Props): JSX.Element => {
           )}
           {props.canPronunciationCreate && (
             <RecordAction
-              className={nameLineStyles.pronunciation__action}
               onClick={onRecord}
+              rerecord={pronunciation?.userCreated}
             />
           )}
         </div>
