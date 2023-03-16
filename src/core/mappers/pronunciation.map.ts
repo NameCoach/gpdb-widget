@@ -16,6 +16,9 @@ const pronunciationMap: Mapper<Pronunciation> = (raw) => ({
     raw.relative_source === RelativeSource.RequesterSelf ||
     raw.relative_source === RelativeSource.TargetSelf,
   relativeSource: raw.relative_source,
+  selfRecorded:
+    raw.relative_source === RelativeSource.RequesterPeer ||
+    raw.relative_source === RelativeSource.RequesterSelf,
   isHedb: isHedb(raw.id),
   userCreated: raw.audio_source === AudioSource.NameUser,
   gpdbCreated: raw.audio_source === AudioSource.Gpdb,
