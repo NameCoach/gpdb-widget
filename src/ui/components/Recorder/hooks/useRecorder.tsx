@@ -75,8 +75,8 @@ export const RecorderProvider = ({
     log,
     defaultSampleRate,
     setDefaultSampleRate,
-    setSampleRate: setCurrentSampleRate,
-    sampleRate: currentSampleRate,
+    setDesiredSampleRate: setCurrentSampleRate,
+    desiredSampleRate: currentSampleRate,
   });
   // CUSTOM HOOKS ENDS
 
