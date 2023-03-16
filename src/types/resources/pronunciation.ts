@@ -39,4 +39,5 @@ export default interface Pronunciation {
   phoneticTranscriptions?: Array<Phonetic>;
   customAttributes?: CustomAttribute[];
   nameBadgeLink?: string;
+  selfRecorded?: boolean;
 }
