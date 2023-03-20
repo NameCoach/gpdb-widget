@@ -13,9 +13,9 @@ const OutlookView = ({ onClick }: SettingsProps): JSX.Element => {
 
   return (
     <>
-      <button className={styles.btn__link} {...options}>
-        {t("recorder_settings_open")}
-      </button>
+      {/* <button className={styles.btn__link} {...options}> */}
+      {/*  {t("recorder_settings_open")} */}
+      {/* </button> */}
     </>
   );
 };
