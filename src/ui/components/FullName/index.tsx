@@ -86,7 +86,7 @@ const FullName = (props: Props): JSX.Element => {
           {props.canPronunciationCreate && (
             <RecordAction
               onClick={onRecord}
-              rerecord={pronunciation?.userCreated}
+              rerecord={pronunciation?.selfRecorded}
             />
           )}
         </div>
