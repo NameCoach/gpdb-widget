@@ -56,9 +56,9 @@ export const getRecorderReducer: RecorderReducerFactory = ({
   ) => {
     useRecordRTC({
       log: console.log,
-      sampleRate: recorderState.sampleRate,
+      desiredSampleRate: recorderState.sampleRate,
       defaultSampleRate: recorderState.defaultSampleRate,
-      setSampleRate: (sampleRate) =>
+      setDesiredSampleRate: (sampleRate) =>
         dispatch({ type: ActionTypes.SetSampleRate, sampleRate }),
       setDefaultSampleRate: (defaultSampleRate) =>
         dispatch({
