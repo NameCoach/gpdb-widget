@@ -44,12 +44,12 @@ export const Recorded = () => {
           Re-record
         </Button>
       </Row>
-      <Row centered>
-        <Link onClick={ToSettings}>
-          {/* TODO: move to i18n */}
-          Having trouble with pitch?
-        </Link>
-      </Row>
+      {/* <Row centered> */}
+      {/*  <Link onClick={ToSettings}> */}
+      {/*    /!* TODO: move to i18n *!/ */}
+      {/*    Having trouble with pitch? */}
+      {/*  </Link> */}
+      {/* </Row> */}
     </Card>
   );
 };
