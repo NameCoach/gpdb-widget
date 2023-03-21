@@ -3,8 +3,8 @@ import { SampleRate } from "../types/sample-rate";
 
 interface HookProps {
   log: (message: string) => void;
-  sampleRate: SampleRate;
-  setSampleRate: (value: SampleRate) => void;
+  desiredSampleRate: SampleRate;
+  setDesiredSampleRate: (value: SampleRate) => void;
   defaultSampleRate: SampleRate;
   setDefaultSampleRate: (value: SampleRate) => void;
 }
@@ -13,8 +13,8 @@ type HookReturn = () => Promise<RecordRTC>;
 
 const useRecordRTC = ({
   log,
-  sampleRate,
-  setSampleRate,
+  desiredSampleRate,
+  setDesiredSampleRate,
   defaultSampleRate,
   setDefaultSampleRate,
 }: HookProps): HookReturn => {
@@ -54,15 +54,15 @@ const useRecordRTC = ({
 
     await logRecordingDeviceInfo(stream);
 
-    log(`gpdb-widget pitch current sample rate: ${sampleRate}`);
+    log(`gpdb-widget pitch current sample rate: ${desiredSampleRate}`);
 
-    let _sampleRate = sampleRate;
+    let _desiredSampleRate = desiredSampleRate;
 
     if (defaultSampleRate !== audioCtxSampleRate) {
       setDefaultSampleRate(audioCtxSampleRate);
       log(`AudioContext sample rate will be used as Default sample rate`);
-      setSampleRate(audioCtxSampleRate);
-      _sampleRate = audioCtxSampleRate;
+      setDesiredSampleRate(audioCtxSampleRate);
+      _desiredSampleRate = audioCtxSampleRate;
       log(`audio context sample rate is used as current pitch value`);
     }
 
@@ -70,7 +70,7 @@ const useRecordRTC = ({
       recorderType: RecordRTC.StereoAudioRecorder,
       mimeType: "audio/wav",
       noWorker: true,
-      sampleRate: _sampleRate,
+      desiredSampRate: _desiredSampleRate,
     } as Options;
 
     return new RecordRTC(stream, options);
