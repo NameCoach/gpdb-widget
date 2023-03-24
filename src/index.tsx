@@ -51,6 +51,9 @@ import usePopup from "./ui/kit/Popup/hooks/usePopup";
 // UTILS
 import SupportedLanguages from "./translations/supported-languages";
 import UserAgentManager from "./core/userAgentManager";
+import { NameTypes } from "./types/resources/name";
+
+import Analytics from "./analytics";
 
 export {
   Widget,
@@ -96,4 +99,6 @@ export {
   usePopup,
   PopupComponents,
   DeviceChangedModal,
+  NameTypes,
+  Analytics,
 };
