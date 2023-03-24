@@ -2,6 +2,7 @@ import { NameOwner } from "gpdb-api-client";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import { TermsAndConditions } from "../../../hooks/useRecorderState";
 import { STATES } from "../machine/states";
+import { DeviceLabel } from "./device-label";
 import { InboundRelativeSource } from "./inbound-relative-source";
 import { SampleRate } from "./sample-rate";
 
@@ -31,4 +32,5 @@ export type IRecorderContext = {
   currentSampleRate: SampleRate;
   onDefaultSampleRateClick: () => void;
   onUpdateSampleRate: (value: SampleRate) => void;
+  deviceLabel?: DeviceLabel;
 };

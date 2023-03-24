@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import ControllerContext from "../../../../../contexts/controller";
 import useTranslator from "../../../../../hooks/useTranslator";
@@ -12,6 +12,8 @@ import userAgentManager from "../../../../../../core/userAgentManager";
 import styles from "./styles.module.css";
 import defaultStyles from "../../../styles/default/styles.module.css";
 import outlookStyles from "../../../styles/outlook/styles.module.css";
+
+import Analytics from "../../../../../../analytics";
 
 const cx = classNames.bind(styles);
 const defaultCx = classNames.bind(defaultStyles);
@@ -48,6 +50,23 @@ const FailedState = (): JSX.Element => {
   const generalCx = themeIsOutlook ? outlookCx : defaultCx;
   const generalStyles = themeIsOutlook ? outlookStyles : defaultStyles;
 
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const handleUploadButtonClick = (e) => {
+    onUploaderChange(e);
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.MicrophoneUnavailable
+        .UploadButtonClick
+    );
+  };
+
+  useEffect(() => {
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.MicrophoneUnavailable.Initialize
+    );
+  }, []);
+
   return (
     <>
       {theme === Theme.Default && <Close onClick={handleOnRecorderClose} />}
@@ -77,7 +96,7 @@ const FailedState = (): JSX.Element => {
               id="pronunciation-upload"
               name="recording"
               accept=".mp3"
-              onChange={onUploaderChange}
+              onChange={handleUploadButtonClick}
             />
           </div>
         </div>

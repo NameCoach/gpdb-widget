@@ -28,6 +28,7 @@ const RecordedState = (): JSX.Element => {
     onDefaultSampleRateClick,
     onUpdateSampleRate,
     onSampleRateSave,
+    deviceLabel,
   } = useRecorder();
 
   return (
@@ -48,6 +49,8 @@ const RecordedState = (): JSX.Element => {
 
         onSave,
         onStart,
+
+        deviceLabel,
       })}
     </>
   );
