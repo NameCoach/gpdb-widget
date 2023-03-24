@@ -10,4 +10,5 @@ export interface StateProps {
   closeSlider;
   onStart;
   onSampleRateSave;
+  deviceLabel;
 }

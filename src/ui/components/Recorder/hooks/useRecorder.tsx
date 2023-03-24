@@ -69,6 +69,8 @@ export const RecorderProvider = ({
     defaultSampleRate,
     setDefaultSampleRate,
     useDefaultSampleRate,
+    setDeviceLabel,
+    deviceLabel,
   } = useSampleRate();
   const [slider, openSlider, closeSlider] = useSliderState();
   const initRecorder = useRecordRTC({
@@ -77,6 +79,7 @@ export const RecorderProvider = ({
     setDefaultSampleRate,
     setDesiredSampleRate: setCurrentSampleRate,
     desiredSampleRate: currentSampleRate,
+    setDeviceLabel,
   });
   // CUSTOM HOOKS ENDS
 
@@ -242,6 +245,8 @@ export const RecorderProvider = ({
         slider,
         openSlider,
         currentSampleRate,
+
+        deviceLabel,
       }}
     >
       {children}
