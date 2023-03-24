@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import userAgentManager from "../../../../../../../../core/userAgentManager";
 import { RelativeSource } from "../../../../../../../../types/resources/pronunciation";
 import ControllerContext from "../../../../../../../contexts/controller";
@@ -7,6 +7,7 @@ import { useRecorder } from "../../../../../hooks/useRecorder";
 import useTranslator from "../../../../../../../hooks/useTranslator";
 import { InboundRelativeSource } from "../../../../../types/inbound-relative-source";
 import { StateProps } from "../../types";
+import Analytics from "../../../../../../../../analytics";
 
 import styles from "../../../../../styles/outlook/styles.module.css";
 
@@ -37,6 +38,35 @@ const OutlookView = ({
 
   const title = getTitle(relativeSource);
 
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+  const handleStopbuttonClick = () => {
+    onStop();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recording.StopButtonClick
+    );
+  };
+
+  const handleCancelButtonClick = () => {
+    handleOnRecorderClose();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recording.CancelButtonClick
+    );
+  };
+
+  const initializeRef = useRef(false);
+
+  useEffect(() => {
+    if (initializeRef.current === false) {
+      sendAnalyticsEvent(
+        Analytics.AnalyticsEventTypes.Recorder.Recording.Initialize
+      );
+
+      initializeRef.current = true;
+    }
+  }, []);
+
   return (
     <>
       <div
@@ -54,12 +84,15 @@ const OutlookView = ({
           <div className={styles.flex_row}>
             <button
               className={cx("btn", { outline: true })}
-              onClick={handleOnRecorderClose}
+              onClick={handleCancelButtonClick}
             >
               {t("recorder_cancel_button_outlook")}
             </button>
 
-            <button className={cx("btn", { purple: true })} onClick={onStop}>
+            <button
+              className={cx("btn", { purple: true })}
+              onClick={handleStopbuttonClick}
+            >
               {t("recorder_record_step_stop_button_outlook")}
             </button>
           </div>
