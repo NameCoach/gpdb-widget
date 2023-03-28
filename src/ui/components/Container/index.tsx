@@ -18,7 +18,6 @@ import useRecorderState, {
   TermsAndConditions,
 } from "../../hooks/useRecorderState";
 import { Resources } from "gpdb-api-client/build/main/types/repositories/permissions";
-import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import SingleName from "../SingleName";
 import useFeaturesManager, {
   CanComponents,
@@ -28,6 +27,10 @@ import CustomAttributesInspector from "../Outlook/CustomAttributesInspector";
 import { NameOption } from "../FullNamesList";
 import StyleContext from "../../contexts/style";
 import { Theme } from "../../../types/style-context";
+import Analytics from "../../../analytics";
+import { RecorderCloseOptions } from "../Recorder/types/handlers-types";
+import Pronunciation from "../../../types/resources/pronunciation";
+import { Components } from "../../../analytics/types";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -131,15 +134,22 @@ const Container = ({
     else return await verifyNames();
   };
 
-  const onRecorderClose = async (): Promise<void> => {
-    updatePronunciationsByType(recorderState.type, []);
-    await reloadName(recorderState.type);
+  const onRecorderClose = async (
+    option: RecorderCloseOptions
+  ): Promise<void> => {
+    if (option !== RecorderCloseOptions.CANCEL) {
+      updatePronunciationsByType(recorderState.type, []);
+      await reloadName(recorderState.type);
+    }
 
     setRecorderClosed();
   };
 
-  const openRecorder = (name, type): void =>
-    setRecorderOpen(true, name, type, termsAndConditions);
+  const openRecorder = (
+    name: string,
+    type: NameTypes,
+    pronunciation?: Pronunciation
+  ): void => setRecorderOpen({ name, type, termsAndConditions, pronunciation });
 
   const resetNameExist = (type, complexSearchResult, stateCb): void => {
     const stateName = names[type];
@@ -168,11 +178,10 @@ const Container = ({
     resetNameExist(NameTypes.FullName, complexSearchResult, setFullName);
   }, []);
 
-  const sendAnalytics = (): PromiseLike<void> =>
-    controller.sendAnalytics(
-      AnalyticsEventType.Available,
-      Object.values(names)
-    );
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const sendAnalytics = () =>
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.Available);
 
   useEffect(() => {
     if (canPronunciationSearch) {
@@ -304,12 +313,28 @@ const Container = ({
         <StyleContext.Provider
           value={{ displayRecorderSavingMessage: true, theme: Theme.Outlook }}
         >
-          <Recorder
-            name={recorderState.name}
-            type={recorderState.type}
-            onRecorderClose={onRecorderClose}
-            termsAndConditions={recorderState.termsAndConditions}
-          />
+          <Analytics.Provider
+            value={{
+              pronunciation: recorderState.pronunciation,
+              name: { value: recorderState.name, type: recorderState.type },
+              component: (() => {
+                if (recorderState.type === NameTypes.FullName)
+                  return Components.FULLNAMELINE;
+
+                if (pronunciations[recorderState.type].length > 0)
+                  return Components.NAMELINE;
+
+                return Components.ABSENT_NAME;
+              })(),
+            }}
+          >
+            <Recorder
+              name={recorderState.name}
+              type={recorderState.type}
+              onRecorderClose={onRecorderClose}
+              termsAndConditions={recorderState.termsAndConditions}
+            />
+          </Analytics.Provider>
         </StyleContext.Provider>
       )}
       {canPronunciationSearch ? (
