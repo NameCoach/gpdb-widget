@@ -71,12 +71,11 @@ const PersonalBlock = (props: Props): JSX.Element => {
   }, [props.controller, props.name.owner, props.name.value]);
 
   const onRecorderOpen = (): void => {
-    setRecorderOpen(
-      true,
-      props.name.value,
-      NameTypes.FullName,
-      props.termsAndConditions
-    );
+    setRecorderOpen({
+      name: props.name.value,
+      type: NameTypes.FullName,
+      termsAndConditions: props.termsAndConditions,
+    });
 
     if (myInfoHintShow) setMyInfoHintShow(false);
 

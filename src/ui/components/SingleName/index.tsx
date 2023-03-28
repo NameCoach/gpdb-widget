@@ -10,7 +10,11 @@ interface Props {
   canUserResponse: boolean;
   canPronunciationCreate: boolean;
   canRecordingRequestFind: boolean;
-  openRecorder: (name, type) => void;
+  openRecorder: (
+    name: string,
+    type: NameTypes,
+    pronunciation?: Pronunciation
+  ) => void;
   reloadName: (type: NameTypes) => void;
   name: Name;
   pronunciations: Pronunciation[];
