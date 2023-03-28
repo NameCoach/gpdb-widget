@@ -13,6 +13,7 @@ import {
   PronunciationMyInfoWidget,
   IStyleContext,
   Theme,
+  Analytics,
 } from "gpdb-widget";
 import { useDebouncedCallback } from "use-debounce";
 import { me, names } from "./examples/pronunciation-my-info-params";
@@ -42,8 +43,8 @@ const applicationContext = {
   typeSig: "email_dns_name",
 };
 const nameOwnerContext = {
-  signature: mySignature,
-  email: myEmail,
+  signature: "armand@test.com",
+  email: "armand@test.com",
   signatureType: mySignatureType,
 };
 const userContext = {
@@ -56,17 +57,17 @@ const parser = new Parser();
 
 const extensionWidgetNames: { [t in NameTypes]: Name } = {
   firstName: {
-    key: "Cole",
+    key: "Armand",
     type: "firstName" as NameTypes.FirstName,
     exist: true,
   },
   fullName: {
-    key: "Cole Cassidy",
+    key: "Armand De Shaton",
     type: "fullName" as NameTypes.FullName,
     exist: true,
   },
   lastName: {
-    key: "Cassidy",
+    key: "De Shaton",
     type: "lastName" as NameTypes.LastName,
     exist: false,
   },
@@ -114,6 +115,23 @@ const App = () => {
     setName(value);
   }, 600);
 
+  const emailType = "email" as const
+  const meGpdb = {
+    fullName: me.value,
+    email: myEmail,
+    signature: mySignature,
+    signatureType: emailType,
+  }
+  const analyticsProviderValue = { 
+    name: { value: extensionWidgetNames.fullName.key, type: extensionWidgetNames.fullName.type },
+    meGpdb,
+    origin: "popup" 
+  }
+  const analyticsSettings = {
+    applicationName: "browser-extension",
+    writeKey: "",
+  }
+  
   const MainApp = () => (
     <div>
       <div>
@@ -129,18 +147,23 @@ const App = () => {
 
       {false && !loading && <Widget client={client} name={name} style={style} />}
 
-      { false && !loading && (
-        <ExtensionWidget
+      { true && !loading && (
+        <Analytics.Provider value={analyticsProviderValue} settings={analyticsSettings}>
+          <ExtensionWidget
           names={extensionWidgetNames}
           client={client}
           style={style}
         />
+        </Analytics.Provider>
       )}
 
-      <StyleContext.Provider value={styleContext}>
-        {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
-        {!loading && <SearchWidget client={client} />}
-      </StyleContext.Provider>
+      { false && (
+        <StyleContext.Provider value={styleContext}>
+          {!loading && <PronunciationMyInfoWidget client={client} name={me} names={names}/>}
+          {!loading && <SearchWidget client={client} />}
+        </StyleContext.Provider>
+      )}
+
     </div>
   );
 
