@@ -12,6 +12,9 @@ import { Theme } from "../../../types/style-context";
 import capitalizeString from "../../../core/utils/capitalize-string";
 import Actions from "./Actions";
 import useRecordingRequest from "../../hooks/useRecordingRequest";
+import Analytics from "../../../analytics";
+import { Components } from "../../../analytics/types";
+import Pronunciation from "../../../types/resources/pronunciation";
 
 const cx = classNames.bind(nameLineStyles);
 
@@ -19,7 +22,11 @@ interface Props {
   name: string;
   type: NameTypes;
   owner?: NameOwner;
-  onRecorderClick?: (name, type) => void;
+  onRecorderClick?: (
+    name: string,
+    type: NameTypes,
+    pronunciation?: Pronunciation
+  ) => void;
   canRecordingRequestCreate: boolean;
   canRecordingRequestFind: boolean;
   canPronunciationCreate: boolean;
@@ -52,8 +59,31 @@ const AbsentName = ({
     canRecordingRequestFind,
   });
 
-  const onRecordClick = (): void =>
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const handleRecordPronunciationButtonClick = () => {
     onRecorderClick && onRecorderClick(name, type);
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Common.RecordPronunciation,
+      {
+        name: { value: name, type },
+        component: Components.ABSENT_NAME,
+      }
+    );
+  };
+
+  const handleRequestPronunciationButtonClick = async () => {
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Common.RequestPronunciation,
+      {
+        name: { value: name, type },
+        component: Components.ABSENT_NAME,
+      }
+    );
+
+    await onRequest();
+  };
 
   return (
     <div
@@ -107,8 +137,8 @@ const AbsentName = ({
           </div>
 
           <Actions
-            onRecordClick={onRecordClick}
-            onRequest={onRequest}
+            onRecordClick={handleRecordPronunciationButtonClick}
+            onRequest={handleRequestPronunciationButtonClick}
             showRecordAction={canPronunciationCreate}
             showRequestAction={canRecordingRequestCreate}
             disableRequestAction={isRequested}

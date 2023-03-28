@@ -7,6 +7,12 @@ export enum NameTypes {
   FullName = "fullName",
 }
 
+export enum Components {
+  ABSENT_NAME = "absent_name",
+  NAMELINE = "nameline",
+  FULLNAMELINE = "fullname_line",
+}
+
 export interface Name {
   value: string;
   type: NameTypes;
