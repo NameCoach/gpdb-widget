@@ -1,4 +1,10 @@
-import React, { MouseEventHandler, useContext, useMemo, useState } from "react";
+import React, {
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import IFrontController from "../../../types/front-controller";
 import ControllerContext from "../../contexts/controller";
 import Container from "../Container";
@@ -11,6 +17,7 @@ import { TermsAndConditions } from "../../hooks/useRecorderState";
 import StyleContext from "../../contexts/style";
 import useCustomFeatures from "../../hooks/useCustomFeatures";
 import useTranslator from "../../hooks/useTranslator";
+import Analytics from "../../../analytics";
 
 export interface ElemStyleProps {
   width?: number | string;
@@ -44,6 +51,12 @@ const ExtensionWidget = (props: Props): JSX.Element => {
     setNames(await props.client.verifyNames(props.names.fullName.key));
     setLoading(false);
   };
+
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  useEffect(() => {
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.Initialize);
+  }, []);
 
   return (
     <div
