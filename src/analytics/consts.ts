@@ -7,6 +7,8 @@ export const AnalyticsEventTypes = {
     SelectPronunciation: "common_select_pronunciation",
     EditPronunciation: "common_edit_pronunciation",
     RecordPronunciation: "common_record_pronunciation",
+    Initialize: "common_initialize",
+    Available: "common_available",
   },
   Recorder: {
     RecordingSaved: "recorder_recording_saved",

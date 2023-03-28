@@ -19,6 +19,8 @@ import { Theme } from "../../../types/style-context";
 import capitalizeString from "../../../core/utils/capitalize-string";
 import Actions from "./Actions";
 import useUserResponse from "../../hooks/useUserResponse";
+import Analytics from "../../../analytics";
+import { Components } from "../../../analytics/types";
 
 const cx = classNames.bind(styles);
 
@@ -30,7 +32,11 @@ interface Props {
   canRecord: boolean;
   canUserResponse: boolean;
   reload: (type: NameTypes) => void;
-  onRecorderClick: (name, type) => void;
+  onRecorderClick: (
+    name: string,
+    type: NameTypes,
+    pronunciation?: Pronunciation
+  ) => void;
   isRecorderOpen?: boolean;
 }
 
@@ -104,7 +110,74 @@ const NameLine = ({
   }, [pronunciations]);
 
   const onRecordClick = (): void =>
+    onRecorderClick && onRecorderClick(name, type, selfPronunciation);
+
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+  const handleBookmarkClick = () => {
+    onUserResponse();
+
+    const event =
+      currentPronunciation?.userResponse?.response === UserResponse.Save
+        ? Analytics.AnalyticsEventTypes.Common.RemoveBookmarkPronunciation
+        : Analytics.AnalyticsEventTypes.Common.BookmarkPronunciation;
+
+    sendAnalyticsEvent(event, {
+      pronunciation: currentPronunciation,
+      name: { value: name, type },
+      component: Components.NAMELINE,
+    });
+  };
+
+  const handlePlay = () => {
+    onPlayClick();
+
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.PlayPronunciation, {
+      pronunciation: currentPronunciation,
+      name: { value: name, type },
+      component: Components.NAMELINE,
+    });
+  };
+
+  const handleSelect = (selectedOption: any) => {
+    const index = selectedOption.value;
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Common.SelectPronunciation,
+      {
+        name: {
+          value: name,
+          type,
+        },
+        pronunciation: pronunciations[index],
+        options: {
+          val: index,
+          prevVal: pronunciations.findIndex(
+            (p) => p.id === currentPronunciation.id
+          ),
+        },
+        component: Components.NAMELINE,
+      }
+    );
+
+    onSelect(selectedOption);
+  };
+
+  const handleRecordClick = (): void => {
     onRecorderClick && onRecorderClick(name, type);
+
+    const eventType = selfPronunciation
+      ? Analytics.AnalyticsEventTypes.Common.EditPronunciation
+      : Analytics.AnalyticsEventTypes.Common.RecordPronunciation;
+
+    sendAnalyticsEvent(eventType, {
+      name: {
+        value: name,
+        type,
+      },
+      pronunciation: currentPronunciation,
+      component: Components.NAMELINE,
+    });
+  };
 
   useEffect(() => {
     setPronunciation(pronunciations[0]);
@@ -139,7 +212,7 @@ const NameLine = ({
               <Select
                 options={options}
                 theme={theme}
-                onChange={onSelect}
+                onChange={handleSelect}
                 value={value}
                 styles={selectStyles}
                 filterOption={filterOption(value.value)}
@@ -147,12 +220,12 @@ const NameLine = ({
             </div>
 
             <Actions
-              onUserResponse={onUserResponse}
+              onUserResponse={handleBookmarkClick}
               autoplay={autoplay}
-              onPlay={onPlayClick}
+              onPlay={handlePlay}
               showRecordAction={canRecord}
               showUserResponseAction={canUserResponse}
-              onRecordClick={onRecordClick}
+              onRecordClick={handleRecordClick}
               rerecord={!!selfPronunciation}
               saved={
                 currentPronunciation?.userResponse?.response ===

@@ -131,7 +131,7 @@ const NameLinesResult = ({
   });
 
   const openRecorder = (name, type): void =>
-    setRecorderOpen(true, name, type, termsAndConditions);
+    setRecorderOpen({ name, type, termsAndConditions });
 
   const showNotifications = (tag: NotificationTags): boolean => {
     const notifications = notificationsByTag(tag);
