@@ -23,9 +23,11 @@ export const Provider: React.FC<ProviderProps> = ({
 
   useEffect(() => {
     if (service.isInitialized) return;
-    if (!settings)
+    if (!settings || !settings.writeKey || !settings.applicationName)
       throw new Error(
-        "settings were not defined. Analytics Service is not initialized"
+        `settings were not defined. Analytics Service is not initialized. ${JSON.stringify(
+          settings
+        )}`
       );
 
     service.init(settings);
