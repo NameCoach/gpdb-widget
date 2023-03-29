@@ -31,6 +31,7 @@ import Analytics from "../../../analytics";
 import { RecorderCloseOptions } from "../Recorder/types/handlers-types";
 import Pronunciation from "../../../types/resources/pronunciation";
 import { Components } from "../../../analytics/types";
+import { Blocks } from "../../../analytics/consts";
 
 interface Props {
   names: { [t in NameTypes]: Name };
@@ -249,12 +250,19 @@ const Container = ({
       {!isRecorderOpen && pronunciations.fullName?.[0]?.nameOwnerCreated && (
         <>
           {controller.isUserOwnsName() ? (
-            <MyInfo
-              name={fullNameOption.value}
-              owner={fullNameOption.owner}
-              pronunciation={fullNamePronunciation}
-              onCustomAttributesSaved={() => reloadName(fullName.type)}
-            />
+            <Analytics.Provider
+              value={{
+                pronunciation: fullNamePronunciation,
+                block: Blocks.MY_INFO,
+              }}
+            >
+              <MyInfo
+                name={fullNameOption.value}
+                owner={fullNameOption.owner}
+                pronunciation={fullNamePronunciation}
+                onCustomAttributesSaved={() => reloadName(fullName.type)}
+              />
+            </Analytics.Provider>
           ) : (
             <CustomAttributesInspector
               data={fullNamePronunciation.customAttributes}

@@ -10,6 +10,19 @@ export const AnalyticsEventTypes = {
     Initialize: "common_initialize",
     Available: "common_available",
   },
+  Pronunciations: {
+    SelectName: "pronunciations_select_name",
+    Initialize: "pronunciations_initialize",
+    CustomAttributesInitialize: "pronunciations_custom_attributes_initialize",
+  },
+  MyInfo: {
+    Initialize: "my_info_initialize",
+    EditButtonClick: "my_info_edit_button_click",
+    SaveButtonClick: "my_info_save_button_click",
+    CancelButtonClick: "my_info_cancel_button_click",
+    ChangeField: "my_info_change_field",
+    Saved: "my_info_saved",
+  },
   Recorder: {
     RecordingSaved: "recorder_recording_saved",
     StartButtonClick: "recorder_start_button_click",
@@ -57,3 +70,10 @@ export const AnalyticsEventTypes = {
     ContactSupportButtonClick: "help_contact_support_button_click",
   },
 };
+
+export enum Blocks {
+  MY_RECORDING = "my_recording",
+  SEARCH_BLOCK = "search_block",
+  MY_INFO = "my_info",
+  PRONUCIATIONS = "pronunciations",
+}
