@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import userAgentManager from "../../../../../../../../core/userAgentManager";
 import ControllerContext from "../../../../../../../contexts/controller";
 import useTranslator from "../../../../../../../hooks/useTranslator";
@@ -39,6 +39,10 @@ const OutlookView = ({
   const { t } = useTranslator(controller);
   const tooltip = useTooltip<HTMLDivElement>();
   const { speakerTip } = useSpeakerAttrs();
+  const [loading, setLoading] = useState(false);
+  const [isAnalyticsUserReportSend, setIsAnalyticsUserReportSend] = useState(
+    false
+  );
 
   const onSliderRerecord = async (): Promise<void> => {
     onSampleRateSave();
@@ -92,13 +96,16 @@ const OutlookView = ({
 
   const handleSettingsButtonClick = () => {
     // openSlider();
+    setLoading(true);
 
     sendAnalyticsEvent(
       Analytics.AnalyticsEventTypes.Recorder.Settings.ButtonClick,
       {
         options: { sampleRate, deviceLabel },
       }
-    );
+    )
+      .then(() => setIsAnalyticsUserReportSend(true))
+      .finally(() => setLoading(false));
   };
 
   const handleSettingsCancelButtonClick = () => {
@@ -109,7 +116,7 @@ const OutlookView = ({
     );
   };
 
-  const handleSettingsRerecordButtonClicl = () => {
+  const handleSettingsRerecordButtonClick = () => {
     onSliderRerecord();
 
     sendAnalyticsEvent(
@@ -228,7 +235,7 @@ const OutlookView = ({
 
                 <button
                   className={cx("btn", { purple: true })}
-                  onClick={handleSettingsRerecordButtonClicl}
+                  onClick={handleSettingsRerecordButtonClick}
                 >
                   {t("recorder_rerecord_button_outlook")}
                 </button>
@@ -240,7 +247,12 @@ const OutlookView = ({
             <>
               <div className={styles.gap_h_20} />
 
-              <Settings onClick={handleSettingsButtonClick} active={slider} />
+              <Settings
+                onClick={handleSettingsButtonClick}
+                active={slider}
+                loading={loading}
+                isAnalyticsUserReportSend={isAnalyticsUserReportSend}
+              />
             </>
           )}
         </div>
