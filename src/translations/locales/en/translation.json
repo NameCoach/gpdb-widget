@@ -12,7 +12,9 @@
     "recorder_range_input_low": "Low",
     "recorder_range_input_high": "High",
 
-    "recorder_settings_open": "Having trouble with pitch?",
+    "recorder_settings_open": "Report a problem with an audio recording",
+    "recorder_settings_process": "Sending process",
+    "recorder_settings_finished": "Problem report sent",
 
     "recorder_back_button_default": "BACK",
     "recorder_delete_pronunciation_button_default": "DELETE PRONUNCIATION",
