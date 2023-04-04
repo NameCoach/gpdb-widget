@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 import styles from "./styles.module.css";
 import nameLineStyles from "../NameLine/styles.module.css";
 import Pronunciation from "../../../types/resources/pronunciation";
@@ -7,12 +7,12 @@ import RecordAction from "../Actions/Outlook/Record";
 import { NameTypes } from "../../../types/resources/name";
 import classNames from "classnames/bind";
 import userAgentManager from "../../../core/userAgentManager";
-import ControllerContext from "../../contexts/controller";
-import { AnalyticsEventType } from "../../../types/resources/analytics-event-type";
 import useTooltip from "../../kit/Tooltip/hooks/useTooltip";
 import useSpeakerAttrs from "../../hooks/useSpeakerAttrs";
 import Tooltip from "../../kit/Tooltip";
 import generateTooltipId from "../../../core/utils/generate-tooltip-id";
+import Analytics from "../../../analytics";
+import { Components } from "../../../analytics/types";
 
 const cx = classNames.bind([styles, nameLineStyles]);
 
@@ -23,33 +23,53 @@ interface Props {
   name: string;
   pronunciations: Pronunciation[];
   reload: (type: NameTypes) => void;
-  onRecorderClick: (name: string, type: NameTypes) => void;
+  onRecorderClick: (
+    name: string,
+    type: NameTypes,
+    pronunciation?: Pronunciation
+  ) => void;
   canPronunciationCreate: boolean;
 }
 
 const FullName = (props: Props): JSX.Element => {
-  const [pronunciation, setPronunciation] = useState<Pronunciation | null>();
+  const pronunciation = props.pronunciations?.[0];
   const { isDeprecated: isOld } = userAgentManager;
-  const controller = useContext(ControllerContext);
   const tooltip = useTooltip<HTMLDivElement>();
   const { speakerTip } = useSpeakerAttrs(pronunciation?.audioCreator);
 
-  const sendAnalytics = (eventType): PromiseLike<void> =>
-    controller.sendAnalytics(
-      eventType,
-      { name: props.name, type: NameTypes.FullName },
-      pronunciation.id
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const handlePlayClick = () => {
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.PlayPronunciation, {
+      name: {
+        value: props.name,
+        type: NameTypes.FullName,
+      },
+      pronunciation,
+      component: Components.FULLNAMELINE,
+    });
+  };
+
+  const handleRecordClick = () => {
+    props.onRecorderClick(
+      props.name,
+      NameTypes.FullName,
+      pronunciation?.selfRecorded ? pronunciation : undefined
     );
 
-  const onPlayClick = (): PromiseLike<void> =>
-    sendAnalytics(AnalyticsEventType.Full_name_play_button_click);
+    const event = pronunciation?.selfRecorded
+      ? Analytics.AnalyticsEventTypes.Common.EditPronunciation
+      : Analytics.AnalyticsEventTypes.Common.RecordPronunciation;
 
-  const onRecord = (): void =>
-    props.onRecorderClick(props.name, NameTypes.FullName);
-
-  useEffect(() => {
-    setPronunciation(props.pronunciations?.[0]);
-  }, [props.pronunciations, props.canPronunciationCreate]);
+    sendAnalyticsEvent(event, {
+      name: {
+        value: props.name,
+        type: NameTypes.FullName,
+      },
+      pronunciation,
+      component: Components.FULLNAMELINE,
+    });
+  };
 
   return (
     <div className={styles.head__container}>
@@ -63,7 +83,7 @@ const FullName = (props: Props): JSX.Element => {
             isOld ? cx(styles.head__actions, styles.old) : styles.head__actions
           }
         >
-          {pronunciation && pronunciation.audioSrc && (
+          {pronunciation?.audioSrc && (
             <div>
               <Tooltip
                 opener={tooltip.opener}
@@ -75,7 +95,7 @@ const FullName = (props: Props): JSX.Element => {
                 {speakerTip}
               </Tooltip>
               <Player
-                onClick={onPlayClick}
+                onClick={handlePlayClick}
                 audioSrc={pronunciation.audioSrc}
                 audioCreator={pronunciation.audioCreator}
                 className={nameLineStyles.pronunciation__action}
@@ -85,7 +105,7 @@ const FullName = (props: Props): JSX.Element => {
           )}
           {props.canPronunciationCreate && (
             <RecordAction
-              onClick={onRecord}
+              onClick={handleRecordClick}
               rerecord={pronunciation?.selfRecorded}
             />
           )}
