@@ -1,7 +1,7 @@
 {
   "name": "gpdb-widget",
   "homepage": "https://NameCoachDevTeam.github.io/gpdb-widget",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "GPDB widget react component",
   "author": "NameCoach",
   "license": "MIT",
@@ -23,6 +23,7 @@
     "up-beta-version": "npm version prepatch --preid beta"
   },
   "dependencies": {
+    "@segment/analytics-next": "^1.51.0",
     "blob-util": "^2.0.2",
     "classnames": "~2.3.1",
     "gpdb-api-client": "^1.3.1",

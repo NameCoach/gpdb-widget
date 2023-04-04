@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NameTypes } from "../../types/resources/name";
+import Pronunciation from "../../types/resources/pronunciation";
 
 export type TermsAndConditions = {
   component: JSX.Element;
@@ -11,6 +12,7 @@ export type RecorderState = {
   isOpen: boolean;
   name: string | null;
   type: NameTypes | null;
+  pronunciation?: Pronunciation | undefined;
   termsAndConditions: TermsAndConditions | null;
 };
 
@@ -26,28 +28,34 @@ function useRecorderState(
     name: null,
     type: null,
     termsAndConditions: null,
+    pronunciation: undefined,
   }
 ) {
-  const [recorderState, addState] = useState<RecorderState>(defaultState);
+  const [recorderState, setRecorderState] = useState<RecorderState>(
+    defaultState
+  );
 
-  const setRecorderOpen: (
-    isOpen: boolean,
-    name: string,
-    type: NameTypes,
-    termsAndConditions: TermsAndConditions
-  ) => void = (
-    isOpen: boolean,
-    name: string,
-    type: NameTypes,
-    termsAndConditions: TermsAndConditions
-  ) => addState({ name, type, isOpen, termsAndConditions });
+  const setRecorderOpen: (props: Omit<RecorderState, "isOpen">) => void = ({
+    name,
+    type,
+    termsAndConditions,
+    pronunciation,
+  }) =>
+    setRecorderState({
+      name,
+      type,
+      isOpen: true,
+      termsAndConditions,
+      pronunciation,
+    });
 
-  const setRecorderClosed = () =>
-    addState({
+  const setRecorderClosed: () => void = () =>
+    setRecorderState({
       name: null,
       type: null,
       isOpen: false,
       termsAndConditions: null,
+      pronunciation: undefined,
     });
 
   return [recorderState, setRecorderClosed, setRecorderOpen] as const;

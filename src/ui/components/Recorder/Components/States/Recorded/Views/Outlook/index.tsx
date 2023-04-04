@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import userAgentManager from "../../../../../../../../core/userAgentManager";
 import ControllerContext from "../../../../../../../contexts/controller";
 import useTranslator from "../../../../../../../hooks/useTranslator";
@@ -15,11 +15,14 @@ import useSpeakerAttrs from "../../../../../../../hooks/useSpeakerAttrs";
 import Tooltip from "../../../../../../../kit/Tooltip";
 import generateTooltipId from "../../../../../../../../core/utils/generate-tooltip-id";
 
+import Analytics from "../../../../../../../../analytics";
+import { useDebouncedCallback } from "use-debounce";
+
 const cx = classNames.bind(styles);
 
 const OutlookView = ({
   slider,
-  openSlider,
+  // openSlider,
   closeSlider,
   onDefaultSampleRateClick,
   onUpdateSampleRate,
@@ -29,12 +32,17 @@ const OutlookView = ({
   handleOnRecorderClose,
   onSave,
   onStart,
+  deviceLabel,
 }: StateProps): JSX.Element => {
   const { isDeprecated: isOld } = userAgentManager;
   const controller = useContext(ControllerContext);
   const { t } = useTranslator(controller);
   const tooltip = useTooltip<HTMLDivElement>();
   const { speakerTip } = useSpeakerAttrs();
+  const [loading, setLoading] = useState(false);
+  const [isAnalyticsUserReportSend, setIsAnalyticsUserReportSend] = useState(
+    false
+  );
 
   const onSliderRerecord = async (): Promise<void> => {
     onSampleRateSave();
@@ -44,6 +52,94 @@ const OutlookView = ({
   const onSliderCancel = (): void => {
     onDefaultSampleRateClick();
     closeSlider();
+  };
+
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const handleSaveButtonClick = () => {
+    onSave();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recorded.SaveRecordingButtonClick
+    );
+  };
+
+  const handleRerecordButtonClick = () => {
+    onStart();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recorded.RerecordButtonClick
+    );
+  };
+
+  const handleCancelButtonClick = () => {
+    handleOnRecorderClose();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recorded.CancelButtonClick
+    );
+  };
+
+  const handlePreviewButtonClick = () => {
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Recorded.PreviewButtonClick
+    );
+  };
+
+  const handleDefaultButtonClick = (value) => {
+    onDefaultSampleRateClick(value);
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Settings.DefaultButtonClick
+    );
+  };
+
+  const handleSettingsButtonClick = () => {
+    // openSlider();
+    setLoading(true);
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Settings.ButtonClick,
+      {
+        options: { sampleRate, deviceLabel },
+      }
+    )
+      .then(() => setIsAnalyticsUserReportSend(true))
+      .finally(() => setLoading(false));
+  };
+
+  const handleSettingsCancelButtonClick = () => {
+    onSliderCancel();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Settings.CancelButtonClick
+    );
+  };
+
+  const handleSettingsRerecordButtonClick = () => {
+    onSliderRerecord();
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Settings.RerecordButtonClick,
+      { options: { sampleRate, deviceLabel } }
+    );
+  };
+
+  const sendAnalyticsEventPitchChange = useDebouncedCallback((value) => {
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Recorder.Settings.PitchSliderClick,
+      {
+        options: { val: value, prevVal: sampleRate[0] },
+      }
+    );
+  }, 3000);
+
+  const handleRangeInputChange = (value) => {
+    sendAnalyticsEventPitchChange.cancel();
+
+    sendAnalyticsEventPitchChange(value[0]);
+
+    onUpdateSampleRate(value);
   };
 
   return (
@@ -65,6 +161,7 @@ const OutlookView = ({
                   {speakerTip}
                 </Tooltip>
                 <Player
+                  onClick={handlePreviewButtonClick}
                   audioSrc={audioUrl}
                   icon="playable"
                   className="player"
@@ -84,8 +181,8 @@ const OutlookView = ({
                 max={MAX_SAMPLE_RATE}
                 min={MIN_SAMPLE_RATE}
                 values={[sampleRate]}
-                onChange={onUpdateSampleRate}
-                onDefaultClicked={onDefaultSampleRateClick}
+                onChange={handleRangeInputChange}
+                onDefaultClicked={handleDefaultButtonClick}
               />
             </>
           )}
@@ -97,7 +194,10 @@ const OutlookView = ({
             <>
               <div className={styles.gap_h_20} />
 
-              <button className={cx("btn", { red: true })} onClick={onStart}>
+              <button
+                className={cx("btn", { red: true })}
+                onClick={handleRerecordButtonClick}
+              >
                 {t("recorder_rerecord_button_outlook")}
               </button>
             </>
@@ -109,14 +209,17 @@ const OutlookView = ({
             {!slider && (
               <button
                 className={cx("btn", { outline: true })}
-                onClick={handleOnRecorderClose}
+                onClick={handleCancelButtonClick}
               >
                 {t("recorder_cancel_button_outlook")}
               </button>
             )}
 
             {!slider && (
-              <button className={cx("btn", { purple: true })} onClick={onSave}>
+              <button
+                className={cx("btn", { purple: true })}
+                onClick={handleSaveButtonClick}
+              >
                 {t("recorder_save_pronunciation_button_outlook")}
               </button>
             )}
@@ -125,14 +228,14 @@ const OutlookView = ({
               <>
                 <button
                   className={cx("btn", { outline: true })}
-                  onClick={onSliderCancel}
+                  onClick={handleSettingsCancelButtonClick}
                 >
                   {t("recorder_cancel_button_outlook")}
                 </button>
 
                 <button
                   className={cx("btn", { purple: true })}
-                  onClick={onSliderRerecord}
+                  onClick={handleSettingsRerecordButtonClick}
                 >
                   {t("recorder_rerecord_button_outlook")}
                 </button>
@@ -144,7 +247,12 @@ const OutlookView = ({
             <>
               <div className={styles.gap_h_20} />
 
-              <Settings onClick={openSlider} active={slider} />
+              <Settings
+                onClick={handleSettingsButtonClick}
+                active={slider}
+                loading={loading}
+                isAnalyticsUserReportSend={isAnalyticsUserReportSend}
+              />
             </>
           )}
         </div>
