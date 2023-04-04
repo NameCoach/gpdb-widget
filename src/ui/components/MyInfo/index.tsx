@@ -1,6 +1,5 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useRef } from "react";
 import IFrontController from "../../../types/front-controller";
-import { NameOption } from "../FullNamesList";
 import styles from "./styles.module.css";
 import classNames from "classnames/bind";
 import CustomAttributes from "../Outlook/CustomAttributes";
@@ -17,6 +16,7 @@ import Actions from "./Actions";
 import useCustomAttributes from "../../hooks/useCustomAttributes";
 import Gap from "../../kit/Gap";
 import { NameOwner } from "gpdb-api-client";
+import Analytics from "../../../analytics";
 
 interface Props {
   name: string;
@@ -65,6 +65,55 @@ const MyInfo = ({
     saveCallback: onCustomAttributesSaved,
   });
 
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  const saveMyInfo = () => {
+    saveCustomAttributes();
+
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.MyInfo.SaveButtonClick, {
+      options: {
+        val: customAttrsRef.current.data,
+        prevVal: data,
+      },
+    });
+  };
+
+  const closeMyInfoEdit = () => {
+    exitEditMode();
+
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.MyInfo.CancelButtonClick);
+  };
+
+  const openMyInfoEdit = () => {
+    enterEditMode();
+
+    sendAnalyticsEvent(Analytics.AnalyticsEventTypes.MyInfo.EditButtonClick);
+  };
+
+  const initializeRef = useRef(false);
+
+  useEffect(() => {
+    if (!canEditCustomAttributes) return;
+
+    if (initializeRef.current === false) {
+      sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.Initialize);
+
+      initializeRef.current = true;
+    }
+  }, [canEditCustomAttributes, sendAnalyticsEvent]);
+
+  const availableRef = useRef(false);
+
+  useEffect(() => {
+    if (loading || !canEditCustomAttributes) return;
+
+    if (availableRef.current === false) {
+      sendAnalyticsEvent(Analytics.AnalyticsEventTypes.Common.Available);
+
+      availableRef.current = true;
+    }
+  }, [loading, canEditCustomAttributes]);
+
   return (
     <>
       {canEditCustomAttributes && (
@@ -79,9 +128,9 @@ const MyInfo = ({
             <Actions
               loading={loading}
               inEdit={inEdit}
-              closeEdit={exitEditMode}
-              saveMyInfo={saveCustomAttributes}
-              openEdit={enterEditMode}
+              closeEdit={closeMyInfoEdit}
+              saveMyInfo={saveMyInfo}
+              openEdit={openMyInfoEdit}
               canEditCustomAttributes={canEditCustomAttributes}
               isUnsavedChanges={isUnsavedChanges}
               makeChanges={makeChanges}
@@ -108,6 +157,7 @@ const MyInfo = ({
                     <CustomAttributesInspector
                       data={data}
                       pronunciation={pronunciation}
+                      isSelf
                     />
                   );
                 else

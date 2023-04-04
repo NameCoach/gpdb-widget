@@ -1,4 +1,5 @@
 import RecordRTC, { Options } from "recordrtc";
+import { DeviceLabel } from "../types/device-label";
 import { SampleRate } from "../types/sample-rate";
 
 interface HookProps {
@@ -7,6 +8,7 @@ interface HookProps {
   setDesiredSampleRate: (value: SampleRate) => void;
   defaultSampleRate: SampleRate;
   setDefaultSampleRate: (value: SampleRate) => void;
+  setDeviceLabel?: (value: DeviceLabel) => void;
 }
 
 type HookReturn = () => Promise<RecordRTC>;
@@ -17,6 +19,7 @@ const useRecordRTC = ({
   setDesiredSampleRate,
   defaultSampleRate,
   setDefaultSampleRate,
+  setDeviceLabel,
 }: HookProps): HookReturn => {
   const logRecordingDeviceInfo = async (stream: MediaStream): Promise<void> => {
     const audioTracks = stream?.getAudioTracks();
@@ -32,6 +35,8 @@ const useRecordRTC = ({
     );
 
     log(`Recording device label: ${recordingDeviceInfo.label}`);
+    if (recordingDeviceInfo && setDeviceLabel)
+      setDeviceLabel(recordingDeviceInfo?.label);
 
     Object.keys(recordingDeviceSettings).forEach((key) =>
       log(
