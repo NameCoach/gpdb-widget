@@ -12,3 +12,4 @@ export { ReactComponent as Upload } from "./upload.svg";
 export { ReactComponent as Save } from "./save.svg";
 export { ReactComponent as SaveActive } from "./save-active.svg";
 export { ReactComponent as Close } from "./close.svg";
+export { ReactComponent as Check } from "./check.svg";

@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo } from "react";
+import React, { Fragment, memo, useEffect, useMemo } from "react";
 import {
   AttributePresentation,
   CustomAttributeObject,
@@ -14,12 +14,14 @@ import useFeaturesManager, {
 } from "../../../hooks/useFeaturesManager";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import Gap from "../../../kit/Gap";
+import Analytics from "../../../../analytics";
 
 const cx = classNames.bind(styles);
 
 interface Props {
   data: CustomAttributeObject[];
   pronunciation?: Pronunciation;
+  isSelf?: boolean;
 }
 const ATTRIBUTE_PRESENTATIONS = {
   [AttributePresentation.Checkbox]: BooleanInspector,
@@ -29,7 +31,10 @@ const ATTRIBUTE_PRESENTATIONS = {
 const CustomAttributesInspector = ({
   data,
   pronunciation,
+  isSelf = false,
 }: Props): JSX.Element => {
+  if (!data || data.length === 0) return;
+
   const { can } = useFeaturesManager();
   // #TODO: rework custom attributes feature in manager, cause it mixes data and policies
   const canEditCustomAttributes = can(
@@ -46,6 +51,17 @@ const CustomAttributesInspector = ({
   };
 
   const dataLastElementIndex = useMemo(() => data?.length - 1, [data]);
+
+  const { sendAnalyticsEvent } = Analytics.useAnalytics();
+
+  // this is no good, keep it in mind
+  useEffect(() => {
+    if (isSelf) return;
+
+    sendAnalyticsEvent(
+      Analytics.AnalyticsEventTypes.Pronunciations.CustomAttributesInitialize
+    );
+  }, []);
 
   return (
     <>
