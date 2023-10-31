@@ -16,11 +16,11 @@ const OutlookView = ({
     <ActionsPanel>
       <PlayerDisabled />
 
-      {showRecordAction && (
+      {showRequestAction && (
         <RequestAction disabled={disableRequestAction} onClick={onRequest} />
       )}
 
-      {showRequestAction && <RecordAction onClick={onRecordClick} />}
+      {showRecordAction && <RecordAction onClick={onRecordClick} />}
     </ActionsPanel>
   );
 };
