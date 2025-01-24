@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import RecordRTC from "recordrtc";
+import RecordRTC from "../../../recordrtc-fork/RecordRTC.js";
 
 export enum States {
   Initial = "Initial",

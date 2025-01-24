@@ -2429,11 +2429,6 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/recordrtc@^5.6.5":
-  version "5.6.5"
-  resolved "https://registry.yarnpkg.com/@types/recordrtc/-/recordrtc-5.6.5.tgz#aa7b1ec80afefbe1f73296f36fcad0eabcd8c6f1"
-  integrity sha512-4FF77kV/VTnEM7lB018sr70IKl1e1rbRpXuv1G3t7Ty7Z5HGRDehH2xq9cxvTNn18DDSkm0D5gwU5CpfwiPuDQ==
-
 "@types/resolve@1.17.1":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.1.tgz"
@@ -6191,11 +6186,6 @@ rechoir@^0.6.2:
   integrity sha1-hSBLVNuoLVdC4oyWdW70OvUOM4Q=
   dependencies:
     resolve "^1.1.6"
-
-recordrtc@^5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/recordrtc/-/recordrtc-5.6.2.tgz#48fc214b35084973ccce82c6251198b5742bc327"
-  integrity sha512-1QNKKNtl7+KcwD1lyOgP3ZlbiJ1d0HtXnypUy7yq49xEERxk31PHvE9RCciDrulPCY7WJ+oz0R9hpNxgsIurGQ==
 
 redent@^1.0.0:
   version "1.0.0"

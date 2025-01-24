@@ -1,7 +1,7 @@
 {
   "name": "gpdb-widget",
   "homepage": "https://NameCoachDevTeam.github.io/gpdb-widget",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "GPDB widget react component",
   "author": "NameCoach",
   "license": "MIT",
@@ -38,7 +38,6 @@
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
     "react-tooltip": "^4.2.21",
-    "recordrtc": "^5.6.2",
     "styled-components": "^5.3.6",
     "use-debounce": "^8.0.3"
   },
@@ -49,8 +48,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-range": "^1.8.7",
-    "react-select": "^4.3.0",
-    "recordrtc": "^5.6.2"
+    "react-select": "^4.3.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
@@ -61,7 +59,6 @@
     "@types/blob-util": "^2.0.0",
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
-    "@types/recordrtc": "^5.6.5",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "autoprefixer": "^10.2.5",
@@ -91,7 +88,6 @@
     "react-dom": "^16.0.0",
     "react-range": "^1.8.7",
     "react-select": "^4.3.0",
-    "recordrtc": "^5.6.2",
     "rollup": "^2.45.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.0",
