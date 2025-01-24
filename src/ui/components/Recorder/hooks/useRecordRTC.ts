@@ -1,4 +1,4 @@
-import RecordRTC, { Options } from "recordrtc";
+import RecordRTC, { Options } from "../../../../recordrtc-fork/RecordRTC.js";
 import { DeviceLabel } from "../types/device-label";
 import { SampleRate } from "../types/sample-rate";
 

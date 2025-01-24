@@ -1,7 +1,7 @@
 import { blobToBase64String } from "blob-util";
 import { NameOwner } from "gpdb-api-client";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import RecordRTC from "recordrtc";
+import RecordRTC from "../../../../recordrtc-fork/RecordRTC.js";
 import { NameTypes } from "../../../../types/resources/name";
 import Pronunciation from "../../../../types/resources/pronunciation";
 import { config as configuration } from "../machine/configurations/default";
