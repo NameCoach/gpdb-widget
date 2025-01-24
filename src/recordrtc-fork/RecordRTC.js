@@ -835,7 +835,7 @@ function RecordRTC(mediaStream, config) {
 
 RecordRTC.version = "5.6.2";
 
-export default RecordRTC;
+// export default RecordRTC;
 
 if (typeof module !== "undefined" /* && !!module.exports*/) {
   module.exports = RecordRTC;
